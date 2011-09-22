@@ -1,0 +1,69 @@
+<?php
+/**
+ * Outputs an error.
+ *
+ * @package Recipe 1.2
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2009, Sebastian Noll
+ * @license <http://www.gnu.org/licenses/gpl.txt> GNU/GPL
+ * @version $Id: error.phtml 8 2010-10-17 20:55:04Z secretchampion $
+ */
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+		<title>Error!</title>
+		<link rel="stylesheet" href="<?php echo BASE_URL; ?>css/error.css" media="screen,projection,tv,handheld,print,speech"/>
+	</head>
+	<body>
+		<h1>There is an error occured.</h1>
+		<p>
+		<?php if(isset($file)): ?>
+		Copy the error code and report it to an administrator.<br/>
+		Your personal error code: <strong><?php echo $file; ?></strong>
+		<?php else: ?>
+		Please copy this page and report it to an administrator.
+		<?php endif; ?>
+		</p>
+		<p>
+			<strong>Error:</strong> <?php echo $this->getMessage(); ?><br/>
+			<?php if($this->getFile()): ?><strong>File:</strong> <?php echo $this->getFile(); ?><br/><?php endif; ?>
+			<?php if($this->getLine()): ?><strong>Line:</strong> <?php echo $this->getLine(); ?><br/><?php endif; ?>
+			<strong>IP-Address:</strong> <?php echo IPADDRESS; ?><br/>
+			<strong>URI:</strong> <?php echo isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : ""; ?><br/>
+			<?php if(isset($_SERVER["HTTP_REFERER"])): ?><strong>Referring URL:</strong> <?php echo $_SERVER["HTTP_REFERER"]; ?><br/><?php endif; ?>
+			<strong>Debug Backtrace:</strong>
+		</p>
+		<ul>
+			<?php foreach($this->getStackTrace() as $trace): ?>
+			<li>
+				Function <?php if(!empty($trace["class"])): ?><b><?php echo $trace["class"]; ?></b>::<?php endif; ?><b><?php echo $trace["function"]; ?></b>() called in <b><?php echo (isset($trace["file"])) ? $trace["file"] : "unknown"; ?></b> on line <b><?php echo (isset($trace["line"])) ? $trace["line"] : "unknown"; ?></b>.
+				<?php if(!empty($trace["args"])): ?>
+				<dl>
+					<?php foreach($trace["args"] as $i => $arg): ?>
+					<dd>
+					Paramenter <?php echo $i+1; ?>:
+					<?php
+						switch(gettype($arg))
+						{
+							case "object":
+								echo "object ".get_class($arg);
+							break;
+							case "array":
+								echo "array(".count($arg).")";
+							break;
+							default:
+								var_dump($arg);
+							break;
+						}
+					?>
+					</dd>
+					<?php endforeach; ?>
+				</dl>
+				<?php endif; ?>
+			</li>
+			<?php endforeach; ?>
+		</ul>
+	</body>
+</html>

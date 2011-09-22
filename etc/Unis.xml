@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+- This file allows you to add new universes for the game.
+-->
+<unis>
+	<universe>
+		<name>Uni 1</name>
+		<domain></domain>
+	</universe>
+</unis>

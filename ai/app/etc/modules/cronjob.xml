@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<enable/>
+	<key>cronjob_manager</key>
+	<name>Cronjobs</name>
+	<controller>cronjob</controller>
+	<version>1.0.0</version>
+</module>

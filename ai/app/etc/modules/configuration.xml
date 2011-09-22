@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<enable/>
+	<key>configuration</key>
+	<name>Configuration</name>
+	<controller>config</controller>
+	<version>1.0.0</version>
+</module>

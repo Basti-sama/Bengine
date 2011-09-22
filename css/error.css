@@ -1,0 +1,41 @@
+@media not print {
+@font-face { font-family: Inconsolata; src: url('Inconsolata.otf'); }
+html { background: #ddd url(img/page-bot.png) left bottom repeat-x; color: #444; font-family: Helvetica,Arial,sans-serif; font-size: 100%; height: 100%; line-height: 1.5; margin: 0 10%; voice-family: female; }
+body { background: url(img/error.png) no-repeat; margin: 0 auto; padding: 0 0 30px 60px; }
+html { max-width: 600px; }
+head { display: block; position: relative; speak: normal; }
+head { padding: 20px 0 0 0; }
+title { color: #888; display: block; font-size: 95%; font-weight: bold; margin: 0 0 -8px 0; padding: 0 0 0 61px; speak: normal; text-shadow: 0 1px 0 rgba(255,255,255,0.6); text-transform: uppercase; width: 100%; }
+html[dir="rtl"] title { left: auto; right: 10px; }
+html[lang^="el"] title { text-transform: none; }
+title::after { content: "!"; speak: none; }
+html[lang^="es"] title::before {content: "\00A1";}
+body { color: inherit; margin: 0; }
+h1 { font-size: 220%; letter-spacing: -1px; line-height: 1.15; color: #dd0000; text-shadow: 0 1px 0 rgba(255,255,255,0.4); font-weight: normal; padding: 7px 10px 15px 0; margin: 0; border-bottom: 1px solid #fff; }
+html[dir="rtl"] h1 { text-align: left; letter-spacing: normal; padding: 20px 5em 15px 10px; }
+h2 { font-size: 100%; font-weight: normal; padding: 5px 7px; margin: 0; }
+html[dir="rtl"] h2 {letter-spacing: normal;}
+a { color: #086fd8; font-style: normal; }
+p { font-size: 85%; -o-text-overflow: ellipsis; margin: 20px 0; overflow: hidden; font-style: normal; }
+ul { padding: 0; }
+li { font-size: 85%; margin: 10px 10px 0 0; }
+ul li { padding: 0 0 0 20px; margin: 10px 0 0 -20px; list-style-type: none; background: url(img/bullet.png) no-repeat 0 0.3em; }
+dl { font-size: 83%; margin: 10px 0; }
+dt { font-weight: bold; margin: 0 5px 0 0; display: run-in; }
+dd { margin: 0; }
+cite { font-weight: bold; white-space: pre; }
+pre { font-size: 90%; white-space: pre-wrap; line-height: 160%; background-color: hsl(0,0%,98%); padding: 15px; margin: 20px 0; border: 1px solid #ccc; overflow: auto; font-family: Inconsolata, monospace; }
+pre em { font-style: normal; padding: 2px; speak: spell-out; }
+pre em.error { color: white; background-color: hsl(0,100%,40%); }}
+address { font-size: 72%; -o-text-overflow: ellipsis; margin: 20px 0; overflow: hidden; font-style: normal; }
+@media tv, handheld {html {font-size: 150%;}}
+@media screen and (max-width: 250px), projection and (max-width: 250px), tv and (max-width: 250px), handheld and (max-width: 250px) { h1 {font-size: 83%;} }
+@media all and (min-width: 1025px) {html, head {max-width: 700px;}}
+@media all and (min-width: 1281px) {html, head {max-width: 800px;}}
+@media all and (min-width: 1601px) {html, head {max-width: 900px;}}
+@media tv {title, h1 {font-size: 90%;}}
+@media print {
+* { border: none; }
+h2, h2+ul, head { display: none; }
+h1 { font-size: 13pt; font-weight: bold; page-break-before: avoid; page-break-after: avoid; }
+}

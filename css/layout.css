@@ -1,0 +1,16 @@
+/**
+ * Defines the basic page layout.
+ *
+ * @package Bengine
+ * @license <http://www.bengine.de/pbl.txt> Public Bengine License
+ * @version $Id: layout.css 8 2010-10-17 20:55:04Z secretchampion $
+ */
+
+#leftMenu { position: fixed; }
+#planets { position: absolute; }
+#content { width: auto; margin: 0 0 5em 300px; }
+#leftMenu { top: 40px; left: 30px; width: 160px; }
+#leftMenu ul, #leftMenu li { margin: 0; }
+#topHeader { margin: 10px 10px 0px 150px; }
+#topHeader li { float: left; margin-left: 20px; margin-right: 20px; }
+#planets { top: 30px; right: 20px; width: 150px; }

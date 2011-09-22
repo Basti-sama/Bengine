@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<signature>
+	<cache>
+		<path>var/signatures/</path>
+		<expires>28800</expires>
+		<enabled>1</enabled>
+	</cache>
+	<image>
+		<background>template.png</background><!-- Important: Has to be PNG -->
+		<fontPath>var/fonts/</fontPath>
+		<quality>8</quality>
+		
+		<gamename>
+			<font>arialbd.ttf</font>
+			<size>17</size>
+			<show>0</show>
+			<shadow>0</shadow>
+			<color>61aacd</color>
+			<shadow_color>dddddd</shadow_color>
+			<x>4</x>
+			<y>50</y>
+		</gamename>
+		
+		<username>
+			<font>arialbd.ttf</font>
+			<size>12</size>
+			<show>1</show>
+			<shadow>0</shadow>
+			<color>61aacd</color>
+			<shadow_color>dddddd</shadow_color>
+			<x>20</x>
+			<y>20</y>
+		</username>
+		
+		<alliance>
+			<font>arial.ttf</font>
+			<size>9</size>
+			<show>1</show>
+			<shadow>0</shadow>
+			<color>61aacd</color>
+			<shadow_color>dddddd</shadow_color>
+			<x>20</x>
+			<y>39</y>
+		</alliance>
+		
+		<planet>
+			<font>arial.ttf</font>
+			<size>9</size>
+			<show>1</show>
+			<shadow>0</shadow>
+			<color>61aacd</color>
+			<shadow_color>dddddd</shadow_color>
+			<x>20</x>
+			<y>56</y>
+		</planet>
+		
+		<points>
+			<font>arial.ttf</font>
+			<size>9</size>
+			<show>1</show>
+			<shadow>0</shadow>
+			<color>61aacd</color>
+			<shadow_color>dddddd</shadow_color>
+			<x>198</x>
+			<y>39</y>
+		</points>
+
+		<stats>
+			<font>arial.ttf</font>
+			<size>9</size>
+			<show>1</show>
+			<shadow>0</shadow>
+			<color>61aacd</color>
+			<shadow_color>dddddd</shadow_color>
+			<x>198</x>
+			<y>56</y>
+		</stats>
+		
+		<planets>
+			<font>arial.ttf</font>
+			<size>9</size>
+			<show>0</show>
+			<shadow>0</shadow>
+			<color>61aacd</color>
+			<shadow_color>dddddd</shadow_color>
+			<x>20</x>
+			<y>57</y>
+		</planets>
+	</image>
+</signature>

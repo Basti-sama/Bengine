@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<key>module_installer</key>
+	<name>Module_Installer</name>
+	<controller>installer</controller>
+	<version>1.0.0</version>
+</module>

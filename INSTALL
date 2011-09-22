@@ -1,0 +1,122 @@
+English
+---------------------------
+
+How to install?
+
+Summary:
+1. Introduction
+2. Requirements
+3. Upload files
+4. Setup database
+5. Writing permissions
+6. Create admin
+7. Cronjob
+8. Finish
+
++++
+
+1. Introduction
+First of all, read the license file. If your accept the license
+agreements, then you can go on with installation.
+Please note: The Browsergame Engine will probably not run on shared
+hosts. Installation should be done by advanced server administrators.
+
+2. Requirements
+- Apache 2.x Webserver + mod_rewrite (platform independent)
+- PHP 5.2.x or 5.3.x
+	* curl
+	* SimpleXMLElement
+- Java Runtime Enviroment 6 (no Tomcat!)
+- MySQL 5.x incl. InnoDB
+
+3. Upload files
+Just upload all files except for "compiler.php" into the root directory
+of your webhost.
+
+4. Setup database
+Open the file /etc/Config.inc.php and enter your database access data.
+Then open /app/setup/schema.sql and apply all containing SQL-Queries
+to your database to create the database structure.
+
+5. Writing permissions
+Set writing permissions recursively for the following folders:
+chmod -R 0777 var/
+
+6. Create admin
+Test your installation by pointing your browser to http://your-host.com/.
+If everthing works, register a first user. This first user will receive
+all admin permissions.
+
+7. Cronjob
+Setup a cronjob that calls http://your-host.com/cron.php all 15 minutes.
+e.g.:
+*/15 * * * * curl "http://your-host.com/cron.php" > /dev/null 2>&1
+The PHP script will take care of the different cronjobs.
+
+8. Finish
+Play the game or call http://your-host.com/ai to configure your installation.
+
++++
+
+Deutsch
+---------------------------
+
+Wie funktioniert die Installation?
+
+Inhalt:
+1. Einführung
+2. Anforderungen
+3. Datei-Upload
+4. Datenbank
+5. Schreibrechte
+6. Adminaccount anlegen
+7. Cronjob
+8. Fertig
+
++++
+
+1. Einführung
+Lies zu erst die Lizenzbestimmungen. Erst wenn diese akzeptiert werden
+kann mit der Installation fortgesetzt werden.
+Bitte beachte: Die Browsergame Engine wird wahrscheinlich nicht auf
+einem Shared Host laufen. Die Installation sollte nur von einem
+erfahrenen Server Administrator durchgeführt werden.
+
+2. Anforderungen
+- Apache 2.x Webserver + mod_rewrite (Plattformunabhängig)
+- PHP 5.2.x or 5.3.x
+	* curl
+	* SimpleXMLElement
+- Java Runtime Enviroment 6 (Kein Tomcat!)
+- MySQL 5.x inkl. InnoDB
+
+3. Datei-Upload
+Lade alle Dateien außer "compiler.php" in das Root-Verzeichnis deines
+Webhosts.
+
+4. Datenbank
+Öffne die Datei /etc/Config.inc.php und gebe dort die Zugangsdaten für die
+Datenbank an. Um die Datenbankstruktur anzulegen, öffne anschließend die
+Datei /app/setup/schema.sql und führe die enthaltenden SQL-Querys in MySQL
+aus.
+
+5. Schreibrechte
+Setze rekursiv die für folgende Verzeichnisse:
+chmod -R 0777 var/
+
+6. Admin-Account anlegen
+Teste die Installation, in dem du http://dein-host.com/ in deinem Browser
+aufrufst. Wenn alles läuft, registriere einen ersten Benutzer. Der erste
+Benutzer erhält alle Adminrechte.
+
+7. Cronjob
+Lege einen Cronjob an, der alle 15 Minuten die Adresse
+http://dein-host.com/cron.php aufruft. z.B.:
+*/15 * * * * curl "http://your-host.com/cron.php" > /dev/null 2>&1
+Das PHP-Skript führt anschließend alle Cronjobs automatisch aus.
+
+8. Fertig
+Das war's. Die Installation lässt sich anschließend noch über
+http://dein-host.com/ai konfigurieren.
+
++++

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<size>
+	<pos_1>
+		<normal>
+			<min>5745</min>
+			<max>8945</max>
+		</normal>
+		<offrange>
+			<min>4583</min>
+			<max>18548</max>
+		</offrange>
+	</pos_1>
+	
+	<pos_2>
+		<normal>
+			<min>7280</min>
+			<max>9111</max>
+		</normal>
+		<offrange>
+			<min>5477</min>
+			<max>18945</max>
+		</offrange>
+	</pos_2>
+	
+	<pos_3>
+		<normal>
+			<min>7349</min>
+			<max>9056</max>
+		</normal>
+		<offrange>
+			<min>5831</min>
+			<max>18574</max>
+		</offrange>
+	</pos_3>
+	
+	<pos_4>
+		<normal>
+			<min>10392</min>
+			<max>15427</max>
+		</normal>
+		<offrange>
+			<min>4472</min>
+			<max>18574</max>
+		</offrange>
+	</pos_4>
+	
+	<pos_5>
+		<normal>
+			<min>9747</min>
+			<max>15460</max>
+		</normal>
+		<offrange>
+			<min>5000</min>
+			<max>18439</max>
+		</offrange>
+	</pos_5>
+	
+	<pos_6>
+		<normal>
+			<min>8247</min>
+			<max>15100</max>
+		</normal>
+		<offrange>
+			<min>5916</min>
+			<max>18439</max>
+		</offrange>
+	</pos_6>
+	
+	<pos_7>
+		<normal>
+			<min>10770</min>
+			<max>13153</max>
+		</normal>
+		<offrange>
+			<min>7417</min>
+			<max>17888</max>
+		</offrange>
+	</pos_7>
+	
+	<pos_8>
+		<normal>
+			<min>11091</min>
+			<max>13305</max>
+		</normal>
+		<offrange>
+			<min>5916</min>
+			<max>17861</max>
+		</offrange>
+	</pos_8>
+	
+	<pos_9>
+		<normal>
+			<min>11358</min>
+			<max>13712</max>
+		</normal>
+		<offrange>
+			<min>4583</min>
+			<max>18575</max>
+		</offrange>
+	</pos_9>
+	
+	<pos_10>
+		<normal>
+			<min>8889</min>
+			<max>11046</max>
+		</normal>
+		<offrange>
+			<min>4796</min>
+			<max>15330</max>
+		</offrange>
+	</pos_10>
+	
+	<pos_11>
+		<normal>
+			<min>9000</min>
+			<max>10770</max>
+		</normal>
+		<offrange>
+			<min>7616</min>
+			<max>14107</max>
+		</offrange>
+	</pos_11>
+	
+	<pos_12>
+		<normal>
+			<min>6558</min>
+			<max>13965</max>
+		</normal>
+		<offrange>
+			<min>9220</min>
+			<max>11358</max>
+		</offrange>
+	</pos_12>
+	
+	<pos_13>
+		<normal>
+			<min>7746</min>
+			<max>12650</max>
+		</normal>
+		<offrange>
+			<min>4796</min>
+			<max>15034</max>
+		</offrange>
+	</pos_13>
+	
+	<pos_14>
+		<normal>
+			<min>6481</min>
+			<max>11225</max>
+		</normal>
+		<offrange>
+			<min>4796</min>
+			<max>15034</max>
+		</offrange>
+	</pos_14>
+	
+	<pos_15>
+		<normal>
+			<min>7349</min>
+			<max>12207</max>
+		</normal>
+		<offrange>
+			<min>4796</min>
+			<max>16371</max>
+		</offrange>
+	</pos_15>
+</size>

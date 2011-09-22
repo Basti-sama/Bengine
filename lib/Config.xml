@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	This file defines some basic configurations.
+	All variables can be mangaged by the database.
+-->
+<config>
+	<pagetitle>Page Title</pagetitle>
+	<maxloginattempts type="int">5</maxloginattempts>
+	<bannedlogintime type="int">5</bannedlogintime>
+	<mailaddress>noreply@host.de</mailaddress>
+	<template_engine>Default</template_engine>
+	<standardlanggroups type="array">global</standardlanggroups>
+	<timezone>Europe/London</timezone>
+	<defaultlanguage type="int">1</defaultlanguage>
+	<templatepackage>standard/</templatepackage>
+	<templateextension>.tpl</templateextension>
+	<maintemplate>layout</maintemplate>
+	<guestgroupid>1</guestgroupid>
+	<userselect type="level">
+		<fieldsnames type="array">u2a.aid</fieldsnames>
+		<indexnames type="array">aid</indexnames>
+	</userselect>
+	<userjoins type="dbquery">LEFT JOIN PREFIXuser2ally u2a ON (u2a.userid = u.userid)</userjoins>
+</config>
