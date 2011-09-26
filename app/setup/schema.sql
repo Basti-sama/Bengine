@@ -743,7 +743,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 1, 'THOUSANDS_SEPERATOR', '.'),
 (1, 1, 'TIME_FORMAT', 'H:i:s'),
 (1, 1, 'TODAY', '<strong>Heute</strong>'),
-(1, 1, 'TOMORROR', '<strong>Morgen</strong>'),
+(1, 1, 'TOMORROW', '<strong>Morgen</strong>'),
 (1, 1, 'TRANSPORT', 'Transport'),
 (1, 1, 'UMODE_ENABLED', 'Der Account befindet sich im Urlaubsmodus.'),
 (1, 1, 'UNKOWN', 'Unbekannt'),
