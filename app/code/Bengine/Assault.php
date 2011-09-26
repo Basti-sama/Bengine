@@ -163,7 +163,7 @@ class Bengine_Assault
 		// Run java
 		$jrePath = $cs["jre"];
 		$jarPath = APP_ROOT_DIR."app/Assault.jar";
-		$cmd = $jrePath.' -jar "'.$jarPath.'" "'.$cs["host"].'" "'.$cs["user"].'" "'.$cs["userpw"].'" "'.$database["databasename"].'" "'.$database["tableprefix"].'" "'.escapeshellarg($this->assaultid).'"';
+		$cmd = $jrePath.' -jar "'.$jarPath.'" "'.$cs["host"].'" "'.$cs["user"].'" "'.$cs["userpw"].'" "'.$database["databasename"].'" "'.$database["tableprefix"].'" '.escapeshellarg($this->assaultid);
 		exec($cmd);
 
 		$result = Core::getQuery()->select("assault", array("result", "moonchance", "moon", "accomplished", "lostunits_defender"), "", "assaultid = '".$this->assaultid."'");
