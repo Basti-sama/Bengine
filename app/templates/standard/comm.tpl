@@ -65,11 +65,11 @@
 					<form action="" method="post" id="signin-form">
 						<div class="input">
 							<label for="username">{lang}USERNAME{/lang}</label>
-							<input type="text" name="username" id="username" tabindex="1" maxlengt="{config=MAX_USER_CHARS}" autofocus/>
+							<input type="text" name="username" id="username" tabindex="1" maxlength="{config=MAX_USER_CHARS}" autofocus/>
 						</div>
 						<div class="input">
 							<label for="password">{lang}PASSWORD{/lang} ({link[FORGOTTEN]}LANG."password"{/link})</label>
-							<input type="password" name="password" id="password" tabindex="2" maxlengt="{config=MAX_PASSWORD_LENGTH}"/>
+							<input type="password" name="password" id="password" tabindex="2" maxlength="{config=MAX_PASSWORD_LENGTH}"/>
 						</div>
 						<div class="input">
 							<label for="universe">{lang}UNIVERSE{/lang}</label>
@@ -108,7 +108,7 @@
 				</ul>
 			</div>{/if}
 			<div id="legal">
-				Powered by <a href="http://web-union.de/" class="external">Web-Union.de</a><br>
+				Powered by <a href="http://bengine.de/" class="external">Bengine.de</a><br>
 				Copyright &copy; {time=Y}
 			</div>
 		</div>

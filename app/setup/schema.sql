@@ -510,7 +510,7 @@ INSERT INTO `bengine_folder` (`folder_id`, `label`, `userid`, `is_standard`, `cl
 (2, 'OUTBOX', NULL, 1, 'bengine/user'),
 (3, 'FLEET_REPORTS', NULL, 1, 'bengine/system'),
 (4, 'ESPIONAGE_REPORTS', NULL, 1, 'bengine/system'),
-(5, 'BATTLE_REPORTS', NULL, 1, 'benginee/combat'),
+(5, 'BATTLE_REPORTS', NULL, 1, 'bengine/combat'),
 (6, 'ALLIANCE_MESSAGES', NULL, 1, 'bengine/alliance');
 
 DROP TABLE IF EXISTS `bengine_formation_invitation`;
