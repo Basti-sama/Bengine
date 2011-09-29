@@ -518,7 +518,12 @@ class Bengine_Planet
 	{
 		if(isset($this->buildingProd[$res][$id]) && is_numeric($this->buildingProd[$res][$id]))
 		{
-			return $this->buildingProd[$res][$id] * (int) Core::getConfig()->get("PRODUCTION_FACTOR");
+			$productFactor = (double) Core::getConfig()->get("PRODUCTION_FACTOR");
+			if($res == "energy")
+			{
+				$productFactor = 1;
+			}
+			return $this->buildingProd[$res][$id] * $productFactor;
 		}
 		return 0;
 	}

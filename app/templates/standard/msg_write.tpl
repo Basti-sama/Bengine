@@ -29,7 +29,7 @@ language: "{@langcode}",forced_root_block: "div",skin : "message",mode: "exact",
 	<tr>
 		<td><label for="message">{lang}MESSAGE{/lang}</label></td>
 		<td>
-			<textarea name="message" id="message" cols="35" rows="8"></textarea>
+			<textarea name="message" id="message" cols="35" rows="8">{@defaultMessageTemplate}</textarea>
 			<br/>{@messageError}
 		</td>
 	</tr></tbody>

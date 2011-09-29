@@ -100,6 +100,8 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 			$sendAction .= "/".rawurlencode($reply);
 		}
 		Core::getTPL()->assign("sendAction", $sendAction);
+		Core::getLang()->assign("receiver", empty($receiver) ? "[".Core::getLang()->get("RECEIVER")."]" : $receiver);
+		Core::getTPL()->assign("defaultMessageTemplate", Core::getLang()->get("WRITE_MESSAGE_TEMPLATE"));
 		return $this;
 	}
 

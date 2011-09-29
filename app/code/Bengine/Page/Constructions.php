@@ -311,19 +311,34 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 					$chartType = "prod_chart";
 				}
 
-				if(Bengine::getPlanet()->getBuilding($id) - 7  < 0)
+				if(Yumee::getPlanet()->getBuilding($id) - 7  < 0)
 				{
 					$start = 7;
 				}
-				else { $start = Bengine::getPlanet()->getBuilding($id); }
+				else { $start = Yumee::getPlanet()->getBuilding($id); }
 
-				for($i = $start - 7; $i <= Bengine::getPlanet()->getBuilding($id) + 7; $i++)
+				$productionFactor = (double) Core::getConfig()->get("PRODUCTION_FACTOR");
+				if(!empty($row["prod_energy"]))
+				{
+					$productionFactor = 1;
+				}
+				$currentProduction = 0;
+				if($prodFormula)
+				{
+					$currentProduction = parseFormula($prodFormula, $baseCost, Yumee::getPlanet()->getBuilding($id)) * $productionFactor;
+				}
+				$currentConsumption = 0;
+				if($consFormula)
+				{
+					$currentConsumption = parseFormula($consFormula, 0, Yumee::getPlanet()->getBuilding($id));
+				}
+				for($i = $start - 7; $i <= Yumee::getPlanet()->getBuilding($id) + 7; $i++)
 				{
 					$chart[$i]["level"] = $i;
 					$chart[$i]["s_prod"] = ($prodFormula) ? parseFormula($prodFormula, $baseCost, $i) : 0;
-					$chart[$i]["s_diffProd"] = ($prodFormula) ? $chart[$i]["s_prod"] - parseFormula($prodFormula, $baseCost, Bengine::getPlanet()->getBuilding($id)) : 0;
+					$chart[$i]["s_diffProd"] = ($prodFormula) ? $chart[$i]["s_prod"] - $currentProduction : 0;
 					$chart[$i]["s_cons"] = ($consFormula) ? parseFormula($consFormula, 0, $i) : 0;
-					$chart[$i]["s_diffCons"] = ($consFormula) ? parseFormula($consFormula, 0, Bengine::getPlanet()->getBuilding($id)) - $chart[$i]["s_cons"] : 0;
+					$chart[$i]["s_diffCons"] = ($consFormula) ? $currentConsumption - $chart[$i]["s_cons"] : 0;
 
 					$chart[$i]["prod"] = fNumber($chart[$i]["s_prod"]);
 					$chart[$i]["diffProd"] = fNumber($chart[$i]["s_diffProd"]);

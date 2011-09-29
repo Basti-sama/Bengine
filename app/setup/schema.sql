@@ -1752,7 +1752,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 16, 'FRIEND_REQUEST_REJECTED', 'Freunschaftsanfrage abgelehnt'),
 (1, 16, 'FRIEND_REQUEST_REJECTED_MESSAGE', 'Deine Freundschaftsanfrage wurde von <strong>{user=username}</strong> abgelehnt. Bitte stelle nur Freundschaftsanfragen an Spieler die du wirklich kennst.'),
 (1, 16, 'FRIEND_REQUEST_ACCEPTED', 'Freundschaftsanfrage best&auml;tigt'),
-(1, 16, 'FRIEND_REQUEST_ACCEPTED_MESSAGE', '<strong>{user=username}</strong> hat deine Freundschaftsanfrage angenommen. Die Namen deiner Freunde werden im Ranking und in der Galaxie farblich hervorgehoben. Außerdem kannst du mit ihnen auch au&szlig;erhalb von Allianzen einen Verbandsangriff starten.');
+(1, 16, 'FRIEND_REQUEST_ACCEPTED_MESSAGE', '<strong>{user=username}</strong> hat deine Freundschaftsanfrage angenommen. Die Namen deiner Freunde werden im Ranking und in der Galaxie farblich hervorgehoben. Außerdem kannst du mit ihnen auch au&szlig;erhalb von Allianzen einen Verbandsangriff starten.'),
+(1, 11, 'WRITE_MESSAGE_TEMPLATE', '<div>Hallo {@receiver},</div><div>&nbsp;</div><div>[Nachricht]</div><div>&nbsp;</div><div>Viele Gr&uuml;&szlig;e</div><div>{user=username}</div>');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (

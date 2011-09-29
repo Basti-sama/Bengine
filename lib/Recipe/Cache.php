@@ -477,7 +477,11 @@ class Recipe_Cache
 			throw new Recipe_Exception_Generic("Couldn't write cache file \"".$file."\". Make sure that cache directory is writable and accessible.");
 		}
 		file_put_contents($file, $content);
-		chmod($file, 0777);
+		try {
+			@chmod($file, 0777);
+		} catch(Exception $e) {
+
+		}
 		return $this;
 	}
 

@@ -8,6 +8,8 @@
  * @license Proprietary
  */
 
+require_once "SetCachePath.plugin.php";
+
 class Admin extends Application
 {
 	/**
@@ -45,7 +47,7 @@ class Admin extends Application
 	 */
 	public static function run()
 	{
-		Hook::addHook("CacheConstruct", array("Admin", "setCachePath"));
+		Hook::addHook("CacheConstruct", new SetCachePathPlugin());
 		parent::run();
 		Core::getUser()->removeTheme();
 		Core::getTPL()->setTemplatePath(APP_ROOT_DIR."ai/templates/");
