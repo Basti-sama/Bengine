@@ -311,11 +311,11 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 					$chartType = "prod_chart";
 				}
 
-				if(Yumee::getPlanet()->getBuilding($id) - 7  < 0)
+				if(Bengine::getPlanet()->getBuilding($id) - 7  < 0)
 				{
 					$start = 7;
 				}
-				else { $start = Yumee::getPlanet()->getBuilding($id); }
+				else { $start = Bengine::getPlanet()->getBuilding($id); }
 
 				$productionFactor = (double) Core::getConfig()->get("PRODUCTION_FACTOR");
 				if(!empty($row["prod_energy"]))
@@ -325,14 +325,14 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 				$currentProduction = 0;
 				if($prodFormula)
 				{
-					$currentProduction = parseFormula($prodFormula, $baseCost, Yumee::getPlanet()->getBuilding($id)) * $productionFactor;
+					$currentProduction = parseFormula($prodFormula, $baseCost, Bengine::getPlanet()->getBuilding($id)) * $productionFactor;
 				}
 				$currentConsumption = 0;
 				if($consFormula)
 				{
-					$currentConsumption = parseFormula($consFormula, 0, Yumee::getPlanet()->getBuilding($id));
+					$currentConsumption = parseFormula($consFormula, 0, Bengine::getPlanet()->getBuilding($id));
 				}
-				for($i = $start - 7; $i <= Yumee::getPlanet()->getBuilding($id) + 7; $i++)
+				for($i = $start - 7; $i <= Bengine::getPlanet()->getBuilding($id) + 7; $i++)
 				{
 					$chart[$i]["level"] = $i;
 					$chart[$i]["s_prod"] = ($prodFormula) ? parseFormula($prodFormula, $baseCost, $i) : 0;
