@@ -14,7 +14,7 @@
 			<tfoot>
 				<tr>
 					<td colspan="2">
-						{lang=Destination_Folder} <input type="text" name="destination" value="var/cache/"/>
+						{lang=Destination_Folder} <input type="text" name="destination" value="var/export/"/>
 						<input type="submit" name="export" value="{lang=Start_Export}" class="button"/>
 					</td>
 				</tr>

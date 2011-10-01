@@ -1587,7 +1587,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 25, 'Add_New_Group', 'Neue Variablen Gruppe anlegen'),
 (1, 25, 'Add_New_Phrase', 'Neue Sprachvariable anlegen'),
 (1, 25, 'Charset', 'Zeichenkodierung'),
-(1, 25, 'Destination_Folder', 'Zielordner (relativ zum AI-Verzeichnis):'),
+(1, 25, 'Destination_Folder', 'Zielordner (relativ zum Root-Verzeichnis):'),
 (1, 25, 'Edit_Phrases', 'Sprachvariablen bearbeiten'),
 (1, 25, 'Export', 'In XML exportieren'),
 (1, 25, 'Export_All_Languages', 'Alle Sprachen Exportieren'),
@@ -1743,7 +1743,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 13, 'MD_FLEET_DESTROYED', 'Einige gr&ouml;&szlig;ere Tr&uuml;mmerteile bewegen sich mit extremer Geschwindigkeit auf die angreifende Flotte zu. F&uuml;r ein Ausweichman&ouml;ver ist es bereits zu sp&auml;t, die Flotte wird vollst&auml;ndig vernichtet.'),
 (1, 17, 'ENGINE', 'Triebwerk'),
 (1, 17, 'FROM_LEVEL_I', 'Ab Stufe'),
-(1, 12, 'NO_VALID_SEARCH', 'Der Suchbegriff war nicht gültig, bitte verwende min. 3 Zeichen.'),
+(1, 12, 'NO_VALID_SEARCH', 'Der Suchbegriff war nicht g&uuml;ltig, bitte verwende min. 3 Zeichen.'),
 (1, 22, 'NEVER', 'Nie'),
 (1, 16, 'FRIEND_REQUEST_RECEIVED', 'Freundschaftsanfrage erhalten'),
 (1, 16, 'FRIEND_REQUEST_RECEIVED_MESSAGE', 'Du hast eine Freundschaftsanfrage von <strong>{user=username}</strong> erhalten. Wenn du die Anfrage best&auml;tigen m&ouml;chtest, w&auml;hle den Navigationspunkt Freunde aus und klicke auf den Annehmen-Button der entsprechenden Anfrage. Freunde werden im Ranking und der Galaxie farblich hervorgehoben und du kannst mit ihnen Verbandsangriffe auch au&szlig;erhalb von Allianzen starten.'),
@@ -1752,7 +1752,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 16, 'FRIEND_REQUEST_REJECTED', 'Freunschaftsanfrage abgelehnt'),
 (1, 16, 'FRIEND_REQUEST_REJECTED_MESSAGE', 'Deine Freundschaftsanfrage wurde von <strong>{user=username}</strong> abgelehnt. Bitte stelle nur Freundschaftsanfragen an Spieler die du wirklich kennst.'),
 (1, 16, 'FRIEND_REQUEST_ACCEPTED', 'Freundschaftsanfrage best&auml;tigt'),
-(1, 16, 'FRIEND_REQUEST_ACCEPTED_MESSAGE', '<strong>{user=username}</strong> hat deine Freundschaftsanfrage angenommen. Die Namen deiner Freunde werden im Ranking und in der Galaxie farblich hervorgehoben. Außerdem kannst du mit ihnen auch au&szlig;erhalb von Allianzen einen Verbandsangriff starten.'),
+(1, 16, 'FRIEND_REQUEST_ACCEPTED_MESSAGE', '<strong>{user=username}</strong> hat deine Freundschaftsanfrage angenommen. Die Namen deiner Freunde werden im Ranking und in der Galaxie farblich hervorgehoben. Au&szlig;erdem kannst du mit ihnen auch au&szlig;erhalb von Allianzen einen Verbandsangriff starten.'),
 (1, 11, 'WRITE_MESSAGE_TEMPLATE', '<div>Hallo {@receiver},</div><div>&nbsp;</div><div>[Nachricht]</div><div>&nbsp;</div><div>Viele Gr&uuml;&szlig;e</div><div>{user=username}</div>');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;

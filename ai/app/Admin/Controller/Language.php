@@ -146,7 +146,7 @@ class Admin_Controller_Language extends Admin_Controller_Abstract
 		{
 			$langId = null;
 		}
-		$exporter = new Recipe_Language_Exporter($destination, $file);
+		$exporter = new Recipe_Language_Exporter(APP_ROOT_DIR.$destination, $file);
 		$exporter->setLanguageId($langId);
 		$exporter->startExport();
 		return $this;
