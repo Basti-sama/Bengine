@@ -442,7 +442,7 @@ CREATE TABLE IF NOT EXISTS `bengine_events` (
   `user` int(9) unsigned NOT NULL,
   `destination` int(10) unsigned NULL default NULL,
   `data` text NOT NULL,
-  `protected` tinyint(1) unsigned NOT NULL default '0'
+  `protected` tinyint(1) unsigned NOT NULL default '0',
   `prev_rc` varchar(16) NULL default NULL,
   PRIMARY KEY  (`eventid`),
   KEY `parent_id` (`parent_id`),

@@ -721,8 +721,10 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 					$result = Core::getQuery()->select("user2ally", "userid", "", "aid = '".$this->aid."'");
 					while($row = Core::getDB()->fetch($result))
 					{
-						$rankid = Core::getRequest()->getPOST("rank_".$row["userid"]);
-						Core::getQuery()->update("user2ally", "rank", $rankid, "userid = '".$row["userid"]."' AND aid = '".$this->aid."'");
+						if($rankid = Core::getRequest()->getPOST("rank_".$row["userid"]))
+						{
+							Core::getQuery()->updateSet("user2ally", array("rank" => $rankid), "userid = '".$row["userid"]."' AND aid = '".$this->aid."'");
+						}
 					}
 					Core::getDB()->free_result($result);
 				}

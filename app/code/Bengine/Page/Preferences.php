@@ -342,7 +342,8 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 	protected function disableUmode()
 	{
 		setProdOfUser(Core::getUser()->get("userid"), 100);
-		Core::getQuery()->update("user", array("umode"), array(0), "userid = '".Core::getUser()->get("userid")."'");
+		Core::getQuery()->updateSet("user", array("umode" => 0), "userid = '".Core::getUser()->get("userid")."'");
+		Core::getQuery()->updateSet("planet", array("last" => TIME), "userid = '".Core::getUser()->get("userid")."' AND planetid != '".Core::getUser()->get("curplanet")."'");
 		Core::getUser()->rebuild();
 		Hook::event("DisableVacationMode");
 		Logger::dieMessage("UMODE_DISABLED", "info");
