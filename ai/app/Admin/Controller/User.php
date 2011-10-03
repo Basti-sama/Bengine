@@ -56,11 +56,11 @@ class Admin_Controller_User extends Admin_Controller_Abstract
 
 	protected function add($username, $email, $languageid, $templatepackage, $ipcheck, $password, $usergroup)
 	{
-		$atts = array("username", "email", "languageid", "templatepackage", "ipcheck");
-		$vals = array($username, $email, $languageid, $templatepackage, $ipcheck);
-		Core::getQuery()->insert("user", $atts, $vals);
+		$spec = array("username" => $username, "email" => $email, "languageid" => $languageid, "templatepackage" => $templatepackage, "ipcheck" => $ipcheck);
+		Core::getQuery()->insertInto("user", $spec);
 		$userid = Core::getDB()->insert_id();
-		Core::getQuery()->insert("password", array("userid", "password", "password_sha1", "time"), array($userid, md5($password), sha1($password), TIME));
+		$password = Str::encode($password, Core::getConfig()->get("USE_PASSWORD_SALT") ? "md5_salt" : "md5");
+		Core::getQuery()->insertInto("password", array("userid" => $userid, "password" => $password, "time" => TIME));
 		foreach($usergroup as $groupid)
 		{
 			if($groupid > 0) { Core::getQuery()->insert("user2group", array("usergroupid", "userid"), array($groupid, $userid)); }
@@ -180,7 +180,8 @@ class Admin_Controller_User extends Admin_Controller_Abstract
 		Core::getQuery()->update("user", $atts, $vals, "userid = '".$userid."'");
 		if($password != "")
 		{
-			Core::getQuery()->update("password", array("password", "password_sha1", "time"), array(md5($password), sha1($password), TIME), "userid = '".$userid."'");
+			$password = Str::encode($password, Core::getConfig()->get("USE_PASSWORD_SALT") ? "md5_salt" : "md5");
+			Core::getQuery()->updateSet("password", array("password" => $password, "time" => TIME), "userid = '".$userid."'");
 		}
 		return $this;
 	}

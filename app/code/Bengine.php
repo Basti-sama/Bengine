@@ -495,7 +495,7 @@ class Bengine extends Application
 	 *
 	 * @param integer	Expensed metal + silicon
 	 *
-	 * @return integer	Time to finish research in seconds
+	 * @return integer	Time to finish research
 	 */
 	public static function getResearchTime($ress)
 	{
@@ -511,7 +511,7 @@ class Bengine extends Application
 			}
 		}
 		$time = $ress / (1000 * (1 + $lab));
-		return ceil($time);
+		return $time;
 	}
 
 	/**

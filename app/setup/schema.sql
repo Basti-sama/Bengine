@@ -442,7 +442,7 @@ CREATE TABLE IF NOT EXISTS `bengine_events` (
   `user` int(9) unsigned NOT NULL,
   `destination` int(10) unsigned NULL default NULL,
   `data` text NOT NULL,
-  `protected` tinyint(1) unsigned NOT NULL,
+  `protected` tinyint(1) unsigned NOT NULL default '0'
   `prev_rc` varchar(16) NULL default NULL,
   PRIMARY KEY  (`eventid`),
   KEY `parent_id` (`parent_id`),
@@ -639,7 +639,6 @@ DROP TABLE IF EXISTS `bengine_password`;
 CREATE TABLE IF NOT EXISTS `bengine_password` (
   `userid` int(9) unsigned NOT NULL,
   `password` varchar(32) NOT NULL,
-  `password_sha1` varchar(40) NOT NULL,
   `time` int(10) unsigned NOT NULL DEFAULT '0',
   UNIQUE KEY `userid` (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2179,7 +2178,7 @@ CREATE TABLE IF NOT EXISTS `bengine_user` (
   `fpoints` int(9) unsigned NOT NULL default '0',
   `rpoints` int(3) unsigned NOT NULL default '0',
   `qpoints` int(3) unsigned NOT NULL default '0',
-  `hp` int(10) NOT NULL,
+  `hp` int(10) DEFAULT NULL,
   `ipcheck` tinyint(1) unsigned NOT NULL default '1',
   `activation` varchar(32) NULL,
   `regtime` int(10) unsigned NOT NULL default '0',
