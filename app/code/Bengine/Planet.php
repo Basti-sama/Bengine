@@ -523,7 +523,12 @@ class Bengine_Planet
 			{
 				$productFactor = 1;
 			}
-			return $this->buildingProd[$res][$id] * $productFactor;
+			$energyFactor = 1;
+			if($this->energy < 0)
+			{
+				$energyFactor = $this->prod["energy"] / $this->consumption["energy"];
+			}
+			return $this->buildingProd[$res][$id] * $productFactor * $energyFactor;
 		}
 		return 0;
 	}
