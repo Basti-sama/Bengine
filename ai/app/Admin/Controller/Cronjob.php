@@ -184,19 +184,15 @@ class Admin_Controller_Cronjob extends Admin_Controller_Abstract
 
 	protected function executeAction($cronid)
 	{
-		$result = Core::getQuery()->select("cronjob", "class", "", "cronid = '".$cronid."'");
+		$result = Core::getQuery()->select("cronjob", array("cronid", "class", "month", "day", "weekday", "hour", "minute", "last"), "", "cronid = '".$cronid."'");
 		if($row = Core::getDB()->fetch($result))
 		{
-			$this->execCron($row["class"]);
+			$row["xtime"] = TIME;
+			$next = Core::getCron()->calcNextExeTime($row);
+			$cronObj = new $row["class"]();
+			$cronObj->execute($row["cronid"], TIME, $next);
 		}
 		$this->redirect("cronjob");
-		return $this;
-	}
-
-	protected function execCron($class)
-	{
-		$cronObj = new $class();
-		$cronObj->execute();
 		return $this;
 	}
 }

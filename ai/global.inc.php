@@ -12,7 +12,7 @@ define("BASE_URL", HTTP_HOST.REQUEST_DIR);
 define("IPADDRESS", $_SERVER["REMOTE_ADDR"]);
 define("ERROR_REPORTING_TYPE", E_ALL &~ E_NOTICE);
 define("DATABASE_SUBDOMAIN", false);
-define("AUTOLOAD_PATH", "lib,ai/app,ai/ext");
+define("AUTOLOAD_PATH", "lib,ai/app,app/code");
 define("REQUEST_LEVEL_NAMES", "controller,action,1,2,3,4,5");
 define("MOD_REWRITE", true);
 define("REQUEST_ADAPTER", "default");
