@@ -90,7 +90,7 @@ class File
 			$openDir = self::getRecursiveDirectoryIterator($dir);
 			foreach($openDir as $file)
 			{
-				if($file->isWritable())
+				if($file->isWritable() && !$file->isDot())
 				{
 					if($file->isDir())
 					{
