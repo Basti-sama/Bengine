@@ -779,7 +779,7 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 				$uid = $row["userid"];
 				$members[$uid]["userid"] = $uid;
 				$members[$uid]["username"] = $row["username"];
-				$members[$uid]["points"] = fNumber($row["points"]);
+				$members[$uid]["points"] = fNumber(floor($row["points"]));
 				$members[$uid]["joindate"] = Date::timeToString(1, $row["joindate"]);
 				$members[$uid]["last"] = $row["last"];
 				if($can_manage) { $members[$uid]["rankselection"] = $this->getRankSelect($ranks, $row["rankid"]); }
@@ -812,7 +812,7 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 			Core::getDB()->free_result($result);
 			Hook::event("ShowMemberList", array(&$members));
 			Core::getTPL()->assign("totalmembers", fNumber($membercount));
-			Core::getTPL()->assign("totalpoints", fNumber($sum));
+			Core::getTPL()->assign("totalpoints", fNumber(floor($sum)));
 			Core::getTPL()->addLoop("members", $members);
 		}
 		return $this;

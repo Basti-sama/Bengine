@@ -181,7 +181,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 				}
 				else
 				{
-					Logger::addMessage("USERNAME_CHANGED");
+					Logger::addMessage("USERNAME_CHANGED", "success");
 				}
 			}
 			else

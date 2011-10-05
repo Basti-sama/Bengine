@@ -27,7 +27,7 @@ class Bengine_Model_User extends Recipe_Model_Abstract
 	 */
 	public function getFormattedPoints()
 	{
-		return fNumber($this->getPoints());
+		return fNumber(floor($this->getPoints()));
 	}
 
 	/**
