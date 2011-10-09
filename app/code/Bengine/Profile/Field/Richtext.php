@@ -43,7 +43,7 @@ class Bengine_Profile_Field_Richtext extends Bengine_Profile_Field_Abstract
 	public function getHtml()
 	{
 		$field = $this->getModel();
-		return '<textarea id="'.strtolower($field->getName()).'" name="'.$field->getName().'">'.$this->getData().'</textarea>
+		return '<textarea id="'.strtolower($field->getName()).'" name="'.$field->getName().'">'.stripslashes($this->getData()).'</textarea>
 <script type="text/javascript">
 //<![CDATA[
 tinyMCE_GZ.init({

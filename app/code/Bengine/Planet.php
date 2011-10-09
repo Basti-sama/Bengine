@@ -524,7 +524,7 @@ class Bengine_Planet
 				$productFactor = 1;
 			}
 			$energyFactor = 1;
-			if($this->energy < 0)
+			if($this->energy < 0 && $res != "energy")
 			{
 				$energyFactor = $this->prod["energy"] / $this->consumption["energy"];
 			}

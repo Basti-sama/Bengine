@@ -765,7 +765,7 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 			Core::getTPL()->assign("can_ban_member", $can_ban_member);
 			Core::getTPL()->assign("can_see_onlie_state", $can_see_onlie_state);
 
-			$select = array("u2a.userid", "u.username", "FLOOR(u.points) AS points", "u2a.joindate", "u.last", "g.galaxy", "g.system", "g.position", "ar.rankid", "ar.name AS rankname", "a.tag", "a.founder", "a.foundername");
+			$select = array("u2a.userid", "u.username", "u.points AS points", "u2a.joindate", "u.last", "g.galaxy", "g.system", "g.position", "ar.rankid", "ar.name AS rankname", "a.tag", "a.founder", "a.foundername");
 			$joins  = "LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid)";
 			$joins .= "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = u.hp)";
 			$joins .= "LEFT JOIN ".PREFIX."allyrank ar ON (ar.rankid = u2a.rank)";

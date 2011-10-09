@@ -47,8 +47,9 @@ class Bengine_Page_Resource extends Bengine_Page_Abstract
 		if(Bengine::getPlanet()->getBuilding(Bengine_Planet::SOLAR_SAT_ID) > 0)
 		{
 			Core::getTPL()->assign("satsNum", fNumber(Bengine::getPlanet()->getBuilding(Bengine_Planet::SOLAR_SAT_ID)));
-			Core::getTPL()->assign("satsProd", fNumber(Bengine::getPlanet()->getBuildingProd("energy", 39)));
-			Core::getLang()->assign("prodPerSat", floor(Bengine::getPlanet()->getBuildingProd("energy", 39) / Bengine::getPlanet()->getBuilding(Bengine_Planet::SOLAR_SAT_ID)));
+			$solarSatProduction = Bengine::getPlanet()->getBuildingProd("energy", Bengine_Planet::SOLAR_SAT_ID);
+			Core::getTPL()->assign("satsProd", fNumber($solarSatProduction));
+			Core::getLang()->assign("prodPerSat", floor($solarSatProduction / Bengine::getPlanet()->getBuilding(Bengine_Planet::SOLAR_SAT_ID)));
 			Core::getTPL()->assign("solar_satellite_prod", Bengine::getPlanet()->getData("solar_satellite_prod"));
 		}
 
