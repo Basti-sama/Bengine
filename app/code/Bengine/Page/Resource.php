@@ -38,10 +38,12 @@ class Bengine_Page_Resource extends Bengine_Page_Abstract
 		Hook::event("ShowResourcesBefore", array($this));
 		Core::getTPL()->addLoop("data", $this->data);
 
+		$productFactor = (double) Core::getConfig()->get("PRODUCTION_FACTOR");
+
 		// Basic prod
-		Core::getTPL()->assign("basicMetal", fNumber(Core::getOptions()->get("METAL_BASIC_PROD")));
-		Core::getTPL()->assign("basicSilicon", fNumber(Core::getOptions()->get("SILICON_BASIC_PROD")));
-		Core::getTPL()->assign("basicHydrogen", fNumber(Core::getOptions()->get("HYDROGEN_BASIC_PROD")));
+		Core::getTPL()->assign("basicMetal", fNumber(Core::getOptions()->get("METAL_BASIC_PROD") * $productFactor));
+		Core::getTPL()->assign("basicSilicon", fNumber(Core::getOptions()->get("SILICON_BASIC_PROD") * $productFactor));
+		Core::getTPL()->assign("basicHydrogen", fNumber(Core::getOptions()->get("HYDROGEN_BASIC_PROD") * $productFactor));
 
 		Core::getTPL()->assign("sats", Bengine::getPlanet()->getBuilding(Bengine_Planet::SOLAR_SAT_ID));
 		if(Bengine::getPlanet()->getBuilding(Bengine_Planet::SOLAR_SAT_ID) > 0)

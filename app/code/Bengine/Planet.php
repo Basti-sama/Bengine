@@ -625,7 +625,12 @@ class Bengine_Planet
 	 */
 	public function getProd($resource)
 	{
-		return (isset($this->prod[$resource])) ? $this->prod[$resource] : false;
+		$productFactor = (double) Core::getConfig()->get("PRODUCTION_FACTOR");
+		if($resource == "energy")
+		{
+			$productFactor = 1;
+		}
+		return (isset($this->prod[$resource])) ? $this->prod[$resource] * $productFactor : false;
 	}
 
 	/**
