@@ -372,7 +372,7 @@ INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, 
 ('USER_PER_PAGE', '100', 'integer', 'Maximum users shown per ranking page.', '', 8, 1, 0),
 ('WATING_TIME_REGISTRATION', '5', 'integer', 'Time to wait to do a second registration.', '', 4, 1, 0),
 ('defaultlanguage', '1', 'integer', 'Default language id.', '', 1, 1, 0),
-('pagetitle', 'Browsergame Engine', 'char', 'Page name.', '', 1, 1, 0),
+('pagetitle', '[DEMO] Browsergame Engine', 'char', 'Page name.', '', 1, 1, 0),
 ('standardlanggroups', 'global', 'char', 'Pharses groups to load always.', '', 1, 0, 0),
 ('timezone', 'Europe/Berlin', 'char', 'Server time zone.', '', 1, 1, 0);
 

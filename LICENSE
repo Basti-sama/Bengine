@@ -1,4 +1,4 @@
-Licene: Terms of usage / Lizenzbestimmungen zur Verwendung dieser Software
+License: Terms of usage / Lizenzbestimmungen zur Verwendung dieser Software
 
 English
 ------------------------------------------------------
@@ -14,9 +14,10 @@ Allows:
 - You are allowed to create extensions, plugins or modules for this software and distribute your work under any other license agreement.
 
 Disallows:
-- You are not allowed to remove the copyright notices in source code or the binary output.
-- You are not allowed to redistribute this source code for fees or as your own work.
-- You are not allowed to redistribute a modified version of the source code.
+- You may not remove the copyright notices in source code or the binary output.
+- You may not redistribute this source code for fees or as your own work.
+- You may not redistribute a modified version of the source code.
+- You may not use the name Bengine for you own purpose.
 
 This software is provided by the copyright holder "as is" and there is no warranty.
 
@@ -40,6 +41,7 @@ Nicht erlaubt:
 - Es ist nicht erlaubt die Urheber-Hinweise aus dem Quellcode oder der Ausgabe zu entfernen.
 - Es ist nicht erlaubt diese Software unter einem anderen Namen zu vertreiben oder gegen Bezahlung anzubieten.
 - Es ist nicht erlaubt eine modifizierte Version des Quellcodes zu vertreiben.
+- Es ist nicht erlaubt den Namen Bengine für eigene Zwecke zu verwenden.
 
 Die Veröffentlichung dieses Programms erfolgt durch den Urheber ohne jegliche Garantie.
 
