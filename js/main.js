@@ -186,36 +186,6 @@ function displayAllyText(id)
 	return;
 }
 
-function displayQuestTab(id)
-{
-	$(".questinterfaceTab").blur();
-	if($("#questFaction_" + id).hasClass("visible") || $(".questInfo:animated").length > 0)
-		return false;
-	$("div.visible").fadeOut(400, function()
-		{
-			$("div.visible").removeClass("visible");
-			$("#questFaction_" + id).fadeIn(500, function()
-				{
-					$("#questFaction_" + id).addClass("visible");
-				});
-		});
-	$(".questInterfaceTab").blur();
-	return false;
-}
-
-function displayFactionInfo(id)
-{
-	$("div.visible").fadeOut(400, function()
-			{
-				$("div.visible").removeClass("visible");
-				$("#factionInfo_" + id).fadeIn(500, function()
-					{
-						$("#factionInfo_" + id).addClass("visible");
-					});
-			});	
-	return;
-}
-
 function closeOverlay()
 {
 	$("#layer, .overlay").hide();

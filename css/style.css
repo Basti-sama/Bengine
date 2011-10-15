@@ -92,44 +92,6 @@ td .underline { font-size: 9pt; border-bottom: 1px solid #fff; }
 #popup { z-index: 1001; padding: 1em; text-align: center; position: absolute; top: 30%; left: 50%; width: 400px; margin-left: -200px; background-color: #2C3554; border: 5px solid #39435C; }
 #popupHeading { margin-top: 0; font-weight: bold; font-size: 1.5em; }
 a.closePopup { display: block; margin-top: 2em; text-align: right; }
-.quest-stats, .infoBox, #questinterfaceTabHolder { border-collapse: collapse; margin-left: 3px; margin-top: 1px; width: 507px; border: none; }
-.quest-stats th { padding-left: 5px; }
-.quest-stats td { font-size: 7pt; width: 50%; text-align: left; padding-left: 15px; }
-.quest-stats tr.odd td.left { background: #303a5d; }
-.quest-stats tr.odd td.right { background: #3a4563; }
-.quest-stats tr.even td.left { background: #2b3453; }
-.quest-stats tr.even td.right { background: #363f5c; }
-.quest-stats td.left.description { width: 30%; border-right: none; }
-.quest-stats td.left.value { width: 20%; border-left: none; }
-.quest-stats td.right.description { width: 25%; border-right: none; }
-.quest-stats td.right.value { width: 25%; border-left: none; }
-.questinterfaceTab { background-color: #001C37; color: #B6C6E5; border: 1px solid #39435C; text-align: left; display: block; float: left; width: 166px; margin-left: 1px; font-size: 7pt; vertical-align: middle; }
-.questinterfaceTab:first-child { margin-left: 0px; }
-.questinterfaceTab:hover { text-decoration: none; background: #1F273C; } 
-.questinterfaceTab img { margin: 2px 3px 2px 2px; }
-#layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(../img/layer.png) repeat; z-index: 1000; }
-.overlay { position: absolute !important; top: 200px; padding: 20px 20px 20px 5px; background-color: #fff; border: 3px solid #001C37; z-index: 1001; }
-.overlay > img.closeButton { position: absolute; top: 5px; right: 5px; cursor: pointer; }
-.overlay#finishedMessage { width: 400px; left: 50%; margin-left: -200px; }
-.overlay#finishedMessage .principalImage { width: 125px; height: 125px; position: relative; overflow: hidden; float: left; margin: 2px 20px 3px; z-index: 1; }
-div.infoBox, div.overlay { color: #B6C6E5; background: #303b5b; position: relative; text-align: right; }
-div.infoBox > div { display: none; }
-div.questInfo { padding: 18px 0 21px; }
-div.questInfo.visible { display: block; }
-div.questInfo .principalImage { width: 125px; height: 124px; position: relative; overflow: hidden; float: left; margin: 2px 20px 3px; z-index: 1; }
-div.questInfo .principalImage img:hover { position: relative; top: -125px; }
-div.questInfo .isActiveImg { float: right; margin: -9px 8px 4px; width: 30px; height: 31px; }
-.questDescription, .factionDescription { background-color: transparent; margin: 0 15px; border: none; text-align: justify; }
-table.questinfo { background-image: url("../img/animspace.gif"); background-attachment: fixed; margin-top: 15px; width: 90%; border-collapse: separate; border-spacing: 0px 2px; padding: 0 2px; }
-table.questinfo td { background-color: #001C37; text-align: left; padding: 2px 5px; font-size: 87%; border: 1px solid #39435C; border-left: none; }
-table.questinfo td:first-child { width: 110px; border: 1px solid #39435C; border-right: none; }
-.questButton, .questButton:active, .questButton:focus { display: inline-block; background: url("../img/button.png") repeat-x; border: 0 none!important; margin: 18px 20px 0px -5px; border-radius: 5px 5px; -moz-border-radius: 5px 5px; padding: 0 5px; line-height: 1.4em; font-size: 85%; vertical-align: middle; }
-.questButton:hover, .questButton:active, .questButton:focus { text-decoration: underline; cursor: pointer; }
-.factionInfo { display: none; padding-top: 6px; padding-bottom: 15px; }
-.factionInfo .factionIcon { margin: 10px 15px; float: left; }
-.factionInfo img:first-child { margin: 0 auto 15px; display: block; }
-.factionInfo .factionDescription { color: #B6C6E5; margin-bottom: 0.5em; }
-h1.factionDescription { font-size: 1.7em; text-align: left; }
 #news { margin: 0; padding: 0; }
 #news li { display: none; }
 .profile { padding: 5px; }
@@ -205,7 +167,6 @@ h2 { color: #B6C6E5; background-color: #001C37; font-size: 9pt; }
 .own-fleet.halt, .own-fleet.holding { color: #53a562; }
 .own-fleet.return { color: #9edeaa; }
 .own-fleet.missileattack { color: #fbb038; }
-.own-fleet.quest { color: #ffde00; }
 .foreign-fleet.position { color: #3887ab; }
 .foreign-fleet.transport { color: #00aeff; }
 .foreign-fleet.colonize { color: #139a7c; }
@@ -217,7 +178,6 @@ h2 { color: #B6C6E5; background-color: #001C37; font-size: 9pt; }
 .foreign-fleet.halt, .foreign-fleet.holding { color: #7ca79e; }
 .foreign-fleet.return { color: #9edeaa; }
 .foreign-fleet.missileattack { color: #e2836d; }
-.foreign-fleet.quest { color: #fdea68; }
 
 /* Player and alliance colors */
 .protection { color: #A9A9A9 !important; }
