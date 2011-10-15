@@ -1181,7 +1181,7 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 				$apps[$row["userid"]]["apptext"] = nl2br($row["application"]);
 				$apps[$row["userid"]]["userid"] = $row["userid"];
 				$apps[$row["userid"]]["username"] = $row["username"];
-				$apps[$row["userid"]]["points"] = fNumber($row["points"]);
+				$apps[$row["userid"]]["points"] = fNumber(floor($row["points"]));
 				$apps[$row["userid"]]["position"] = getCoordLink($row["galaxy"], $row["system"], $row["position"]);
 			}
 			Core::getTPL()->assign("candidates", sprintf(Core::getLanguage()->getItem("CANDIDATES"), Core::getDB()->num_rows($result)));
