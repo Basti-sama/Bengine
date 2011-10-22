@@ -160,7 +160,7 @@ function displayAllyText(id)
 	{
 		case 'ExternAllyText':
 			application.hide();
-			intern.hide();		
+			intern.hide();
 			extern.fadeIn(500);
 			externTab.addClass('active-tab');
 			internTab.removeClass('active-tab');
@@ -168,7 +168,7 @@ function displayAllyText(id)
 		break;
 		case 'InternAllyText':
 			application.hide();
-			intern.fadeIn(500);		
+			intern.fadeIn(500);
 			extern.hide();
 			externTab.removeClass('active-tab');
 			internTab.addClass('active-tab');
@@ -176,7 +176,7 @@ function displayAllyText(id)
 		break;
 		case 'ApplicationAllyText':
 			application.fadeIn(500);
-			intern.hide();		
+			intern.hide();
 			extern.hide();
 			externTab.removeClass('active-tab');
 			internTab.removeClass('active-tab');
@@ -184,11 +184,6 @@ function displayAllyText(id)
 		break;
 	}
 	return;
-}
-
-function closeOverlay()
-{
-	$("#layer, .overlay").hide();
 }
 
 function setHiddenValue(hiddenid, value, postname)
@@ -223,13 +218,13 @@ function getParam(param)
 }
 
 function pad(n, len)
-{ 
+{
 	s = n.toString();
 	if(s.length < len)
 	{
 		s = ('0000000000' + s).slice(-len);
 	}
-    return s;  
+    return s;
 }
 
 $(document).ready(function() {
