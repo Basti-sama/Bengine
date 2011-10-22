@@ -23,7 +23,7 @@
 	<!--
 		The source code of the browsergame engine is copyright protected by Sebastian Noll.
 		This copyright notice must retain untouched.
-		Website: http://web-union.de/bengine
+		Website: http://bengine.de/
 	-->
 <body>
 <div id="container">
