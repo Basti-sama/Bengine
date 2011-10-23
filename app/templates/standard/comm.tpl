@@ -2,11 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>{@page}{config=TITLE_GLUE}{@pageTitle}</title>
-		<meta http-equiv="Content-Type" content="text/html; charset={@charset}"/>
+		<meta charset="{@charset}"/>
 		<meta name="robots" content="index,follow"/>
-		<meta http-equiv="Pragma" content="no-cache"/>
-		<meta http-equiv="Cache-control" content="no-cache"/>
-		<meta http-equiv="Expires" content="-1"/>
 		<link rel="shortcut icon" href="{const}BASE_URL{/const}favicon.ico" type="image/x-icon"/>
 		{if[{var=CSS_FILES} != ""]}<link rel="stylesheet" type="text/css" href="{const}BASE_URL{/const}css/?f={@CSS_FILES}"/>{/if}
 		{if[{var=JS_FILES} != ""]}<script type="text/javascript" src="{const}BASE_URL{/const}js/?f={@JS_FILES}"></script>{/if}
@@ -56,13 +53,15 @@
 				{/if}
 			</div>
 			<div id="navigation">
-				<li><a href="#signup" class="signup">{lang=SIGN_UP}</a></li>
-				{foreach[headerMenu]}<li>{loop}link{/loop}</li>{/foreach}
+				<ul>
+					<li><a href="#signup" class="signup">{lang=SIGN_UP}</a></li>
+					{foreach[headerMenu]}<li>{loop}link{/loop}</li>{/foreach}
+				</ul>
 			</div>
 			<div id="signin">
 				<h2>Login</h2>
 				<div>
-					<form action="" method="post" id="signin-form">
+					<form action="{const=BASE_URL.LANG}" method="post" id="signin-form">
 						<div class="input">
 							<label for="username">{lang}USERNAME{/lang}</label>
 							<input type="text" name="username" id="username" tabindex="1" maxlength="{config=MAX_USER_CHARS}" autofocus/>
@@ -114,7 +113,7 @@
 		</div>
 		{hook}FrontContentEnd{/hook}
 		<div id="signup-dialog" title="{lang=SIGN_UP}">
-			<form method="post" action="">
+			<form method="post" action="#signup-dialog">
 			<fieldset>
 				<ul>
 					<li>
