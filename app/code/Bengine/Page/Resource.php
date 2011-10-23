@@ -55,7 +55,7 @@ class Bengine_Page_Resource extends Bengine_Page_Abstract
 			Core::getTPL()->assign("solar_satellite_prod", Bengine::getPlanet()->getData("solar_satellite_prod"));
 		}
 
-		// Storage capicity
+		// Storage capacity
 		Core::getTPL()->assign("storageMetal", fNumber(Bengine::getPlanet()->getStorage("metal") / 1000)."k");
 		Core::getTPL()->assign("storageSilicon", fNumber(Bengine::getPlanet()->getStorage("silicon") / 1000)."k");
 		Core::getTPL()->assign("sotrageHydrogen", fNumber(Bengine::getPlanet()->getStorage("hydrogen") / 1000)."k");
@@ -81,12 +81,12 @@ class Bengine_Page_Resource extends Bengine_Page_Abstract
 		Core::getTPL()->assign("monthlySilicon", fNumber(Bengine::getPlanet()->getProd("silicon") * 720));
 		Core::getTPL()->assign("monthlyHydrogen", fNumber(Bengine::getPlanet()->getProd("hydrogen") * 720));
 
-		$selectbox = "";
+		$selectBox = "";
 		for($i = 10; $i >= 0; $i--)
 		{
-			$selectbox .= createOption($i * 10, $i * 10, 0);
+			$selectBox .= createOption($i * 10, $i * 10, 0);
 		}
-		Core::getTPL()->assign("selectProd", $selectbox);
+		Core::getTPL()->assign("selectProd", $selectBox);
 		Hook::event("ShowResourcesAfter");
 
 		$this->assign("updateAction", BASE_URL."game.php/".SID."/Resource/Update");
@@ -138,7 +138,7 @@ class Bengine_Page_Resource extends Bengine_Page_Abstract
 				{
 					$factor = abs((isset($post[$key])) ? $post[$key] : 100);
 					$factor = ($factor > 100) ? 100 : $factor;
-					Core::getQuery()->update("building2planet", array("prod_factor"), array($factor), "buildingid = '".$key."' AND planetid = '".Core::getUser()->get("curplanet")."'");
+					Core::getQuery()->updateSet("building2planet", array("prod_factor" => $factor), "buildingid = '".$key."' AND planetid = '".Core::getUser()->get("curplanet")."'");
 				}
 			}
 
@@ -146,7 +146,7 @@ class Bengine_Page_Resource extends Bengine_Page_Abstract
 			{
 				$satelliteProd = abs($post[39]);
 				$satelliteProd = ($satelliteProd > 100) ? 100 : $satelliteProd;
-				Core::getQuery()->update("planet", array("solar_satellite_prod"), array($satelliteProd), "planetid = '".Core::getUser()->get("curplanet")."'");
+				Core::getQuery()->updateSet("planet", array("solar_satellite_prod" => $satelliteProd), "planetid = '".Core::getUser()->get("curplanet")."'");
 			}
 		}
 		$this->redirect("game.php/".SID."/Resource");
