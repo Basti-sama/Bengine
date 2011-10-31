@@ -192,7 +192,7 @@ class Bengine_Assault_Participant
 		{
 			$this->data["ships"] = array();
 			$metal = 0; $silicon = 0; $hydrogen = 0;
-			$result = Core::getQuery()->select("fleet2assault f2a", array("f2a.unitid", "f2a.quantity", "b.name", "ap.haul_metal", "ap.haul_silicon", "ap.haul_hydrogen"), "LEFT JOIN ".PREFIX."assaultparticipant ap ON (ap.userid = f2a.userid) LEFT JOIN ".PREFIX."construction b ON (b.buildingid = f2a.unitid)", "f2a.participantid = '".$this->participantid."'");
+			$result = Core::getQuery()->select("assaultparticipant ap", array("f2a.unitid", "f2a.quantity", "b.name", "ap.haul_metal", "ap.haul_silicon", "ap.haul_hydrogen"), "LEFT JOIN ".PREFIX."fleet2assault f2a ON (ap.participantid = f2a.participantid) LEFT JOIN ".PREFIX."construction b ON (b.buildingid = f2a.unitid)", "f2a.participantid = '".$this->participantid."'");
 			while($row = Core::getDB()->fetch($result))
 			{
 				if($row["quantity"] > 0)
