@@ -160,7 +160,7 @@ class Comm_Controller_Feed extends Comm_Controller_Abstract
 			$items[] = array(
 				"date"	=> Date::timeToString(3, $message->getTime(), "D, d M Y H:i:s O", false),
 				"author" => ($message->getUsername()) ? $message->getUsername() : "System",
-				"title" => $message->get("subject"),
+				"title" => strip_tags($message->get("subject")),
 				"text" => $message->get("message"),
 				"link" => $message->get("link"),
 				"date_atom" => Date::timeToString(3, $message->getTime(), "c", false),
