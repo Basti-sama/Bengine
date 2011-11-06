@@ -7,7 +7,7 @@
  * @version $Id: Bengine.php 55 2011-08-14 16:50:32Z secretchampion $
  */
 
-define("BENGINE_VERSION", "0.10beta");
+define("BENGINE_VERSION", "0.10rc");
 define("BENGINE_REVISION", 10);
 define("VERSION_CHECK_PAGE", "http://bengine.de/version.php");
 
