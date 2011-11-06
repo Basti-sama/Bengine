@@ -275,6 +275,10 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 			$result = Core::getQuery()->select("galaxy g", $select, $joins, "galaxy = '".$galaxy."' AND system = '".$system."' AND position = '".$position."'");
 			$target = Core::getDB()->fetch($result);
 			Core::getDB()->free_result($result);
+			if($target === false)
+			{
+				$target = null;
+			}
 
 			$targetName = Core::getLanguage()->getItem("UNKOWN_PLANET");
 			if(!empty($target["planetid"]))
