@@ -44,6 +44,9 @@
 				<?php if($isInWork): ?>
 					<?php $timeleft = $event->get("time") - TIME ?>
 					<?php $abort = Link::get("game.php/".SID."/Research/Abort/".$id, Core::getLanguage()->getItem("ABORT")) ?>
+					<?php if($event->get("planetid") != Bengine::getPlanet()->getPlanetId()): ?>
+					<?php $abort .= "<br/>(".Core::getLanguage()->get("ON")." ".$event->get("planetname").")" ?>
+					<?php endif ?>
 					<?php $continue = Link::get("game.php/".SID."/Research", Core::getLanguage()->getItem("CONTINUE")) ?>
 					<span id="bCountDown"><?php echo getTimeTerm($timeleft) ?><br /><?php echo $abort ?></span>
 					<script type="text/javascript">
