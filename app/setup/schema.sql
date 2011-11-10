@@ -1802,9 +1802,9 @@ CREATE TABLE IF NOT EXISTS `bengine_planet` (
   `picture` varchar(255) NOT NULL,
   `temperature` int(3) NOT NULL default '0',
   `last` int(10) unsigned NOT NULL default '0',
-  `metal` double(128,8) unsigned NOT NULL default '500',
-  `silicon` double(128,8) unsigned NOT NULL default '500',
-  `hydrogen` double(128,8) unsigned NOT NULL default '0',
+  `metal` double(128,8) NOT NULL default '500',
+  `silicon` double(128,8) NOT NULL default '500',
+  `hydrogen` double(128,8) NOT NULL default '0',
   `solar_satellite_prod` int(3) unsigned NOT NULL default '100',
   PRIMARY KEY  (`planetid`),
   KEY `userid` (`userid`)
