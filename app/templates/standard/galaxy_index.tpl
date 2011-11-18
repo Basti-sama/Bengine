@@ -25,9 +25,44 @@
 
 	function galaxySubmit(type)
 	{
-		theForm = document.forms[1];
+		var theForm = document.forms[1];
 		theForm.submittype.value = type;
-		theForm.submit();
+		if(checkLastSystem())
+		{
+			theForm.submit();
+		}
+	}
+
+	function checkLastSystem()
+	{
+		var theForm = document.forms[1];
+		var type = theForm.submittype.value;
+		var currentSystem = theForm.system.value;
+		if(type == "prevsystem")
+		{
+			currentSystem--;
+		}
+		else if(type == "nextsystem")
+		{
+			currentSystem++;
+		}
+		if(currentSystem <= 0 || currentSystem > {config=SYSTEMS} || theForm.galaxy.value <= 0 || theForm.galaxy.value > {config=GALAXYS})
+		{
+			if($("#last-system-warning").length)
+			{
+				$("#last-system-warning").slideDown();
+			}
+			else
+			{
+				var warningField = $('<div class="info" id="last-system-warning" style="display:none;"/>');
+				warningField.text("{lang=GALAXY_END_REACHED}");
+				warningField.insertBefore("#ajax-response");
+				warningField.slideDown();
+			}
+			theForm.submittype.value = "";
+			return false;
+		}
+		return true;
 	}
 
 	document.onkeyup = function(event) {
@@ -44,7 +79,7 @@
 	};
 //]]>
 </script>
-<form method="post" action="{const=BASE_URL}game.php/{const=SID}/Galaxy">
+<form method="post" action="{const=BASE_URL}game.php/{const=SID}/Galaxy" onsubmit="return checkLastSystem();">
 <input type="hidden" name="submittype" value="" />
 <div class="idiv">
 	<table class="ntable galaxy-browser">
@@ -73,7 +108,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="6" class="center"><input type="submit" name="jump" value="{lang}COMMIT{/lang}" class="button" /></td>
+			<td colspan="6" class="center"><input type="submit" name="jump" value="{lang}COMMIT{/lang}" class="button" onsubmitg=""/></td>
 		</tr>
 	</table>
 </div>
