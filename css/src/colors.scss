@@ -1,0 +1,146 @@
+/**
+ * Colors for events and player relations.
+ *
+ * @category design
+ * @package Bengine
+ * @license <http://www.bengine.de/pbl.txt> Public Bengine License
+ */
+
+/* Event colors */
+.own-fleet.position {
+	color: #599a13;
+}
+
+.own-fleet.transport {
+	color: #74cc16;
+}
+
+.own-fleet.colonize {
+	color: #139a7c;
+}
+
+.own-fleet.recycling {
+	color: #93b271;
+}
+
+.own-fleet.attack {
+	color: #fc9a00;
+}
+
+.own-fleet.allianceattack, .own-fleet.alliedfleet {
+	color: #d68b14;
+}
+
+.own-fleet.espionage {
+	color: #fdd89d;
+}
+
+.own-fleet.moondestruction {
+	color: #fc9a00;
+}
+
+.own-fleet.halt, .own-fleet.holding {
+	color: #53a562;
+}
+
+.own-fleet.return {
+	color: #9edeaa;
+}
+
+.own-fleet.missileattack {
+	color: #fbb038;
+}
+
+.foreign-fleet.position {
+	color: #3887ab;
+}
+
+.foreign-fleet.transport {
+	color: #00aeff;
+}
+
+.foreign-fleet.colonize {
+	color: #139a7c;
+}
+
+.foreign-fleet.recycling {
+	color: #7382b1;
+}
+
+.foreign-fleet.attack {
+	color: #ff3000;
+}
+
+.foreign-fleet.allianceattack {
+	color: #df4f2d;
+}
+
+.foreign-fleet.espionage {
+	color: #e04bb1;
+}
+
+.foreign-fleet.moondestruction {
+	color: #ff3000;
+}
+
+.foreign-fleet.halt, .foreign-fleet.holding {
+	color: #7ca79e;
+}
+
+.foreign-fleet.return {
+	color: #9edeaa;
+}
+
+.foreign-fleet.missileattack {
+	color: #e2836d;
+}
+
+/* Player and alliance colors */
+.protection {
+	color: #A9A9A9 !important;
+}
+
+.confederation {
+	color: #FFA500 !important;
+}
+
+.enemy {
+	color: #f00 !important;
+	text-decoration: underline;
+}
+
+.trade-union {
+	color: #29f !important;
+}
+
+.friend {
+	color: #ff0 !important;
+	font-style: italic;
+}
+
+.alliance {
+	color: #090 !important;
+	font-weight: bold;
+}
+
+.ownPosition {
+	color: #0f0;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.vacation-mode {
+	color: #64CDF9;
+}
+
+.banned {
+	text-decoration: line-through;
+}
+
+.weak-player {
+	color: #a0ffa0;
+}
+
+.strong-player {
+	color: #ffa0a0;
+}
