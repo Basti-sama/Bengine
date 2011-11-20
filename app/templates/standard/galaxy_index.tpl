@@ -108,7 +108,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="6" class="center"><input type="submit" name="jump" value="{lang}COMMIT{/lang}" class="button" onsubmitg=""/></td>
+			<td colspan="6" class="center"><input type="submit" name="jump" value="{lang}COMMIT{/lang}" class="button"/></td>
 		</tr>
 	</table>
 </div>
