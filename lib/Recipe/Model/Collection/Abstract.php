@@ -439,22 +439,29 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Returns the collection size from database before execution the fetching process.
 	 *
+	 * @param boolean|string|array $groupBy
 	 * @return integer
 	 */
-	public function getCalculatedSize()
+	public function getCalculatedSize($groupBy = true)
 	{
 		$select = clone $this->getSelect();
 		$select->attributes("COUNT(*) AS collection_count");
 
-		$resourceModel = $this->getResource();
-		$groupBy = $resourceModel->getPrimaryKey();
-		$mainTable = $resourceModel->getMainTable();
-		if(!empty($mainTable))
+		if($groupBy)
 		{
-			$alias = key($mainTable);
-			$groupBy = array($alias => $groupBy);
+			if($groupBy === true)
+			{
+				$resourceModel = $this->getResource();
+				$groupBy = $resourceModel->getPrimaryKey();
+				$mainTable = $resourceModel->getMainTable();
+				if(!empty($mainTable))
+				{
+					$alias = key($mainTable);
+					$groupBy = array($alias => $groupBy);
+				}
+			}
+			$select->group($groupBy);
 		}
-		$select->group($groupBy);
 
 		$result = $select->getResource();
 		$count = Core::getDatabase()->fetch_field($result, "collection_count");

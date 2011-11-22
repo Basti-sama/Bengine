@@ -256,7 +256,7 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 		$messages = Bengine::getCollection("message");
 		$messages->addReceiverFilter(Core::getUser()->get("userid"))
 			->addFolderFilter($id);
-		$pagination = new Pagination(Core::getOptions()->get("MAX_PMS"), $messages->getCalculatedSize());
+		$pagination = new Pagination(Core::getOptions()->get("MAX_PMS"), $messages->getCalculatedSize(false));
 		$pagination->setMaxPagesToShow(Core::getConfig()->get("MAX_MESSAGE_PAGES"));
 		return $pagination;
 	}
