@@ -130,7 +130,7 @@ class File
 				{
 					if($file->isDir())
 					{
-						self::mvDirectory($file->getPathname(), $to.$file->getFilename());
+						self::mvDirectoryContent($file->getPathname(), $to.$file->getFilename());
 					}
 					else if($file->isFile() && $file->isWritable())
 					{
@@ -275,7 +275,7 @@ class File
 	public static function getRecursiveDirectoryIterator($dir, $mode = RecursiveIteratorIterator::CHILD_FIRST)
 	{
 		$dir = (substr($dir, -1) != "/") ? $dir."/" : $dir;
-		return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), $mode);
+		return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::CURRENT_AS_FILEINFO), $mode);
 	}
 
 	/**
