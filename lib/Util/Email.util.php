@@ -19,6 +19,21 @@ class Email
 	const DEFAULT_ADAPTER = "Sendmail";
 
 	/**
+	 * @var string
+	 */
+	const PLAIN_MIME_TYPE = "text/plain";
+
+	/**
+	 * @var string
+	 */
+	const HTML_MIME_TYPE = "text/html";
+
+	/**
+	 * @var string
+	 */
+	const MULTIPART_MIME_TYPE = "multipart/alternative";
+
+	/**
 	 * The receiver.
 	 *
 	 * @var string
@@ -42,9 +57,9 @@ class Email
 	/**
 	 * Mail body.
 	 *
-	 * @var String
+	 * @var array
 	 */
-	protected $message = "";
+	protected $messages = array();
 
 	/**
 	 * Sender name.
@@ -72,7 +87,14 @@ class Email
 	 *
 	 * @var string
 	 */
-	protected $contentType = "text/plain";
+	protected $contentType = self::PLAIN_MIME_TYPE;
+
+	/**
+	 * Multipart boundary template.
+	 *
+	 * @var string
+	 */
+	protected $mimeBoundary = "==Multipart_Boundary_x%sx";
 
 	/**
 	 * Separates email header fields.
@@ -105,13 +127,13 @@ class Email
 	/**
 	 * Constructor: Builds the header and starts mailer.
 	 *
-	 * @param string	The receiver's mail address [optional]
-	 * @param string	Mail subject [optional]
-	 * @param string	The message [optional]
+	 * @param string $receiver	The receiver's mail address [optional]
+	 * @param string $subject	Mail subject [optional]
+	 * @param string $messages	The message [optional]
 	 *
-	 * @return void
+	 * @return \Email
 	 */
-	public function __construct($receiver = null, $subject = null, $message = null)
+	public function __construct($receiver = null, $subject = null, $messages = null)
 	{
 		if($receiver !== null)
 		{
@@ -121,9 +143,9 @@ class Email
 		{
 			$this->setSubject($subject);
 		}
-		if($message !== null)
+		if($messages !== null)
 		{
-			$this->setMessage($message);
+			$this->setMessages($messages);
 		}
 		$options = Core::getOptions();
 		$senderName = $options->get("MAIL_SENDER_NAME");
@@ -138,8 +160,8 @@ class Email
 	/**
 	 * Checks if mail address is valid.
 	 *
-	 * @param string	EMail address
-	 * @param boolean	Disable exceptions (default: true) [optional]
+	 * @param string $mail				EMail address
+	 * @param boolean $throwException	Disable exceptions (default: true) [optional]
 	 *
 	 * @return boolean
 	 */
@@ -160,12 +182,13 @@ class Email
 	/**
 	 * Sends mail.
 	 *
-	 * @param boolean	Disable exceptions (default: true) [optional]
+	 * @param boolean $throwException	Disable exceptions (default: true) [optional]
 	 *
 	 * @return Email
 	 */
 	public function sendMail($throwException = true)
 	{
+		$this->buildHeader();
 		Hook::event("SendMail", array($this));
 		try {
 			$this->getAdapter()->send();
@@ -186,13 +209,25 @@ class Email
 	 */
 	protected function buildHeader()
 	{
-		$this->header = array_merge($this->header, array(
+		$header = array(
 			"From" => $this->sender.(($this->senderMail != "") ? " <".$this->senderMail.">" : ""),
 			"Reply-To" => $this->senderMail == "" ? "noreply@local" : $this->senderMail,
 			"MIME-Version" => "1.0",
-			"Content-Transfer-Encoding" => "8bit",
-			"Content-Type" => $this->contentType."; charset=".$this->getCharset(),
-		));
+		);
+		$contentType = $this->contentType;
+		if(1 < count($this->messages))
+		{
+			$contentType = self::MULTIPART_MIME_TYPE.";";
+			$this->generateBoundary();
+			$contentType .= $this->headerSeparator." boundary=\"{$this->mimeBoundary}\"";
+		}
+		else
+		{
+			$contentType .= "; charset=".$this->getCharset();
+			$header["Content-Transfer-Encoding"] = "8bit";
+		}
+		$header["Content-Type"] = $contentType;
+		$this->header = array_merge($this->header, $header);
 		return $this;
 	}
 
@@ -209,20 +244,20 @@ class Email
 	/**
 	 * Setter-method for mail header separator.
 	 *
-	 * @param string	\n\r, \n
+	 * @param string $headerSeparator	\n\r, \n
 	 *
 	 * @return Email
 	 */
 	public function setHeaderSeparator($headerSeparator)
 	{
 		$this->headerSeparator = $headerSeparator;
-		return $this->buildHeader();
+		return $this;
 	}
 
 	/**
 	 * Setter-method for subject.
 	 *
-	 * @param string
+	 * @param string $subject
 	 *
 	 * @return Email
 	 */
@@ -245,60 +280,151 @@ class Email
 	/**
 	 * Setter-method for mail message.
 	 *
-	 * @param string
+	 * @param string|array $messages
 	 *
 	 * @return Email
 	 */
-	public function setMessage($message)
+	public function setMessages($messages)
+	{
+		if(is_array($messages))
+		{
+			if(!empty($messages["html"]))
+			{
+				$this->setHtmlMessage($messages["html"]);
+			}
+			if(!empty($messages["plain"]))
+			{
+				$this->setPlainMessage($messages["plain"]);
+			}
+		}
+		else
+		{
+			$this->setPlainMessage($messages);
+		}
+		return $this;
+	}
+
+	/**
+	 * Sets the html message.
+	 *
+	 * @param string $message
+	 * @return Email
+	 */
+	public function setHtmlMessage($message)
 	{
 		if(!($message instanceof String))
 		{
 			$message = new String($message);
 		}
-		$this->message = $message->trim()->regEx("#(\r\n|\r|\n)#", $this->headerSeparator);
+		$this->messages["html"] = $message->trim()->regEx("#(\r\n|\r|\n)#", $this->headerSeparator);
 		return $this;
+	}
+
+	/**
+	 * Returns the html message.
+	 *
+	 * @return string
+	 */
+	public function getHtmlMessage()
+	{
+		return isset($this->messages["html"]) ? $this->messages["html"] : null;
+	}
+
+	/**
+	 * Sets the plain message.
+	 *
+	 * @param string $message
+	 * @return Email
+	 */
+	public function setPlainMessage($message)
+	{
+		if(!($message instanceof String))
+		{
+			$message = new String($message);
+		}
+		$this->messages["plain"] = $message->trim()->regEx("#(\r\n|\r|\n)#", $this->headerSeparator);
+		return $this;
+	}
+
+	/**
+	 * Returns the plain message.
+	 *
+	 * @return string
+	 */
+	public function getPlainMessage()
+	{
+		return isset($this->messages["plain"]) ? $this->messages["plain"] : null;
 	}
 
 	/**
 	 * Returns the mail message.
 	 *
-	 * @return String
+	 * @param boolean $asArray
+	 * @return array|string
 	 */
-	public function getMessage()
+	public function getMessages($asArray = false)
 	{
-		return $this->message;
+		if($asArray)
+		{
+			return $this->messages;
+		}
+		$message = "";
+		$plain = $this->getPlainMessage();
+		$html = $this->getHtmlMessage();
+		if(!empty($plain) && !empty($html))
+		{
+			$doubleHeaderSeparator = str_repeat($this->headerSeparator, 2);
+			$message  = "--{$this->mimeBoundary}".$this->headerSeparator;
+			$message .= "Content-Type: ".self::PLAIN_MIME_TYPE."; charset={$this->getCharset()}".$this->headerSeparator;
+			$message .= "Content-Transfer-Encoding: quoted-printable".$doubleHeaderSeparator;
+			$message .= $plain.str_repeat($this->headerSeparator, 2);
+			$message .= "--{$this->mimeBoundary}".$this->headerSeparator;
+			$message .= "Content-Type: ".self::HTML_MIME_TYPE."; charset={$this->getCharset()}".$this->headerSeparator;
+			$message .= "Content-Transfer-Encoding: quoted-printable".$doubleHeaderSeparator;
+			$message .= $html.$doubleHeaderSeparator;
+			$message .= "--{$this->mimeBoundary}--";
+		}
+		else if(!empty($plain))
+		{
+			$message = $plain;
+		}
+		else if(!empty($html))
+		{
+			$message = $html;
+		}
+		return $message;
 	}
 
 	/**
 	 * Setter-method for sender name.
 	 *
-	 * @param string
+	 * @param string $sender
 	 *
 	 * @return Email
 	 */
 	public function setSender($sender)
 	{
 		$this->sender = $sender;
-		return $this->buildHeader();
+		return $this;
 	}
 
 	/**
 	 * Setter-method for sender mail address
 	 *
-	 * @param string
+	 * @param string $senderMail
 	 *
 	 * @return Email
 	 */
 	public function setSenderMail($senderMail)
 	{
 		$this->senderMail = $senderMail;
-		return $this->buildHeader();
+		return $this;
 	}
 
 	/**
 	 * Setter-method for receiver mail address.
 	 *
-	 * @param string|array
+	 * @param string|array $receiver
 	 *
 	 * @return Email
 	 */
@@ -335,27 +461,27 @@ class Email
 	/**
 	 * Setter-method for the content type.
 	 *
-	 * @param string	text/plain or text/html
+	 * @param string $contentType	text/plain or text/html
 	 *
 	 * @return Email
 	 */
 	public function setContentType($contentType)
 	{
 		$this->contentType = $contentType;
-		return $this->buildHeader();
+		return $this;
 	}
 
 	/**
 	 * Sets the email charset.
 	 *
-	 * @param string
+	 * @param string $charset
 	 *
 	 * @return Email
 	 */
 	public function setCharset($charset)
 	{
 		$this->charset = $charset;
-		return $this->buildHeader();
+		return $this;
 	}
 
 	/**
@@ -409,7 +535,7 @@ class Email
 	/**
 	 * Sets the email adapter.
 	 *
-	 * @param string|Recipe_Email_Abstract	Email adapter
+	 * @param string|Recipe_Email_Abstract $adapter		Email adapter
 	 *
 	 * @return Email
 	 */
@@ -422,7 +548,7 @@ class Email
 		}
 		if(!($adapter instanceof Recipe_Email_Abstract))
 		{
-			throw new Exception("Unkown email adapter provided");
+			throw new Exception("Unknown email adapter provided");
 		}
 		$this->adapter = $adapter;
 		return $this;
@@ -440,7 +566,7 @@ class Email
 		{
 			$_header[] = $key.": ".$value;
 		}
-		return implode($this->headerSeparator, $_header).$this->headerSeparator;
+		return implode($this->headerSeparator, $_header);
 	}
 
 	/**
@@ -523,6 +649,31 @@ class Email
 			return sprintf("%s <%s>", $receiverName, $this->getReceiver());
 		}
 		return $this->getReceiver();
+	}
+
+	/**
+	 * Generates the multipart boundary.
+	 *
+	 * @return Email
+	 */
+	protected function generateBoundary()
+	{
+		if(strpos($this->mimeBoundary, "%") !== false)
+		{
+			$randomString = md5(uniqid());
+			$this->mimeBoundary = sprintf($this->mimeBoundary, $randomString);
+		}
+		return $this;
+	}
+
+	/**
+	 * Returns the header separator.
+	 *
+	 * @return string
+	 */
+	public function getHeaderSeparator()
+	{
+		return $this->headerSeparator;
 	}
 }
 ?>

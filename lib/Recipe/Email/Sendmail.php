@@ -18,7 +18,7 @@ class Recipe_Email_Sendmail extends Recipe_Email_Abstract
 	protected function _send()
 	{
 		$email = $this->getEmail();
-		if(!@mail($email->getFormattedReceiver(), $email->getSubject(), (string) $email->getMessage(), $email->getRawHeader()))
+		if(!@mail($email->getFormattedReceiver(), $email->getSubject(), (string) $email->getMessages(), $email->getRawHeader()))
 		{
 			throw new Recipe_Exception_Generic("There is an error with sending mail.<br />Receiver: ".$email->getReceiver().", Subject: ".$email->getSubject().", Header: ".$email->getRawHeader()."<br /><br />".$email->getMessage());
 		}

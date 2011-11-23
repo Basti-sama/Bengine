@@ -171,7 +171,6 @@ class Recipe_Email_Smtp extends Recipe_Email_Abstract
 	 */
 	protected function _transmit($request)
 	{
-		$this->_request = $request;
 		$result = fwrite($this->_socket, $request.self::EOL);
 
 		// Save request to internal log
@@ -262,9 +261,9 @@ class Recipe_Email_Smtp extends Recipe_Email_Abstract
 	/**
 	 * Prepare CRAM-MD5 response to server's ticket.
 	 *
-	 * @param  string $key
-	 * @param  string $data
-	 * @param  string $block
+	 * @param string $key
+	 * @param string $data
+	 * @param integer $block
 	 * @return string
 	 */
 	protected function _hmacMd5($key, $data, $block = 64)
@@ -319,7 +318,9 @@ class Recipe_Email_Smtp extends Recipe_Email_Abstract
 
 		$this->_prepareHeader();
 
-		$data = $this->getEmail()->getRawHeader()."\n".$this->getEmail()->getMessage();
+		$email = $this->getEmail();
+		$headerSeparator = str_repeat($email->getHeaderSeparator(), 2);
+		$data = $email->getRawHeader().$headerSeparator.$email->getMessages();
 		foreach(explode("\n", $data) as $line)
 		{
 			if(strpos($line, ".") === 0)
@@ -389,19 +390,19 @@ class Recipe_Email_Smtp extends Recipe_Email_Abstract
 			stream_set_timeout($this->_socket, $timeout);
 		}
 
-		$reponse = fgets($this->_socket, 1024);
+		$response = fgets($this->_socket, 1024);
 
-		$this->log("receive", $reponse);
+		$this->log("receive", $response);
 		$info = stream_get_meta_data($this->_socket);
 		if(!empty($info["timed_out"]))
 		{
 			throw new Recipe_Exception_Generic($this->getHost()." has timed out.");
 		}
-		if($reponse === false)
+		if($response === false)
 		{
 			throw new Recipe_Exception_Generic("Could not read from ".$this->getHost().".");
 		}
-		return $reponse;
+		return $response;
 	}
 
 	/**
