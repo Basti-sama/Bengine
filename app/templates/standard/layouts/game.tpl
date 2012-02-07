@@ -62,7 +62,6 @@
 		{foreach[navigation]}<li{loop}inner{/loop}>{loop}content{/loop}</li>{/foreach}
 		{hook}ListMenu{/hook}
 	</ul>
-	{perm[CAN_EDIT_CONSTRUCTIONS]}SQL-Queries: {SQLQueries}{/perm}
 </div>
 <br class="clear" />
 <div id="content">

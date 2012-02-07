@@ -7,8 +7,8 @@
  * @version $Id: Bengine.php 55 2011-08-14 16:50:32Z secretchampion $
  */
 
-define("BENGINE_VERSION", "0.10rc");
-define("BENGINE_REVISION", 10);
+define("BENGINE_VERSION", "0.20alpha");
+define("BENGINE_REVISION", 20);
 define("VERSION_CHECK_PAGE", "http://bengine.de/version.php");
 
 class Bengine extends Application
@@ -112,7 +112,7 @@ class Bengine extends Application
 			Core::getUser()->rebuild();
 		}
 
-		self::loadPage(Core::getRequest()->getGET("controller", "Main"));
+		self::loadPage(Core::getRequest()->getGET("controller", "Index"));
 		Bengine::unlock();
 		return;
 	}
@@ -198,7 +198,6 @@ class Bengine extends Application
 	protected static function globalTPLAssigns()
 	{
 		// JavaScript & CSS
-		Core::getTPL()->addHTMLHeaderFile("layout.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("style.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.js", "js");
 		Core::getTPL()->addHTMLHeaderFile("main.js", "js");
@@ -582,7 +581,7 @@ class Bengine extends Application
 		{
 			return $pageClass;
 		}
-		if(class_exists("Bengine_Page_Main"))
+		if(class_exists("Bengine_Page_Index"))
 		{
 			return self::factory("page/main", array("action" => "noroute"));
 		}

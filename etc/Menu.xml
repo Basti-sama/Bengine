@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu>
 	<production class="menu-prod">
-		<main href="Main">MENU_MAIN</main>
+		<main href="Index">MENU_MAIN</main>
 		<construction href="Constructions">MENU_CONSTRUCTIONS</construction>
 		<resource href="Resource">MENU_RESOURCE</resource>
 		<research href="Research">MENU_RESEARCH</research>

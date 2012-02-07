@@ -138,7 +138,7 @@ class Bengine_Page_Ranking extends Bengine_Page_Abstract
 		Hook::event("ShowRankingPlayer", array($UserList));
 
 		Core::getTPL()->addLoop("ranking", $UserList->getArray());
-		$this->setTemplate("ranking_player");
+		$this->setTemplate("ranking/player");
 		return $this;
 	}
 
@@ -190,7 +190,7 @@ class Bengine_Page_Ranking extends Bengine_Page_Abstract
 		$AllianceList = new Bengine_Alliance_List($result, $rank);
 		Hook::event("ShowRankingAlliance", array($AllianceList));
 		Core::getTPL()->addLoop("ranking", $AllianceList->getArray());
-		$this->setTemplate("ranking_ally");
+		$this->setTemplate("ranking/ally");
 		return $this;
 	}
 

@@ -1,4 +1,4 @@
-{include}"ranking_index"{/include}
+{include}"game/ranking/index"{/include}
 
 <table class="ntable">
 	<colgroup>

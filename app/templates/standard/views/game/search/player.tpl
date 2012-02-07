@@ -1,4 +1,4 @@
-{include}"search_index"{/include}
+{include}"game/search/index"{/include}
 <table class="ntable">
 	<thead><tr>
 		<th>{lang}USERNAME{/lang}</th>

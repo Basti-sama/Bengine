@@ -221,9 +221,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 			Core::getDB()->free_result($_result);
 			Hook::event("MissionPlanetQuickLinks", array(&$sl));
 			Core::getTPL()->addLoop("shortlinks", $sl);
-			Core::getTPL()->display("mission_step2");
-			Bengine::unlock();
-			exit;
+			$this->setTemplate("mission/step2");
 		}
 		else
 		{
@@ -349,9 +347,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 				"targetName" => $galaxy.":".$system.":".$position." ".$targetName,
 			));
 			Core::getTPL()->addLoop("missions", $missions);
-			Core::getTPL()->display("mission_step3");
-			Bengine::unlock();
-			exit;
+			$this->setTemplate("mission/step3");
 		}
 		Core::getDB()->free_result($result);
 		return $this;
@@ -529,9 +525,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 				$fleet[$key]["quantity"] = fNumber($value["quantity"]);
 			}
 			Core::getTPL()->addLoop("fleet", $fleet);
-			Core::getTPL()->display("mission_step4");
-			Bengine::unlock();
-			exit;
+			$this->setTemplate("mission/step4");
 		}
 		Core::getDB()->free_result($result);
 		return $this;
@@ -586,9 +580,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 			Core::getTPL()->addLoop("invitation", $invitation);
 			Core::getTPL()->assign("formationName", $name);
 			Core::getDB()->free_result($result);
-			Core::getTPL()->display("mission_formation");
-			Bengine::unlock();
-			exit;
+			$this->setTemplate("mission/formation");
 		}
 		return $this;
 	}
@@ -767,9 +759,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 			Core::getTPL()->addLoop("moons", $moons);
 			$data = serialize($data);
 			Core::getQuery()->insert("temp_fleet", array("planetid", "data"), array(Core::getUser()->get("curplanet"), $data));
-			Core::getTPL()->display("mission_stargatejump");
-			Bengine::unlock();
-			exit;
+			$this->setTemplate("mission/stargatejump");
 		}
 		else
 		{

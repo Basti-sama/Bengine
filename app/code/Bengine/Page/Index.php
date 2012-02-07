@@ -7,7 +7,7 @@
  * @version $Id: Main.php 42 2011-07-24 11:03:09Z secretchampion $
  */
 
-class Bengine_Page_Main extends Bengine_Page_Abstract
+class Bengine_Page_Index extends Bengine_Page_Abstract
 {
 	/**
 	 * Holds building events for this user.

@@ -49,9 +49,16 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	/**
 	 * Contains log messages.
 	 *
-	 * @var string
+	 * @var Map
 	 */
 	protected $log = null;
+
+	/**
+	 * Template buffer.
+	 *
+	 * @var string
+	 */
+	private $templateBuffer = null;
 
 	/**
 	 * Initializing method.
@@ -67,8 +74,11 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#assign($variable, $value)
+	 * Assigns a variable.
+	 *
+	 * @param string|array $variable
+	 * @param mixed $value
+	 * @return \Recipe_Template_Adapter_Default
 	 */
 	public function assign($variable, $value = null)
 	{
@@ -87,8 +97,11 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#addLoop($loop, $data)
+	 * Adds a loop.
+	 *
+	 * @param string $loop
+	 * @param array $data
+	 * @return \Recipe_Template_Adapter_Default
 	 */
 	public function addLoop($loop, $data)
 	{
@@ -97,8 +110,10 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#deallocateAssignment($variable)
+	 * Removes an assignment.
+	 *
+	 * @param string|array $variable
+	 * @return \Recipe_Template_Adapter_Default
 	 */
 	public function deallocateAssignment($variable)
 	{
@@ -117,8 +132,9 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#deallocateAllAssignment()
+	 * Removes all assignments.
+	 *
+	 * @return \Recipe_Template_Adapter_Default
 	 */
 	public function deallocateAllAssignment()
 	{
@@ -127,17 +143,19 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#display($template, $sendOnlyContent, $mainTemplate)
+	 * @param string $template
+	 * @param bool $noLayout
+	 * @param string $layout
+	 * @return Recipe_Template_Adapter_Default
 	 */
-	function display($template, $sendOnlyContent = false, $mainTemplate = null)
+	public function display($template, $noLayout = false, $layout = null)
 	{
-		$view = $this->getView();
+		$this->templateBuffer = null;
 		if($this->log->size() > 0)
 		{
 			$this->assign("LOG", $this->log->toString("\n"));
 		}
-		if(count($this->htmlHead) > 0)
+		if(!empty($this->htmlHead))
 		{
 			if(isset($this->htmlHead["js"]))
 			{
@@ -148,38 +166,60 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 				$this->assign("CSS_FILES", implode(",", $this->htmlHead["css"]));
 			}
 		}
-		$this->sendHeader();
-		Hook::event("TemplateStartOutstream", array($this, &$template, $sendOnlyContent, &$mainTemplate));
-		if(!$sendOnlyContent || $mainTemplate != null)
+		Hook::event("TemplatePreDisplay", array($this, $template, $noLayout, $layout));
+		if($noLayout)
 		{
-			if($mainTemplate == null) { $mainTemplate = $this->mainTemplateFile; }
-			if(!$this->cachedTemplateAvailable($mainTemplate) || $this->forceCompilation)
+			$outStream = $this->render($template, self::TEMPLATE_TYPE_VIEWS);
+		}
+		else
+		{
+			$this->templateBuffer = $template;
+			if($layout === null)
 			{
-				new Recipe_Template_Default_Compiler($this->getTemplatePath($mainTemplate));
+				$layout = $this->getLayoutTemplate();
 			}
-			require_once(Core::getCache()->getTemplatePath($mainTemplate));
+			$outStream = $this->render($layout, self::TEMPLATE_TYPE_LAYOUTS);
 		}
-		if(!$this->cachedTemplateAvailable($template) || $this->forceCompilation)
-		{
-			new Recipe_Template_Default_Compiler($this->getTemplatePath($template));
-		}
-		require_once(Core::getCache()->getTemplatePath($template));
+		$this->sendHeader();
+		Hook::event("TemplateDisplay", array($this, $outStream));
+		echo $outStream;
+		Hook::event("TemplatePostDisplay");
 		return $this;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#includeTemplate($template)
+	 * Renders a template.
+	 *
+	 * @param string $template
+	 * @param string $type
+	 * @return string
 	 */
-	public function includeTemplate($template)
+	public function render($template, $type)
 	{
-		$this->display($template, true);
-		return $this;
+		Hook::event("TemplateRenderBegin", array($this, $template));
+		if($this->forceCompilation || !$this->cachedTemplateAvailable($template, $type))
+		{
+			new Recipe_Template_Default_Compiler($template, $type);
+		}
+		$templatePath = Core::getCache()->getTemplatePath($template, $type);
+		$view = $this->getView();
+		if($this->templateBuffer !== null)
+		{
+			$template = $this->templateBuffer;
+		}
+		ob_start();
+		require $templatePath;
+		$outStream = ob_get_contents();
+		ob_end_clean();
+		Hook::event("TemplateRenderEnd", array($this, $outStream, $templatePath));
+		return $outStream;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#addLogMessage($message)
+	 * Add log message.
+	 *
+	 * @param string $message
+	 * @return \Recipe_Template_Adapter_Default
 	 */
 	public function addLogMessage($message)
 	{
@@ -188,8 +228,11 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#addHTMLHeaderFile($file, $type)
+	 * Add html header file.
+	 *
+	 * @param string $file
+	 * @param string $type
+	 * @return \Recipe_Template_Adapter_Default
 	 */
 	public function addHTMLHeaderFile($file, $type = "js")
 	{
@@ -198,12 +241,14 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#clearHTMLHeaderFiles($type)
+	 * Clear html header files.
+	 *
+	 * @param string $type
+	 * @return \Recipe_Template_Adapter_Default
 	 */
 	public function clearHTMLHeaderFiles($type = null)
 	{
-		if(is_null($type))
+		if($type === null)
 		{
 			$this->htmlHead = array();
 		}
@@ -215,8 +260,11 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#get($var, $default)
+	 * Getter for assignments.
+	 *
+	 * @param string $var
+	 * @param string $default
+	 * @return mixed
 	 */
 	public function get($var, $default = null)
 	{
@@ -225,8 +273,10 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#exists($var)
+	 * Check for existence in assignments.
+	 *
+	 * @param string $var
+	 * @return bool
 	 */
 	public function exists($var)
 	{
@@ -234,8 +284,8 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#getLoop($loop)
+	 * @param string $loop
+	 * @return array
 	 */
 	public function getLoop($loop)
 	{
@@ -243,8 +293,8 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#setView($view)
+	 * @param object $view
+	 * @return \Recipe_Template_Adapter_Default
 	 */
 	public function setView($view)
 	{
@@ -256,8 +306,7 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#getView()
+	 * @return object
 	 */
 	public function getView()
 	{
@@ -267,18 +316,18 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	/**
 	 * Checks if template needs to be compiled.
 	 *
-	 * @param string	Template name
+	 * @param string $template	Template name
+	 * @param string $type
 	 *
 	 * @return boolean
 	 */
-	protected function cachedTemplateAvailable($template)
+	protected function cachedTemplateAvailable($template, $type)
 	{
-		$cached = Core::getCache()->getTemplatePath($template);
-		$template = $this->getTemplatePath($template);
+		$cached = Core::getCache()->getTemplatePath($template, $type);
+		$template = $this->getTemplatePath($template, $type);
 		if(!file_exists($template))
 		{
 			throw new Recipe_Exception_Generic($template." does not exist.");
-			return false;
 		}
 		if(!$this->forceCompilation && file_exists($cached))
 		{
@@ -288,6 +337,18 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Set force compilation.
+	 *
+	 * @param bool $forceCompilation
+	 * @return Recipe_Template_Adapter_Default
+	 */
+	public function setForceCompilation($forceCompilation = true)
+	{
+		$this->forceCompilation = (bool) $forceCompilation;
+		return $this;
 	}
 }
 ?>

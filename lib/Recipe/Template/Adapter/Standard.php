@@ -94,21 +94,21 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	 * (non-PHPdoc)
 	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#display($template, $sendOnlyContent, $mainTemplate)
 	 */
-	function display($template, $sendOnlyContent = false, $mainTemplate = null)
+	function display($template, $sendOnlyContent = false, $mainTemplate = false)
 	{
 		$view = $this->getView();
 		$this->sendHeader();
 		if($sendOnlyContent)
 		{
-			require_once($this->getTemplatePath($template));
+			require_once($this->getTemplatePath($template, "views"));
 		}
 		else
 		{
-			if(is_null($mainTemplate))
+			if($mainTemplate === false)
 			{
 				$mainTemplate = $this->mainTemplateFile;
 			}
-			require_once($this->getTemplatePath($mainTemplate));
+			require_once($this->getTemplatePath($mainTemplate, "layouts"));
 		}
 		return $this;
 	}

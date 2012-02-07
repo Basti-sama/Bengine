@@ -9,6 +9,11 @@
 
 abstract class Bengine_Page_Abstract extends Recipe_Controller_Abstract
 {
-
+	/**
+	 * Module name.
+	 *
+	 * @var string
+	 */
+	protected $_module = "game";
 }
 ?>

@@ -14,8 +14,8 @@ class Logger
 	/**
 	 * Add a message to log.
 	 *
-	 * @param string	Message to log
-	 * @param string	Log mode
+	 * @param string $message	Message to log
+	 * @param string $mode		Log mode
 	 *
 	 * @return void
 	 */
@@ -32,7 +32,8 @@ class Logger
 	/**
 	 * Displays a message and shut program down.
 	 *
-	 * @param string	Message to log
+	 * @param string $message	Message to log
+	 * @param string $mode		Log mode
 	 *
 	 * @return void
 	 */
@@ -48,8 +49,8 @@ class Logger
 	/**
 	 * Formats a message.
 	 *
-	 * @param string	Raw log message
-	 * @param string	Log mode
+	 * @param string $message	Raw log message
+	 * @param string $mode		Log mode
 	 *
 	 * @return string	Formatted message
 	 */

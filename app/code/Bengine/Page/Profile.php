@@ -27,7 +27,7 @@ class Bengine_Page_Profile extends Bengine_Page_Abstract
 	 */
 	protected function indexAction()
 	{
-		$this->setTemplate("profile_page");
+		$this->setTemplate("profile/page");
 		$this->pageAction(Core::getUser()->get("userid"));
 		return $this;
 	}

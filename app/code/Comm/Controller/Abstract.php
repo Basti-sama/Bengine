@@ -10,40 +10,11 @@
 abstract class Comm_Controller_Abstract extends Recipe_Controller_Abstract
 {
 	/**
-	 * Template prefix.
+	 * Module name.
 	 *
 	 * @var string
 	 */
-	const TEMPLATE_PREFIX = "comm_";
-
-	/**
-	 * Creates a new controller object.
-	 *
-	 * @param array		Configuration
-	 *
-	 * @return Comm_Controller_Abstract
-	 */
-	public function __construct(array $args = array())
-	{
-		$this->setMainTemplate("comm");
-		return parent::__construct($args);
-	}
-
-	/**
-	 * Returns the called template.
-	 *
-	 * @param string	Action name
-	 *
-	 * @return string	Template name
-	 */
-	public function getTemplate($action)
-	{
-		if(!empty($this->_template))
-		{
-			return $this->_template;
-		}
-		return self::TEMPLATE_PREFIX.strtolower($this->getParam("controller", "index"))."_".$action;
-	}
+	protected $_module = "comm";
 
 	/**
 	 * Called when no action method has been found.
@@ -52,7 +23,7 @@ abstract class Comm_Controller_Abstract extends Recipe_Controller_Abstract
 	 */
 	protected function norouteAction()
 	{
-		$this->page = Core::getLang()->get("ERROR_404");
+		$this->assign("page", Core::getLang()->get("ERROR_404"));
 		return parent::norouteAction();
 	}
 }

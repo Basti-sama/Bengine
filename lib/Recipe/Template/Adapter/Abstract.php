@@ -11,6 +11,9 @@
 
 abstract class Recipe_Template_Adapter_Abstract
 {
+	const TEMPLATE_TYPE_VIEWS = "views";
+	const TEMPLATE_TYPE_LAYOUTS = "layouts";
+
 	/**
 	 * File Extension.
 	 *
@@ -23,7 +26,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	 *
 	 * @var string
 	 */
-	protected $mainTemplateFile = "";
+	protected $layoutTemplate = "";
 
 	/**
 	 * Absolute path to template directory.
@@ -55,7 +58,6 @@ abstract class Recipe_Template_Adapter_Abstract
 	{
 		$this->setTemplatePath(APP_ROOT_DIR."app/templates/");
 		$this->setTemplatePackage();
-		$this->setLayoutTemplate();
 		$this->setExtension();
 		$this->init();
 		return $this;
@@ -84,8 +86,8 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Assigns values to template variables.
 	 *
-	 * @param string|array	The template variable names
-	 * @param mixed		The value to assign
+	 * @param string|array $variable	The template variable names
+	 * @param mixed $value				The value to assign
 	 *
 	 * @return Recipe_Template_Adapter
 	 */
@@ -94,8 +96,8 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Append a loop to loop stack.
 	 *
-	 * @param string	Loop name
-	 * @param array		Loop data
+	 * @param string $loop	Loop name
+	 * @param array $data		Loop data
 	 *
 	 * @return Recipe_Template_Adapter
 	 */
@@ -104,18 +106,18 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Executes and displays the template results.
 	 *
-	 * @param string	The to displayed template
-	 * @param boolean	For AJAX requests
-	 * @param string	Custome main template
+	 * @param string $template	The to displayed template
+	 * @param boolean $noLayout	For AJAX requests
+	 * @param string $layout	Custom main template
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
-	abstract public function display($template, $sendOnlyContent = false, $mainTemplate = null);
+	abstract public function display($template, $noLayout = false, $layout = null);
 
 	/**
 	 * Sets the view class.
 	 *
-	 * @param object
+	 * @param object $view
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
@@ -131,7 +133,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Adds a message to log.
 	 *
-	 * @param string	Message to add
+	 * @param string $message	Message to add
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
@@ -140,8 +142,8 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Adds an HTML header file to layout template.
 	 *
-	 * @param string	File to include
-	 * @param string	File type [optional]
+	 * @param string $file	File to include
+	 * @param string $type	File type [optional]
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
@@ -150,7 +152,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Cleans all HTML header files.
 	 *
-	 * @param string	File type [optional]
+	 * @param string $type	File type [optional]
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
@@ -159,8 +161,8 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Returns an assigned template variable.
 	 *
-	 * @param string	Variable name
-	 * @param mixed		Default value to return
+	 * @param string $var		Variable name
+	 * @param mixed $default	Default value to return
 	 *
 	 * @return mixed
 	 */
@@ -169,7 +171,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Checks a template assignment for existance.
 	 *
-	 * @param string	Variable name
+	 * @param string $var	Variable name
 	 *
 	 * @return boolean
 	 */
@@ -178,7 +180,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Returns an assigned loop.
 	 *
-	 * @param string	Loop index
+	 * @param string $loop	Loop index
 	 *
 	 * @return mixed
 	 */
@@ -187,11 +189,12 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Includes a template.
 	 *
-	 * @param string	Template name
+	 * @param string $template	Template name
+	 * @param string $type
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
-	abstract public function includeTemplate($template);
+	abstract public function render($template, $type);
 
 	/**
 	 * Clears assignment of all template variables.
@@ -203,7 +206,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Clears the given assigned template variable.
 	 *
-	 * @param string	The template variable to flush
+	 * @param string $variable	The template variable to flush
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
@@ -212,17 +215,18 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Return full path of a template.
 	 *
-	 * @param string	Template name
+	 * @param string $template
+	 * @param string $type
 	 *
 	 * @return string	Path to template
 	 */
-	protected function getTemplatePath($template)
+	public function getTemplatePath($template, $type)
 	{
-		$path = $this->templatePath.$this->getTemplatePackage().$template.$this->templateExtension;
+		$path = $this->templatePath.$this->getTemplatePackage().$type."/".$template.$this->templateExtension;
 		// If the template does not exist, try the standard package
 		if(!file_exists($path))
 		{
-			$path = $this->templatePath."standard/".$template.$this->templateExtension;
+			$path = $this->templatePath."standard/".$type."/".$template.$this->templateExtension;
 		}
 		return $path;
 	}
@@ -230,7 +234,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Sets a new template path.
 	 *
-	 * @param string	Path
+	 * @param string $path	Path
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
@@ -247,30 +251,40 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Sets a new layout template.
 	 *
-	 * @param string	Template name
+	 * @param string $template	Template name
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
 	public function setLayoutTemplate($template = null)
 	{
-		if(is_null($template))
-		{
-			$template = Core::getConfig()->maintemplate;
-		}
-		$this->mainTemplateFile = $template;
+		$this->layoutTemplate = $template;
 		return $this;
+	}
+
+	/**
+	 * Returns the layout template.
+	 *
+	 * @return string
+	 */
+	public function getLayoutTemplate()
+	{
+		if(empty($this->layoutTemplate))
+		{
+			$this->layoutTemplate = Core::getConfig()->maintemplate;
+		}
+		return $this->layoutTemplate;
 	}
 
 	/**
 	 * Sets a new template file extension.
 	 *
-	 * @param string
+	 * @param string $extension
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
 	public function setExtension($extension = null)
 	{
-		if(is_null($extension))
+		if($extension === null)
 		{
 			$extension = Core::getConfig()->templateextension;
 		}
@@ -285,13 +299,13 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Sets the template package.
 	 *
-	 * @param string	Package direcotry
+	 * @param string $package	Package directory
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
 	public function setTemplatePackage($package = null)
 	{
-		if(is_null($package))
+		if($package === null)
 		{
 			$package = Core::getConfig()->templatepackage;
 		}
@@ -327,7 +341,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	{
 		if(!Recipe_Header::isSend())
 		{
-			if(@extension_loaded('zlib') && !$this->compressed && GZIP_ACITVATED)
+			if(@extension_loaded("zlib") && !$this->compressed && GZIP_ACITVATED)
 			{
 				ob_start("ob_gzhandler");
 				$this->compressed = true;
@@ -341,8 +355,8 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Inaccessible member variables become an assigment.
 	 *
-	 * @param string	Variable name
-	 * @param mixed		Value
+	 * @param string $var	Variable name
+	 * @param mixed $value	Value
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
@@ -353,9 +367,9 @@ abstract class Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * Returns incaccessible member variables as template assignments.
+	 * Returns inaccessible member variables as template assignments.
 	 *
-	 * @param string	Variable name
+	 * @param string $var	Variable name
 	 *
 	 * @return mixed
 	 */
@@ -367,7 +381,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	/**
 	 * Wrapper for exists().
 	 *
-	 * @param string	Variable name
+	 * @param string $var	Variable name
 	 *
 	 * @return boolean
 	 */
@@ -377,9 +391,9 @@ abstract class Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * Unsets inaccessbile member variables.
+	 * Unsets inaccessible member variables.
 	 *
-	 * @param string	Variable name
+	 * @param string $var	Variable name
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */

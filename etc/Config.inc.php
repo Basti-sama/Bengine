@@ -15,7 +15,7 @@ $database["user"] = "root";
 $database["userpw"] = "";
 $database["databasename"] = "bengine";
 $database["tableprefix"] = "bengine_";
-$database["type"] = "MySQLi";
+$database["type"] = "MySQL";
 
 //### Combat system ###//
 $cs["jre"] = "java"; // The path to java runtime environment

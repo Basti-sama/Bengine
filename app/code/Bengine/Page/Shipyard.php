@@ -84,7 +84,7 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 	protected function indexAction()
 	{
 		Core::getLanguage()->load(array("info", "buildings"));
-		$this->setTemplate("shipyard_index");
+		$this->setTemplate("shipyard/index");
 
 		$collection = Application::getCollection("construction", "unit");
 		$collection->addTypeFilter($this->mode)
@@ -299,7 +299,7 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 			$this->redirect("game.php/".SID."/Shipyard");
 		}
 		Core::getLanguage()->load(array("info", "buildings"));
-		$this->setTemplate("shipyard_merchant");
+		$this->setTemplate("shipyard/merchant");
 		$units = Application::getCollection("fleet", "unit");
 		$units->addPlanetFilter(Core::getUser()->get("curplanet"));
 		$this->assign("units", $units);
@@ -381,7 +381,7 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 			Core::getDatabase()->query($sql);
 			$this->redirect("game.php/".SID."/Shipyard");
 		}
-		$this->setTemplate("shipyard_change");
+		$this->setTemplate("shipyard/change");
 		$this->assign("units", $realUnits);
 		return $this;
 	}

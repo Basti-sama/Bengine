@@ -12,6 +12,13 @@
 abstract class Recipe_Controller_Abstract
 {
 	/**
+	 * Default controller name.
+	 *
+	 * @var string
+	 */
+	const DEFAULT_CONTROLLER_NAME = "index";
+
+	/**
 	 * Request method.
 	 *
 	 * @var string
@@ -26,18 +33,18 @@ abstract class Recipe_Controller_Abstract
 	protected $_action = "index";
 
 	/**
+	 * The module name.
+	 *
+	 * @var string
+	 */
+	protected $_module = null;
+
+	/**
 	 * The output template.
 	 *
 	 * @var string
 	 */
 	protected $_template = null;
-
-	/**
-	 * Layout template.
-	 *
-	 * @var string
-	 */
-	private $_mainTemplate = "layout";
 
 	/**
 	 * Flag to display no template.
@@ -74,6 +81,10 @@ abstract class Recipe_Controller_Abstract
 			$this->_action = strtolower($args["action"]);
 		}
 		$this->_requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
+		if($this->_module !== null)
+		{
+			$this->setMainTemplate($this->getModule());
+		}
 		$this->init();
 		return $this;
 	}
@@ -136,7 +147,8 @@ abstract class Recipe_Controller_Abstract
 	public function run()
 	{
 		$action = $this->_action;
-		if(!method_exists($this, $action.$this->getActionNameSuffix()))
+		$method = $action.$this->getActionNameSuffix();
+		if(!method_exists($this, $method))
 		{
 			$action = "noroute";
 		}
@@ -145,10 +157,10 @@ abstract class Recipe_Controller_Abstract
 		{
 			$args[] = $this->getParam(strval($i));
 		}
-		call_user_func_array(array($this, $action.$this->getActionNameSuffix()), $args);
+		call_user_func_array(array($this, $method), $args);
 		if(!$this->_noDisplay)
 		{
-			Core::getTPL()->display($this->getTemplate($action), $this->_isAjax, $this->_mainTemplate);
+			Core::getTPL()->display($this->getTemplate($action), $this->_isAjax);
 		}
 		return $this;
 	}
@@ -156,7 +168,7 @@ abstract class Recipe_Controller_Abstract
 	/**
 	 * Returns the called template.
 	 *
-	 * @param string	Action name
+	 * @param string $action	Action name
 	 *
 	 * @return string	Template name
 	 */
@@ -164,9 +176,10 @@ abstract class Recipe_Controller_Abstract
 	{
 		if(!empty($this->_template))
 		{
-			return $this->_template;
+			return strtolower($this->getModule()."/".$this->_template);
 		}
-		return strtolower($this->getParam("controller", "Main"))."_".$action;
+		$controller = $this->getParam("controller", self::DEFAULT_CONTROLLER_NAME);
+		return strtolower($this->getModule()."/".$controller."/".$action);
 	}
 
 	/**
@@ -191,7 +204,7 @@ abstract class Recipe_Controller_Abstract
 		$this->_isAjax = (bool) $isAjax;
 		if($this->_isAjax)
 		{
-			$this->_mainTemplate = null;
+			$this->setMainTemplate(false);
 		}
 		return $this;
 	}
@@ -205,7 +218,7 @@ abstract class Recipe_Controller_Abstract
 	 */
 	protected function setMainTemplate($mainTemplate)
 	{
-		$this->_mainTemplate = $mainTemplate;
+		Core::getTemplate()->setLayoutTemplate($mainTemplate);
 		return $this;
 	}
 
@@ -230,7 +243,7 @@ abstract class Recipe_Controller_Abstract
 	protected function norouteAction()
 	{
 		$this->setTemplate("noroute");
-		$this->action = $this->_action;
+		$this->assign("action", $this->_action);
 		Recipe_Header::statusCode(404);
 		return $this;
 	}
@@ -304,6 +317,24 @@ abstract class Recipe_Controller_Abstract
 	public function getActionNameSuffix()
 	{
 		return $this->_actionNameSuffix;
+	}
+
+	/**
+	 * @param string $module
+	 * @return Recipe_Controller_Abstract
+	 */
+	public function setModule($module)
+	{
+		$this->_module = $module;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getModule()
+	{
+		return $this->_module;
 	}
 }
 ?>

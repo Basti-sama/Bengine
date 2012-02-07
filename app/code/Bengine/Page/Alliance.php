@@ -67,7 +67,7 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 			{
 				$this->leaveAlliance();
 			}
-			$this->setTemplate("alliance_page");
+			$this->setTemplate("alliance/page");
 			$this->pageAction($this->aid);
 		}
 		else
@@ -435,7 +435,7 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 				$this->deleteAllyRelationApplication($this->aid, $candidateAlly);
 			}
 		}
-		$this->setTemplate("alliance_relapplications");
+		$this->setTemplate("alliance/relapplications");
 		$this->relApplicationsAction();
 		return $this;
 	}
@@ -464,7 +464,7 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 				}
 			}
 		}
-		$this->setTemplate("alliance_relapplications");
+		$this->setTemplate("alliance/relapplications");
 		$this->relApplicationsAction();
 		return $this;
 	}
@@ -561,7 +561,7 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 			$this->redirect("game.php/".SID."/Alliance/Diplomacy");
 		}
 		Logger::addMessage("CANNOT_DELETE_RELATIONSHIP");
-		$this->setTemplate("alliance_diplomacy");
+		$this->setTemplate("alliance/diplomacy");
 		$this->diplomacyAction();
 		return $this;
 	}

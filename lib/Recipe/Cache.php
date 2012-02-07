@@ -500,17 +500,19 @@ class Recipe_Cache
 	/**
 	 * Return full path of a cached template.
 	 *
-	 * @param string	Template name
+	 * @param string $template	Template name
+	 * @param string $type		Template type
 	 *
 	 * @return string	Path to template
 	 */
-	public function getTemplatePath($template)
+	public function getTemplatePath($template, $type)
 	{
-		$dir = $this->getTemplateCacheDir().Core::getTemplate()->getTemplatePackage();
+		$dir = $this->getTemplateCacheDir().Core::getTemplate()->getTemplatePackage().$type."/";
 		if(!is_dir($dir))
 		{
 			@mkdir($dir, 0777, true);
 		}
+		$template = str_replace("/", ".", $template);
 		return $dir.$template.".cache.php";
 	}
 

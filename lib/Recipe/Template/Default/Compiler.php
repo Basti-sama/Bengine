@@ -43,18 +43,22 @@ class Recipe_Template_Default_Compiler extends Recipe_Cache
 	/**
 	 * Constructor: Set up compiler.
 	 *
-	 * @param string	Template name
+	 * @param string $template	Template name
+	 * @param string $type		Template type
 	 *
-	 * @return void
+	 * @return \Recipe_Template_Default_Compiler
 	 */
-	public function __construct($template)
+	public function __construct($template, $type)
 	{
-		$this->template = Str::reverse_strrchr(basename($template), '.', true);
-		$this->template = Str::substring($this->template, 0, Str::length($this->template) - 1);
-		$this->sourceTemplate = file_get_contents($template);
+		$this->template = $template;
+		$filePath = Core::getTemplate()->getTemplatePath($template, $type);
+		$this->sourceTemplate = file_get_contents($filePath);
 		$this->buildPatterns()->compile();
-		try { parent::putCacheContent(Core::getCache()->getTemplatePath($this->template), $this->compiledTemplate->get()); }
-		catch(Exception $e) { $e->printError(); }
+		try {
+			parent::putCacheContent(Core::getCache()->getTemplatePath($this->template, $type), $this->compiledTemplate->get());
+		} catch(Exception $e) {
+			$e->printError();
+		}
 		return;
 	}
 
@@ -132,7 +136,7 @@ class Recipe_Template_Default_Compiler extends Recipe_Cache
 				// Parse permission expression {perm[CAN_READ_THIS]}print this{/perm}
 				->regEx($this->patterns["permission"], "{if[Core::getUser()->ifPermissions(\"\\1\")]}\\2{/if}")
 				// Compile includes {include}"templatename"{/include}
-				->regEx($this->patterns["include"], "<?php \$this->includeTemplate(\\1); ?>")
+				->regEx($this->patterns["include"], "<?php echo \$this->render(\\1, Recipe_Template_Adapter_Abstract::TEMPLATE_TYPE_VIEWS); ?>")
 				// Compile images {image[title]}path/pic.jpg{/image}
 				->regEx($this->patterns["image"], "<?php echo Image::getImage(\"\\2\", Core::getLanguage()->getItem(\"\\1\")); ?>")
 				// Compile generation times.

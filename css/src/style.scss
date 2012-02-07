@@ -75,7 +75,7 @@ img {
 			padding: 2px 0;
 			width: 130px;
 			display: block;
-			&:hover {
+			&:hover {
 				background-color: #333947;
 				text-decoration: none;
 			}
@@ -188,6 +188,7 @@ a, a:link, a:hover, a:active, a:visited {
 }
 
 .button, .SignButton, input, select, textarea, input:focus, textarea:focus {
+	background-image: none;
 	background-color: #001C37;
 	color: #B6C6E5;
 	font-weight: bold;
@@ -218,10 +219,10 @@ fieldset {
 		margin-left: 0px;
 		padding: 0px;
 	}
-	ul {
+	ul {
 		padding: 0px;
 	}
-	label {
+	label {
 		width: 130px;
 		float: left;
 	}

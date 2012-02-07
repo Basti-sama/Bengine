@@ -44,7 +44,7 @@ class Comm_Controller_Pillory extends Comm_Controller_Abstract
 			->setCurrentPage($this->getParam("1"))
 			->setConfig("base_url", Core::getLang()->getOpt("langcode")."/pillory");
 		Core::getTPL()->addLoop("bans", $this->getBans($pagination->getStart(), Core::getConfig()->get("PILLORY_ITEMS_PER_PAGE")));
-		$this->pagination = $pagination;
+		$this->assign("pagination", $pagination);
 		return $this;
 	}
 
@@ -57,8 +57,8 @@ class Comm_Controller_Pillory extends Comm_Controller_Abstract
 	{
 		Core::getTPL()->addLoop("feed", $this->getBans(0, self::MAX_FEED_ITEMS));
 		$this->setTemplate("rss");
-		$this->title = Core::getLang()->get("PILLORY");
-		$this->langcode = Core::getLang()->getOpt("langcode");
+		$this->assign("title", Core::getLang()->get("PILLORY"));
+		$this->assign("langcode", Core::getLang()->getOpt("langcode"));
 		return $this;
 	}
 
@@ -69,9 +69,9 @@ class Comm_Controller_Pillory extends Comm_Controller_Abstract
 	 */
 	public function atomAction()
 	{
-		$this->selfUrl = BASE_URL."pillory/atom";
-		$this->alternateUrl = BASE_URL."pillory";
-		$this->title = Core::getLang()->get("PILLORY");
+		$this->assign("selfUrl", BASE_URL."pillory/atom");
+		$this->assign("alternateUrl", BASE_URL."pillory");
+		$this->assign("title", Core::getLang()->get("PILLORY"));
 		Core::getTPL()->addLoop("feed", $this->getBans(0, self::MAX_FEED_ITEMS));
 		$this->setTemplate("atom");
 		return $this;
@@ -80,6 +80,8 @@ class Comm_Controller_Pillory extends Comm_Controller_Abstract
 	/**
 	 * Fetches all bans.
 	 *
+	 * @param int $offset
+	 * @param int $count
 	 * @return array
 	 */
 	protected function getBans($offset, $count)

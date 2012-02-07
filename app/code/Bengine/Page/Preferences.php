@@ -75,12 +75,14 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 			Core::getTPL()->assign("can_disable_umode", $canDisableUmode);
 		}
 		$packs = array();
+		$excludedPackages = explode(",", Core::getOptions()->get("EXCLUDE_TEMPLATE_PACKAGE"));
+		$excludedPackages = array_map("trim", $excludedPackages);
 		$dir = new DirectoryIterator(APP_ROOT_DIR."app/templates/");
 		foreach($dir as $package)
 		{
-			if(!$package->isDot() && $package->isDir() && $package->getFilename() != ".svn")
+			if(!$package->isDot() && $package->isDir() && !in_array($package->getBasename(), $excludedPackages))
 			{
-				$packs[]["package"] = $package->getFilename();
+				$packs[] = array("package" => $package->getFilename());
 			}
 		}
 		Hook::event("LoadTemplatePackages", array(&$packs));

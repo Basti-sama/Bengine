@@ -56,7 +56,6 @@ class Comm extends Application
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.lightbox.js", "js");
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.flash.js", "js");
 		Core::getTPL()->addHTMLHeaderFile("sign.js", "js");
-		Core::getTPL()->addHTMLHeaderFile("reset.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("jquery-ui.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("preview.css", "css");
 		Core::getTPL()->assign("containerClass", "content");

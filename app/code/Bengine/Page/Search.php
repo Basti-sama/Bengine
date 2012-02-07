@@ -93,7 +93,7 @@ class Bengine_Page_Search extends Bengine_Page_Abstract
 		Hook::event("SearchResultPlayer", array($UserList));
 		Core::getTPL()->addLoop("result", $UserList->getArray());
 		Core::getTPL()->addLoop("searchSuggestions", $this->getSimilarWords($this->searchItem, "user"));
-		$this->setTemplate("search_player");
+		$this->setTemplate("search/player");
 		return $this;
 	}
 
@@ -141,7 +141,7 @@ class Bengine_Page_Search extends Bengine_Page_Abstract
 		Hook::event("SearchResultPlanet", array($UserList));
 		Core::getTPL()->addLoop("result", $UserList->getArray());
 		Core::getTPL()->addLoop("searchSuggestions", $this->getSimilarWords($this->searchItem, "planet"));
-		$this->setTemplate("search_player");
+		$this->setTemplate("search/player");
 		return $this;
 	}
 
@@ -161,7 +161,7 @@ class Bengine_Page_Search extends Bengine_Page_Abstract
 		Hook::event("SearchResultAlliance", array($AllianceList));
 		Core::getTPL()->addLoop("result", $AllianceList->getArray());
 		Core::getTPL()->addLoop("searchSuggestions", $this->getSimilarWords($this->searchItem, "alliance"));
-		$this->setTemplate("search_ally");
+		$this->setTemplate("search/ally");
 		return $this;
 	}
 
