@@ -70,7 +70,7 @@ abstract class Recipe_Controller_Abstract
 	/**
 	 * Creates a new controller object.
 	 *
-	 * @param array		Configuration
+	 * @param array $args
 	 *
 	 * @return Recipe_Controller_Abstract
 	 */
@@ -92,8 +92,8 @@ abstract class Recipe_Controller_Abstract
 	/**
 	 * Assigns a new variable to the template.
 	 *
-	 * @param string	Variable name
-	 * @param mixed		Value
+	 * @param string $var	Variable name
+	 * @param mixed $value	Value
 	 *
 	 * @return Recipe_Controller_Abstract
 	 */
@@ -106,7 +106,7 @@ abstract class Recipe_Controller_Abstract
 	/**
 	 * Gets an assigned variable from the template.
 	 *
-	 * @param string	Variable name
+	 * @param string $var	Variable name
 	 *
 	 * @return mixed
 	 */
@@ -118,8 +118,8 @@ abstract class Recipe_Controller_Abstract
 	/**
 	 * Assigns a new variable to the template.
 	 *
-	 * @param string	Variable name
-	 * @param mixed		Value
+	 * @param string $var	Variable name
+	 * @param mixed $value		Value
 	 *
 	 * @return Recipe_Controller_Abstract
 	 */
@@ -174,12 +174,17 @@ abstract class Recipe_Controller_Abstract
 	 */
 	public function getTemplate($action)
 	{
+		$module = $this->getModule();
+		if(!empty($module))
+		{
+			$module .= "/";
+		}
 		if(!empty($this->_template))
 		{
-			return strtolower($this->getModule()."/".$this->_template);
+			return strtolower($module.$this->_template);
 		}
 		$controller = $this->getParam("controller", self::DEFAULT_CONTROLLER_NAME);
-		return strtolower($this->getModule()."/".$controller."/".$action);
+		return strtolower($module.$controller."/".$action);
 	}
 
 	/**
@@ -251,8 +256,8 @@ abstract class Recipe_Controller_Abstract
 	/**
 	 * Returns a request parameter.
 	 *
-	 * @param string	Parameter name
-	 * @param mixed		Default return value
+	 * @param string $param		Parameter name
+	 * @param mixed $default	Default return value
 	 *
 	 * @return mixed
 	 */
@@ -272,7 +277,7 @@ abstract class Recipe_Controller_Abstract
 	/**
 	 * Set no display.
 	 *
-	 * @param boolean
+	 * @param boolean $noDisplay
 	 *
 	 * @return Recipe_Controller_Abstract
 	 */
@@ -285,8 +290,8 @@ abstract class Recipe_Controller_Abstract
 	/**
 	 * Executes a redirection.
 	 *
-	 * @param string	Uri or Url
-	 * @param boolean	Append session? [optional]
+	 * @param string $url		Uri or Url
+	 * @param boolean $session	Append session? [optional]
 	 *
 	 * @return Bengine_Page_Abstract
 	 */
@@ -299,7 +304,7 @@ abstract class Recipe_Controller_Abstract
 	/**
 	 * Sets the action name suffix.
 	 *
-	 * @param string
+	 * @param string $actionNameSuffix
 	 *
 	 * @return Recipe_Controller_Abstract
 	 */
