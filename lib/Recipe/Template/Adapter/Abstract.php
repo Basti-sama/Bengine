@@ -50,6 +50,13 @@ abstract class Recipe_Template_Adapter_Abstract
 	protected $compressed = false;
 
 	/**
+	 * Template buffer.
+	 *
+	 * @var string
+	 */
+	protected $templateBuffer = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
@@ -89,7 +96,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	 * @param string|array $variable	The template variable names
 	 * @param mixed $value				The value to assign
 	 *
-	 * @return Recipe_Template_Adapter
+	 * @return Recipe_Template_Adapter_Abstract
 	 */
 	abstract public function assign($variable, $value = null);
 
@@ -99,7 +106,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	 * @param string $loop	Loop name
 	 * @param array $data		Loop data
 	 *
-	 * @return Recipe_Template_Adapter
+	 * @return Recipe_Template_Adapter_Abstract
 	 */
 	abstract public function addLoop($loop, $data);
 

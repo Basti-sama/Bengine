@@ -33,8 +33,7 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	protected $_compiler = null;
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#init()
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
 	protected function init()
 	{
@@ -47,8 +46,7 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#_setup()
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
 	protected function _setup()
 	{
@@ -90,8 +88,9 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#assign($variable, $value)
+	 * @param string|array $variable
+	 * @param mixed $value
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
 	public function assign($variable, $value = null)
 	{
@@ -100,8 +99,9 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#addLoop($loop, $data)
+	 * @param string $loop
+	 * @param mixed $data
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
 	public function addLoop($loop, $data)
 	{
@@ -110,33 +110,30 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#display($template, $sendOnlyContent, $mainTemplate)
+	 * @param string $template
+	 * @param bool $noLayout
+	 * @param string $layout
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
-	public function display($template, $sendOnlyContent = false, $mainTemplate = null)
+	public function display($template, $noLayout = false, $layout = null)
 	{
-		$template = $this->getTemplatePath($template);
-		if($sendOnlyContent)
+		$outStream = $this->render($template, self::TEMPLATE_TYPE_VIEWS);
+		if($noLayout === false)
 		{
-			$this->sendHeader();
-			$this->getDwoo()->output($template, $this->getData(), $this->getCompiler());
-		}
-		else
-		{
-			$out = $this->getDwoo()->get($template, $this->getData(), $this->getCompiler());
-			$this->assign("CONTENT_TEMPLATE", $out);
-			if(is_null($mainTemplate))
+			$this->assign("CONTENT_TEMPLATE", $outStream);
+			if($layout === null)
 			{
-				$mainTemplate = $this->mainTemplateFile;
+				$layout = $this->getLayoutTemplate();
 			}
-			$this->display($mainTemplate, true);
+			$outStream = $this->render($layout, self::TEMPLATE_TYPE_LAYOUTS);
 		}
+		echo $outStream;
 		return $this;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#setView($view)
+	 * @param object $view
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
 	public function setView($view)
 	{
@@ -148,8 +145,7 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#getView()
+	 * @return object
 	 */
 	public function getView()
 	{
@@ -157,8 +153,9 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#get($var, $default)
+	 * @param string $var
+	 * @param mixed $default
+	 * @return mixed
 	 */
 	public function get($var, $default = null)
 	{
@@ -166,8 +163,8 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#exists($var)
+	 * @param string $var
+	 * @return bool
 	 */
 	public function exists($var)
 	{
@@ -175,8 +172,8 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#getLoop($loop)
+	 * @param string $loop
+	 * @return array|mixed
 	 */
 	public function getLoop($loop)
 	{
@@ -185,17 +182,19 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#includeTemplate($template)
+	 * @param string $template
+	 * @param string $type
+	 * @return string
 	 */
-	public function includeTemplate($template)
+	public function render($template, $type)
 	{
-		return $this;
+		$template = $this->getTemplatePath($template, $type);
+		$outStream = $this->getDwoo()->get($template, $this->getData(), $this->getCompiler());
+		return $outStream;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#deallocateAllAssignment()
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
 	public function deallocateAllAssignment()
 	{
@@ -204,8 +203,8 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#deallocateAssignment($variable)
+	 * @param string $variable
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
 	public function deallocateAssignment($variable)
 	{
@@ -214,8 +213,8 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#addLogMessage($message)
+	 * @param string $message
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
 	public function addLogMessage($message)
 	{
@@ -226,20 +225,21 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#addHTMLHeaderFile($file, $type)
+	 * @param string $file
+	 * @param string $type
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
 	public function addHTMLHeaderFile($file, $type = "js")
 	{
 		$files = $this->get($type."_files", array());
 		$files[] = $file;
-		$this->assign($type."_files", $files[]);
+		$this->assign($type."_files", $files);
 		return $this;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#clearHTMLHeaderFiles($type)
+	 * @param string $type
+	 * @return \Recipe_Template_Adapter_Dwoo
 	 */
 	public function clearHTMLHeaderFiles($type = null)
 	{

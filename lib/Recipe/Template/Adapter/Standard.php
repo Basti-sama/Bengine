@@ -31,8 +31,9 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#assign($variable, $value)
+	 * @param string|array $variable
+	 * @param mixed $value
+	 * @return \Recipe_Template_Adapter_Standard
 	 */
 	public function assign($variable, $value = null)
 	{
@@ -51,8 +52,9 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#addLoop($loop, $data)
+	 * @param string $loop
+	 * @param mixed $data
+	 * @return \Recipe_Template_Adapter_Standard
 	 */
 	public function addLoop($loop, $data)
 	{
@@ -61,8 +63,8 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#deallocateAssignment($variable)
+	 * @param string|array $variable
+	 * @return \Recipe_Template_Adapter_Standard
 	 */
 	public function deallocateAssignment($variable)
 	{
@@ -81,8 +83,7 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#deallocateAllAssignment()
+	 * @return \Recipe_Template_Adapter_Standard
 	 */
 	public function deallocateAllAssignment()
 	{
@@ -91,41 +92,60 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#display($template, $sendOnlyContent, $mainTemplate)
+	 * @param $template string
+	 * @param bool $noLayout
+	 * @param bool|string $layout
+	 * @return \Recipe_Template_Adapter_Standard
 	 */
-	function display($template, $sendOnlyContent = false, $mainTemplate = false)
+	function display($template, $noLayout = false, $layout = false)
 	{
-		$view = $this->getView();
-		$this->sendHeader();
-		if($sendOnlyContent)
+		$this->templateBuffer = null;
+		Hook::event("TemplatePreDisplay", array($this, $template, $noLayout, $layout));
+		if($noLayout)
 		{
-			require_once($this->getTemplatePath($template, "views"));
+			$outStream = $this->render($template, self::TEMPLATE_TYPE_VIEWS);
 		}
 		else
 		{
-			if($mainTemplate === false)
+			$this->templateBuffer = $template;
+			if($layout === false)
 			{
-				$mainTemplate = $this->mainTemplateFile;
+				$layout = $this->getLayoutTemplate();
 			}
-			require_once($this->getTemplatePath($mainTemplate, "layouts"));
+			$outStream = $this->render($layout, self::TEMPLATE_TYPE_LAYOUTS);
 		}
+		$this->sendHeader();
+		Hook::event("TemplateDisplay", array($this, &$outStream));
+		echo $outStream;
+		Hook::event("TemplatePostDisplay");
 		return $this;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#includeTemplate($template)
+	 * @param string $template
+	 * @param string $type
+	 * @return string
 	 */
-	public function includeTemplate($template)
+	public function render($template, $type)
 	{
-		$this->display($template, true);
-		return $this;
+		Hook::event("TemplateRenderBegin", array($this, $template));
+		$templatePath = $this->getTemplatePath($template, $type);
+		$view = $this->getView();
+		if($this->templateBuffer !== null)
+		{
+			$template = $this->templateBuffer;
+		}
+		ob_start();
+		require_once($templatePath);
+		$outStream = ob_get_contents();
+		ob_end_clean();
+		Hook::event("TemplateRenderEnd", array($this, $outStream, $templatePath));
+		return $outStream;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#addLogMessage($message)
+	 * @param string $message
+	 * @return \Recipe_Template_Adapter_Standard
 	 */
 	public function addLogMessage($message)
 	{
@@ -134,8 +154,9 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#addHTMLHeaderFile($file, $type)
+	 * @param string $file
+	 * @param string $type
+	 * @return \Recipe_Template_Adapter_Standard
 	 */
 	public function addHTMLHeaderFile($file, $type = "js")
 	{
@@ -144,12 +165,12 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#clearHTMLHeaderFiles($type)
+	 * @param string $type
+	 * @return \Recipe_Template_Adapter_Standard
 	 */
 	public function clearHTMLHeaderFiles($type = null)
 	{
-		if(is_null($type))
+		if($type === null)
 		{
 			$this->_data["html_header"] = array();
 		}
@@ -161,8 +182,9 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#get($var, $default)
+	 * @param string $var
+	 * @param mixed $default
+	 * @return mixed
 	 */
 	public function get($var, $default = null)
 	{
@@ -170,8 +192,8 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#exists($var)
+	 * @param string $var
+	 * @return bool
 	 */
 	public function exists($var)
 	{
@@ -179,8 +201,8 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#getLoop($loop)
+	 * @param string $loop
+	 * @return array
 	 */
 	public function getLoop($loop)
 	{
@@ -188,8 +210,8 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#setView($view)
+	 * @param object $view
+	 * @return \Recipe_Template_Adapter_Standard
 	 */
 	public function setView($view)
 	{
@@ -201,8 +223,7 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Recipe/Template/Adapter/Recipe_Template_Adapter_Abstract#getView()
+	 * @return object
 	 */
 	public function getView()
 	{

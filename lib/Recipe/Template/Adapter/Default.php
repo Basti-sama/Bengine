@@ -54,13 +54,6 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	protected $log = null;
 
 	/**
-	 * Template buffer.
-	 *
-	 * @var string
-	 */
-	private $templateBuffer = null;
-
-	/**
 	 * Initializing method.
 	 *
 	 * @return Recipe_Template_Adapter_Default
@@ -181,7 +174,7 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 			$outStream = $this->render($layout, self::TEMPLATE_TYPE_LAYOUTS);
 		}
 		$this->sendHeader();
-		Hook::event("TemplateDisplay", array($this, $outStream));
+		Hook::event("TemplateDisplay", array($this, &$outStream));
 		echo $outStream;
 		Hook::event("TemplatePostDisplay");
 		return $this;
