@@ -10,6 +10,11 @@
 class Bengine_Page_Mission extends Bengine_Page_Abstract
 {
 	/**
+	 * @var bool
+	 */
+	protected $noAction = false;
+
+	/**
 	 * Constructor. Handles requests for this page.
 	 *
 	 * @return Bengine_Page_Mission
@@ -20,6 +25,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 		Core::getLanguage()->load(array("info", "mission"));
 		if(!Core::getUser()->get("umode") && $this->isPost())
 		{
+			$this->noAction = true;
 			if($this->getParam("stargatejump"))
 			{
 				$this->starGateJump(Core::getRequest()->getPOST());
@@ -66,23 +72,26 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 	 */
 	protected function indexAction()
 	{
-		$fleetEvents = Bengine::getEH()->getOwnFleetEvents();
-		$fleetEvents = (!is_array($fleetEvents)) ? array() : $fleetEvents;
-		Hook::event("ShowAllMissions", array(&$fleetEvents));
-		Core::getTPL()->addLoop("missions", $fleetEvents);
-		Core::getQuery()->delete("temp_fleet", "planetid = '".Core::getUser()->get("curplanet")."'");
-
-		$fleet = Bengine::getModel("fleet")->getCollection();
-		$fleet->addPlanetFilter(Core::getUser()->get("curplanet"));
-		Hook::event("MissionFlettList", array($fleet));
-		Core::getTPL()->addLoop("fleet", $fleet);
-		$canSendFleet = false;
-		$fleetEvents = Bengine::getEH()->getOwnFleetEvents();
-		if(!$fleetEvents || Bengine::getResearch(14) + 1 > count($fleetEvents))
+		if(!$this->noAction)
 		{
-			$canSendFleet = true;
+			$fleetEvents = Bengine::getEH()->getOwnFleetEvents();
+			$fleetEvents = (!is_array($fleetEvents)) ? array() : $fleetEvents;
+			Hook::event("ShowAllMissions", array(&$fleetEvents));
+			Core::getTPL()->addLoop("missions", $fleetEvents);
+			Core::getQuery()->delete("temp_fleet", "planetid = '".Core::getUser()->get("curplanet")."'");
+
+			$fleet = Bengine::getModel("fleet")->getCollection();
+			$fleet->addPlanetFilter(Core::getUser()->get("curplanet"));
+			Hook::event("MissionFlettList", array($fleet));
+			Core::getTPL()->addLoop("fleet", $fleet);
+			$canSendFleet = false;
+			$fleetEvents = Bengine::getEH()->getOwnFleetEvents();
+			if(!$fleetEvents || Bengine::getResearch(14) + 1 > count($fleetEvents))
+			{
+				$canSendFleet = true;
+			}
+			Core::getTPL()->assign("canSendFleet", $canSendFleet);
 		}
-		Core::getTPL()->assign("canSendFleet", $canSendFleet);
 		return $this;
 	}
 
@@ -349,7 +358,6 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 			Core::getTPL()->addLoop("missions", $missions);
 			$this->setTemplate("mission/step3");
 		}
-		Core::getDB()->free_result($result);
 		return $this;
 	}
 
@@ -527,7 +535,6 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 			Core::getTPL()->addLoop("fleet", $fleet);
 			$this->setTemplate("mission/step4");
 		}
-		Core::getDB()->free_result($result);
 		return $this;
 	}
 
@@ -633,7 +640,6 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 				}
 			}
 		}
-		Core::getDB()->free_result($result);
 		$this->formation($eventid);
 		return $this;
 	}
