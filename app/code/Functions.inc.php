@@ -448,8 +448,8 @@ function isNewbieProtected($committer, $target)
 {
 	Hook::event("NewbieProtection", array(&$committer, &$target));
 	$newbieMin = (int) Core::getOptions()->get("NEWBIE_PROTECTION_MIN");
-	$newbieFactorMin = (int) Core::getOptions()->get("NEWBIE_PROTECTION_FACTOR_MIN");
-	$newbieFactorMax = (int) Core::getOptions()->get("NEWBIE_PROTECTION_FACTOR_MAX");
+	$newbieFactorMin = (float) Core::getOptions()->get("NEWBIE_PROTECTION_FACTOR_MIN");
+	$newbieFactorMax = (float) Core::getOptions()->get("NEWBIE_PROTECTION_FACTOR_MAX");
 	if($committer <= 0 || $target <= 0)
 	{
 		if($committer > $target)
