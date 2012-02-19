@@ -126,10 +126,10 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 	 *
 	 * @return Bengine_Page_Unit
 	 */
-	protected function addRequirement($level, $needs)
+	protected function addRequirement($level, $needs, $hidden)
 	{
 		if(!is_numeric($level) || $level < 0) { $level = 1; }
-		Core::getQuery()->insert("requirements", array("buildingid", "needs", "level"), array($this->id, $needs, $level));
+		Core::getQuery()->insert("requirements", array("buildingid", "needs", "level", "hidden"), array($this->id, $needs, $level, $hidden));
 		Core::getCache()->flushObject("requirements");
 		return $this;
 	}
@@ -156,7 +156,7 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 			}
 			if($this->getParam("addreq"))
 			{
-				$this->addRequirement($this->getParam("level"), $this->getParam("needs"));
+				$this->addRequirement($this->getParam("level"), $this->getParam("needs"), $this->getParam("hidden", 0));
 			}
 		}
 		$languageid = Core::getLang()->getOpt("languageid");
@@ -200,11 +200,11 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 			}
 
 			$req = array(); $i = 0;
-			$result = Core::getQuery()->select("requirements r", array("r.requirementid", "r.needs", "r.level", "p.content"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs) LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "r.buildingid = '".$this->id."' AND p.languageid = '".$languageid."'");
+			$result = Core::getQuery()->select("requirements r", array("r.requirementid", "r.needs", "r.level", "b.mode", "p.content"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs) LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "r.buildingid = '".$this->id."' AND p.languageid = '".$languageid."'");
 			while($row = Core::getDB()->fetch($result))
 			{
 				$req[$i]["delete"] = Link::get("game.php/".SID."/Unit/DeleteRequirement/".$this->id."/".$row["requirementid"], "[".Core::getLanguage()->getItem("DELETE")."]");
-				$req[$i]["name"] = Link::get("game.php/".SID."/Unit/Edit/".$row["needs"], $row["content"]);
+				$req[$i]["name"] = Link::get("game.php/".SID."/Unit/Edit/".$row["needs"], $row["content"].($row["mode"] == 5 ? " (".Core::getLanguage()->get("MOON").")" : ""));
 				$req[$i]["level"] = $row["level"];
 				$i++;
 			}
@@ -212,10 +212,14 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 			Core::getTPL()->addLoop("requirements", $req);
 
 			$const = array(); $i = 0;
-			$result = Core::getQuery()->select("construction b", array("b.buildingid", "p.content"), "LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "(b.mode = '1' OR b.mode = '2' OR b.mode = '5') AND p.languageid = '".$languageid."'", "p.content ASC");
+			$result = Core::getQuery()->select("construction b", array("b.buildingid", "b.mode", "p.content"), "LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "(b.mode = '1' OR b.mode = '2' OR b.mode = '5') AND p.languageid = '".$languageid."'", "p.content ASC");
 			while($row = Core::getDB()->fetch($result))
 			{
 				$const[$i]["name"] = $row["content"];
+				if($row["mode"] == 5)
+				{
+					$const[$i]["name"] .= " (".Core::getLanguage()->get("MOON").")";
+				}
 				$const[$i]["id"] = $row["buildingid"];
 				$i++;
 			}

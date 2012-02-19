@@ -326,7 +326,7 @@ class Bengine extends Application
 	{
 		if(!Core::getCache()->objectExists("requirements"))
 		{
-			$result = Core::getQuery()->select("requirements r", array("r.buildingid", "r.needs", "b.name", "b.mode", "r.level"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs)", "", "b.display_order ASC, r.buildingid ASC");
+			$result = Core::getQuery()->select("requirements r", array("r.buildingid", "r.needs", "b.name", "b.mode", "r.level", "r.hidden"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs)", "", "b.display_order ASC, r.buildingid ASC");
 			Core::getCache()->buildObject("requirements", $result, "buildingid");
 		}
 		self::$requirements = Core::getCache()->readObject("requirements");

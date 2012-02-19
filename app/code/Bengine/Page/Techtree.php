@@ -41,16 +41,19 @@ class Bengine_Page_Techtree extends Bengine_Page_Abstract
 			}
 			foreach($reqs[$bid] as $r)
 			{
-				$buffer = Core::getLanguage()->getItem($r["name"])." (".Core::getLanguage()->getItem("LEVEL")." ".$r["level"].")</span><br />";
-				if($r["mode"] == 1 || $r["mode"] == 5) { $rLevel = Bengine::getPlanet()->getBuilding($r["needs"]); }
-				else if($r["mode"] == 2) { $rLevel = Bengine::getResearch($r["needs"]); }
-				if($rLevel >= $r["level"])
+				if(!$r["hidden"])
 				{
-					$requirements .= "<span class=\"true\">".$buffer;
-				}
-				else
-				{
-					$requirements .= "<span class=\"false\">".$buffer;
+					$buffer = Core::getLanguage()->getItem($r["name"])." (".Core::getLanguage()->getItem("LEVEL")." ".$r["level"].")</span><br />";
+					if($r["mode"] == 1 || $r["mode"] == 5) { $rLevel = Bengine::getPlanet()->getBuilding($r["needs"]); }
+					else if($r["mode"] == 2) { $rLevel = Bengine::getResearch($r["needs"]); }
+					if($rLevel >= $r["level"])
+					{
+						$requirements .= "<span class=\"true\">".$buffer;
+					}
+					else
+					{
+						$requirements .= "<span class=\"false\">".$buffer;
+					}
 				}
 			}
 			$name = Core::getLanguage()->getItem($row["name"]);

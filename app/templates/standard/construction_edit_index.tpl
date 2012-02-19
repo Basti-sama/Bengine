@@ -4,7 +4,7 @@
 	<tr><th colspan="2">{lang}EDIT_CONSTRUCTION{/lang}</th></tr>
 	<tr>
 		<td><label for="construction_name">{lang}CONSTRUCTION_NAME{/lang}</label></td>
-		<td><input type="text" name="name" value="{@name}" maxlength="{config}MAX_INPUT_LENGTH{/config}" id=" id=""" /></td>
+		<td><input type="text" name="name" value="{@name}" maxlength="{config}MAX_INPUT_LENGTH{/config}" id="construction_name" /></td>
 	</tr>
 	<tr>
 		<td><label for="construction_desc">{lang}DESCRIPTION{/lang}</label></td>
@@ -72,6 +72,7 @@
 				<ul>
 					<li><label for="req-id">{lang}REQUIREMENT{/lang}</label><select name="needs" id="req-id">{foreach[constructions]}<option value="{loop}id{/loop}">{loop}name{/loop}</option>{/foreach}</select></li>
 					<li><label for="req-level">{lang}LEVEL{/lang}</label><input type="text" value="1" name="level" id="req-level" maxlength="2" size="5" /></li>
+					<li><label for="req-hidden">{lang}HIDE_IN_TECHTREE{/lang}</label><input type="hidden" name="hidden" id="req-hidden" value="1"/></li>
 					<li><input type="submit" name="addreq" value="{lang}COMMIT{/lang}" class="button" /></li>
 				</ul>
 			</fieldset>
