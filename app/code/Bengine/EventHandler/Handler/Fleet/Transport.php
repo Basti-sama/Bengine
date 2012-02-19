@@ -16,6 +16,7 @@ class Bengine_EventHandler_Handler_Fleet_Transport extends Bengine_EventHandler_
 	protected function _execute(Bengine_Model_Event $event, array $data)
 	{
 		Hook::event("EhTransport", array($event, &$data, $this));
+		$this->_production($event);
 		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + '".$data["metal"]."', silicon = silicon + '".$data["silicon"]."', hydrogen = hydrogen + '".$data["hydrogen"]."' WHERE planetid = '".$event["destination"]."'");
 
 		$data["targetplanet"] = $event["destination_planetname"];
