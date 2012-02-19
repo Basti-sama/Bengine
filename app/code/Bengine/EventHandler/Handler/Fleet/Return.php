@@ -16,6 +16,7 @@ class Bengine_EventHandler_Handler_Fleet_Return extends Bengine_EventHandler_Han
 	protected function _execute(Bengine_Model_Event $event, array $data)
 	{
 		Hook::event("EhReturn", array($event, &$data, $this));
+		$this->_production($event);
 		foreach($data["ships"] as $ship)
 		{
 			$result = Core::getQuery()->select("unit2shipyard", "unitid", "", "unitid = '".$ship["id"]."' AND planetid = '".$event["destination"]."'");

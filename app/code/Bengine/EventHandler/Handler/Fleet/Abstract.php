@@ -75,7 +75,7 @@ abstract class Bengine_EventHandler_Handler_Fleet_Abstract extends Bengine_Event
 	/**
 	 * Sets the relation object.
 	 *
-	 * @param Bengine_User_Relation	Relation object
+	 * @param Bengine_User_Relation $relations	Relation object
 	 *
 	 * @return Bengine_EventHandler_Handler_Fleet_Abstract
 	 */
@@ -88,7 +88,7 @@ abstract class Bengine_EventHandler_Handler_Fleet_Abstract extends Bengine_Event
 	/**
 	 * Setst the target data.
 	 *
-	 * @param array		Data
+	 * @param array $target		Data
 	 *
 	 * @return Bengine_EventHandler_Handler_Fleet_Abstract
 	 */
@@ -102,7 +102,7 @@ abstract class Bengine_EventHandler_Handler_Fleet_Abstract extends Bengine_Event
 	/**
 	 * Sets the target type.
 	 *
-	 * @param string	Target type
+	 * @param string $targetType	Target type
 	 *
 	 * @return Bengine_EventHandler_Handler_Fleet_Abstract
 	 */
@@ -115,7 +115,7 @@ abstract class Bengine_EventHandler_Handler_Fleet_Abstract extends Bengine_Event
 	/**
 	 * Sets the ships.
 	 *
-	 * @param array		Ships
+	 * @param array $ships		Ships
 	 *
 	 * @return Bengine_EventHandler_Handler_Fleet_Abstract
 	 */
@@ -158,5 +158,19 @@ abstract class Bengine_EventHandler_Handler_Fleet_Abstract extends Bengine_Event
 	public function getSpecialData()
 	{
 		return false;
+	}
+
+	/**
+	 * Add production to destination planet.
+	 *
+	 * @param Bengine_Model_Event $event
+	 * @return Bengine_Planet
+	 */
+	protected function _production(Bengine_Model_Event $event)
+	{
+		$planet = new Bengine_Planet($event->get("destination"), $event->get("destination_user_id"), false);
+		$planet->getProduction()
+			->addProd();
+		return $planet;
 	}
 }
