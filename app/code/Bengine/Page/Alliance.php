@@ -1219,7 +1219,7 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 			}
 		}
 		Core::getDB()->free_result($result);
-		$this->redirect("game.php/".SID."/Main");
+		$this->redirect("game.php/".SID."/Index");
 		return $this->index();
 	}
 

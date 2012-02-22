@@ -264,7 +264,7 @@ class Bengine_Page_Moderator extends Bengine_Page_Abstract
 		}
 		else
 		{
-			$this->redirect("game.php/".SID."/Main");
+			$this->redirect("game.php/".SID."/Index");
 		}
 
 		Core::getTPL()->addLoop("sessionLog", $sessionLog);

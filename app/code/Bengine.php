@@ -583,7 +583,7 @@ class Bengine extends Application
 		}
 		if(class_exists("Bengine_Page_Index"))
 		{
-			return self::factory("page/main", array("action" => "noroute"));
+			return self::factory("page/index", array("action" => "noroute"));
 		}
 		throw new Recipe_Exception_Generic("Unable to load page '".$page."'.");
 	}

@@ -95,7 +95,7 @@ class Bengine_Page_Index extends Bengine_Page_Abstract
 		Core::getTPL()->assign("planetImage", Image::getImage("planets/".Bengine::getPlanet()->getData("picture").Core::getConfig()->get("PLANET_IMG_EXT"), Bengine::getPlanet()->getData("planetname"), "200px", "200px"));
 		Core::getTPL()->assign("freeFields", Bengine::getPlanet()->getMaxFields());
 		Core::getTPL()->assign("planetDiameter", fNumber(Bengine::getPlanet()->getData("diameter")));
-		Core::getTPL()->assign("planetNameLink", Link::get("game.php/".SID."/Main/PlanetOptions", Bengine::getPlanet()->getData("planetname")));
+		Core::getTPL()->assign("planetNameLink", Link::get("game.php/".SID."/Index/PlanetOptions", Bengine::getPlanet()->getData("planetname")));
 		Core::getTPL()->assign("planetPosition", Bengine::getPlanet()->getCoords());
 		Core::getTPL()->assign("planetTemp", Bengine::getPlanet()->getData("temperature"));
 		Core::getTPL()->assign("points", Link::get("game.php/".SID."/Ranking", fNumber(floor(Core::getUser()->get("points")))));
@@ -214,13 +214,13 @@ class Bengine_Page_Index extends Bengine_Page_Abstract
 				deletePlanet(Bengine::getPlanet()->getPlanetId(), Core::getUser()->get("userid"), Bengine::getPlanet()->getData("ismoon"));
 				Core::getQuery()->update("user", "curplanet", Core::getUser()->get("hp"), "userid = '".Core::getUser()->get("userid")."'");
 				Core::getUser()->rebuild();
-				$this->redirect("game.php/".SID."/Main");
+				$this->redirect("game.php/".SID."/Index");
 			}
 		}
 		else if(checkCharacters($planetname))
 		{
 			Core::getQuery()->update("planet", "planetname", $planetname, "planetid = '".Core::getUser()->get("curplanet")."'");
-			$this->redirect("game.php/".SID."/Main");
+			$this->redirect("game.php/".SID."/Index");
 		}
 		else
 		{

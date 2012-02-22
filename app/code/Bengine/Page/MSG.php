@@ -79,8 +79,8 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 	/**
 	 * Form to send a new message.
 	 *
-	 * @param string	Receiver
-	 * @param string	Reply subject
+	 * @param string $receiver	Receiver
+	 * @param string $reply		Reply subject
 	 *
 	 * @return Bengine_Page_MSG
 	 */
@@ -108,9 +108,9 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 	/**
 	 * Sends a message.
 	 *
-	 * @param string	Receiver name
-	 * @param string	Subject
-	 * @param string	Message
+	 * @param string $receiver	Receiver name
+	 * @param string $subject	Subject
+	 * @param string $message	Message
 	 *
 	 * @return Bengine_Page_MSG
 	 */
@@ -164,9 +164,9 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 	/**
 	 * Deletes messages.
 	 *
-	 * @param integer	Folder id
-	 * @param integer	Mode to delete content
-	 * @param array		Messages
+	 * @param integer $folder	Folder id
+	 * @param integer $option	Mode to delete content
+	 * @param array $msgs		Messages
 	 *
 	 * @return Bengine_Page_MSG
 	 */
@@ -235,7 +235,7 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 						$message = Core::getLang()->get("MODERATOR_REPORT_MESSAGE");
 						$subject = Core::getLang()->get("MODERATOR_REPORT_SUBJECT");
 						$attr = array("sender", "mode", "subject", "message", "receiver", "time", "read");
-						$vals = array(null, 1, $subject, $message, $modId, TIME, 0);
+						$vals = array(null, 1, $subject, richText($message), $modId, TIME, 0);
 						Core::getQuery()->insert("message", $attr, $vals);
 					}
 				}
@@ -247,7 +247,7 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 	/**
 	 * Creates a new pagination object for the given folder.
 	 *
-	 * @param integer	Folder id
+	 * @param integer $id	Folder id
 	 *
 	 * @return Pagination
 	 */
@@ -264,7 +264,7 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 	/**
 	 * Shows content of a message folder.
 	 *
-	 * @param integer	Folder id
+	 * @param integer $id	Folder id
 	 *
 	 * @return Bengine_Page_MSG
 	 */
@@ -322,7 +322,7 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 	/**
 	 * Mark a folder as read.
 	 *
-	 * @param integer	Folder id to mark
+	 * @param integer $folderId	Folder id to mark
 	 *
 	 * @return Bengine_Page_MSG
 	 */

@@ -178,7 +178,7 @@ class Bengine_Page_RocketAttack extends Bengine_Page_Abstract
 			$data["planetname"] = $this->t["planetname"];
 			$data["primary_target"] = $primaryTarget;
 			Bengine::getEH()->addEvent(16, TIME + getRocketFlightDuration($diff), Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), $this->target, $data);
-			$this->redirect("game.php/".SID."/Main");
+			$this->redirect("game.php/".SID."/Index");
 		}
 		return $this;
 	}
