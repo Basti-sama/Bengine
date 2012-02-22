@@ -235,7 +235,7 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 						$message = Core::getLang()->get("MODERATOR_REPORT_MESSAGE");
 						$subject = Core::getLang()->get("MODERATOR_REPORT_SUBJECT");
 						$attr = array("sender", "mode", "subject", "message", "receiver", "time", "read");
-						$vals = array(null, 1, $subject, $message, $modId, TIME, 0);
+						$vals = array(null, 1, $subject, richText($message), $modId, TIME, 0);
 						Core::getQuery()->insert("message", $attr, $vals);
 					}
 				}
