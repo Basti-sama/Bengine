@@ -7,8 +7,8 @@
  * @version $Id: Bengine.php 55 2011-08-14 16:50:32Z secretchampion $
  */
 
-define("BENGINE_VERSION", "0.10rc");
-define("BENGINE_REVISION", 10);
+define("BENGINE_VERSION", "0.11");
+define("BENGINE_REVISION", 11);
 define("VERSION_CHECK_PAGE", "http://bengine.de/version.php");
 
 class Bengine extends Application
