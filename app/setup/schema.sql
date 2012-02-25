@@ -2043,8 +2043,8 @@ INSERT INTO `bengine_requirements` (`requirementid`, `buildingid`, `needs`, `lev
 (147, 41, 59, 9, 0),
 (148, 42, 59, 12, 0),
 (149, 50, 59, 6, 0),
-(150, 51, 54, 100, 0),
-(151, 52, 54, 100, 0);
+(150, 51, 54, 100, 1),
+(151, 52, 54, 100, 1);
 
 DROP TABLE IF EXISTS `bengine_research2user`;
 CREATE TABLE IF NOT EXISTS `bengine_research2user` (
