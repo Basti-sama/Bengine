@@ -305,8 +305,13 @@ class Bengine extends Application
 		{
 			return true;
 		}
+		$isMoon = self::getPlanet()->getData("ismoon");
 		foreach(self::$requirements[$bid] as $r)
 		{
+			if(($r["mode"] == 1 && $isMoon) || ($r["mode"] == 5 && !$isMoon))
+			{
+				continue;
+			}
 			if($r["mode"] == 1 || $r["mode"] == 5)
 				$rLevel = self::$planet->getBuilding($r["needs"]);
 			else if($r["mode"] == 2)

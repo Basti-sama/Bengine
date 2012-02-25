@@ -39,13 +39,24 @@ class Bengine_Page_Techtree extends Bengine_Page_Abstract
 			{
 				$reqs[$bid] = array();
 			}
+			$isMoon = Bengine::getPlanet()->getData("ismoon");
 			foreach($reqs[$bid] as $r)
 			{
 				if(!$r["hidden"])
 				{
+					if(($row["mode"] == 3 || $row["mode"] == 4) && (($r["mode"] == 1 && $isMoon) || ($r["mode"] == 5 && !$isMoon)))
+					{
+						continue;
+					}
 					$buffer = Core::getLanguage()->getItem($r["name"])." (".Core::getLanguage()->getItem("LEVEL")." ".$r["level"].")</span><br />";
-					if($r["mode"] == 1 || $r["mode"] == 5) { $rLevel = Bengine::getPlanet()->getBuilding($r["needs"]); }
-					else if($r["mode"] == 2) { $rLevel = Bengine::getResearch($r["needs"]); }
+					if($r["mode"] == 1 || $r["mode"] == 5)
+					{
+						$rLevel = Bengine::getPlanet()->getBuilding($r["needs"]);
+					}
+					else if($r["mode"] == 2)
+					{
+						$rLevel = Bengine::getResearch($r["needs"]);
+					}
 					if($rLevel >= $r["level"])
 					{
 						$requirements .= "<span class=\"true\">".$buffer;
