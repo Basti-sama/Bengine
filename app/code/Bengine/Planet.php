@@ -420,7 +420,7 @@ class Bengine_Planet
 		$fmax = floor(pow($this->data["diameter"] / 1000, 2));
 		if($this->getBuilding("TERRA_FORMER") > 0)
 		{
-			$fmax += $this->getBuilding("TERRA_FORMER") * 5;
+			$fmax += $this->getBuilding("TERRA_FORMER") * (int) Core::getOptions()->get("TERRAFORMER_ADDITIONAL_FIELDS");
 		}
 		else if($this->data["ismoon"])
 		{
