@@ -65,7 +65,7 @@
 			</script>
 			<?php endif ?>
 			<?php if(!$event): ?>
-			<?php if($this->get("shipyardSize") > 0 && ($id == 7 || $id == 8)): ?>
+			<?php if($this->get("shipyardSize") > 0 && ($id == 7 || $id == 8 || $id == 59)): ?>
 			<span class="false">{lang=BUILDING_AT_WORK}</span>
 			<?php elseif(Bengine::getEH()->getResearchEvent() && $id == 12): ?>
 			<span class="false">{lang=BUILDING_AT_WORK}</span>

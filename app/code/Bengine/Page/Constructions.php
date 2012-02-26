@@ -75,7 +75,7 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 		if($id == 12 && Bengine::getEH()->getResearchEvent())
 			throw new Recipe_Exception_Generic("Do not mess with the url.");
 		$shipyardSize = Bengine::getEH()->getShipyardEvents()->getCalculatedSize();
-		if(($id == 8 || $id == 7) && $shipyardSize>0)
+		if(($id == 8 || $id == 7 || $id == 59) && $shipyardSize>0)
 			throw new Recipe_Exception_Generic("Do not mess with the url.");
 
 		// Check fields

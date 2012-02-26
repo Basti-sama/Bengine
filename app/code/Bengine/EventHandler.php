@@ -418,7 +418,7 @@ class Bengine_EventHandler
 			foreach($this->eventStack as $event)
 			{
 				$data = $event->getData();
-				if(isset($data["buildingid"]) && ($data["buildingid"] == 7 || $data["buildingid"] == 8) && $event->get("planetid") == Core::getUser()->get("curplanet") && $event->get("mode") == 1)
+				if(isset($data["buildingid"]) && ($data["buildingid"] == 7 || $data["buildingid"] == 8 || $data["buildingid"] == 59) && $event->get("planetid") == Core::getUser()->get("curplanet") && $event->get("mode") == 1)
 				{
 					$this->canBuildUnits = false;
 					break;
