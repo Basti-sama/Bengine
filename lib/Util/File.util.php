@@ -90,7 +90,7 @@ class File
 			$openDir = self::getRecursiveDirectoryIterator($dir);
 			foreach($openDir as $file)
 			{
-				if($file->isWritable() && !$file->isDot())
+				if($file->isWritable())
 				{
 					if($file->isDir())
 					{
@@ -275,7 +275,7 @@ class File
 	public static function getRecursiveDirectoryIterator($dir, $mode = RecursiveIteratorIterator::CHILD_FIRST)
 	{
 		$dir = (substr($dir, -1) != "/") ? $dir."/" : $dir;
-		return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::CURRENT_AS_FILEINFO), $mode);
+		return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::SKIP_DOTS), $mode);
 	}
 
 	/**
