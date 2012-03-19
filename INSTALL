@@ -27,7 +27,7 @@ hosts. Installation should be done by advanced server administrators.
 	* curl
 	* SimpleXMLElement
 - Java Runtime Enviroment 6 (no Tomcat!)
-- MySQL 5.x incl. InnoDB
+- MySQL 5.1 or higher incl. InnoDB
 
 3. Upload files
 Just upload all files except for "compiler.php" into the root directory
@@ -88,7 +88,7 @@ erfahrenen Server Administrator durchgeführt werden.
 	* curl
 	* SimpleXMLElement
 - Java Runtime Enviroment 6 (Kein Tomcat!)
-- MySQL 5.x inkl. InnoDB
+- MySQL 5.1 oder höher inkl. InnoDB
 
 3. Datei-Upload
 Lade alle Dateien außer "compiler.php" in das Root-Verzeichnis deines

@@ -13,6 +13,6 @@ The following software is required to run bengine on your server:
   - curl
   - SimpleXMLElement
 - Java Runtime Enviroment 6 (no Tomcat!)
-- MySQL 5.x incl. InnoDB
+- MySQL 5.1 or higher incl. InnoDB
 
 Help to keep Bengine healthy - [report any bugs](http://bugs.bengine.de/).
