@@ -114,7 +114,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 	/**
 	 * Updates the deletion flag for this user.
 	 *
-	 * @param boolean	Enable/Disable deletion
+	 * @param boolean $deletion	Enable/Disable deletion
 	 *
 	 * @return Bengine_Page_Preferences
 	 */
@@ -154,7 +154,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 		$templatepackage = (empty($templatepackage)) ? "standard" : $templatepackage;
 		if(!is_dir(APP_ROOT_DIR."templates/".$templatepackage))
 		{
-			$templatepackage = "standard";
+			$templatepackage = Core::getUser()->get("templatepackage");
 		}
 		$activation = "";
 
@@ -270,7 +270,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 		if($umode == 1)
 		{
 			// Check if umode can be activated
-			/*@var $events Bengine_Model_Collection_Event*/
+			/* @var Bengine_Model_Collection_Event $events */
 			$events = Bengine::getCollection("event");
 			$events->addVacationModeFilter(Core::getUser()->get("userid"));
 			$eventCount = $events->getCalculatedSize();
@@ -295,7 +295,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 		$ipcheck = (int) $ipcheck;
 		if(!Core::getConfig()->get("USER_EDIT_IP_CHECK"))
 		{
-			$ipcheck = 1;
+			$ipcheck = Core::getUser()->get("ipcheck");
 		}
 		else if($ipcheck > 0)
 		{
@@ -323,11 +323,11 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 			if(Core::getDB()->num_rows($result) > 0)
 			{
 				// User has a feed key
-				Core::getQuery()->update("feed_keys", array("feed_key"), array($new_key), "user_id = '".Core::getUser()->get("userid")."'");
+				Core::getQuery()->updateSet("feed_keys", array("feed_key" => $new_key), "user_id = '".Core::getUser()->get("userid")."'");
 			}
 			else
 			{
-				Core::getQuery()->insert("feed_keys", array("user_id", "feed_key"), array(Core::getUser()->get("userid"), $new_key));
+				Core::getQuery()->insertInto("feed_keys", array("user_id" => Core::getUser()->get("userid"), "feed_key" => $new_key));
 			}
 		}
 
