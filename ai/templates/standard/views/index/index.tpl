@@ -22,7 +22,7 @@
 		<td class="tdbold">{lang}Database_Type{/lang}</td>
 		<td class="tdcenter">{@DBType}</td>
 		<td class="tdbold">{lang}Database_Version{/lang}</td>
-		<td class="tdcenter">{@DBVersion}</td>
+		<td class="tdcenter">Client: {@DBVersion}<br/>Server: {@DBServer}</td>
 	</tr>
 	<tr>
 		<td class="tdbold">{lang}Recipe_Version{/lang}</td>
