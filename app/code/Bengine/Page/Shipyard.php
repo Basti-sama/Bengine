@@ -10,6 +10,16 @@
 class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 {
 	/**
+	 * @var integer
+	 */
+	const FLEET_CONSTRUCTION_TYPE = 3;
+
+	/**
+	 * @var integer
+	 */
+	const DEFENSE_CONSTRUCTION_TYPE = 4;
+
+	/**
 	 * Shipyard display mode.
 	 * 3: Fleet, 4: Defense
 	 *
@@ -50,11 +60,11 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 
 		switch(Core::getRequest()->getGET("controller"))
 		{
-			case "Shipyard": $this->mode = 3; break;
-			case "Defense": $this->mode = 4; break;
+			case "Shipyard": $this->mode = self::FLEET_CONSTRUCTION_TYPE; break;
+			case "Defense": $this->mode = self::DEFENSE_CONSTRUCTION_TYPE; break;
 		}
 
-		if(Bengine::getPlanet()->getBuilding("ROCKET_STATION") > 0 && $this->mode == 4)
+		if(Bengine::getPlanet()->getBuilding("ROCKET_STATION") > 0 && $this->mode == self::DEFENSE_CONSTRUCTION_TYPE)
 		{
 			$_result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '51' AND planetid = '".Core::getUser()->get("curplanet")."'");
 			$_row = Core::getDB()->fetch($_result);
@@ -86,15 +96,17 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 		Core::getLanguage()->load(array("info", "buildings"));
 		$this->setTemplate("shipyard/index");
 
+		/* @var Bengine_Model_Collection_Construction $collection */
 		$collection = Application::getCollection("construction", "unit");
-		$collection->addTypeFilter($this->mode)
-			->addShipyardJoin(Core::getUser()->get("curplanet"));
+		$collection->addTypeFilter($this->mode, Bengine::getPlanet()->getData("ismoon"))
+			->addShipyardJoin(Core::getUser()->get("curplanet"))
+			->addDisplayOrder();
 
 		if(Bengine::getPlanet()->getBuilding("SHIPYARD") == 0)
 		{
 			Logger::dieMessage("SHIPYARD_REQUIRED");
 		}
-		if($this->mode == 3)
+		if($this->mode == self::FLEET_CONSTRUCTION_TYPE)
 			Core::getTPL()->assign("shipyard", Core::getLanguage()->getItem("SHIP_CONSTRUCTION"));
 		else
 			Core::getTPL()->assign("shipyard", Core::getLanguage()->getItem("DEFENSE"));
@@ -147,29 +159,28 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 		{
 			$this->redirect("game.php/".SID."/".Core::getRequest()->getGET("controller"));
 		}
+		if(!$this->canBuildUnits)
+			throw new Recipe_Exception_Generic("Shipyard or nano factory in progress.");
 		$post = Core::getRequest()->getPOST();
-		$result = Core::getQuery()->select("construction", array("buildingid", "name", "basic_metal", "basic_silicon", "basic_hydrogen", "basic_energy"), "", "mode = '".$this->mode."'", "display_order ASC, buildingid ASC");
-		while($row = Core::getDB()->fetch($result))
+		/* @var Bengine_Model_Collection_Construction $collection */
+		$collection = Application::getCollection("construction", "unit");
+		$collection->addTypeFilter($this->mode, Bengine::getPlanet()->getData("ismoon"))
+			->addShipyardJoin(Core::getUser()->get("curplanet"));
+		foreach($collection as $construction)
 		{
-			$id = $row["buildingid"];
+			/* @var Bengine_Model_Unit $collection */
+			$id = $construction->getId();
 			if(isset($post[$id]) && $post[$id] > 0)
 			{
-				// Vacation enabled?
-				if(Core::getUser()->get("umode"))
-					throw new Recipe_Exception_Generic("Your account is still in vacation mode.");
-
 				// Check for requirements
 				if(!Bengine::canBuild($id))
 					throw new Recipe_Exception_Generic("You cannot build this.");
-
-				if(!$this->canBuildUnits)
-					throw new Recipe_Exception_Generic("Shipyard or nano factory in progress.");
 
 				$quantity = _pos($post[$id]);
 				if($quantity > 1000)
 					$quantity = 1000;
 
-				Hook::event("UnitOrderStart", array(&$row, &$quantity));
+				Hook::event("UnitOrderStart", array($construction, &$quantity));
 
 				if($id == 49 || $id == 50)
 				{
@@ -209,7 +220,7 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 				}
 
 				// Check resources
-				$quantity = $this->checkResourceForQuantity($quantity, $row);
+				$quantity = $this->checkResourceForQuantity($quantity, $construction);
 
 				// make event
 				if($quantity > 0)
@@ -224,32 +235,34 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 					}
 					unset($_result); unset($_row);
 
-					$time = getBuildTime($row["basic_metal"], $row["basic_silicon"], $this->mode);
+					$time = getBuildTime($construction->get("basic_metal"), $construction->get("basic_silicon"), $this->mode);
 
 					// This is just for the output below the shipyard, it does not represent the actual event!
 					Core::getQuery()->insert("shipyard", array("planetid", "unitid", "quantity", "one", "time", "finished"), array(Core::getUser()->get("curplanet"), $id, $quantity, $time, $latest, $time * $quantity + $latest));
 
 					$data["time"] = $time;
 					$data["quantity"] = $quantity;
-					$data["mission"] = $row["name"];
+					$data["mission"] = $construction->get("name");
 					$data["buildingid"] = $id;
-					$data["metal"] = $row["basic_metal"];
-					$data["silicon"] = $row["basic_silicon"];
-					$data["hydrogen"] = $row["basic_hydrogen"];
-					$data["points"] = ($row["basic_metal"] + $row["basic_silicon"] + $row["basic_hydrogen"]) / 1000;
+					$data["metal"] = $construction->get("basic_metal");
+					$data["silicon"] = $construction->get("basic_silicon");
+					$data["hydrogen"] = $construction->get("basic_hydrogen");
+					$data["points"] = ($construction->get("basic_metal") + $construction->get("basic_silicon") + $construction->get("basic_hydrogen")) / 1000;
 					$data["dont_save_resources"] = true; // We save the subtracted resources manually to avoid unnecessary SQL queries.
-					if($this->mode == 3) { $mode = 4; } else { $mode = 5; }
-					Hook::event("UnitOrderLast", array($row, $quantity, $mode, &$time, &$latest, &$data));
+					if($this->mode == self::FLEET_CONSTRUCTION_TYPE)
+						$mode = 4;
+					else
+						$mode = 5;
+					Hook::event("UnitOrderLast", array($construction, $quantity, $mode, &$time, &$latest, &$data));
 					for($i = 1; $i <= $quantity; $i++)
 					{
 						Bengine::getEH()->addEvent($mode, $time * $i + $latest, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), null, $data);
 					}
 					$planet = Bengine::getPlanet();
-					Core::getQuery()->update("planet", array("metal", "silicon", "hydrogen"), array($planet->getData("metal"), $planet->getData("silicon"), $planet->getData("hydrogen")), "planetid = '".Core::getUser()->get("curplanet")."'");
+					Core::getQuery()->updateSet("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = '".Core::getUser()->get("curplanet")."'");
 				}
 			}
 		}
-		Core::getDB()->free_result($result);
 		$this->redirect("game.php/".SID."/".Core::getRequest()->getGET("controller"));
 		return $this;
 	}
@@ -257,30 +270,35 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 	/**
 	 * Checks the resource against the given quantity and reduce it if needed.
 	 *
-	 * @param integer	Quantity
-	 * @param array		Ship data row
+	 * @param integer $qty							Quantity
+	 * @param Bengine_Model_Unit $construction		Ship data row
 	 *
 	 * @return integer
 	 */
-	protected function checkResourceForQuantity($qty, array $row)
+	protected function checkResourceForQuantity($qty, Bengine_Model_Unit $construction)
 	{
+		$basicMetal = $construction->get("basic_metal");
+		$basicSilicon = $construction->get("basic_silicon");
+		$basicHydrogen = $construction->get("basic_hydrogen");
+		$basicEnergy = $construction->get("basic_energy");
+
 		$metal = _pos(Bengine::getPlanet()->getData("metal"));
 		$silicon = _pos(Bengine::getPlanet()->getData("silicon"));
 		$hydrogen = _pos(Bengine::getPlanet()->getData("hydrogen"));
 		$energy = _pos(Bengine::getPlanet()->getEnergy());
 
-		$requiredMetal = $row["basic_metal"] * $qty;
-		$requiredSilicon = $row["basic_silicon"] * $qty;
-		$requiredHydrogen = $row["basic_hydrogen"] * $qty;
-		$requiredEnergy = $row["basic_energy"] * $qty;
+		$requiredMetal = $basicMetal * $qty;
+		$requiredSilicon = $basicSilicon * $qty;
+		$requiredHydrogen = $basicHydrogen * $qty;
+		$requiredEnergy = $basicEnergy * $qty;
 		if($requiredMetal > $metal || $requiredSilicon > $silicon || $requiredHydrogen > $hydrogen || $requiredEnergy > $energy)
 		{
 			// Try to reduce quantity
 			$q = array();
-			$q[] = ($row["basic_metal"] > 0) ? floor($metal / $row["basic_metal"]) : $qty;
-			$q[] = ($row["basic_silicon"] > 0) ? floor($silicon / $row["basic_silicon"]) : $qty;
-			$q[] = ($row["basic_hydrogen"] > 0) ? floor($hydrogen / $row["basic_hydrogen"]) : $qty;
-			$q[] = ($row["basic_energy"] > 0) ? floor($energy / $row["basic_energy"]) : $qty;
+			$q[] = ($basicMetal > 0) ? floor($metal / $basicMetal) : $qty;
+			$q[] = ($basicSilicon > 0) ? floor($silicon / $basicSilicon) : $qty;
+			$q[] = ($basicHydrogen > 0) ? floor($hydrogen / $basicHydrogen) : $qty;
+			$q[] = ($basicEnergy > 0) ? floor($energy / $basicEnergy) : $qty;
 			$qty = min($q);
 		}
 

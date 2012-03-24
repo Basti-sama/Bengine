@@ -131,9 +131,11 @@ class Recipe_Database_Select
 		if(!empty($this->where))
 		{
 			$where = "";
+			$i = 0;
 			foreach($this->where as $key => $value)
 			{
-				$where .= implode(" ".$key." ", $value);
+				$where .= ($i > 0 ? " AND " : "").implode(" $key ", $value);
+				$i++;
 			}
 			$this->sql .= " WHERE ".$where;
 		}

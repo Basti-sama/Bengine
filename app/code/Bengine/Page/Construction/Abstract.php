@@ -19,42 +19,46 @@ abstract class Bengine_Page_Construction_Abstract extends Bengine_Page_Abstract
 	/**
 	 * Stores the required resources for the current building.
 	 *
-	 * @param integer	Next level
-	 * @param integer	Construction data
+	 * @param integer $nextLevel
+	 * @param Bengine_Model_Construction $construction
 	 *
-	 * @return Construction
+	 * @return Bengine_Page_Construction_Abstract
 	 */
-	protected function setRequieredResources($nextLevel, $row)
+	protected function setRequieredResources($nextLevel, Bengine_Model_Construction $construction)
 	{
+		$basicMetal = $construction->get("basic_metal");
+		$basicSilicon = $construction->get("basic_silicon");
+		$basicHydrogen = $construction->get("basic_hydrogen");
+		$basicEnergy = $construction->get("basic_energy");
 		if($nextLevel > 1)
 		{
-			if($row["basic_metal"] > 0)
+			if($basicMetal > 0)
 			{
-				$this->requiredMetal = parseFormula($row["charge_metal"], $row["basic_metal"], $nextLevel);
+				$this->requiredMetal = parseFormula($construction->get("charge_metal"), $basicMetal, $nextLevel);
 			}
 			else { $this->requiredMetal = 0; }
-			if($row["basic_silicon"] > 0)
+			if($basicSilicon > 0)
 			{
-				$this->requiredSilicon = parseFormula($row["charge_silicon"], $row["basic_silicon"], $nextLevel);
+				$this->requiredSilicon = parseFormula($construction->get("charge_silicon"), $basicSilicon, $nextLevel);
 			}
 			else { $this->requiredSilicon = 0; }
-			if($row["basic_hydrogen"] > 0)
+			if($basicHydrogen > 0)
 			{
-				$this->requiredHydrogen = parseFormula($row["charge_hydrogen"], $row["basic_hydrogen"], $nextLevel);
+				$this->requiredHydrogen = parseFormula($construction->get("charge_hydrogen"), $basicHydrogen, $nextLevel);
 			}
 			else { $this->requiredHydrogen = 0; }
-			if($row["basic_energy"] > 0)
+			if($basicEnergy > 0)
 			{
-				$this->requiredEnergy = parseFormula($row["charge_energy"], $row["basic_energy"], $nextLevel);
+				$this->requiredEnergy = parseFormula($construction->get("charge_energy"), $basicEnergy, $nextLevel);
 			}
 			else { $this->requiredEnergy = 0; }
 		}
 		else
 		{
-			$this->requiredMetal = (int) $row["basic_metal"];
-			$this->requiredSilicon = (int) $row["basic_silicon"];
-			$this->requiredHydrogen = (int) $row["basic_hydrogen"];
-			$this->requiredEnergy = (int) $row["basic_energy"];
+			$this->requiredMetal = (int) $basicMetal;
+			$this->requiredSilicon = (int) $basicSilicon;
+			$this->requiredHydrogen = (int) $basicHydrogen;
+			$this->requiredEnergy = (int) $basicEnergy;
 		}
 		return $this;
 	}

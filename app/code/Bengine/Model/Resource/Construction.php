@@ -41,7 +41,7 @@ class Bengine_Model_Resource_Construction extends Recipe_Model_Resource_Abstract
 	{
 		return array(
 			"c" => array(
-				"buildingid", "mode", "name", "special", "demolish", "display_order",
+				"buildingid", "mode", "allow_on_moon", "name", "special", "demolish", "display_order",
 				"basic_metal", "basic_silicon", "basic_hydrogen", "basic_energy",
 				"prod_metal", "prod_silicon", "prod_hydrogen", "prod_energy",
 				"cons_metal", "cons_silicon", "cons_hydrogen", "cons_energy",

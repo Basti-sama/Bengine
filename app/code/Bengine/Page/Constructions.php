@@ -17,6 +17,13 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 	const BUILDING_CONSTRUCTION_TYPE = 1;
 
 	/**
+	 * Moon construction type.
+	 *
+	 * @var integer
+	 */
+	const MOON_CONSTRUCTION_TYPE = 5;
+
+	/**
 	 * Building event of the current planet.
 	 *
 	 * @var mixed
@@ -43,15 +50,18 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 	protected function indexAction()
 	{
 		Core::getLanguage()->load(array("info", "buildings"));
-		$mode = (Bengine::getPlanet()->getData("ismoon")) ? 5 : 1;
+		$mode = self::BUILDING_CONSTRUCTION_TYPE;
+		$moonType = Bengine::getPlanet()->getData("ismoon") ? self::MOON_CONSTRUCTION_TYPE : null;
 		if(!Bengine::getPlanet()->planetFree())
 			Logger::addMessage("PLANET_FULL", "info");
 		$shipyardSize = Bengine::getEH()->getShipyardEvents()->getCalculatedSize();
 		Core::getTPL()->assign("shipyardSize", $shipyardSize);
 
+		/* @var Bengine_Model_Collection_Construction $collection */
 		$collection = Application::getCollection("construction");
-		$collection->addTypeFilter($mode)
-			->addPlanetJoin(Core::getUser()->get("curplanet"));
+		$collection->addTypeFilter($mode, $moonType ? true : false, $moonType)
+			->addPlanetJoin(Core::getUser()->get("curplanet"))
+			->addDisplayOrder();
 
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.countdown.js", "js");
 		Hook::event("ConstructionsLoaded", array($collection));
@@ -63,7 +73,7 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 	 /**
 	 * Check for sufficient resources and start to upgrade building.
 	 *
-	 * @param integer	Building id to upgrade
+	 * @param integer $id	Building id to upgrade
 	 *
 	 * @return Bengine_Page_Constructions
 	 */
@@ -87,26 +97,39 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 		// Check for requirements
 		if(!Bengine::canBuild($id))
 		{
-			throw new Recipe_Exception_Generic("You does not fulfil the requirements to build this.");
+			throw new Recipe_Exception_Generic("You do not fulfil the requirements to build this.");
 		}
 
 		// Load building data
 		Core::getLanguage()->load(array("info" , "buildings"));
-		if(Bengine::getPlanet()->getData("ismoon")) { $mode = 5; } else { $mode = 1; }
-		$result = Core::getQuery()->select("construction", array("name", "basic_metal", "basic_silicon", "basic_hydrogen", "basic_energy", "charge_metal", "charge_silicon", "charge_hydrogen", "charge_energy"), "", "buildingid = '".$id."' AND mode = '".$mode."'");
-		if(!$row = Core::getDB()->fetch($result))
+		$isMoon = Bengine::getPlanet()->getData("ismoon");
+
+		/* @var Bengine_Model_Construction $construction */
+		$construction = Bengine::getModel("construction");
+		$construction->load($id);
+		if(!$construction->getId())
 		{
-			Core::getDB()->free_result($result);
 			throw new Recipe_Exception_Generic("Unkown building :(");
 		}
-		Core::getDB()->free_result($result);
+		$mode = $construction->get("mode");
+		if($isMoon && $mode != self::MOON_CONSTRUCTION_TYPE)
+		{
+			if($mode == self::BUILDING_CONSTRUCTION_TYPE && !$construction->get("allow_on_moon"))
+			{
+				throw new Recipe_Exception_Generic("Building not allowed.");
+			}
+		}
+		if(!$isMoon && $mode != self::BUILDING_CONSTRUCTION_TYPE)
+		{
+			throw new Recipe_Exception_Generic("Building not allowed.");
+		}
 
-		Hook::event("UpgradeBuildingFirst", array(&$row));
+		Hook::event("UpgradeBuildingFirst", array($construction));
 
 		// Get required resources
 		$level = Bengine::getPlanet()->getBuilding($id);
 		if($level > 0) { $level = $level + 1; } else { $level = 1; }
-		$this->setRequieredResources($level, $row);
+		$this->setRequieredResources($level, $construction);
 
 		// Check resources
 		if($this->checkResources())
@@ -118,8 +141,8 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 			$time = getBuildTime($data["metal"], $data["silicon"], self::BUILDING_CONSTRUCTION_TYPE);
 			$data["level"] = $level;
 			$data["buildingid"] = $id;
-			$data["buildingname"] = $row["name"];
-			Hook::event("UpgradeBuildingLast", array($row, &$data, &$time));
+			$data["buildingname"] = $construction->get("name");
+			Hook::event("UpgradeBuildingLast", array($construction, &$data, &$time));
 			Bengine::getEH()->addEvent(1, $time + TIME, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), null, $data);
 			$this->redirect("game.php/".SID."/Constructions");
 		}
@@ -133,7 +156,7 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 	/**
 	 * Aborts the current building event.
 	 *
-	 * @param integer	Building id
+	 * @param integer $id	Building id
 	 *
 	 * @return Bengine_Page_Constructions
 	 */
@@ -143,7 +166,7 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 		{
 			$this->redirect("game.php/".SID."/Constructions");
 		}
-		$result = Core::getQuery()->select("construction", array("buildingid"), "", "buildingid = '".$id."' AND mode = '".$this->getMode()."'");
+		$result = Core::getQuery()->select("construction", array("buildingid"), "", "buildingid = '".$id."'");
 		if($row = Core::getDB()->fetch($result))
 		{
 			Core::getDB()->free_result($result);
@@ -159,7 +182,7 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 	/**
 	 * Demolish a building ...
 	 *
-	 * @param integer	Building id
+	 * @param integer $id	Building id
 	 *
 	 * @return Bengine_Page_Constructions
 	 */
@@ -225,7 +248,7 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 	/**
 	 * Shows all building information.
 	 *
-	 * @param integer	Building id
+	 * @param integer $id	Building id
 	 *
 	 * @return Bengine_Page_Constructions
 	 */

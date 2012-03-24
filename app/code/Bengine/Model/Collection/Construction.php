@@ -12,13 +12,28 @@ class Bengine_Model_Collection_Construction extends Recipe_Model_Collection_Abst
 	/**
 	 * Adds a construction type filter.
 	 *
-	 * @param integer	Type ID
+	 * @param integer $type Type ID
+	 * @param boolean $isMoon
+	 * @param integer $moonType Moon type ID
 	 * @return Bengine_Model_Collection_Construction
 	 */
-	public function addTypeFilter($type)
+	public function addTypeFilter($type, $isMoon = false, $moonType = null)
 	{
-		$this->getSelect()
-			->where("c.mode = ?", (int) $type);
+		if($isMoon)
+		{
+			$this->getSelect()
+				->where("(c.mode = ? AND c.allow_on_moon = 1)", (int) $type, "OR");
+		}
+		else
+		{
+			$this->getSelect()
+				->where("c.mode = ?", (int) $type);
+		}
+		if($moonType)
+		{
+			$this->getSelect()
+				->where("c.mode = ?", (int) $moonType, "OR");
+		}
 		return $this;
 	}
 
@@ -70,6 +85,19 @@ class Bengine_Model_Collection_Construction extends Recipe_Model_Collection_Abst
 		$attributes = $select->getAttributes();
 		$attributes["u2s"] = array("quantity");
 		$select->attributes($attributes);
+		return $this;
+	}
+
+	/**
+	 * Add display order.
+	 *
+	 * @param string $dir
+	 * @return Bengine_Model_Collection_Construction
+	 */
+	public function addDisplayOrder($dir = "ASC")
+	{
+		$this->getSelect()
+			->order("display_order", $dir);
 		return $this;
 	}
 }

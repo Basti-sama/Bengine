@@ -104,7 +104,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	 * Append a loop to loop stack.
 	 *
 	 * @param string $loop	Loop name
-	 * @param array $data		Loop data
+	 * @param array|IteratorAggregate $data		Loop data
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
