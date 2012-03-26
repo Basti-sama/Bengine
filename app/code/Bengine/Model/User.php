@@ -122,11 +122,11 @@ class Bengine_Model_User extends Recipe_Model_Abstract
 	public function initInactiveStatus()
 	{
 		$inactive = "";
-		if($this->getLast() <= TIME - 604800)
+		if($this->getLast() <= TIME - Core::getConfig()->get("INACTIVE_USER_TIME_1"))
 		{
 			$inactive = " i ";
 		}
-		if($this->getLast() <= TIME - 1814400)
+		if($this->getLast() <= TIME - Core::getConfig()->get("INACTIVE_USER_TIME_2"))
 		{
 			$inactive = " i I ";
 		}

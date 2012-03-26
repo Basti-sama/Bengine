@@ -86,11 +86,11 @@ class Bengine_User_List extends Bengine_Alliance_List
 		}
 
 		// User activity
-		if($row["useractivity"] <= TIME - 604800)
+		if($row["useractivity"] <= TIME - Core::getConfig()->get("INACTIVE_USER_TIME_1"))
 		{
 			$inactive = " i ";
 		}
-		if($row["useractivity"] <= TIME - 1814400)
+		if($row["useractivity"] <= TIME - Core::getConfig()->get("INACTIVE_USER_TIME_2"))
 		{
 			$inactive = " i I ";
 		}
