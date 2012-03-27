@@ -358,7 +358,7 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 				for($i = $start - 7; $i <= Bengine::getPlanet()->getBuilding($id) + 7; $i++)
 				{
 					$chart[$i]["level"] = $i;
-					$chart[$i]["s_prod"] = ($prodFormula) ? parseFormula($prodFormula, $baseCost, $i) : 0;
+					$chart[$i]["s_prod"] = ($prodFormula) ? parseFormula($prodFormula, $baseCost, $i) * $productionFactor : 0;
 					$chart[$i]["s_diffProd"] = ($prodFormula) ? $chart[$i]["s_prod"] - $currentProduction : 0;
 					$chart[$i]["s_cons"] = ($consFormula) ? parseFormula($consFormula, 0, $i) : 0;
 					$chart[$i]["s_diffCons"] = ($consFormula) ? $currentConsumption - $chart[$i]["s_cons"] : 0;
