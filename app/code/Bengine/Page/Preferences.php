@@ -279,7 +279,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 				Logger::dieMessage("CANNOT_ACTIVATE_UMODE");
 			}
 
-			$umodemin = TIME + 172800;
+			$umodemin = TIME + Core::getConfig()->get("MIN_VACATION_MODE");
 			setProdOfUser(Core::getUser()->get("userid"), 0);
 		}
 		else
