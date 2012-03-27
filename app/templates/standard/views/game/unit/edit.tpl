@@ -8,6 +8,10 @@
 		<td><input type="text" name="name" value="{@name}" maxlength="{config}MAX_INPUT_LENGTH{/config}" id="unit_name" /></td>
 	</tr>
 	<tr>
+		<td><label for="allow_on_moon">{lang}ALLOW_ON_MOON{/lang}</label></td>
+		<td><input type="checkbox" name="allow_on_moon" value="1" id="allow_on_moon"{if[{var=allow_on_moon}]} checked="checked"{/if} /></td>
+	</tr>
+	<tr>
 		<td><label for="unit_desc">{lang}DESCRIPTION{/lang}</label></td>
 		<td><textarea name="desc" rows="5" cols="50" id="unit_desc">{@description}</textarea></td>
 	</tr>

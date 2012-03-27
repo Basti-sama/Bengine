@@ -80,7 +80,7 @@ class Bengine_Page_Research extends Bengine_Page_Construction_Abstract
 		// Check for requirements
 		if(!Bengine::canBuild($id) || !Bengine::getPlanet()->getBuilding("RESEARCH_LAB"))
 		{
-			throw new Recipe_Exception_Generic("You does not fulfil the requirements to research this.");
+			throw new Recipe_Exception_Generic("You do not fulfil the requirements to research this.");
 		}
 
 		// Check if research labor is not in progress

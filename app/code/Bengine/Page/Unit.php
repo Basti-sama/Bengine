@@ -39,7 +39,7 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 	/**
 	 * Shows all unit information.
 	 *
-	 * @param integer	Unit id
+	 * @param integer $id	Unit id
 	 *
 	 * @return Bengine_Page_Unit
 	 */
@@ -121,8 +121,8 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 	/**
 	 * Adds a new requirement.
 	 *
-	 * @param integer	Level
-	 * @param integer	Required construction
+	 * @param integer $level	Level
+	 * @param integer $needs	Required construction
 	 *
 	 * @return Bengine_Page_Unit
 	 */
@@ -147,7 +147,7 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 			if($this->getParam("saveunit"))
 			{
 				$this->saveConstruction(
-					$this->id, $this->getParam("name_id"), $this->getParam("name"), $this->getParam("desc"), $this->getParam("full_desc"),
+					$this->id, $this->getParam("name_id"), $this->getParam("name"), $this->getParam("allow_on_moon"), $this->getParam("desc"), $this->getParam("full_desc"),
 					$this->getParam("basic_metal"), $this->getParam("basic_silicon"), $this->getParam("basic_hydrogen"), $this->getParam("basic_energy"),
 					$this->getParam("capicity"), $this->getParam("speed"), $this->getParam("consume"), $this->getParam("attack"), $this->getParam("shield"),
 					$this->getParam("baseEngine"), $this->getParam("extentedEngine"), $this->getParam("extentedEngineLevel"), $this->getParam("extentedEngineSpeed"),
@@ -160,7 +160,7 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 			}
 		}
 		$languageid = Core::getLang()->getOpt("languageid");
-		$select = array("c.name AS name_id", "p.content AS name", "c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.basic_energy", "sds.unitid", "sds.capicity AS capacity", "sds.speed", "sds.consume", "sds.attack", "sds.shield");
+		$select = array("c.name AS name_id", "c.allow_on_moon", "p.content AS name", "c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.basic_energy", "sds.unitid", "sds.capicity AS capacity", "sds.speed", "sds.consume", "sds.attack", "sds.shield");
 		$joins  = "LEFT JOIN ".PREFIX."phrases p ON (p.title = c.name)";
 		$joins .= "LEFT JOIN ".PREFIX."ship_datasheet sds ON (sds.unitid = c.buildingid)";
 		$result = Core::getQuery()->select("construction c", $select, $joins, "c.buildingid = '".$this->id."' AND p.languageid = '".$languageid."'");
@@ -230,7 +230,8 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 	/**
 	 * Deletes requirements.
 	 *
-	 * @param integer	Requirement id to delete
+	 * @param integer $unitid	Requirement id to delete
+	 * @param integer $delete
 	 *
 	 * @return Bengine_Page_Unit
 	 */
@@ -246,29 +247,33 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 	/**
 	 * Saves the entered data.
 	 *
-	 * @param integer	Unit id
-	 * @param string	Name id
-	 * @param string	Name
-	 * @param string	Description
-	 * @param string	Long description
-	 * @param integer	Basic metal cost
-	 * @param integer	Basic silicon cost
-	 * @param integer	Basic hydrogen cost
-	 * @param integer	Basic energy cost
-	 * @param integer	Capacity
-	 * @param integer	Basic speed
-	 * @param integer	Fuel consumption
-	 * @param integer	Attack power
-	 * @param integer	Shield power
-	 * @param integer	Base engine id
-	 * @param integer	Extented engine id
-	 * @param integer	Extented engine from level
-	 * @param integer	Extented engine speed
+	 * @param integer $unitid
+	 * @param string $nameId
+	 * @param string $name
+	 * @param integer $allowOnMoon
+	 * @param string $desc
+	 * @param string $fullDesc
+	 * @param integer $basicMetal
+	 * @param integer $basicSilicon
+	 * @param integer $basicHydrogen
+	 * @param integer $basicEnergy
+	 * @param integer $capacity
+	 * @param integer $speed
+	 * @param integer $consumption
+	 * @param integer $attack
+	 * @param integer $shield
+	 * @param integer $baseEngine
+	 * @param integer $extentedEngine
+	 * @param integer $extentedEngineLevel
+	 * @param integer $extentedEngineSpeed
+	 * @param integer $rfDelete
+	 * @param integer $rfNew
+	 * @param integer $rfNewValue
 	 *
 	 * @return Bengine_Page_Unit
 	 */
 	protected function saveConstruction(
-		$unitid, $nameId, $name, $desc, $fullDesc,
+		$unitid, $nameId, $name, $allowOnMoon, $desc, $fullDesc,
 		$basicMetal, $basicSilicon, $basicHydrogen, $basicEnergy,
 		$capacity, $speed, $consumption, $attack, $shield,
 		$baseEngine, $extentedEngine, $extentedEngineLevel, $extentedEngineSpeed,
@@ -277,8 +282,8 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 	{
 		Hook::event("EditUnitSave");
 		$languageid = Core::getLang()->getOpt("languageid");
-		$atts = array("basic_metal", "basic_silicon", "basic_hydrogen", "basic_energy");
-		$vals = array($basicMetal, $basicSilicon, $basicHydrogen, $basicEnergy);
+		$atts = array("allow_on_moon", "basic_metal", "basic_silicon", "basic_hydrogen", "basic_energy");
+		$vals = array($allowOnMoon, $basicMetal, $basicSilicon, $basicHydrogen, $basicEnergy);
 		Core::getQuery()->update("construction", $atts, $vals, "name = '".$nameId."'");
 		$atts = array("capicity", "speed", "consume", "attack", "shield");
 		$vals = array($capacity, $speed, $consumption, $attack, $shield);
@@ -356,7 +361,7 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 	/**
 	 * Generates the HTML for the engine list.
 	 *
-	 * @param integer	Selected engine
+	 * @param integer $engineid	Selected engine
 	 *
 	 * @return string	HTML code (only option-tags)
 	 */
@@ -404,7 +409,7 @@ class Bengine_Page_Unit extends Bengine_Page_Abstract
 	/**
 	 * Fetches all ships returns them as an option list.
 	 *
-	 * @param integer	Pre-selected ship
+	 * @param integer $unit	Pre-selected ship
 	 *
 	 * @return string	Options
 	 */

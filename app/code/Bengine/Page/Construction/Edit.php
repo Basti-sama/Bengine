@@ -36,7 +36,7 @@ class Bengine_Page_Construction_Edit extends Bengine_Page_Abstract
 	/**
 	 * Index action.
 	 *
-	 * @param integer	Construction ID
+	 * @param integer $id	Construction ID
 	 *
 	 * @return Bengine_Page_Construction_Edit
 	 */
@@ -51,7 +51,7 @@ class Bengine_Page_Construction_Edit extends Bengine_Page_Abstract
 			if($this->getParam("saveconstruction"))
 			{
 				$this->saveConstruction(
-					$this->getParam("name"), $this->getParam("name_id"), $this->getParam("desc"), $this->getParam("full_desc"),
+					$this->getParam("name"), $this->getParam("name_id"), $this->getParam("allow_on_moon"), $this->getParam("desc"), $this->getParam("full_desc"),
 					$this->getParam("prod_what"), $this->getParam("prod"), $this->getParam("cons_what"), $this->getParam("consumption"), $this->getParam("special"),
 					$this->getParam("basic_metal"), $this->getParam("basic_silicon"), $this->getParam("basic_hydrogen"), $this->getParam("basic_energy"),
 					$this->getParam("charge_metal"), $this->getParam("charge_silicon"), $this->getParam("charge_hydrogen"), $this->getParam("charge_energy")
@@ -59,7 +59,7 @@ class Bengine_Page_Construction_Edit extends Bengine_Page_Abstract
 			}
 		}
 		$select = array(
-			"c.name AS name_id", "p.content AS name", "c.special",
+			"c.name AS name_id", "p.content AS name", "c.special", "c.allow_on_moon",
 			"c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.basic_energy",
 			"c.prod_metal", "c.prod_silicon", "c.prod_hydrogen", "c.prod_energy",
 			"c.cons_metal", "c.cons_silicon", "c.cons_hydrogen", "c.cons_energy",
@@ -160,9 +160,9 @@ class Bengine_Page_Construction_Edit extends Bengine_Page_Abstract
 	/**
 	 * Adds Requirements for a construction.
 	 *
-	 * @param integer	Construction ID
-	 * @param integer	Level
-	 * @param integer	Required construction
+	 * @param integer $id		Construction ID
+	 * @param integer $level	Level
+	 * @param integer $needs	Required construction
 	 *
 	 * @return Bengine_Page_Construction_Edit
 	 */
@@ -177,8 +177,8 @@ class Bengine_Page_Construction_Edit extends Bengine_Page_Abstract
 	/**
 	 * Deletes the stated requirement.
 	 *
-	 * @param integer	Requirement id
-	 * @param integer	Construction ID
+	 * @param integer $delete	Requirement id
+	 * @param integer $returnId	Construction ID
 	 *
 	 * @return Bengine_Page_Construction_Edit
 	 */
@@ -193,28 +193,29 @@ class Bengine_Page_Construction_Edit extends Bengine_Page_Abstract
 	/**
 	 * Saves the construction data.
 	 *
-	 * @param string	Name
-	 * @param string	Name id
-	 * @param string	Description
-	 * @param string	Full description
-	 * @param string	Production resource
-	 * @param string	Production formula
-	 * @param string	Consumption resource
-	 * @param string	Consumption formula
-	 * @param string	Special formula
-	 * @param string	Basic metal cost
-	 * @param string	Basic silicon cost
-	 * @param string	Basic hydrogen cost
-	 * @param string	Basic energy cost
-	 * @param string	Metal cost increase
-	 * @param string	Silicon cost increase
-	 * @param string	Hydrogen cost increase
-	 * @param string	Energy cost increase
+	 * @param string $name
+	 * @param string $nameId
+	 * @param integer $allowOnMoon
+	 * @param string $desc
+	 * @param string $fullDesc
+	 * @param string $prodWhat
+	 * @param string $prod
+	 * @param string $consWhat
+	 * @param string $consumption
+	 * @param string $special
+	 * @param string $basicMetal
+	 * @param string $basicSilicon
+	 * @param string $basicHydrogen
+	 * @param string $basicEnergy
+	 * @param string $chargeMetal
+	 * @param string $chargeSilicon
+	 * @param string $chargeHydrogen
+	 * @param string $chargeEnergy
 	 *
 	 * @return Bengine_Page_Construction_Edit
 	 */
 	protected function saveConstruction(
-		$name, $nameId, $desc, $fullDesc,
+		$name, $nameId, $allowOnMoon, $desc, $fullDesc,
 		$prodWhat, $prod, $consWhat, $consumption, $special,
 		$basicMetal, $basicSilicon, $basicHydrogen, $basicEnergy,
 		$chargeMetal, $chargeSilicon, $chargeHydrogen, $chargeEnergy
@@ -261,13 +262,13 @@ class Bengine_Page_Construction_Edit extends Bengine_Page_Abstract
 		}
 
 		// Now generate the sql query.
-		$atts = array("special",
+		$atts = array("special", "allow_on_moon",
 			"basic_metal", "basic_silicon", "basic_hydrogen", "basic_energy",
 			"prod_metal", "prod_silicon", "prod_hydrogen", "prod_energy",
 			"cons_metal", "cons_silicon", "cons_hydrogen", "cons_energy",
 			"charge_metal", "charge_silicon", "charge_hydrogen", "charge_energy"
 		);
-		$vals = array($special,
+		$vals = array($special, (int) $allowOnMoon,
 			$basicMetal, $basicSilicon, $basicHydrogen, $basicEnergy,
 			$prodMetal, $prodSilicon, $prodHydrogen, $prodEnergy,
 			$consMetal, $consSilicon, $consHydrogen, $consEnergy,
@@ -325,7 +326,7 @@ class Bengine_Page_Construction_Edit extends Bengine_Page_Abstract
 	/**
 	 * Creates the options of all resources.
 	 *
-	 * @param string	Pre-selected entry
+	 * @param string $what	Pre-selected entry
 	 *
 	 * @return string	Option list
 	 */

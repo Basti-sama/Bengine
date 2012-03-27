@@ -4,7 +4,11 @@
 	<tr><th colspan="2">{lang}EDIT_CONSTRUCTION{/lang}</th></tr>
 	<tr>
 		<td><label for="construction_name">{lang}CONSTRUCTION_NAME{/lang}</label></td>
-		<td><input type="text" name="name" value="{@name}" maxlength="{config}MAX_INPUT_LENGTH{/config}" id=" id=""" /></td>
+		<td><input type="text" name="name" value="{@name}" maxlength="{config}MAX_INPUT_LENGTH{/config}" id="construction_name" /></td>
+	</tr>
+	<tr>
+		<td><label for="allow_on_moon">{lang}ALLOW_ON_MOON{/lang}</label></td>
+		<td><input type="checkbox" name="allow_on_moon" value="1" id="allow_on_moon"{if[{var=allow_on_moon}]} checked="checked"{/if} /></td>
 	</tr>
 	<tr>
 		<td><label for="construction_desc">{lang}DESCRIPTION{/lang}</label></td>

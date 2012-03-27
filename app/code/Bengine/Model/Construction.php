@@ -10,8 +10,9 @@
 class Bengine_Model_Construction extends Recipe_Model_Abstract
 {
 	/**
-	 * (non-PHPdoc)
-	 * @see lib/Object#init()
+	 * Initializes the model.
+	 *
+	 * @return Bengine_Model_Construction
 	 */
 	protected function init()
 	{
@@ -40,21 +41,41 @@ class Bengine_Model_Construction extends Recipe_Model_Abstract
 		return Core::getLang()->get($this->get("name")."_DESC");
 	}
 
+	/**
+	 * Returns the linked name.
+	 *
+	 * @return string
+	 */
 	public function getLinkName()
 	{
 		return Link::get("game.php/".SID."/Constructions/Info/".$this->get("buildingid"), $this->getName());
 	}
 
+	/**
+	 * Returns the Image.
+	 *
+	 * @return string
+	 */
 	public function getImage()
 	{
 		return Link::get("game.php/".SID."/Constructions/Info/".$this->get("buildingid"), Image::getImage("buildings/".$this->get("name").".gif", $this->getName()));
 	}
 
+	/**
+	 * Returns the edit Link.
+	 *
+	 * @return string
+	 */
 	public function getEditLink()
 	{
 		return Link::get("game.php/".SID."/Construction_Edit/Index/".$this->get("buildingid"), "[".Core::getLanguage()->getItem("EDIT")."]");
 	}
 
+	/**
+	 * Checks if the current planet has enough resources to build this.
+	 *
+	 * @return bool
+	 */
 	public function hasResources()
 	{
 		$required = $this->calculateRequiredResources();
@@ -78,6 +99,11 @@ class Bengine_Model_Construction extends Recipe_Model_Abstract
 		return true;
 	}
 
+	/**
+	 * Returns the required resources.
+	 *
+	 * @return array
+	 */
 	public function calculateRequiredResources()
 	{
 		if(!$this->get("resources_calculated"))
@@ -136,6 +162,12 @@ class Bengine_Model_Construction extends Recipe_Model_Abstract
 		return $ret;
 	}
 
+	/**
+	 * Returns production time.
+	 *
+	 * @param bool $formatted
+	 * @return int|string
+	 */
 	public function getProductionTime($formatted = false)
 	{
 		if(!$this->exists("production_time"))
