@@ -1,0 +1,16 @@
+{lang=REGISTRATION_MAIL_1}
+
+
+{lang=REGISTRATION_MAIL_2}
+
+{lang=REGISTRATION_MAIL_3}
+
+{@activationLink}
+
+
+{lang=REGISTRATION_MAIL_4}
+
+
+{lang=EMAIL_GREETINGS}
+
+{lang=EMAIL_CLOSING_SENDER}
