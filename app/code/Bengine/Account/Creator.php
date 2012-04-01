@@ -84,12 +84,12 @@ class Bengine_Account_Creator extends Bengine_Page_Ajax_Abstract
 	/**
 	 * Starts account factory.
 	 *
-	 * @param string	Username
-	 * @param string	Password
-	 * @param string	Email address
-	 * @param integer	Language id
+	 * @param string $username
+	 * @param string $password
+	 * @param string $email
+	 * @param integer $lang
 	 *
-	 * @return void
+	 * @return Bengine_Account_Creator
 	 */
 	public function __construct($username, $password, $email, $lang)
 	{
@@ -184,10 +184,10 @@ class Bengine_Account_Creator extends Bengine_Page_Ajax_Abstract
 			$url = BASE_URL.Core::getLang()->getOpt("langcode")."/signup/activation/key:".$this->getActivation();
 			Core::getLang()->assign("regUsername", $this->getUsername());
 			Core::getLang()->assign("regPassword", $this->getPassword());
-			Core::getLang()->assign("activationLink", $url);
-			$message = Core::getLanguage()->getItem("REGISTRATION_MAIL");
-			$mail = new Email(array($this->getEmail() => $this->getUsername()), Core::getLanguage()->getItem("REGISTRATION"), $message);
-			$mail->sendMail();
+			Core::getTemplate()->assign("activationLink", $url);
+			$template = new Recipe_Email_Template("registration");
+			$mail = new Email(array($this->getEmail() => $this->getUsername()), Core::getLanguage()->getItem("REGISTRATION"));
+			$template->send($mail);
 		}
 		return $this;
 	}
@@ -235,7 +235,7 @@ class Bengine_Account_Creator extends Bengine_Page_Ajax_Abstract
 	/**
 	 * Displays error or success message.
 	 *
-	 * @param string	Message to display
+	 * @param string|array $output	Message to display
 	 *
 	 * @return Bengine_Account_Creator
 	 */
@@ -280,7 +280,7 @@ class Bengine_Account_Creator extends Bengine_Page_Ajax_Abstract
 	/**
 	 * Returns the password.
 	 *
-	 * @param boolean	Encrypt password
+	 * @param boolean $encrypted	Encrypt password
 	 *
 	 * @return string
 	 */

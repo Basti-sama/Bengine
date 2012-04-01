@@ -36,3 +36,11 @@ INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, 
 ('INACTIVE_USER_TIME_1', '604800', 'integer', 'Time to display a small i for inactive users in galaxy and ranking. Time in seconds.', NULL, '5', '1', '0'),
 ('INACTIVE_USER_TIME_2', '1814400', 'integer', 'Time to display a large I for inactive users in galaxy and ranking. Time in seconds.', NULL, '5', '1', '0'),
 ('MIN_VACATION_MODE', '172800', 'integer', 'Minimum time to stay in vacation mode. Time in seconds.', NULL, '8', '1', '0');
+
+UPDATE `bengine_phrases` SET `title` = 'REGISTRATION_MAIL_1', `content` = 'REGISTRATION_MAIL' WHERE `title` = 'REGISTRATION_MAIL' AND `languageid` = 1;
+INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
+(1, 7, 'EMAIL_CLOSING_SENDER', 'dein {config}pagetitle{/config}-Team'),
+(1, 7, 'EMAIL_GREETINGS', 'Mit besten Grüßen'),
+(1, 7, 'REGISTRATION_MAIL_2', 'Dein Passwort lautet: {@regPassword}'),
+(1, 7, 'REGISTRATION_MAIL_3', 'Du musst jetzt deinen Account aktivieren. Klicke dazu auf den unten stehen Link, um die Aktivieren abzuschließen. Sollte der Link nicht anklickbar sein, kopiere ihn in die Adressleiste deines Browsers.'),
+(1, 7, 'REGISTRATION_MAIL_4', 'Solltest du noch Fragen haben, kannst du gerne in unserem Forum vorbei schauen.');

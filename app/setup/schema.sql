@@ -1026,7 +1026,9 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 7, 'CHANGE_PASSWORD', 'Passwort &auml;ndern'),
 (1, 7, 'DISCLAIMER', 'Impressum'),
 (1, 7, 'EMAIL_CHECK', 'Bitte gib eine g&uuml;ltige E-Mail Adresse an.'),
+(1, 7, 'EMAIL_CLOSING_SENDER', 'dein {config}pagetitle{/config}-Team'),
 (1, 7, 'EMAIL_EXISTS', 'Die E-Mail Adresse ist bereits vergeben.'),
+(1, 7, 'EMAIL_GREETINGS', 'Mit besten Grüßen'),
 (1, 7, 'EMAIL_INVALID', 'Die E-Mail Adresse ist ung&uuml;ltig.'),
 (1, 7, 'EMAIL_NOT_FOUND', 'Die angegebene E-Mail wurde nicht gefunden.'),
 (1, 7, 'ERROR_PASSWORD_CHANGED', 'Das Passwort konnte aufgrund falscher Daten nicht ge&auml;ndert werden.'),
@@ -1052,7 +1054,10 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 7, 'REGISTRATION', 'Registrierung'),
 (1, 7, 'REGISTRATION_BANNED_FOR_IP', 'Du hast dich gerade erst registriert. Warte {@minutes} Minuten und versuche es dann erneut.'),
 (1, 7, 'REGISTRATION_CLOSED', 'Die Anmeldung bei {config}pagetitle{/config} ist derzeit geschlossen.'),
-(1, 7, 'REGISTRATION_MAIL', 'Danke {@regUsername} für Anmeldung bei {config}pagetitle{/config}!\r\n\r\nDein Passwort lautet: {@regPassword}\r\n\r\nDu musst jetzt deinen Account aktivieren. Klicke dazu auf den unten stehen Link, um die Aktivieren abzuschließen. Sollte der Link nicht anklickbar sein, kopiere ihn in die Adressleiste deines Browsers.\r\n\r\n{@activationLink}\r\n\r\nSolltest du noch Fragen haben, kannst du gerne in unserem Forum vorbei schauen.\r\n\r\nViele Grüße,\r\ndein {config}pagetitle{/config}-Team'),
+(1, 7, 'REGISTRATION_MAIL_1', 'Danke {@regUsername} für Anmeldung bei {config}pagetitle{/config}!'),
+(1, 7, 'REGISTRATION_MAIL_2', 'Dein Passwort lautet: {@regPassword}'),
+(1, 7, 'REGISTRATION_MAIL_3', 'Du musst jetzt deinen Account aktivieren. Klicke dazu auf den unten stehen Link, um die Aktivieren abzuschließen. Sollte der Link nicht anklickbar sein, kopiere ihn in die Adressleiste deines Browsers.'),
+(1, 7, 'REGISTRATION_MAIL_4', 'Solltest du noch Fragen haben, kannst du gerne in unserem Forum vorbei schauen.'),
 (1, 7, 'REQUEST_DATA', 'Daten anfordern');
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 (1, 7, 'REQUEST_PASSWORD', 'Hallo {@req_username}!\r\n\r\nSollten sie ihr Passwort bei {config}pagetitle{/config} vergessen haben, können sie über den folgenden Link ein neues Passwort setzen:\r\n{@new_pw_url}\r\n\r\nHaben sie ihr Passwort nicht vergessen, empfiehlt es sich die E-Mail Adresse in den Account-Einstellungen zu ändern. Der Rechner dieser Anfrage hatte die IP-Adresse {@req_ipaddress}.\r\n\r\nUm den Account ohne Passwortänderung wieder zu aktivieren, verwenden sie den folgenden Link:\r\n{@reactivate_url}\r\n\r\nViele Grüße,\r\ndein {config}pagetitle{/config}-Team'),
