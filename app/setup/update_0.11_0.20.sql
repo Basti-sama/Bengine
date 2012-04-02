@@ -37,10 +37,16 @@ INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, 
 ('INACTIVE_USER_TIME_2', '1814400', 'integer', 'Time to display a large I for inactive users in galaxy and ranking. Time in seconds.', NULL, '5', '1', '0'),
 ('MIN_VACATION_MODE', '172800', 'integer', 'Minimum time to stay in vacation mode. Time in seconds.', NULL, '8', '1', '0');
 
-UPDATE `bengine_phrases` SET `title` = 'REGISTRATION_MAIL_1', `content` = 'REGISTRATION_MAIL' WHERE `title` = 'REGISTRATION_MAIL' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `title` = 'REGISTRATION_MAIL_1', `content` = 'danke für deine Anmeldung bei {config}pagetitle{/config}!' WHERE `title` = 'REGISTRATION_MAIL' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'dein letzter Login bei {config}pagetitle{/config} war am {@reminderLast}. Vielleicht hast du uns ja vergessen, aber dein Konto ist immer noch verfügbar. Wir würden uns freuen, wenn du dich mal wieder meldest.' WHERE `title` = 'REMINDER_MAIL_MESSAGE' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'du hast deine E-Mail Adrese bei {config=pagetitle} geändert. Die geänderte E-Mail benötigt eine Aktivierung bevor der Account wieder genutzt werden kann. Verwende dazu den unten stehenden Link.' WHERE `title` = 'EMAIL_EMAIL_MESSAGE' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'du hast dein Passwort bei {config=pagetitle} geändert. Das geänderte Passwort benötigt eine Aktivierung bevor es genutzt werden kann. Verwende dazu den unten stehenden Link.', `title` = 'EMAIL_PASSWORD_MESSAGE_1' WHERE `title` = 'EMAIL_PASSWORD_MESSAGE' AND `languageid` = 1;
+
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 (1, 7, 'EMAIL_CLOSING_SENDER', 'dein {config}pagetitle{/config}-Team'),
 (1, 7, 'EMAIL_GREETINGS', 'Mit besten Grüßen'),
 (1, 7, 'REGISTRATION_MAIL_2', 'Dein Passwort lautet: {@regPassword}'),
 (1, 7, 'REGISTRATION_MAIL_3', 'Du musst jetzt deinen Account aktivieren. Klicke dazu auf den unten stehen Link, um die Aktivieren abzuschließen. Sollte der Link nicht anklickbar sein, kopiere ihn in die Adressleiste deines Browsers.'),
-(1, 7, 'REGISTRATION_MAIL_4', 'Solltest du noch Fragen haben, kannst du gerne in unserem Forum vorbei schauen.');
+(1, 7, 'REGISTRATION_MAIL_4', 'Solltest du noch Fragen haben, kannst du gerne in unserem Forum vorbei schauen.'),
+(1, 7, 'EMAIL_SALUTATION', 'Hallo {@username},'),
+(1, 7, 'EMAIL_PASSWORD_MESSAGE_2', 'Dein neues Passwort:');

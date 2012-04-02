@@ -1,0 +1,14 @@
+{lang=EMAIL_SALUTATION}
+
+
+{lang=EMAIL_PASSWORD_MESSAGE_1}
+
+{@activationUrl}
+
+
+{lang=EMAIL_PASSWORD_MESSAGE_2} {@newPassword}
+
+
+{lang=EMAIL_GREETINGS}
+
+{lang=EMAIL_CLOSING_SENDER}

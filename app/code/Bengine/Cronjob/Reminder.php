@@ -27,9 +27,9 @@ class Bengine_Cronjob_Reminder extends Recipe_CronjobAbstract
 		{
 			Core::getLang()->assign("reminderUsername", $row["username"]);
 			Core::getLang()->assign("reminderLast", Date::timeToString(2, $row["last"]));
-			$message = Core::getLang()->get("REMINDER_MAIL_MESSAGE");
-			$mail = new Email(array($row["email"] => $row["username"]), Core::getLang()->get("REMINDER_MAIL_SUBJECT"), $message);
-			$mail->sendMail();
+			$template = new Recipe_Email_Template("reminder");
+			$mail = new Email(array($row["email"] => $row["username"]), Core::getLang()->get("REMINDER_MAIL_SUBJECT"));
+			$template->send($mail);
 		}
 		return $this;
 	}

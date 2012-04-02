@@ -35,6 +35,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 	 */
 	protected function indexAction()
 	{
+		/* @var Bengine_Model_Collection_Event $events */
 		$events = Bengine::getCollection("event");
 		$events->addVacationModeFilter(Core::getUser()->get("userid"));
 		if($this->isPost())
@@ -78,6 +79,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 		$excludedPackages = explode(",", Core::getOptions()->get("EXCLUDE_TEMPLATE_PACKAGE"));
 		$excludedPackages = array_map("trim", $excludedPackages);
 		$dir = new DirectoryIterator(APP_ROOT_DIR."app/templates/");
+		/* @var DirectoryIterator $package */
 		foreach($dir as $package)
 		{
 			if(!$package->isDot() && $package->isDir() && !in_array($package->getBasename(), $excludedPackages))
@@ -223,9 +225,11 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 					{
 						$activation = randString(8);
 						$url = BASE_URL.Core::getLang()->getOpt("langcode")."/signup/activation/key:".$activation;
-						$message = sprintf(Core::getLanguage()->getItem("EMAIL_EMAIL_MESSAGE"), $username, Core::getOptions()->get("pagetitle"), $url, Core::getOptions()->get("pagetitle"));
-						$mail = new Email($email, Core::getLanguage()->getItem("EMAIL_ACTIVATION"), $message);
-						$mail->sendMail();
+						Core::getLang()->assign("username", $username);
+						Core::getTemplate()->assign("activationUrl", $url);
+						$template = new Recipe_Email_Template("email_changed");
+						$mail = new Email($email, Core::getLanguage()->getItem("EMAIL_ACTIVATION"));
+						$template->send($mail);
 						$successMsg .= "_REVALIDATE";
 					}
 					Logger::addMessage($successMsg, "success");
@@ -253,9 +257,12 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 				{
 					$activation = randString(8);
 					$url = BASE_URL.Core::getLang()->getOpt("langcode")."/signup/activation/key:".$activation;
-					$message = sprintf(Core::getLanguage()->getItem("EMAIL_PASSWORD_MESSAGE"), $username, Core::getOptions()->get("pagetitle"), $url, $pw, Core::getOptions()->get("pagetitle"));
-					$mail = new Email($email, Core::getLanguage()->getItem("PASSWORD_ACTIVATION"), $message);
-					$mail->sendMail();
+					Core::getLang()->assign("username", $username);
+					Core::getTemplate()->assign("activationUrl", $url);
+					Core::getTemplate()->assign("newPassword", $pw);
+					$template = new Recipe_Email_Template("changed_password");
+					$mail = new Email($email, Core::getLanguage()->getItem("PASSWORD_ACTIVATION"));
+					$template->send($mail);
 					$successMsg .= "_REVALIDATE";
 				}
 				Logger::addMessage($successMsg, "success");

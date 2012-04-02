@@ -182,7 +182,7 @@ class Bengine_Account_Creator extends Bengine_Page_Ajax_Abstract
 		if(!Core::getConfig()->get("EMAIL_ACTIVATION_DISABLED"))
 		{
 			$url = BASE_URL.Core::getLang()->getOpt("langcode")."/signup/activation/key:".$this->getActivation();
-			Core::getLang()->assign("regUsername", $this->getUsername());
+			Core::getLang()->assign("username", $this->getUsername());
 			Core::getLang()->assign("regPassword", $this->getPassword());
 			Core::getTemplate()->assign("activationLink", $url);
 			$template = new Recipe_Email_Template("registration");

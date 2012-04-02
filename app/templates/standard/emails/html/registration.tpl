@@ -1,3 +1,4 @@
+<p>{lang=EMAIL_SALUTATION}</p>
 <p>{lang=REGISTRATION_MAIL_1}</p>
 <p>{lang=REGISTRATION_MAIL_2}</p>
 <p>{lang=REGISTRATION_MAIL_3}</p>

@@ -1,0 +1,11 @@
+{lang=EMAIL_SALUTATION}
+
+
+{lang=REMINDER_MAIL_MESSAGE}
+
+{config=BASE_URL}
+
+
+{lang=EMAIL_GREETINGS}
+
+{lang=EMAIL_CLOSING_SENDER}
