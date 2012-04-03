@@ -1060,8 +1060,12 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 7, 'REGISTRATION_MAIL_4', 'Solltest du noch Fragen haben, kannst du gerne in unserem Forum vorbei schauen.'),
 (1, 7, 'REQUEST_DATA', 'Daten anfordern');
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
-(1, 7, 'REQUEST_PASSWORD', 'Hallo {@req_username}!\r\n\r\nSollten sie ihr Passwort bei {config}pagetitle{/config} vergessen haben, können sie über den folgenden Link ein neues Passwort setzen:\r\n{@new_pw_url}\r\n\r\nHaben sie ihr Passwort nicht vergessen, empfiehlt es sich die E-Mail Adresse in den Account-Einstellungen zu ändern. Der Rechner dieser Anfrage hatte die IP-Adresse {@req_ipaddress}.\r\n\r\nUm den Account ohne Passwortänderung wieder zu aktivieren, verwenden sie den folgenden Link:\r\n{@reactivate_url}\r\n\r\nViele Grüße,\r\ndein {config}pagetitle{/config}-Team'),
-(1, 7, 'REQUEST_USERNAME', 'Hallo {@req_username}!\r\n\r\nSollten sie ihren Benutzernamen bei {config}pagetitle{/config} vergessen haben, können sie sich nun wieder anmelden.\r\n\r\nBenutzername: {@req_username}\r\n\r\nHaben sie ihren Benutzernamen nicht vergessen, empfiehlt es sich die E-Mail Adresse in den Account-Einstellungen zu ändern. Der Rechner dieser Anfrage hatte die IP-Adresse {@req_ipaddress}.\r\n\r\nViele Grüße,\r\ndein {config}pagetitle{/config}-Team'),
+(1, 7, 'REQUEST_PASSWORD_1', 'Solltest du dein Passwort bei {config}pagetitle{/config} vergessen haben, kannst du über den folgenden Link ein neues Passwort setzen:'),
+(1, 7, 'REQUEST_PASSWORD_2', 'Hast du dein Passwort nicht vergessen, empfiehlt es sich die E-Mail Adresse in den Account-Einstellungen zu ändern. Der Rechner dieser Anfrage hatte die IP-Adresse {@ipaddress}.'),
+(1, 7, 'REQUEST_PASSWORD_3', 'Um den Account ohne Passwortänderung wieder zu aktivieren, verwende bitte den folgenden Link:'),
+(1, 7, 'REQUEST_USERNAME_1', 'Solltest du deinen Benutzernamen bei {config}pagetitle{/config} vergessen haben, kannst du dich jetzt wieder anmelden.'),
+(1, 7, 'REQUEST_USERNAME_2', 'Benutzername: {@username}'),
+(1, 7, 'REQUEST_USERNAME_3', 'Hast du deinen Benutzernamen nicht vergessen, empfiehlt es sich die E-Mail Adresse in den Account-Einstellungen zu ändern. Der Clienet dieser Anfrage hatte die IP-Adresse {@ipaddress}.'),
 (1, 7, 'RULES', 'Regeln'),
 (1, 7, 'SCREENSHOTS', 'Screenshots'),
 (1, 7, 'SCREENSHOT_GALAXY_BROWSER', 'Galaxie-Ansicht'),

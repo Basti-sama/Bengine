@@ -41,6 +41,8 @@ UPDATE `bengine_phrases` SET `title` = 'REGISTRATION_MAIL_1', `content` = 'danke
 UPDATE `bengine_phrases` SET `content` = 'dein letzter Login bei {config}pagetitle{/config} war am {@reminderLast}. Vielleicht hast du uns ja vergessen, aber dein Konto ist immer noch verfügbar. Wir würden uns freuen, wenn du dich mal wieder meldest.' WHERE `title` = 'REMINDER_MAIL_MESSAGE' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'du hast deine E-Mail Adrese bei {config=pagetitle} geändert. Die geänderte E-Mail benötigt eine Aktivierung bevor der Account wieder genutzt werden kann. Verwende dazu den unten stehenden Link.' WHERE `title` = 'EMAIL_EMAIL_MESSAGE' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'du hast dein Passwort bei {config=pagetitle} geändert. Das geänderte Passwort benötigt eine Aktivierung bevor es genutzt werden kann. Verwende dazu den unten stehenden Link.', `title` = 'EMAIL_PASSWORD_MESSAGE_1' WHERE `title` = 'EMAIL_PASSWORD_MESSAGE' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'Solltest du dein Passwort bei {config}pagetitle{/config} vergessen haben, kannst du über den folgenden Link ein neues Passwort setzen:', `title` = 'REQUEST_PASSWORD_1' WHERE `title` = 'REQUEST_PASSWORD' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'Solltest du deinen Benutzernamen bei {config}pagetitle{/config} vergessen haben, kannst du dich jetzt wieder anmelden.', `title` = 'REQUEST_USERNAME_1' WHERE `title` = 'REQUEST_USERNAME' AND `languageid` = 1;
 
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 (1, 7, 'EMAIL_CLOSING_SENDER', 'dein {config}pagetitle{/config}-Team'),
@@ -49,4 +51,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 7, 'REGISTRATION_MAIL_3', 'Du musst jetzt deinen Account aktivieren. Klicke dazu auf den unten stehen Link, um die Aktivieren abzuschließen. Sollte der Link nicht anklickbar sein, kopiere ihn in die Adressleiste deines Browsers.'),
 (1, 7, 'REGISTRATION_MAIL_4', 'Solltest du noch Fragen haben, kannst du gerne in unserem Forum vorbei schauen.'),
 (1, 7, 'EMAIL_SALUTATION', 'Hallo {@username},'),
-(1, 7, 'EMAIL_PASSWORD_MESSAGE_2', 'Dein neues Passwort:');
+(1, 7, 'REQUEST_USERNAME_2', 'Benutzername: {@username}'),
+(1, 7, 'REQUEST_USERNAME_3', 'Hast du deinen Benutzernamen nicht vergessen, empfiehlt es sich die E-Mail Adresse in den Account-Einstellungen zu ändern. Der Clienet dieser Anfrage hatte die IP-Adresse {@ipaddress}.'),
+(1, 7, 'REQUEST_PASSWORD_2', 'Hast du dein Passwort nicht vergessen, empfiehlt es sich die E-Mail Adresse in den Account-Einstellungen zu ändern. Der Client dieser Anfrage hatte die IP-Adresse {@ipaddress}.'),
+(1, 7, 'REQUEST_PASSWORD_3', 'Um den Account ohne Passwortänderung wieder zu aktivieren, verwende bitte den folgenden Link:');

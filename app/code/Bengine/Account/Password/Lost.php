@@ -24,9 +24,9 @@ class Bengine_Account_Password_Lost extends Bengine_Page_Ajax_Abstract
 	/**
 	 * Email message which will be sent.
 	 *
-	 * @var string
+	 * @var Recipe_Email_Template
 	 */
-	protected $message = "";
+	protected $message = null;
 
 	/**
 	 * Security key length.
@@ -46,10 +46,10 @@ class Bengine_Account_Password_Lost extends Bengine_Page_Ajax_Abstract
 	/**
 	 * Handles lost password requests.
 	 *
-	 * @param string	Entered username
-	 * @param string	Entered email address
+	 * @param string $username	Entered username
+	 * @param string $email		Entered email address
 	 *
-	 * @return void
+	 * @return Bengine_Account_Password_Lost
 	 */
 	public function __construct($username, $email)
 	{
@@ -74,21 +74,21 @@ class Bengine_Account_Password_Lost extends Bengine_Page_Ajax_Abstract
 		}
 		$row = Core::getDB()->fetch($result);
 		Core::getDB()->free_result($result);
-		Core::getLanguage()->assign("req_username", $row["username"]);
-		Core::getLanguage()->assign("req_ipaddress", IPADDRESS);
+		Core::getLanguage()->assign("username", $row["username"]);
+		Core::getLanguage()->assign("ipaddress", IPADDRESS);
 		Hook::event("LostPassword", array($this, &$row));
 
 		if($mode == 0)
 		{
-			$this->message = Core::getLanguage()->getItem("REQUEST_USERNAME");
+			$this->message = new Recipe_Email_Template("lost_password_username");
 		}
 		else if(Str::compare($this->getUsername(), $row["username"]))
 		{
 			$reactivate = BASE_URL.Core::getLang()->getOpt("langcode")."/signup/activation/key:".$this->getSecurityKey();
 			$url = BASE_URL.Core::getLang()->getOpt("langcode")."/password/set/key:".$this->getSecurityKey()."/user:".$row["userid"];
-			Core::getLanguage()->assign("new_pw_url", $url);
-			Core::getLanguage()->assign("reactivate_url", $reactivate);
-			$this->message = Core::getLanguage()->getItem("REQUEST_PASSWORD");
+			Core::getTemplate()->assign("newPasswordUrl", $url);
+			Core::getTemplate()->assign("reactivationUrl", $reactivate);
+			$this->message = new Recipe_Email_Template("lost_password_password");
 			$this->setNewPw();
 		}
 		else
@@ -114,15 +114,15 @@ class Bengine_Account_Password_Lost extends Bengine_Page_Ajax_Abstract
 	/**
 	 * Sends email with lost password message.
 	 *
-	 * @param integer	Mode
+	 * @param integer $mode
 	 *
 	 * @return Bengine_Account_Password_Lost
 	 */
 	protected function sendMail($mode)
 	{
 		Hook::event("LostPasswordSendMail", array($this));
-		$mail = new Email($this->getEmail(), Core::getLanguage()->getItem("LOST_PW_SUBJECT_".$mode), $this->getMessage());
-		$mail->sendMail();
+		$mail = new Email($this->getEmail(), Core::getLanguage()->getItem("LOST_PW_SUBJECT_".$mode));
+		$this->getMessage()->send($mail);
 		$this->printIt("PW_LOST_EMAIL_SUCCESS", false);
 		return $this;
 	}
@@ -130,8 +130,8 @@ class Bengine_Account_Password_Lost extends Bengine_Page_Ajax_Abstract
 	/**
 	 * Prints either an error or success message.
 	 *
-	 * @param string	Output stream
-	 * @param boolean	Message is error
+	 * @param string $output	Output stream
+	 * @param boolean $error	Message is error
 	 *
 	 * @return Bengine_Account_Password_Lost
 	 */
@@ -168,7 +168,7 @@ class Bengine_Account_Password_Lost extends Bengine_Page_Ajax_Abstract
 	/**
 	 * Returns the mail message.
 	 *
-	 * @return string
+	 * @return Recipe_Email_Template
 	 */
 	public function getMessage()
 	{
