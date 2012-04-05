@@ -3,7 +3,7 @@
 
 {lang=REMINDER_MAIL_MESSAGE}
 
-{config=BASE_URL}
+{const=BASE_URL}
 
 
 {lang=EMAIL_GREETINGS}

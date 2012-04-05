@@ -249,9 +249,6 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 		{
 			if($pwLength >= Core::getOptions()->get("MIN_PASSWORD_LENGTH") && $pwLength <= Core::getOptions()->get("MAX_PASSWORD_LENGTH"))
 			{
-				$encryption = Core::getOptions("USE_PASSWORD_SALT") ? "md5_salt" : "md5";
-				$pw = Str::encode($pw, $encryption);
-				Core::getQuery()->updateSet("password", array("password" => $pw, "time" => TIME), "userid = '".Core::getUser()->get("userid")."'");
 				$successMsg = "PASSWORD_CHANGED";
 				if($activation == "" && Core::getConfig()->get("EMAIL_ACTIVATION_CHANGED_PASSWORD"))
 				{
@@ -260,11 +257,14 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 					Core::getLang()->assign("username", $username);
 					Core::getTemplate()->assign("activationUrl", $url);
 					Core::getTemplate()->assign("newPassword", $pw);
-					$template = new Recipe_Email_Template("changed_password");
+					$template = new Recipe_Email_Template("password_changed");
 					$mail = new Email($email, Core::getLanguage()->getItem("PASSWORD_ACTIVATION"));
 					$template->send($mail);
 					$successMsg .= "_REVALIDATE";
 				}
+				$encryption = Core::getOptions("USE_PASSWORD_SALT") ? "md5_salt" : "md5";
+				$pw = Str::encode($pw, $encryption);
+				Core::getQuery()->updateSet("password", array("password" => $pw, "time" => TIME), "userid = '".Core::getUser()->get("userid")."'");
 				Logger::addMessage($successMsg, "success");
 			}
 			else
