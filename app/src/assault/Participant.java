@@ -376,7 +376,21 @@ public class Participant
 					haulSilicon = availSilicon;
 					haulHydrogen = availHydrogen;
 				}
-				haulMetal = Math.floor(haulMetal); haulSilicon = Math.floor(haulSilicon); haulHydrogen = Math.floor(haulHydrogen);
+				if(haulMetal < 0)
+				{
+					haulMetal = 0;
+				}
+				if(haulSilicon < 0)
+				{
+					haulSilicon = 0;
+				}
+				if(haulHydrogen < 0)
+				{
+					haulHydrogen = 0;
+				}
+				haulMetal = Math.floor(haulMetal);
+				haulSilicon = Math.floor(haulSilicon);
+				haulHydrogen = Math.floor(haulHydrogen);
 				Assault.haulMetal += haulMetal;
 				Assault.haulSilicon += haulSilicon;
 				Assault.haulHydrogen += haulHydrogen;
