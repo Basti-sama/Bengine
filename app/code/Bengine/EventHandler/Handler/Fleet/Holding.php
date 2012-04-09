@@ -10,8 +10,12 @@
 class Bengine_EventHandler_Handler_Fleet_Holding extends Bengine_EventHandler_Handler_Fleet_Abstract
 {
 	/**
-	 * (non-PHPdoc)
-	 * @see app/code/Bengine/EventHandler/Handler/Bengine_EventHandler_Handler_Abstract#_execute($event, $data)
+	 * Executes the event.
+	 *
+	 * @param Bengine_Model_Event $event
+	 * @param array $data
+	 *
+	 * @return Bengine_EventHandler_Handler_Fleet_Holding
 	 */
 	protected function _execute(Bengine_Model_Event $event, array $data)
 	{
@@ -21,8 +25,12 @@ class Bengine_EventHandler_Handler_Fleet_Holding extends Bengine_EventHandler_Ha
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see app/code/Bengine/EventHandler/Handler/Bengine_EventHandler_Handler_Abstract#_add($event, $data)
+	 * Execute when creating the event.
+	 *
+	 * @param Bengine_Model_Event $event
+	 * @param array $data
+	 *
+	 * @return Bengine_EventHandler_Handler_Fleet_Holding
 	 */
 	protected function _add(Bengine_Model_Event $event, array $data)
 	{
@@ -31,12 +39,17 @@ class Bengine_EventHandler_Handler_Fleet_Holding extends Bengine_EventHandler_Ha
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see app/code/Bengine/EventHandler/Handler/Bengine_EventHandler_Handler_Abstract#_remove($event, $data)
+	 * Execute when cancel the event.
+	 *
+	 * @param Bengine_Model_Event $event
+	 * @param array $data
+	 *
+	 * @return Bengine_EventHandler_Handler_Fleet_Holding
 	 */
 	protected function _remove(Bengine_Model_Event $event, array $data)
 	{
-		$this->sendBack($data);
+		$time = TIME + $data["time"];
+		$this->sendBack($data, $time);
 		return $this;
 	}
 

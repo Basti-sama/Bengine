@@ -10,6 +10,11 @@
 abstract class Bengine_EventHandler_Handler_Abstract
 {
 	/**
+	 * Event ID for return flight.
+	 */
+	const RETURN_EVENT_ID = 20;
+
+	/**
 	 * Holds the event.
 	 *
 	 * @var Bengine_Model_Event
@@ -19,7 +24,7 @@ abstract class Bengine_EventHandler_Handler_Abstract
 	/**
 	 * Constructor.
 	 *
-	 * @param Bengine_Model_Event		The event to be executed.
+	 * @param Bengine_Model_Event $event		The event to be executed.
 	 *
 	 * @return Bengine_EventHandler_Handler_Abstract
 	 */
@@ -35,7 +40,7 @@ abstract class Bengine_EventHandler_Handler_Abstract
 	/**
 	 * Sets the event.
 	 *
-	 * @param Bengine_Model_Event
+	 * @param Bengine_Model_Event $event
 	 *
 	 * @return Bengine_EventHandler_Handler_Abstract
 	 */
@@ -58,7 +63,7 @@ abstract class Bengine_EventHandler_Handler_Abstract
 	/**
 	 * Removes resources from planet.
 	 *
-	 * @param array		Data array containing the resources to remove
+	 * @param array $data		Data array containing the resources to remove
 	 *
 	 * @return Bengine_EventHandler_Handler_Abstract
 	 */
@@ -70,7 +75,7 @@ abstract class Bengine_EventHandler_Handler_Abstract
 		$planet->setData("hydrogen", $planet->getData("hydrogen") - $data["hydrogen"]);
 		if(!isset($data["dont_save_resources"]) || !$data["dont_save_resources"])
 		{
-			Core::getQuery()->update("planet", array("metal", "silicon", "hydrogen"), array($planet->getData("metal"), $planet->getData("silicon"), $planet->getData("hydrogen")), "planetid = '".Core::getUser()->get("curplanet")."'");
+			Core::getQuery()->updateSet("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = '".Core::getUser()->get("curplanet")."'");
 		}
 		return $this;
 	}
@@ -78,7 +83,7 @@ abstract class Bengine_EventHandler_Handler_Abstract
 	/**
 	 * Adds resources to a planet.
 	 *
-	 * @param array		Data array containing the resources to add
+	 * @param array $data		Data array containing the resources to add
 	 *
 	 * @return Bengine_EventHandler_Handler_Abstract
 	 */
@@ -91,10 +96,10 @@ abstract class Bengine_EventHandler_Handler_Abstract
 	/**
 	 * Sends a fleet back to its original planet.
 	 *
-	 * @param array		Data array
-	 * @param integer|boolean	Time [optional]
-	 * @param integer|boolean	Start planet id [optional]
-	 * @param integer|boolean	Destination planet id [optional]
+	 * @param array $data Data array
+	 * @param integer|boolean $time Time [optional]
+	 * @param integer|boolean $startPlanet Start planet id [optional]
+	 * @param integer|boolean $destinationPlanet Destination planet id [optional]
 	 *
 	 * @return Bengine_EventHandler_Handler_Abstract
 	 */
@@ -117,7 +122,7 @@ abstract class Bengine_EventHandler_Handler_Abstract
 		$destinationPlanet = ($destinationPlanet === false) ? $event->getPlanetid() : $destinationPlanet;
 
 		$rEvent = Bengine::getModel("event");
-		$rEvent->setMode(20)
+		$rEvent->setMode(self::RETURN_EVENT_ID)
 			->setTime($time)
 			->setPlanetid($startPlanet)
 			->setDestination($destinationPlanet)
@@ -130,7 +135,7 @@ abstract class Bengine_EventHandler_Handler_Abstract
 	/**
 	 * Prepares a fleet for launch (remove ships from planet, extract consumption, ...)
 	 *
-	 * @param array		Data array
+	 * @param array $data		Data array
 	 *
 	 * @return Bengine_EventHandler_Handler_Abstract
 	 */
@@ -166,11 +171,12 @@ abstract class Bengine_EventHandler_Handler_Abstract
 	/**
 	 * Adds an event.
 	 *
-	 * @param integer	Mode id
-	 * @param integer	Time when event will be triggered
-	 * @param integer	Planet where event has been triggered
-	 * @param integer	Destination planet (just for fleet events)
-	 * @param array		Event-related data
+	 * @param integer $mode Mode id
+	 * @param integer $time Time when event will be triggered
+	 * @param integer $planetid Planet where event has been triggered
+	 * @param integer $userid User ID
+	 * @param integer $destination Destination planet (just for fleet events)
+	 * @param array $data Event-related data
 	 *
 	 * @return Bengine_EventHandler_Handler_Abstract
 	 */
@@ -212,8 +218,8 @@ abstract class Bengine_EventHandler_Handler_Abstract
 	/**
 	 * Contains the logical function to execute an event.
 	 *
-	 * @param Bengine_Model_Event		Event model
-	 * @param array					Data array
+	 * @param Bengine_Model_Event $event		Event model
+	 * @param array $data					Data array
 	 *
 	 * @return Bengine_EventHandler_Handler_Abstract
 	 */
@@ -222,8 +228,8 @@ abstract class Bengine_EventHandler_Handler_Abstract
 	/**
 	 * Contains the logical function to add an event.
 	 *
-	 * @param Bengine_Model_Event		Event model
-	 * @param array					Data array
+	 * @param Bengine_Model_Event $event		Event model
+	 * @param array $data					Data array
 	 *
 	 * @return Bengine_EventHandler_Handler_Abstract
 	 */
@@ -232,8 +238,8 @@ abstract class Bengine_EventHandler_Handler_Abstract
 	/**
 	 * Contains the logical function to remove an event.
 	 *
-	 * @param Bengine_Model_Event		Event model
-	 * @param array					Data array
+	 * @param Bengine_Model_Event $event		Event model
+	 * @param array $data					Data array
 	 *
 	 * @return Bengine_EventHandler_Handler_Abstract
 	 */
