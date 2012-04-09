@@ -43,6 +43,7 @@ UPDATE `bengine_phrases` SET `content` = 'du hast deine E-Mail Adrese bei {confi
 UPDATE `bengine_phrases` SET `content` = 'du hast dein Passwort bei {config=pagetitle} geändert. Das geänderte Passwort benötigt eine Aktivierung bevor es genutzt werden kann. Verwende dazu den unten stehenden Link.', `title` = 'EMAIL_PASSWORD_MESSAGE_1' WHERE `title` = 'EMAIL_PASSWORD_MESSAGE' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Solltest du dein Passwort bei {config}pagetitle{/config} vergessen haben, kannst du über den folgenden Link ein neues Passwort setzen:', `title` = 'REQUEST_PASSWORD_1' WHERE `title` = 'REQUEST_PASSWORD' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Solltest du deinen Benutzernamen bei {config}pagetitle{/config} vergessen haben, kannst du dich jetzt wieder anmelden.', `title` = 'REQUEST_USERNAME_1' WHERE `title` = 'REQUEST_USERNAME' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'Eine neuartige Methode um Energie zu gewinnen: Es wird ein Deuterium- und ein Tritiumkern zu einem Heliumkern verschmolzen. Beide Teilchen werden aus Wasserstoff gewonnen.' WHERE `title` = 'HYDROGEN_PLANT_DESC' AND `languageid` = 1;
 
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 (1, 7, 'EMAIL_CLOSING_SENDER', 'dein {config}pagetitle{/config}-Team'),

@@ -982,7 +982,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 5, 'CURRENTLY_IN_WORK', 'Aktueller Auftrag:'),
 (1, 5, 'DEFENSE', 'Verteidigung'),
 (1, 5, 'HYDROGEN_LAB_DESC', 'Wasserstoff ist der derzeit beste Energiespeicher, den es gibt. Die Herstellung ist zwar teuer und ben&ouml;tigt viel Energie, jedoch fliegen alle Schiffe nur mit Wasserstoff.'),
-(1, 5, 'HYDROGEN_PLANT_DESC', 'Eine neuartige Methode um Energie zu gewinnen. Es verschmelzt ein Deuteriummolek&uuml;l mit einem Tritiummolek&uuml;l. Allerdings m&uuml;ssen beide Teilchen aus Wasserstoff hergestellt werden.'),
+(1, 5, 'HYDROGEN_PLANT_DESC', 'Eine neuartige Methode um Energie zu gewinnen: Es wird ein Deuterium- und ein Tritiumkern zu einem Heliumkern verschmolzen. Beide Teilchen werden aus Wasserstoff gewonnen.'),
 (1, 5, 'HYDROGEN_STORAGE_DESC', 'Erm&ouml;glicht die Lagerung von mehr Wasserstoff.'),
 (1, 5, 'METALMINE_DESC', 'Metall ist der Hauptrohstoff zum Bau von Geb&auml;uden und Schiffen.'),
 (1, 5, 'METAL_STORAGE_DESC', 'Erm&ouml;glicht die Lagerung von mehr Metall.'),
