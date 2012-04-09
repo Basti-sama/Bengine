@@ -1706,7 +1706,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 34, 'IMAGE_TOO_LARGE', 'Das Bild ist zu gro&szlig;.'),
 (1, 34, 'TEXT_TOO_LARGE', 'Der Text ist zu lang.'),
 (1, 34, 'CONTACT', 'Kontakt'),
-(1, 7, 'EMAIL_SALUTATION', 'Hallo {@username},')
+(1, 7, 'EMAIL_SALUTATION', 'Hallo {@username},'),
 (1, 7, 'REMINDER_MAIL_MESSAGE', 'dein letzter Login bei {config}pagetitle{/config} war am {@reminderLast}. Vielleicht hast du uns ja vergessen, aber dein Konto ist immer noch verfügbar. Wir würden uns freuen, wenn du dich mal wieder meldest.'),
 (1, 7, 'REMINDER_MAIL_SUBJECT', '{config}pagetitle{/config} vermisst dich!'),
 (1, 1, 'LOADING', 'Lade...'),
