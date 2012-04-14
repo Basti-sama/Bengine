@@ -17,8 +17,9 @@ class Bengine_EventHandler_Handler_Fleet_Colonize extends Bengine_EventHandler_H
 	const COLONY_SHIP_ID = 36;
 
 	/**
-	 * (non-PHPdoc)
-	 * @see app/code/Bengine/EventHandler/Handler/Bengine_EventHandler_Handler_Abstract#_execute($event, $data)
+	 * @param Bengine_Model_Event $event
+	 * @param array $data
+	 * @return Bengine_EventHandler_Handler_Fleet_Colonize
 	 */
 	protected function _execute(Bengine_Model_Event $event, array $data)
 	{
@@ -72,18 +73,25 @@ class Bengine_EventHandler_Handler_Fleet_Colonize extends Bengine_EventHandler_H
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see app/code/Bengine/EventHandler/Handler/Bengine_EventHandler_Handler_Abstract#_add($event, $data)
+	 * @param Bengine_Model_Event $event
+	 * @param array $data
+	 * @return Bengine_EventHandler_Handler_Fleet_Colonize
 	 */
 	protected function _add(Bengine_Model_Event $event, array $data)
 	{
+		$data["dont_save_resources"] = true;
+		$data["metal"] = 0;
+		$data["silicon"] = 0;
+		$data["hydrogen"] = 0;
+		$event->setData($data);
 		$this->prepareFleet($data);
 		return $this;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see app/code/Bengine/EventHandler/Handler/Bengine_EventHandler_Handler_Abstract#_remove($event, $data)
+	 * @param Bengine_Model_Event $event
+	 * @param array $data
+	 * @return Bengine_EventHandler_Handler_Fleet_Colonize
 	 */
 	protected function _remove(Bengine_Model_Event $event, array $data)
 	{
