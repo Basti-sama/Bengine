@@ -150,7 +150,7 @@ abstract class Recipe_Controller_Abstract
 		$method = $action.$this->getActionNameSuffix();
 		if(!method_exists($this, $method))
 		{
-			$action = "noroute";
+			$method = "noroute".$this->getActionNameSuffix();
 		}
 		$args = array();
 		for($i = 1; $i < 5; $i++)

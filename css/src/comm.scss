@@ -40,7 +40,11 @@ a, a:link, a:hover, a:active, a:visited {
 	top: 300px;
 	width: 830px;
 	height: 440px;
-	overflow: auto;
+	overflow: hidden;
+	.inner {
+		height: 430px;
+		overflow: auto;
+	}
 }
 
 #signin {

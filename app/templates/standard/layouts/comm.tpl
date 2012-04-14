@@ -45,12 +45,14 @@
 		{hook}FrontHtmlBegin{/hook}
 		<div id="container" class="{@containerClass}">
 			<div id="content">
-				{if[{var=showDefaultCotnent}]}
-				<h1>{lang}WELCOME{/lang}</h1>
-				<p>{lang}GAME_DESCRIPTION{/lang}</p>
-				{else}
-				{include}$template{/include}
-				{/if}
+				<div class="inner">
+					{if[{var=showDefaultCotnent}]}
+					<h1>{lang}WELCOME{/lang}</h1>
+					<p>{lang}GAME_DESCRIPTION{/lang}</p>
+					{else}
+					{include}$template{/include}
+					{/if}
+				</div>
 			</div>
 			<div id="navigation">
 				<ul>
