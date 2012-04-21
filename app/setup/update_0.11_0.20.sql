@@ -56,6 +56,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 7, 'REQUEST_USERNAME_3', 'Hast du deinen Benutzernamen nicht vergessen, empfiehlt es sich die E-Mail Adresse in den Account-Einstellungen zu ändern. Der Clienet dieser Anfrage hatte die IP-Adresse {@ipaddress}.'),
 (1, 7, 'REQUEST_PASSWORD_2', 'Hast du dein Passwort nicht vergessen, empfiehlt es sich die E-Mail Adresse in den Account-Einstellungen zu ändern. Der Client dieser Anfrage hatte die IP-Adresse {@ipaddress}.'),
 (1, 7, 'REQUEST_PASSWORD_3', 'Um den Account ohne Passwortänderung wieder zu aktivieren, verwende bitte den folgenden Link:'),
-(1, 8, 'EMAIL_PASSWORD_MESSAGE_2', 'Dein neues Passwort:');
+(1, 8, 'EMAIL_PASSWORD_MESSAGE_2', 'Dein neues Passwort:'),
+(1, 7, 'REGISTER_NOW', 'Jetzt registrieren!');
 
 ALTER TABLE `bengine_assault` CHANGE `result` `result` TINYINT( 1 ) UNSIGNED NULL DEFAULT NULL;

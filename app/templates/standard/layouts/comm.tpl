@@ -84,7 +84,7 @@
 					</form>
 				</div>
 				<p>
-					<a href="#signup" class="signup">Jetzt registrieren!</a>
+					<a href="#signup" class="signup">{lang=REGISTER_NOW}</a>
 				</p>
 				<div class="features">
 					<ul>
