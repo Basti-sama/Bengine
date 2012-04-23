@@ -66,6 +66,7 @@ public class Assault
 	public static int haulSilicon = 0;
 	public static int haulHydrogen = 0;
 	private static boolean defenderZero = false;
+	public static Calendar calObj = Calendar.getInstance();
 
 	/**
 	 * @param args
@@ -99,9 +100,7 @@ public class Assault
 		assaultReport += String
 				.format(
 						"{embedded[ASSAULT_TIME]}%ta %td. %tb %tY, %tT{/embedded}<br />\n<br /><br />\n",
-						Calendar.getInstance(), Calendar.getInstance(),
-						Calendar.getInstance(), Calendar.getInstance(),
-						Calendar.getInstance());
+						calObj, calObj, calObj, calObj, calObj);
 
 		/**
 		 * Load planet data
@@ -917,6 +916,10 @@ public class Assault
 				else if(var == "MAX_MOON_FORMATION_CHANCE")
 				{
 					maxMoonChance = rs.getDouble("value");
+				}
+				else if(var == "timezone" && rs.getString("value") != "")
+				{
+					calObj.setTimeZone(TimeZone.getTimeZone(rs.getString("value")));
 				}
 			}
 		} catch(Exception e) {
