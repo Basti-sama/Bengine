@@ -56,7 +56,7 @@ class Recipe_Template_Default_Compiler extends Recipe_Cache
 		$this->buildPatterns()->compile();
 		try {
 			parent::putCacheContent(Core::getCache()->getTemplatePath($this->template, $type), $this->compiledTemplate->get());
-		} catch(Exception $e) {
+		} catch(Recipe_Exception_Generic $e) {
 			$e->printError();
 		}
 		return;
@@ -65,13 +65,15 @@ class Recipe_Template_Default_Compiler extends Recipe_Cache
 	/**
 	 * Builds the compiling patterns.
 	 *
-	 * @return Recipe_Template_Compiler
+	 * @return Recipe_Template_Default_Compiler
 	 */
 	protected function buildPatterns()
 	{
 		$this->patterns["var"][] = "/\{var}([^\"]+)\{\/var}/siU";
 		$this->patterns["var"][] = "/\{var=([^\"]+)\}/siU";
 		$this->patterns["link"] = "/\{link\[([^\"]+)]}(.*)\{\/link}/siU";
+		$this->patterns["url"][] = "/\{url}(.*)\{\/url}/siU";
+		$this->patterns["url"][] = "/\{url=(.*)\}/siU";
 		$this->patterns["phrase"][] = "/\{lang}([^\"]+)\{\/lang}/siU";
 		$this->patterns["phrase"][] = "/\{lang=([^\"]+)\}/siU";
 		$this->patterns["config"][] = "/\{config}([^\"]+)\{\/config}/siU";
@@ -112,7 +114,7 @@ class Recipe_Template_Default_Compiler extends Recipe_Cache
 	/**
 	 * Compiles source template code into PHP code.
 	 *
-	 * @return Recipe_Template_Compiler
+	 * @return Recipe_Template_Default_Compiler
 	 */
 	protected function compile()
 	{
@@ -123,6 +125,8 @@ class Recipe_Template_Default_Compiler extends Recipe_Cache
 				->regEx($this->patterns["var"], "\$this->get(\"$1\", false)")
 				// Compile links {link[varname]}"index.php/".SID."/Main"{/link}
 				->regEx($this->patterns["link"], "<?php echo Link::get(\\2, Core::getLanguage()->get(\"\\1\")); ?>")
+				// Compile language variables {url}"index.php/".SID."/Main"{/url}
+				->regEx($this->patterns["url"], "<?php echo Link::url(\\1); ?>")
 				// Compile language variables {lang}varname{/lang}
 				->regEx($this->patterns["phrase"], "<?php echo Core::getLanguage()->get(\"\\1\"); ?>")
 				// Compile config variables {config}varname{/config}
@@ -166,7 +170,7 @@ class Recipe_Template_Default_Compiler extends Recipe_Cache
 	/**
 	 * Compiles if-else tags into PHP code.
 	 *
-	 * @return Recipe_Template_Compiler
+	 * @return Recipe_Template_Default_Compiler
 	 */
 	protected function compileIfTags()
 	{
@@ -182,7 +186,7 @@ class Recipe_Template_Default_Compiler extends Recipe_Cache
 	/**
 	 * Compiles loops {while[resource]}Print this{/while} or {foreach[array]}Print this{/while}.
 	 *
-	 * @return Recipe_Template_Compiler
+	 * @return Recipe_Template_Default_Compiler
 	 */
 	protected function compileLoops()
 	{

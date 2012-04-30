@@ -70,10 +70,6 @@
 	</tr>
 	{/if}
 	<tr>
-		<td><label for="planet-order">{lang}PLANET_ORDER{/lang}</label></td>
-		<td><select name="planetorder" id="planet-order"><option value="1"{if[Core::getUser()->get("planetorder") == 1]} selected="selected"{/if}>{lang}EVOLUTION{/lang}</option><option value="2"{if[Core::getUser()->get("planetorder") == 2]} selected="selected"{/if}>{lang}ALPHABETICAL{/lang}</option><option value="3"{if[Core::getUser()->get("planetorder") == 3]} selected="selected"{/if}>{lang}COORDINATES{/lang}</option></select></td>
-	</tr>
-	<tr>
 		<td><label for="vacation">{lang}VACATION_MODE{/lang}</label></td>
 		<td><input type="checkbox" name="umode" id="vacation" value="1" onclick="return confirm('{lang}VACATION_WARNING{/lang}');" /></td>
 	</tr>

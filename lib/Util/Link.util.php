@@ -43,18 +43,18 @@ class Link
 	/**
 	 * Set required data for link.
 	 *
-	 * @param string	URL to link
-	 * @param string	Link name
-	 * @param string	Additional title
-	 * @param string	Particular css class
-	 * @param string	Additional attachment for link
-	 * @param boolean	Append session id to url
-	 * @param boolean	Activate URL rewrite
-	 * @param boolean	Refer external URLs to "refdir"
+	 * @param string $url				URL to link
+	 * @param string $name				Link name
+	 * @param string $title				Additional title
+	 * @param string $cssClass			Particular css class
+	 * @param string $attachment		Additional attachment for link
+	 * @param boolean $appendSession	Append session id to url
+	 * @param boolean $rewrite			Activate URL rewrite
+	 * @param boolean $refDir			Refer external URLs to "refdir"
 	 *
 	 * @return string	HTML link
 	 */
-	public static function get($url, $name, $title = "", $cssClass = "", $attachment = "", $appendSession = false, $rewrite = true, $refdir = true)
+	public static function get($url, $name, $title = "", $cssClass = "", $attachment = "", $appendSession = false, $rewrite = true, $refDir = true)
 	{
 		if(Str::length($cssClass) <= 0)
 		{
@@ -69,13 +69,13 @@ class Link
 		}
 		if(Str::length($attachment) > 0) { $attachment = " ".$attachment; }
 
-		if(self::isExternal($url) && $refdir)
+		if(self::isExternal($url) && $refDir)
 		{
 			$link = "<a href=\"".BASE_URL."refdir.php?url=".$url."\" title=\"".$title."\" class=\"".$cssClass."\"".$attachment.">".$name."</a>";
 		}
 		else
 		{
-			$url = self::url($url, $appendSession, $rewrite);
+			$url = self::url($url, $appendSession);
 			$link = "<a href=\"".$url."\" title=\"".$title."\" class=\"".$cssClass."\"".$attachment.">".$name."</a>";
 		}
 		return $link;
@@ -84,13 +84,12 @@ class Link
 	/**
 	 * Generates a full readable url.
 	 *
-	 * @param string	The url parameters
-	 * @param boolean	Append session id to url
-	 * @param boolean	Refer external URLs to "refdir"
+	 * @param string $url				The url parameters
+	 * @param boolean $appendSession	Append session id to url
 	 *
 	 * @return string
 	 */
-	public static function url($url, $appendSession = false, $rewrite = true)
+	public static function url($url, $appendSession = false)
 	{
 		$session = Core::getRequest()->getGET("sid");
 		if(!COOKIE_SESSION && $appendSession && $session)
@@ -126,7 +125,7 @@ class Link
 	/**
 	 * Check whether url is beyond current site.
 	 *
-	 * @param string	URL to check
+	 * @param string $url	URL to check
 	 *
 	 * @return boolean
 	 */
@@ -144,7 +143,7 @@ class Link
 	/**
 	 * Encode URL according to RFC1738 (spaces will be replaced with _).
 	 *
-	 * @param string	URL to validate
+	 * @param string $url	URL to validate
 	 *
 	 * @return string	Validated URL
 	 */
@@ -158,7 +157,7 @@ class Link
 	/**
 	 * Normalize the URL into readable string for the Rewrite-Engine.
 	 *
-	 * @param string	URL to normalize
+	 * @param string $url	URL to normalize
 	 *
 	 * @return string	Normalized URL
 	 */

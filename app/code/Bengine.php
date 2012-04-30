@@ -199,12 +199,14 @@ class Bengine extends Application
 	{
 		// JavaScript & CSS
 		Core::getTPL()->addHTMLHeaderFile("style.css", "css");
+		Core::getTPL()->addHTMLHeaderFile("jquery-ui.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.js", "js");
+		Core::getTPL()->addHTMLHeaderFile("lib/jquery-ui.js", "js");
 		Core::getTPL()->addHTMLHeaderFile("main.js", "js");
 
 		// Set planets for right menu and fill planet stack.
 		$planets = array(); $i = 0;
-		$order = getPlanetOrder(Core::getUser()->get("planetorder"));
+		$order = "p.sort_index ASC, p.planetid ASC";
 		$joins  = "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = p.planetid)";
 		$joins .= "LEFT JOIN ".PREFIX."planet m ON (g.moonid = m.planetid)";
 		$atts = array("p.planetid", "p.ismoon", "p.planetname", "p.picture", "g.galaxy", "g.system", "g.position", "m.planetid AS moonid", "m.planetname AS moon", "m.picture AS mpicture");

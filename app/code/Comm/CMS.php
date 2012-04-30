@@ -19,14 +19,14 @@ class Comm_CMS
 	/**
 	 * Holds all menu items.
 	 *
-	 * @var unknown_type
+	 * @var array
 	 */
 	protected $menuItems = array();
 
 	/**
 	 * Creates a new CMS object.
 	 *
-	 * @return void
+	 * @return \Comm_CMS
 	 */
 	public function __construct()
 	{
@@ -38,13 +38,13 @@ class Comm_CMS
 	/**
 	 * Returns page data.
 	 *
-	 * @param string	Page label
+	 * @param string $page	Page label
 	 *
 	 * @return array|boolean
 	 */
 	public function getPage($page)
 	{
-		if(empty($page)) { return; }
+		if(empty($page)) { return false; }
 		$result = Core::getQuery()->select("page", array("title", "content"), "", "label = '".$page."' AND languageid = '".$this->langid."' AND label != ''");
 		$row = Core::getDB()->fetch($result);
 		Core::getDB()->free_result($result);
@@ -54,7 +54,7 @@ class Comm_CMS
 	/**
 	 * Loads all menu items.
 	 *
-	 * @return Bengine_CMS
+	 * @return Comm_CMS
 	 */
 	protected function loadMenuItems()
 	{
@@ -78,7 +78,7 @@ class Comm_CMS
 	 * Returns an array with all menu items of the given location.
 	 * (e.g. f = footer, h = header)
 	 *
-	 * @param char		Menu location
+	 * @param string $position		Menu location
 	 *
 	 * @return array	Menu items
 	 */

@@ -6,6 +6,15 @@
  * @license <http://www.bengine.de/pbl.txt> Public Bengine License
  */
 
+@mixin tableBackground() {
+	background: url(../img/ntable.jpg) repeat-x scroll left top rgb(44,53,84);
+	background: -moz-linear-gradient(top, #2b3352 0%, #1e243c 50%, #1e243c 100%);
+	background: -webkit-linear-gradient(top, #2b3352 0%,#1e243c 50%,#1e243c 100%);
+	background: -o-linear-gradient(top, #2b3352 0%,#1e243c 50%,#1e243c 100%);
+	background: -ms-linear-gradient(top, #2b3352 0%,#1e243c 50%,#1e243c 100%);
+	background: linear-gradient(top, #2b3352 0%,#1e243c 50%,#1e243c 100%);
+}
+
 body {
 	background-image: url("../img/animspace.gif");
 	background-attachment: fixed;
@@ -89,16 +98,34 @@ img {
 	right: 20px;
 	width: 150px;
 	font-size: 8pt;
-	li, .cur-planet {
-		cursor: pointer;
-		width: 100px;
-		height: 75px;
-		text-align: center;
-		margin-bottom: 4px;
-		&:hover {
-			background: url("../img/planetbg.png") no-repeat scroll center top transparent;
-			color: #9af;
+	ul {
+		padding: 0;
+		margin: 0;
+		&.ui-sortable a {
+			cursor: move;
 		}
+	}
+	li {
+		width: 100px;
+		min-height: 75px;
+		a, .cur-planet {
+			cursor: pointer;
+			width: 100px;
+			height: 75px;
+			text-align: center;
+			margin-bottom: 4px;
+			display: block;
+			color: #fff;
+			&:hover {
+				background: url("../img/planetbg.png") no-repeat scroll center top transparent;
+				color: #9af;
+				text-decoration: none;
+			}
+		}
+	}
+	.planet-placeholder {
+		border: 1px dashed #39435C;
+		margin: 0 0 4px;
 	}
 }
 
@@ -116,6 +143,27 @@ img {
 
 .moon-select, .cur-moon, .moon-select:hover, .cur-moon:hover {
 	height: 40px !important;
+}
+
+#edit-order, #save-order {
+	@include tableBackground();
+	display: none;
+	padding: 3px 5px;
+	border: 1px solid #39435C;
+	span {
+		display: block;
+		padding: 0 0 0 20px;
+		line-height: 16px;
+		background: none no-repeat scroll 0 0 transparent;
+	}
+}
+
+#save-order span {
+	background-image: url(../img/disk.png);
+}
+
+#edit-order span {
+	background-image: url(../img/arrow_out.png);
 }
 
 .menu-prod, .menu-user, .menu-other, .menu-prod:hover, .menu-user:hover, .menu-other:hover {
@@ -158,8 +206,7 @@ a, a:link, a:hover, a:active, a:visited {
 }
 
 .ntable td, .atable td, .ttable td, .strongBorderTop, fieldset, #log, #forward, .topbox, .td {
-	background: url(../img/ntable.jpg) repeat-x scroll left top rgb(44, 53, 84);
-	background: -moz-linear-gradient(50% 120px 90deg, #2B3352, #1E243C, #1E243C 100%);
+	@include tableBackground();
 	color: #B6C6E5;
 	border: 1px solid #39435C;
 	padding: 3px;

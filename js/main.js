@@ -224,13 +224,41 @@ function pad(n, len)
 	{
 		s = ('0000000000' + s).slice(-len);
 	}
-    return s;
+	return s;
 }
 
 $(document).ready(function() {
-	$('.goto').click(function() {
-		var planetid = ($(this).attr('rel')) ? $(this).attr('rel') : $(this).attr('lang');
-		gotoPlanet('planetSelection', planetid);
+	$(".goto").click(function() {
+		var planetId = ($(this).attr("href"));
+		gotoPlanet("planetSelection", planetId);
+		return false;
+	});
+	$("#edit-order").click(function() {
+		$("#planets ul").sortable({
+			placeholder: "planet-placeholder"
+		});
+		$(this).hide();
+		$("#save-order").css("display", "block");
+		return false;
+	});
+	$("#save-order").click(function() {
+		$("#planets ul").sortable("destroy");
+		$(this).hide();
+		$("#edit-order").css("display", "block");
+		var planets = [];
+		$("#planets li").each(function() {
+			planets.push($(this).find("a:first").attr("href"));
+		});
+		$.post(this.href, { planets: planets });
+		return false;
+	});
+	$("#planets").hover(function() {
+		if($("#save-order:hidden").length)
+		{
+			$("#edit-order").css("display", "block");
+		}
+	}, function() {
+		$("#edit-order").css("display", "none");
 	});
 	if($.browser.msie && parseInt($.browser.version) <= 6)
 	{
@@ -243,5 +271,5 @@ $(document).ready(function() {
 			$("#leftMenu").css("top", $(window).scrollTop()+leftMenuTop+"px");
 		}
 	});
-	$('a.external').bind('click',function(){window.open(this.href);return false;});
+	$('a.external').bind("click",function(){window.open(this.href);return false;});
 });

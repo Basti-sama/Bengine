@@ -44,7 +44,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 			{
 				$this->updateUserData(
 					$this->getParam("username"), $this->getParam("usertitle"), $this->getParam("email"), $this->getParam("password"), $this->getParam("theme"), $this->getParam("language"), $this->getParam("templatepackage"),
-					$this->getParam("umode"), $this->getParam("delete"), $this->getParam("ipcheck"), $this->getParam("planetorder"), $this->getParam("esps"), $this->getParam("generate_key"),
+					$this->getParam("umode"), $this->getParam("delete"), $this->getParam("ipcheck"), $this->getParam("esps"), $this->getParam("generate_key"),
 					$this->getParam("js_interface")
 				);
 			}
@@ -140,7 +140,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 	 *
 	 * @return Bengine_Page_Preferences
 	 */
-	protected function updateUserData($username, $usertitle, $email, $pw, $theme, $language, $templatepackage, $umode, $delete, $ipcheck, $planetorder, $esps, $generate_key, $js_interface)
+	protected function updateUserData($username, $usertitle, $email, $pw, $theme, $language, $templatepackage, $umode, $delete, $ipcheck, $esps, $generate_key, $js_interface)
 	{
 		if(Core::getUser()->get("umode")) { throw new Recipe_Exception_Generic("Vacation mode is still enabled."); }
 		Core::getLanguage()->load("Registration");
@@ -308,19 +308,14 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 		{
 			$ipcheck = 1;
 		}
-		switch($planetorder)
-		{
-			case 1:case 2:case 3: break;
-			default: $planetorder = 1; break;
-		}
 		if($esps > 99) { $esps = 99; }
 		else if($esps < 0) { $esps = 1; }
 
-		Hook::event("SaveUserDataLast", array(&$username, &$usertitle, &$email, &$templatepackage, &$theme, &$umode, &$umodemin, &$planetorder, &$delete, $ipcheck, $esps, &$js_interface));
+		Hook::event("SaveUserDataLast", array(&$username, &$usertitle, &$email, &$templatepackage, &$theme, &$umode, &$umodemin, &$delete, $ipcheck, $esps, &$js_interface));
 
 		// Save it
-		$atts = array("username", "usertitle", "email", "temp_email", "activation", "languageid", "templatepackage", "theme", "ipcheck", "umode", "umodemin", "planetorder", "delete", "esps", "js_interface");
-		$vals = array($username, $usertitle, $email, $email, $activation, $language, $templatepackage, $theme, $ipcheck, $umode, $umodemin, $planetorder, $delete, $esps, $js_interface);
+		$atts = array("username", "usertitle", "email", "temp_email", "activation", "languageid", "templatepackage", "theme", "ipcheck", "umode", "umodemin", "delete", "esps", "js_interface");
+		$vals = array($username, $usertitle, $email, $email, $activation, $language, $templatepackage, $theme, $ipcheck, $umode, $umodemin, $delete, $esps, $js_interface);
 
 		// Feeds
 		if($generate_key)
@@ -340,6 +335,24 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 
 		Core::getQuery()->update("user", $atts, $vals, "userid = '".Core::getUser()->get("userid")."'");
 		Core::getUser()->rebuild();
+		return $this;
+	}
+
+	/**
+	 * Saves the planet order.
+	 *
+	 * @return Bengine_Page_Preferences
+	 */
+	protected function savePlanetOrderAction()
+	{
+		if($this->isPost())
+		{
+			foreach($this->getParam("planets") as $i => $planetId)
+			{
+				Core::getQuery()->updateSet("planet", array("sort_index" => $i), "planetid = '".$planetId."' AND userid = '".Core::getUser()->get("userid")."'");
+			}
+		}
+		$this->setNoDisplay();
 		return $this;
 	}
 

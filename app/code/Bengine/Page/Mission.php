@@ -215,7 +215,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 			// Planet shortlinks
 			$sl = array();
 
-			$order = getPlanetOrder(Core::getUser()->get("planetorder"));
+			$order = "p.sort_index ASC, p.planetid ASC";
 			$_result = Core::getQuery()->select("planet p", array("p.ismoon", "p.planetname", "g.galaxy", "g.system", "g.position", "gm.galaxy moongala", "gm.system as moonsys", "gm.position as moonpos"), "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = p.planetid) LEFT JOIN ".PREFIX."galaxy gm ON (gm.moonid = p.planetid)", "p.userid = '".Core::getUser()->get("userid")."' AND p.planetid != '".Core::getUser()->get("curplanet")."'", $order);
 			while($_row = Core::getDB()->fetch($_result))
 			{

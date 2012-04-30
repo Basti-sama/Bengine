@@ -9,13 +9,13 @@
 
 <link rel="shortcut icon" href="{@themePath}favicon.ico" type="image/x-icon"/>
 <?php if($this->get("CSS_FILES") != "" && Core::getUser()->get("theme") == ""): ?>
-<link rel="stylesheet" type="text/css" href="{const}BASE_URL{/const}css/?f={@CSS_FILES}"/>
+<link rel="stylesheet" type="text/css" href="{const}BASE_URL{/const}css/?f={@CSS_FILES}&c=1"/>
 <?php else: ?>
 <?php foreach($this->htmlHead["css"] as $file): ?>
 <link rel="stylesheet" type="text/css" href="{user}theme{/user}css/<?php echo $file ?>"/>
 <?php endforeach ?>
 <?php endif ?>
-<?php if($this->get("JS_FILES")): ?><script type="text/javascript" src="{const}BASE_URL{/const}js/?f={@JS_FILES}"></script><?php endif ?>
+<?php if($this->get("JS_FILES")): ?><script type="text/javascript" src="{const}BASE_URL{/const}js/?f={@JS_FILES}&c=1"></script><?php endif ?>
 <?php if($js_interface = Core::getUser()->get("js_interface")): ?>
 <script type="text/javascript" src="<?php echo $js_interface ?>"></script>
 <?php endif ?>
@@ -73,11 +73,22 @@
 {hook}ContentEnds{/hook}
 </div>
 <div id="planets">
-<ul>
-	{foreach[planetHeaderList]}<li lang="{loop}planetid{/loop}" class="goto{if[$row["planetid"] == Bengine::getPlanet()->getPlanetId()]} cur-planet{/if}">
-		{loop}picture{/loop}<br />{loop}planetname{/loop}
-	</li>{if[$row["moonid"] > 0]}<li class="goto {if[$row["moonid"] == Bengine::getPlanet()->getPlanetId()]}cur-moon{else}moon-select{/if}" lang="{loop}moonid{/loop}">{loop}mpicture{/loop}<br />{loop}moon{/loop}</li>{/if}{/foreach}
-</ul>
+	<ul>
+		{foreach[planetHeaderList]}
+		<li>
+			<a href="{loop}planetid{/loop}" class="goto{if[$row["planetid"] == Bengine::getPlanet()->getPlanetId()]} cur-planet{/if}">
+				{loop}picture{/loop}<br />{loop}planetname{/loop}
+			</a>
+			{if[$row["moonid"] > 0]}
+			<a href="{loop}moonid{/loop}" class="goto {if[$row["moonid"] == Bengine::getPlanet()->getPlanetId()]}cur-moon{else}moon-select{/if}">
+				{loop}mpicture{/loop}<br />{loop}moon{/loop}
+			</a>
+			{/if}
+		</li>
+		{/foreach}
+	</ul>
+	<a href="#" id="edit-order"><span>{lang=EDIT_PLANET_SORTING}</span></a>
+	<a href="{url="game.php/".SID."/Preferences/savePlanetOrder"}" id="save-order"><span>{lang=SAVE_PLANET_SORTING}</span></a>
 </div>
 {hook}HtmlEnd{/hook}
 </div>

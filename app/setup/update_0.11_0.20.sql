@@ -44,6 +44,8 @@ UPDATE `bengine_phrases` SET `content` = 'du hast dein Passwort bei {config=page
 UPDATE `bengine_phrases` SET `content` = 'Solltest du dein Passwort bei {config}pagetitle{/config} vergessen haben, kannst du über den folgenden Link ein neues Passwort setzen:', `title` = 'REQUEST_PASSWORD_1' WHERE `title` = 'REQUEST_PASSWORD' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Solltest du deinen Benutzernamen bei {config}pagetitle{/config} vergessen haben, kannst du dich jetzt wieder anmelden.', `title` = 'REQUEST_USERNAME_1' WHERE `title` = 'REQUEST_USERNAME' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Eine neuartige Methode um Energie zu gewinnen: Es wird ein Deuterium- und ein Tritiumkern zu einem Heliumkern verschmolzen. Beide Teilchen werden aus Wasserstoff gewonnen.' WHERE `title` = 'HYDROGEN_PLANT_DESC' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'Planeten sortieren', `title` = 'EDIT_PLANET_SORTING', `phrasegroupid` = 1 WHERE `title` = 'PLANET_ORDER' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'Sortierung speichern', `title` = 'SAVE_PLANET_SORTING', `phrasegroupid` = 1 WHERE `title` = 'EVOLUTION' AND `languageid` = 1;
 
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 (1, 7, 'EMAIL_CLOSING_SENDER', 'dein {config}pagetitle{/config}-Team'),
@@ -60,3 +62,4 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 7, 'REGISTER_NOW', 'Jetzt registrieren!');
 
 ALTER TABLE `bengine_assault` CHANGE `result` `result` TINYINT( 1 ) UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `bengine_user` DROP `planetorder`;
