@@ -1236,7 +1236,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 10, 'SELECT_TARGET_MOON', 'Zielmond w&auml;hlen'),
 (1, 10, 'SHIP_NAME', 'Raumschiff'),
 (1, 10, 'SHORTLINKS', 'Shortlinks'),
-(1, 10, 'SPEED', 'Geschwinigkeit'),
+(1, 10, 'SPEED', 'Geschwindigkeit'),
 (1, 10, 'SPEED_CAPICITY', 'Geschw./Kapa.'),
 (1, 10, 'START', 'Start'),
 (1, 10, 'STAR_GATE_JUMP', 'Star Gate Sprung'),

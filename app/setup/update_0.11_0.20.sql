@@ -46,6 +46,7 @@ UPDATE `bengine_phrases` SET `content` = 'Solltest du deinen Benutzernamen bei {
 UPDATE `bengine_phrases` SET `content` = 'Eine neuartige Methode um Energie zu gewinnen: Es wird ein Deuterium- und ein Tritiumkern zu einem Heliumkern verschmolzen. Beide Teilchen werden aus Wasserstoff gewonnen.' WHERE `title` = 'HYDROGEN_PLANT_DESC' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Planeten sortieren', `title` = 'EDIT_PLANET_SORTING', `phrasegroupid` = 1 WHERE `title` = 'PLANET_ORDER' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Sortierung speichern', `title` = 'SAVE_PLANET_SORTING', `phrasegroupid` = 1 WHERE `title` = 'EVOLUTION' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'Geschwindigkeit' WHERE `title` = 'SPEED' AND `languageid` = 1;
 
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 (1, 7, 'EMAIL_CLOSING_SENDER', 'dein {config}pagetitle{/config}-Team'),
