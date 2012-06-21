@@ -47,12 +47,10 @@ class Bengine_Assault
 	/**
 	 * Creates a new Assault Object.
 	 *
-	 * @param Bengine_EventHandler
-	 * @param integer	Planet id of the assault location
-	 * @param integer	Assault location
-	 * @param integer	Owner of the attacked planet
+	 * @param integer $location    Assault location
+	 * @param integer $owner    Owner of the attacked planet
 	 *
-	 * @return void
+	 * @return Bengine_Assault
 	 */
 	public function __construct($location = null, $owner = null)
 	{
@@ -72,15 +70,17 @@ class Bengine_Assault
 			$planet->getProduction()->addProd();
 			$this->loadDefenders();
 		}
-		return;
+		return $this;
 	}
 
 	/**
 	 * Adds a new participant.
 	 *
-	 * @param integer	Participant mode (0: defender, 1: attacker)
-	 * @param integer	User id
-	 * @param array		The ships
+	 * @param integer $mode		Participant mode (0: defender, 1: attacker)
+	 * @param integer $userid
+	 * @param integer $planetid
+	 * @param integer $time
+	 * @param array $data
 	 *
 	 * @return Bengine_Assault
 	 */
@@ -149,6 +149,9 @@ class Bengine_Assault
 	/**
 	 * Starts the assault.
 	 *
+	 * @param int $galaxy
+	 * @param int $system
+	 * @param int $position
 	 * @return Bengine_Assault
 	 */
 	public function startAssault($galaxy = 0, $system = 0, $position = 0)
@@ -163,15 +166,19 @@ class Bengine_Assault
 		// Run java
 		$jrePath = $cs["jre"];
 		$jarPath = APP_ROOT_DIR."app/Assault.jar";
-		$cmd = $jrePath.' -jar "'.$jarPath.'" "'.$cs["host"].'" "'.$cs["user"].'" "'.$cs["userpw"].'" "'.$database["databasename"].'" "'.$database["tableprefix"].'" '.escapeshellarg($this->assaultid);
-		exec($cmd);
+		$cmd = $jrePath.' -jar "'.$jarPath.'" "'.$cs["host"].'" "'.$cs["user"].'" "'.$cs["userpw"].'" "'.$database["databasename"].'" "'.$database["tableprefix"].'" '.escapeshellarg($this->assaultid).' 2>&1';
+		exec($cmd, $output);
 
 		$result = Core::getQuery()->select("assault", array("result", "moonchance", "moon", "accomplished", "lostunits_defender"), "", "assaultid = '".$this->assaultid."'");
 		$row = Core::getDB()->fetch($result);
 		Core::getDB()->free_result($result);
 		$this->data = $row;
 
-		if(!$row["accomplished"]) { Logger::addMessage("Sorry, could not start battle (".$this->assaultid.")."); }
+		if(!$row["accomplished"])
+		{
+			$output = implode("<br/>", $output);
+			Logger::addMessage("Sorry, could not start battle <strong>".$this->assaultid."</strong>:<br/>".$output);
+		}
 		Hook::event("StartAssaultLast", array($this, &$row, $this->owner));
 
 		if($row["moon"])
@@ -184,6 +191,7 @@ class Bengine_Assault
 	/**
 	 * Finishs the assault.
 	 *
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Assault
 	 */
 	public function finish()
@@ -215,9 +223,7 @@ class Bengine_Assault
 	/**
 	 * Updates units after the combat for the main defender.
 	 *
-	 * @param integer	Total number of lost units
-	 * @param integer	User id
-	 * @param integer	Planet id
+	 * @param integer $lostUnits	Total number of lost units
 	 *
 	 * @return Bengine_Assault
 	 */
@@ -285,7 +291,7 @@ class Bengine_Assault
 	/**
 	 * Returns the assault result data.
 	 *
-	 * @param string	Data parameter [optional]
+	 * @param string $param	Data parameter [optional]
 	 *
 	 * @return mixed	Data value or false
 	 */

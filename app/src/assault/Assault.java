@@ -896,28 +896,28 @@ public class Assault
 			while(rs.next())
 			{
 				String var = rs.getString("var");
-				if(var == "DEFENSE_INTO_DEBRIS")
+				if(var.equals("DEFENSE_INTO_DEBRIS"))
 				{
 					defenseIntoDebris = rs.getBoolean("value");
 					bulkIntoDebris[4] = rs.getDouble("value");
 				}
-				else if(var == "FLEET_INTO_DEBRIS")
+				else if(var.equals("FLEET_INTO_DEBRIS"))
 				{
 					bulkIntoDebris[3] = rs.getDouble("value");
 				}
-				else if(var == "REPAIR_DEFENSE_MIN")
+				else if(var.equals("REPAIR_DEFENSE_MIN"))
 				{
 					defenseRepairMin = rs.getDouble("value");
 				}
-				else if(var == "REPAIR_DEFENSE_MAX")
+				else if(var.equals("REPAIR_DEFENSE_MAX"))
 				{
 					defenseRepairMax = rs.getDouble("value");
 				}
-				else if(var == "MAX_MOON_FORMATION_CHANCE")
+				else if(var.equals("MAX_MOON_FORMATION_CHANCE"))
 				{
 					maxMoonChance = rs.getDouble("value");
 				}
-				else if(var == "timezone" && rs.getString("value") != "")
+				else if(var.equals("timezone") && rs.getString("value") != "")
 				{
 					calObj.setTimeZone(TimeZone.getTimeZone(rs.getString("value")));
 				}
