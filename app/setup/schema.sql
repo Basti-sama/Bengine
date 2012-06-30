@@ -1342,7 +1342,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 13, 'ROCKET_ATTACK_SUBJECT', 'Raketenangriff'),
 (1, 13, 'TOO_MANY_PLANETS', 'Deine Flotte erreicht die Position %s, doch nach einem Versuch den Planten zu kolonisieren kam es zu Unruhen im Imperium. Die Flotte kehrt gescheitert zur&uuml;ck.'),
 (1, 13, 'TRANPORT_SUBJECT', 'Resourcenlieferung'),
-(1, 13, 'TRANSPORT_ACCOMPLISHED', 'Deine Flotte erreicht den Planeten %s %s und liefer ihre Ladung ab:\r\nMetall: %s Silizium: %s Wasserstoff: %s.'),
+(1, 13, 'TRANSPORT_ACCOMPLISHED', 'Deine Flotte erreicht den Planeten %s %s und liefert ihre Ladung ab:\r\nMetall: %s Silizium: %s Wasserstoff: %s.'),
 (1, 13, 'TRANSPORT_ACCOMPLISHED_OTHER', 'Eine fremde Flotte vom Planeten %s %s von %s erreicht deinen Planeten %s %s und liefert ihre Ladung ab:\r\nMetall: %s Silizium: %s Wasserstoff: %s.'),
 (1, 13, 'TRANSPORT_ACCOMPLISHED_TO_OTHER', 'Deine Flotte vom Planeten %s %s erreicht den Planeten %s %s und liefert ihre Ladung ab:\r\nMetall: %s Silizium: %s Wasserstoff: %s'),
 (1, 14, 'ABANDON_ALLIANCE', 'Allianz aufgeben'),
