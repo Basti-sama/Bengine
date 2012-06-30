@@ -320,7 +320,7 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 			}
 
 			// Production and consumption chart
-			$chartType = "error";
+			$chartType = false;
 			if($prodFormula != false || $consFormula != false)
 			{
 				$chart = array();
@@ -371,7 +371,10 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 				Hook::event("BuildingInfoProduction", array(&$chart));
 				Core::getTPL()->addLoop("chart", $chart);
 			}
-			Core::getTPL()->assign("chartType", "game/constructions/".$chartType);
+			if($chartType)
+			{
+				Core::getTPL()->assign("chartType", "game/constructions/".$chartType);
+			}
 
 			// Show demolish function
 			$factor = floatval($row["demolish"]);

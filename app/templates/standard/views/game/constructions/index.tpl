@@ -7,7 +7,8 @@
 	<tbody>
 		<?php foreach($this->getLoop("constructions") as $key => $building): ?>
 		<?php $id = $building->get("buildingid") ?>
-		<?php if(Bengine::canBuild($id)): ?>
+		<?php $buildable = Bengine::canBuild($id) ?>
+		<?php if($buildable || $building->get("level")): ?>
 		<?php $required = $building->calculateRequiredResources() ?>
 		<tr>
 			<td>
@@ -69,7 +70,7 @@
 			<span class="false">{lang=BUILDING_AT_WORK}</span>
 			<?php elseif(Bengine::getEH()->getResearchEvent() && $id == 12): ?>
 			<span class="false">{lang=BUILDING_AT_WORK}</span>
-			<?php elseif($building->hasResources()): ?>
+			<?php elseif($building->hasResources() && $buildable): ?>
 			<?php if($building->get("level")): ?>
 			<?php echo Link::get("game.php/".SID."/Constructions/Upgrade/".$id, Core::getLanguage()->getItem("UPGRADE_TO_LEVEL")." ".($building->get("level")+1), "", "true") ?>
 			<?php else: ?>

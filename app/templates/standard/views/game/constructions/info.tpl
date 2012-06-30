@@ -5,7 +5,7 @@
 	<tr>
 		<td>{@buildingImage}{@buildingDesc}{perm[CAN_EDIT_CONSTRUCTIONS]}<div class="right">{@edit}</div>{/perm}</td>
 	</tr>
-	{if[{var}chartType{/var} != "error"]}<tr>
+	{if[{var}chartType{/var}]}<tr>
 		<td>{include}{var}chartType{/var}{/include}</td>
 	</tr>{/if}
 </table>
