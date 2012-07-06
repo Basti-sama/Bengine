@@ -65,3 +65,5 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 
 ALTER TABLE `bengine_assault` CHANGE `result` `result` TINYINT( 1 ) UNSIGNED NULL DEFAULT NULL;
 ALTER TABLE `bengine_user` DROP `planetorder`;
+
+ALTER TABLE `bengine_user` DROP `qpoints`;

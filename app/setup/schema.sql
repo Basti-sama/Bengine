@@ -2185,7 +2185,6 @@ CREATE TABLE IF NOT EXISTS `bengine_user` (
   `credits` float(128,8) NOT NULL default '0.0',
   `fpoints` int(9) unsigned NOT NULL default '0',
   `rpoints` int(3) unsigned NOT NULL default '0',
-  `qpoints` int(3) unsigned NOT NULL default '0',
   `hp` int(10) DEFAULT NULL,
   `ipcheck` tinyint(1) unsigned NOT NULL default '1',
   `activation` varchar(32) NULL,
