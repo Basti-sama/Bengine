@@ -1744,7 +1744,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 5, 'PRICE', 'Preis'),
 (1, 5, 'SELL', 'Verkaufen'),
 (1, 5, 'SCRAP_MERCHANT', 'Schrotth&auml;ndler'),
-(1, 5, 'SCRAP_MERCHANT_CHANGE', 'Achtung: Willst du wirklich {@totalQty} Schiffe f&uuml;r {@metalCredit} Metall, {@siliconCredit} Silizium und {@hydrogenCredit} Wasserstoff verkaufen?'),
+(1, 5, 'SCRAP_MERCHANT_CHANGE', 'Achtung: Willst du wirklich {@totalQty} Einheiten f&uuml;r {@metalCredit} Metall, {@siliconCredit} Silizium und {@hydrogenCredit} Wasserstoff verkaufen?'),
 (1, 13, 'MD_SUBJECT', 'Anschlag auf Mond'),
 (1, 13, 'MD_MOON_DESTROYED', 'Der Todesstern feuert mit seiner Gravitationskanone auf die Oberfl&auml;che des Mondes {@moonName} {@moonCoords}. F&uuml;r ein paar Sekunden bebt der Trabant und wenig sp&auml;ter explodiert er. Millionen von unverwertbaren Tr&uuml;mmern fliegen nun in der Umlaufbahn des anliegenden Planeten.'),
 (1, 13, 'MD_MOON_SURVIVE', 'Der Todesstern feuert mit seiner Gravitationskanone auf die Oberfl&auml;che des Mondes {@moonName} {@moonCoords}. F&uuml;r ein paar Sekunden bebt der Trabant, doch es l&ouml;sen sich nur einige wenige Tr&uuml;mmerteile. Die Mondzerst&ouml;rung ist gescheitert.'),

@@ -48,6 +48,7 @@ UPDATE `bengine_phrases` SET `content` = 'Planeten sortieren', `title` = 'EDIT_P
 UPDATE `bengine_phrases` SET `content` = 'Sortierung speichern', `title` = 'SAVE_PLANET_SORTING', `phrasegroupid` = 1 WHERE `title` = 'EVOLUTION' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Geschwindigkeit' WHERE `title` = 'SPEED' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Deine Flotte erreicht den Planeten %s %s und liefert ihre Ladung ab:\r\nMetall: %s Silizium: %s Wasserstoff: %s.' WHERE `title` = 'TRANSPORT_ACCOMPLISHED' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'Achtung: Willst du wirklich {@totalQty} Einheiten f&uuml;r {@metalCredit} Metall, {@siliconCredit} Silizium und {@hydrogenCredit} Wasserstoff verkaufen?' WHERE `title` = 'SCRAP_MERCHANT_CHANGE' AND `languageid` = 1;
 
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 (1, 7, 'EMAIL_CLOSING_SENDER', 'dein {config}pagetitle{/config}-Team'),
