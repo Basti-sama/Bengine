@@ -509,8 +509,8 @@ class Bengine_Planet
 	/**
 	 * Returns the production of a building.
 	 *
-	 * @param string	Resource type
-	 * @param integer	Building id
+	 * @param string $res	Resource type
+	 * @param integer $id	Building id
 	 *
 	 * @return integer	Production per hour
 	 */
@@ -536,8 +536,8 @@ class Bengine_Planet
 	/**
 	 * Returns the consumption of a building.
 	 *
-	 * @param string	Resource type
-	 * @param integer	Building id
+	 * @param string $res	Resource type
+	 * @param integer $id	Building id
 	 *
 	 * @return integer	Consumption per hour
 	 */
@@ -545,7 +545,17 @@ class Bengine_Planet
 	{
 		if(isset($this->buildingCons[$res][$id]) && is_numeric($this->buildingCons[$res][$id]))
 		{
-			return $this->buildingCons[$res][$id];
+			$productFactor = (double) Core::getConfig()->get("PRODUCTION_FACTOR");
+			if($res == "energy")
+			{
+				$productFactor = 1;
+			}
+			$energyFactor = 1;
+			if($this->energy < 0 && $res != "energy")
+			{
+				$energyFactor = $this->prod["energy"] / $this->consumption["energy"];
+			}
+			return $this->buildingCons[$res][$id] * $productFactor * $energyFactor;
 		}
 		return 0;
 	}
