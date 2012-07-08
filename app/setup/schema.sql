@@ -1764,7 +1764,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 11, 'WRITE_MESSAGE_TEMPLATE', '<div>Hallo {@receiver},</div><div>&nbsp;</div><div>[Nachricht]</div><div>&nbsp;</div><div>Viele Gr&uuml;&szlig;e</div><div>{user=username}</div>'),
 (1, 5, 'ON', 'auf'),
 (1, 9, 'GALAXY_END_REACHED', 'Du hast bereits das Ende der Galaxie erreicht. Weiter geht es nicht.'),
-(1, 7, 'REGISTER_NOW', 'Jetzt registrieren!');
+(1, 7, 'REGISTER_NOW', 'Jetzt registrieren!'),
+(1, 5, 'OCCUPIED_FIELDS', '{@occupiedFields} von {@maxFields} Feldern');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (

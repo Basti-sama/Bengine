@@ -56,6 +56,8 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 			Logger::addMessage("PLANET_FULL", "info");
 		$shipyardSize = Bengine::getEH()->getShipyardEvents()->getCalculatedSize();
 		Core::getTPL()->assign("shipyardSize", $shipyardSize);
+		Core::getLang()->assign("maxFields", fNumber(Bengine::getPlanet()->getMaxFields()));
+		Core::getLang()->assign("occupiedFields", Bengine::getPlanet()->getFields(true));
 
 		/* @var Bengine_Model_Collection_Construction $collection */
 		$collection = Application::getCollection("construction");

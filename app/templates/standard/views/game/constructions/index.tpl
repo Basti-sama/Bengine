@@ -3,7 +3,7 @@
 <?php $planetFree = Bengine::getPlanet()->planetFree() ?>
 <?php $umode = Core::getUser()->get("umode") ?>
 <table class="ntable">
-	<thead><tr><th colspan="3">{lang}CONSTRUCTIONS{/lang}</th></tr></thead>
+	<thead><tr><th colspan="3">{lang}CONSTRUCTIONS{/lang} ({lang=OCCUPIED_FIELDS})</th></tr></thead>
 	<tbody>
 		<?php foreach($this->getLoop("constructions") as $key => $building): ?>
 		<?php $id = $building->get("buildingid") ?>
