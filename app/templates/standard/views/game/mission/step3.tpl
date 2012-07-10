@@ -12,7 +12,7 @@ var decPoint = '{lang}DECIMAL_POINT{/lang}';
 var thousandsSep = '{lang}THOUSANDS_SEPERATOR{/lang}';
 //]]>
 </script>
-<form method="post" action="{@formaction}">
+<form method="post" action="{@formaction}" class="form-sec">
 <table class="ntable">
 	<tr>
 		<th colspan="4">{@targetName}</th>

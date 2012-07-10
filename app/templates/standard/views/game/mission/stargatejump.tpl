@@ -1,4 +1,4 @@
-<form method="post" action="{@formaction}">
+<form method="post" action="{@formaction}" class="form-sec">
 <table class="ntable">
 	<thead><tr>
 		<th colspan="2">{lang}STAR_GATE_JUMP{/lang}</th>

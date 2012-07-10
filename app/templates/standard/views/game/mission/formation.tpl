@@ -1,4 +1,4 @@
-<form action="{@formaction}" method="post">
+<form action="{@formaction}" method="post" class="form-sec">
 <input type="hidden" name="id" value="{request[post]}id{/request}" />
 <table class="ntable">
 	<thead><tr>

@@ -228,6 +228,11 @@ function pad(n, len)
 }
 
 $(document).ready(function() {
+	$(".form-sec").submit(function() {
+		var submitButton = $(this).find("input[type=submit]");
+		submitButton.prop("disabled", true);
+		submitButton.val("Bitte warten…");
+	});
 	$(".goto").click(function() {
 		var planetId = ($(this).attr("href"));
 		gotoPlanet("planetSelection", planetId);

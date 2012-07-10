@@ -24,7 +24,7 @@ $(document).ready(function() {
 });
 //]]>
 </script>
-<form method="post" action="{@formaction}">
+<form method="post" action="{@formaction}" class="form-sec">
 <table class="ntable">
 	<colgroup>
 		<col />

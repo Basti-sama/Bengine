@@ -1,4 +1,4 @@
-<form method="post" action="{@orderAction}">
+<form method="post" action="{@orderAction}" class="form-sec">
 <table class="ntable">
 	<thead>
 		<tr>

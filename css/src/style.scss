@@ -288,6 +288,10 @@ fieldset, #forward {
 	cursor: pointer;
 }
 
+.button:disabled {
+	cursor: wait;
+}
+
 .topbox {
 	margin-bottom: 0.625em;
 	padding: 3px !important;

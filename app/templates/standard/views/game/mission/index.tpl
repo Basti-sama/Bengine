@@ -55,7 +55,7 @@ quantities[<?php echo $unit->getId() ?>] = <?php echo $unit->getQty() ?>;
 			<td><?php echo $event->getReturnTime() ?></td>
 			<td>
 				<?php if($event->getCode() != "return" && $event->getCode() != "missileAttack"): ?>
-				<form method="post" action="{@formaction}">
+				<form method="post" action="{@formaction}" class="form-sec">
 				<input type="submit" name="retreat" value="{lang}RETREAT{/lang}" class="button"/>
 				<?php if($event->getMode() == 10 || $event->getMode() == 12): ?><br/><input type="submit" name="formation" value="{lang}FORMATION{/lang}" class="button"/><?php endif; ?>
 				<input type="hidden" name="id" value="<?php echo $event->getEventid() ?>"/>
@@ -68,7 +68,7 @@ quantities[<?php echo $unit->getId() ?>] = <?php echo $unit->getQty() ?>;
 </table>
 <br /><br />
 <?php endif; ?>
-<form method="post" action="{@formaction}">
+<form method="post" action="{@formaction}" class="form-sec">
 <div style="display: none;">
 	<input type="hidden" name="galaxy" value="{request[get]}1{/request}"/>
 	<input type="hidden" name="system" value="{request[get]}2{/request}"/>
