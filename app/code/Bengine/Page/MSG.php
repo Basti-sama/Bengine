@@ -214,10 +214,10 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 				$modId = Bengine::getRandomModerator();
 				foreach($msgs as $msgid)
 				{
-					$result = Core::getQuery()->select("message m", array("m.sender", "m.message", "m.time", "u.username"), "LEFT JOIN ".PREFIX."user u ON (u.userid = m.sender)", "m.msgid = '".$msgid."' AND m.receiver = '".Core::getUser()->get("userid")."'");
+					$result = Core::getQuery()->select("message m", array("m.sender", "m.mode", "m.message", "m.time", "u.username"), "LEFT JOIN ".PREFIX."user u ON (u.userid = m.sender)", "m.msgid = '".$msgid."' AND m.receiver = '".Core::getUser()->get("userid")."'");
 					if($row = Core::getDB()->fetch($result))
 					{
-						if($row["sender"] > 0 && $row["sender"] != $modId)
+						if(($row["sender"] > 0 || $row["mode"] == 5) && $row["sender"] != $modId)
 						{
 							$reports[] = $row;
 						}
@@ -225,19 +225,38 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 				}
 				if(count($reports) > 0)
 				{
-					Logger::addMessage("MESSAGES_REPORTED", "success");
 					Core::getLang()->assign("reportSender", Core::getUser()->get("username"));
 					foreach($reports as $report)
 					{
 						Core::getLang()->assign("reportMessage", $report["message"]);
 						Core::getLang()->assign("reportUser", $report["username"]);
 						Core::getLang()->assign("reportSendTime", Date::timeToString(1, $report["time"], "", false));
-						$message = Core::getLang()->get("MODERATOR_REPORT_MESSAGE");
+						if($report["mode"] == 5)
+						{
+							$assault = Bengine::getModel("assault")->load((int) $report["message"]);
+							$url = BASE_URL.Core::getLang()->getOpt("langcode")."/combat/report/".$assault->get("assaultid")."/".$assault->get("key");
+							$gentime = $assault->get("gentime") / 1000;
+							$label = Core::getLanguage()->getItem("ASSAULT_REPORT")." (A: ".fNumber($assault->get("lostunits_attacker")).", D: ".fNumber($assault->get("lostunits_defender")).") ".$gentime."s";
+							Core::getLang()->assign("reportLink", "<span class=\"assault-report\" onclick=\"window.open('".$url."')\">".$label."</span>");
+							$message = Core::getDB()->real_escape_string(Core::getLang()->get("MODERATOR_REPORT_COMBAT"));
+						}
+						else
+						{
+							richText($message = Core::getLang()->get("MODERATOR_REPORT_MESSAGE"));
+						}
 						$subject = Core::getLang()->get("MODERATOR_REPORT_SUBJECT");
-						$attr = array("sender", "mode", "subject", "message", "receiver", "time", "read");
-						$vals = array(null, 1, $subject, richText($message), $modId, TIME, 0);
-						Core::getQuery()->insert("message", $attr, $vals);
+						$spec = array(
+							"sender" => null,
+							"mode" => 1,
+							"subject" => $subject,
+							"message" => $message,
+							"receiver" => $modId,
+							"time" => TIME,
+							"read" => 0,
+						);
+						Core::getQuery()->insertInto("message", $spec);
 					}
+					Logger::addMessage("MESSAGES_REPORTED", "success");
 				}
 			break;
 		}

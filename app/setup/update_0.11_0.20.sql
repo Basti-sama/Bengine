@@ -49,6 +49,7 @@ UPDATE `bengine_phrases` SET `content` = 'Sortierung speichern', `title` = 'SAVE
 UPDATE `bengine_phrases` SET `content` = 'Geschwindigkeit' WHERE `title` = 'SPEED' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Deine Flotte erreicht den Planeten %s %s und liefert ihre Ladung ab:\r\nMetall: %s Silizium: %s Wasserstoff: %s.' WHERE `title` = 'TRANSPORT_ACCOMPLISHED' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Achtung: Willst du wirklich {@totalQty} Einheiten f&uuml;r {@metalCredit} Metall, {@siliconCredit} Silizium und {@hydrogenCredit} Wasserstoff verkaufen?' WHERE `title` = 'SCRAP_MERCHANT_CHANGE' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'Die Nachricht(en) wurden erfolgreich an einen Moderator &uuml;bermittelt.' WHERE `title` = 'MESSAGES_REPORTED' AND `languageid` = 1;
 
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 (1, 7, 'EMAIL_CLOSING_SENDER', 'dein {config}pagetitle{/config}-Team'),
@@ -63,7 +64,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 7, 'REQUEST_PASSWORD_3', 'Um den Account ohne Passwortänderung wieder zu aktivieren, verwende bitte den folgenden Link:'),
 (1, 8, 'EMAIL_PASSWORD_MESSAGE_2', 'Dein neues Passwort:'),
 (1, 7, 'REGISTER_NOW', 'Jetzt registrieren!'),
-(1, 5, 'OCCUPIED_FIELDS', '{@occupiedFields} von {@maxFields} Feldern');
+(1, 5, 'OCCUPIED_FIELDS', '{@occupiedFields} von {@maxFields} Feldern'),
+(1, 11, 'MODERATOR_REPORT_COMBAT', '{@reportSender} meldete folgenden Kampfbericht vom {@reportSendTime}: {@reportLink}');
 
 ALTER TABLE `bengine_assault` CHANGE `result` `result` TINYINT( 1 ) UNSIGNED NULL DEFAULT NULL;
 ALTER TABLE `bengine_user` DROP `planetorder`;
