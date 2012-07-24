@@ -4,9 +4,14 @@
 	<thead><tr>
 		<th colspan="2">{lang=FLEET_FORMATION}</th>
 	</tr></thead>
-	<tfoot><tr>
-		<td colspan="2"><input type="submit" name="invite" value="{lang}COMMIT{/lang}" class="button" /></td>
-	</tr></tfoot>
+	<tfoot>
+		<tr>
+			<td colspan="2">
+				<input type="hidden" name="invite" value="1"/>
+				<input type="submit" value="{lang}COMMIT{/lang}" class="button" />
+			</td>
+		</tr>
+	</tfoot>
 	<tbody>
 	<tr>
 		<td><label for="invited">{lang=INVITED_PARTICIPANTS}</label></td>

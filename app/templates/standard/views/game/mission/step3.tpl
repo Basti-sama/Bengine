@@ -68,7 +68,12 @@ var thousandsSep = '{lang}THOUSANDS_SEPERATOR{/lang}';
 		</td>
 	</tr>{/if}
 	<tr>
-		<td colspan="4" class="center">{if[count($this->loopStack["missions"]) > 0]}<input type="submit" name="step4" value="{lang}NEXT{/lang}" class="button" />{/if}</td>
+		<td colspan="4" class="center">
+			{if[count($this->loopStack["missions"]) > 0]}
+			<input type="hidden" name="step4" value="1"/>
+			<input type="submit" value="{lang}NEXT{/lang}" class="button" />
+			{/if}
+		</td>
 	</tr>
 </table>
 </form>

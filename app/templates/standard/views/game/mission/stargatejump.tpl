@@ -3,9 +3,15 @@
 	<thead><tr>
 		<th colspan="2">{lang}STAR_GATE_JUMP{/lang}</th>
 	</tr></thead>
-	{if[count($this->loopStack["moons"]) > 0]}<tfoot><tr>
-		<td colspan="2"><input type="submit" name="execjump" value="{lang}EXECUTE_JUMP{/lang}" class="button" /></td>
-	</tr></tfoot>{/if}
+	{if[count($this->loopStack["moons"]) > 0]}
+	<tfoot>
+		<tr>
+			<td colspan="2">
+				<input type="hidden" name="execjump" value="1"/>
+				<input type="submit" value="{lang}EXECUTE_JUMP{/lang}" class="button" />
+			</td>
+		</tr>
+	</tfoot>{/if}
 	<tbody><tr>
 		<td><label for="moonid">{lang}SELECT_TARGET_MOON{/lang}</label></td>
 		<td>

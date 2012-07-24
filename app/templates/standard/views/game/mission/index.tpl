@@ -98,9 +98,11 @@ quantities[<?php echo $unit->getId() ?>] = <?php echo $unit->getQty() ?>;
 		<tr>
 			<td colspan="5" class="center">
 				{if[{var}canSendFleet{/var}]}
-				<input type="submit" name="step2" value="{lang}NEXT{/lang}" class="button"/>
+				<input type="hidden" name="step2" value="1"/>
+				<input type="submit" value="{lang}NEXT{/lang}" class="button"/>
 				{if[Bengine::getPlanet()->getBuilding("STAR_GATE") > 0]}
-				<input type="submit" name="stargatejump" value="{lang}STAR_GATE_JUMP{/lang}" class="button"/>
+				<input type="hidden" name="stargatejump" value="1"/>
+				<input type="submit" value="{lang}STAR_GATE_JUMP{/lang}" class="button"/>
 				{/if}
 				{else}
 				{lang}NO_FREE_FLEET_SLOTS{/lang}

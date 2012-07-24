@@ -110,7 +110,10 @@ $(document).ready(function() {
 	</tr>
 	<?php endif ?>
 	<tr>
-		<td colspan="2" class="center"><input type="submit" name="step3" value="{lang}NEXT{/lang}" class="button" /></td>
+		<td colspan="2" class="center">
+			<input type="hidden" name="step3" value="1"/>
+			<input type="submit" value="{lang}NEXT{/lang}" class="button" />
+		</td>
 	</tr>
 </table>
 </form>
