@@ -145,7 +145,7 @@ class Bengine_Page_Research extends Bengine_Page_Construction_Abstract
 	 */
 	protected function abortAction($id)
 	{
-		if(Core::getUser()->get("umode"))
+		if(Core::getUser()->get("umode") || !$this->event)
 		{
 			$this->redirect("game.php/".SID."/Research");
 		}
