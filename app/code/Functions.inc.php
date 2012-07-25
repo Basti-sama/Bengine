@@ -116,7 +116,7 @@ function getBuildTime($metal, $silicon, $mode)
 		$time *= 3600 * floatval(Core::getOptions()->get("GAMESPEED"));
 	}
 	Hook::event("ConstructTime", array(&$time, $metal, $silicon, $mode));
-	return (int) ceil($time);
+	return (int) max(ceil($time), 1);
 }
 
 /**
