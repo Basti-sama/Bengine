@@ -299,7 +299,7 @@ public class Participant
 					* unit.getTotalLoss();
 			if(unit.getTotalLoss() > 0 && unit.getMode() == 4 && userid > 0)
 			{
-				double repair = Math.ceil(unit.getTotalLoss()
+				double repair = Math.round(unit.getTotalLoss()
 						* Assault.randDouble(Assault.defenseRepairMin,
 								Assault.defenseRepairMax));
 				unit.quantity = unit.getQuantity() + (int) repair;
