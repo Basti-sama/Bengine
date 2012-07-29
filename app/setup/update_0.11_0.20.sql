@@ -36,7 +36,7 @@ INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, 
 ('INACTIVE_USER_TIME_1', '604800', 'integer', 'Time to display a small i for inactive users in galaxy and ranking. Time in seconds.', NULL, '5', '1', '0'),
 ('INACTIVE_USER_TIME_2', '1814400', 'integer', 'Time to display a large I for inactive users in galaxy and ranking. Time in seconds.', NULL, '5', '1', '0'),
 ('MIN_VACATION_MODE', '172800', 'integer', 'Minimum time to stay in vacation mode. Time in seconds.', NULL, '8', '1', '0'),
-('SHIPYARD_MAX_UNITS_PER_ORDER', '1000', 'integer', '', '', 8, 1, 0);
+('SHIPYARD_MAX_UNITS_PER_ORDER', '1000', 'integer', 'Number of maximum allowed units per order.', NULL, 8, 1, 0);
 
 UPDATE `bengine_phrases` SET `title` = 'REGISTRATION_MAIL_1', `content` = 'danke für deine Anmeldung bei {config}pagetitle{/config}!' WHERE `title` = 'REGISTRATION_MAIL' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'dein letzter Login bei {config}pagetitle{/config} war am {@reminderLast}. Vielleicht hast du uns ja vergessen, aber dein Konto ist immer noch verfügbar. Wir würden uns freuen, wenn du dich mal wieder meldest.' WHERE `title` = 'REMINDER_MAIL_MESSAGE' AND `languageid` = 1;
