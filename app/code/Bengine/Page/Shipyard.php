@@ -177,8 +177,8 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 					throw new Recipe_Exception_Generic("You cannot build this.");
 
 				$quantity = _pos($post[$id]);
-				if($quantity > 1000)
-					$quantity = 1000;
+				if($quantity > Core::getConfig()->get("SHIPYARD_MAX_UNITS_PER_ORDER"))
+					$quantity = (int) Core::getConfig()->get("SHIPYARD_MAX_UNITS_PER_ORDER");
 
 				Hook::event("UnitOrderStart", array($construction, &$quantity));
 
