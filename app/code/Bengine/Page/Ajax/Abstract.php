@@ -54,7 +54,7 @@ abstract class Bengine_Page_Ajax_Abstract extends Bengine_Page_Abstract
 	{
 		if(!headers_sent() || !$this->headersSent)
 		{
-			if(@extension_loaded('zlib') && !$this->compressed && GZIP_ACITVATED)
+			if(extension_loaded('zlib') && strtolower(ini_get("zlib.output_compression")) == "off" && !$this->compressed && GZIP_ACITVATED)
 			{
 				ob_start("ob_gzhandler");
 				$this->compressed = true;

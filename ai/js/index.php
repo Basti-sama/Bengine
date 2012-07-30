@@ -23,7 +23,7 @@ foreach($files as $file)
 	}
 }
 
-if(@extension_loaded("zlib") && !empty($out))
+if(extension_loaded("zlib") && strtolower(ini_get("zlib.output_compression")) == "off" && !empty($out))
 {
 	ob_start("ob_gzhandler");
 }

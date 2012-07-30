@@ -15,7 +15,7 @@ if(empty($_GET["error"]) || preg_match("#[^A-Za-z0-9]+#i", $_GET["error"]) || !f
 	die("<h1>Page Not Found!</h1>");
 }
 
-if(function_exists("ob_start"))
+if(extension_loaded("zlib") && strtolower(ini_get("zlib.output_compression")) == "off")
 {
 	ob_start("ob_gzhandler");
 }

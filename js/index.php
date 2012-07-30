@@ -54,7 +54,7 @@ header("Cache-Control: public, max-age=".$cacheExpires);
 header("Date: ".gmdate("D, d M Y H:i:s \G\M\T", $time));
 header("Expires: ".gmdate("D, d M Y H:i:s \G\M\T", $time+$cacheExpires));
 $out = file_get_contents($cacheFile);
-if(function_exists("ob_start") && !empty($out))
+if(extension_loaded("zlib") && strtolower(ini_get("zlib.output_compression")) == "off" && !empty($out))
 {
 	ob_start("ob_gzhandler");
 }
