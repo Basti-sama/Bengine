@@ -31,7 +31,7 @@ class Admin_Controller_Cms extends Admin_Controller_Abstract
 	protected function init()
 	{
 		Core::getLanguage()->load("AI_CMS");
-		return $this;
+		return parent::init();
 	}
 
 	/**

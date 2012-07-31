@@ -14,7 +14,7 @@ class Admin_Controller_Config extends Admin_Controller_Abstract
 	protected function init()
 	{
 		Core::getLanguage()->load("AI_Configuration");
-		return $this;
+		return parent::init();
 	}
 
 	protected function indexAction()

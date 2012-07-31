@@ -6,7 +6,7 @@ class Admin_Controller_Usergroups extends Admin_Controller_Abstract
 		Core::getLanguage()->load("AI_User");
 		$perms = Core::getQuery()->select("permissions", array("permissionid", "permission"), "ORDER BY permission ASC");
 		Core::getTPL()->addLoop("perms", $perms);
-		return $this;
+		return parent::init();
 	}
 
 	protected function indexAction()

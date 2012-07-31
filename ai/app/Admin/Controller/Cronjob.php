@@ -6,7 +6,7 @@ class Admin_Controller_Cronjob extends Admin_Controller_Abstract
 	protected function init()
 	{
 		Core::getLanguage()->load("AI_Cronjobs");
-		return $this;
+		return parent::init();
 	}
 
 	protected function indexAction()

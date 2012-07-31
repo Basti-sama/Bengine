@@ -11,7 +11,7 @@ class Admin_Controller_News extends Admin_Controller_Abstract
 	protected function init()
 	{
 		Core::getLanguage()->load("AI_News");
-		return $this;
+		return parent::init();
 	}
 
 	protected function indexAction()

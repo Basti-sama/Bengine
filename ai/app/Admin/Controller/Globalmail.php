@@ -9,7 +9,7 @@ class Admin_Controller_Globalmail extends Admin_Controller_Abstract
 	protected function init()
 	{
 		Core::getLanguage()->load("AI_Globalmail");
-		return $this;
+		return parent::init();
 	}
 
 	/**
