@@ -140,7 +140,7 @@ class Admin_Controller_News extends Admin_Controller_Abstract
 		$result = Core::getQuery()->select("news", array("sort_index"), "", "news_id = '{$newsId}'", "", "1");
 		$sortIndex = Core::getDB()->fetch_field($result, "sort_index");
 		$_result = Core::getQuery()->select("news", array("MAX(sort_index) as max_sort_index"), "", "sort_index < '{$sortIndex}'", "", "1");
-		$maxSortIndex = (int) Core::getDB()->fetch_field($_result, "min_sort_index");
+		$maxSortIndex = (int) Core::getDB()->fetch_field($_result, "max_sort_index");
 		$maxSortIndex = ($maxSortIndex-1<0) ? 0 : $maxSortIndex-1;
 		Core::getQuery()->update("news", array("sort_index"), array($maxSortIndex), "news_id = '{$newsId}'");
 		Core::getDB()->free_result($_result);

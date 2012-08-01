@@ -58,7 +58,7 @@ class Admin_Controller_Config extends Admin_Controller_Abstract
 	protected function deleteVariableAction($groupid, $var)
 	{
 		Core::getQuery()->delete("config", "var = '".$var."'");
-		$this->setTemplate("config_showVariables");
+		$this->setTemplate("config/showvariables");
 		$this->showVariablesAction($groupid);
 		return $this;
 	}

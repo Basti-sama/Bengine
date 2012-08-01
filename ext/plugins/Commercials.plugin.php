@@ -66,8 +66,8 @@ class Plugin_Commercials extends Recipe_PluginAbstract
 	/**
 	 * Displays the ads.
 	 *
-	 * @param string	Event mehtod that has been called
-	 * @param mixed		Arguments [ignored]
+	 * @param string $event	Event mehtod that has been called
+	 * @param mixed $args	Arguments [ignored]
 	 *
 	 * @return Plugin_Commercials
 	 */
@@ -105,15 +105,15 @@ class Plugin_Commercials extends Recipe_PluginAbstract
 	/**
 	 * Adds an event to all position names.
 	 *
-	 * @param Recipe_Template_Adapter_Default	Template adapter
-	 * @param string							Template name
-	 * @param boolean							Base output or part output
+	 * @param Recipe_Template_Adapter_Default $engine
+	 * @param string $template
+	 * @param boolean $noLayout
 	 *
 	 * @return Plugin_Commercials
 	 */
-	public function onTemplateStartOutstream(Recipe_Template_Adapter_Default $engine, $template, $sendOnlyContent)
+	public function onTemplatePreDisplay(Recipe_Template_Adapter_Default $engine, $template, $noLayout)
 	{
-		if(!$sendOnlyContent && Core::getConfig()->get("COMMERCIALS_ENABLED"))
+		if(!$noLayout && Core::getConfig()->get("COMMERCIALS_ENABLED"))
 		{
 			$this->loadAds();
 			foreach($this->ads as $position => $none)
@@ -125,5 +125,5 @@ class Plugin_Commercials extends Recipe_PluginAbstract
 	}
 }
 
-Hook::addHook("TemplateStartOutstream", new Plugin_Commercials());
+Hook::addHook("TemplatePreDisplay", new Plugin_Commercials());
 ?>

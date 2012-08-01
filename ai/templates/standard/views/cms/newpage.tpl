@@ -18,8 +18,7 @@
 			<tr>
 				<td><label for="f_position">{lang}Position{/lang}</label></td>
 				<td><select name="position" id="f_position" size="1">
-					<option value="h">{lang}header{/lang}</option>
-					<option value="f">{lang}footer{/lang}</option></select></td>
+					<option value="h">{lang}header{/lang}</option></select></td>
 			</tr>
 			<tr>
 				<td><label for="f_displayorder">{lang}Displayorder{/lang}</label></td>
