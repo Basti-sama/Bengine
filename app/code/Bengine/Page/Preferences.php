@@ -154,7 +154,7 @@ class Bengine_Page_Preferences extends Bengine_Page_Abstract
 			$theme .= "/";
 		}
 		$templatepackage = (empty($templatepackage)) ? "standard" : $templatepackage;
-		if(!is_dir(APP_ROOT_DIR."templates/".$templatepackage))
+		if(!is_dir(APP_ROOT_DIR."app/templates/".$templatepackage))
 		{
 			$templatepackage = Core::getUser()->get("templatepackage");
 		}
