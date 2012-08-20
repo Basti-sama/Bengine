@@ -359,6 +359,7 @@ class Bengine_Planet
 		$totalSilProd = $this->prod["silicon"] * $tmp;
 		$totalHydProd = $this->prod["hydrogen"] * $tmp;
 
+		$this->storage["metal"] *= Core::getConfig()->get("PRODUCTION_FACTOR");
 		if($this->getData("metal") + $totalMetProd > $this->storage["metal"])
 		{
 			if($this->getData("metal") > $this->storage["metal"])
@@ -371,6 +372,7 @@ class Bengine_Planet
 			}
 		}
 		$this->data["metal"] += $totalMetProd;
+		$this->storage["silicon"] *= Core::getConfig()->get("PRODUCTION_FACTOR");
 		if($this->getData("silicon") + $totalSilProd > $this->storage["silicon"])
 		{
 			if($this->getData("silicon") > $this->storage["silicon"])
@@ -383,6 +385,7 @@ class Bengine_Planet
 			}
 		}
 		$this->data["silicon"] += $totalSilProd;
+		$this->storage["hydrogen"] *= Core::getConfig()->get("PRODUCTION_FACTOR");
 		if($this->getData("hydrogen") + $totalHydProd > $this->storage["hydrogen"])
 		{
 			if($this->getData("hydrogen") > $this->storage["hydrogen"])
