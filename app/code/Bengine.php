@@ -7,7 +7,7 @@
  * @version $Id: Bengine.php 55 2011-08-14 16:50:32Z secretchampion $
  */
 
-define("BENGINE_VERSION", "0.20beta1");
+define("BENGINE_VERSION", "0.20beta2");
 define("BENGINE_REVISION", 20);
 define("VERSION_CHECK_PAGE", "http://bengine.de/version.php");
 
@@ -237,7 +237,7 @@ class Bengine extends Application
 		$planet = self::getPlanet();
 		Core::getTPL()->assign("themePath", (Core::getUser()->get("theme")) ? Core::getUser()->get("theme") : HTTP_HOST.REQUEST_DIR);
 		Core::getTPL()->assign("planetImageSmall", Image::getImage("planets/small/s_".$planet->getData("picture").Core::getConfig()->get("PLANET_IMG_EXT"), $planet->getData("planetname"), 88, 88));
-		Core::getTPL()->assign("currentPlanet", Link::get("game.php/".SID."/Main/PlanetOptions", $planet->getData("planetname")));
+		Core::getTPL()->assign("currentPlanet", Link::get("game.php/".SID."/Index/PlanetOptions", $planet->getData("planetname")));
 		Core::getTPL()->assign("currentCoords", $planet->getCoords());
 
 		// Show message if user is in vacation or deletion mode.
