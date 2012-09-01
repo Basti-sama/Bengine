@@ -25,7 +25,6 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 		Core::getLanguage()->load(array("info", "mission"));
 		if(!Core::getUser()->get("umode") && $this->isPost())
 		{
-			$this->noAction = true;
 			if($this->getParam("stargatejump"))
 			{
 				$this->starGateJump(Core::getRequest()->getPOST());
@@ -107,6 +106,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 	 */
 	protected function selectCoordinates($galaxy, $system, $position, $targetType, $code, $ships)
 	{
+		$this->noAction = true;
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.countdown.js", "js");
 		$galaxy = ($galaxy > 0) ? (int) $galaxy : Bengine::getPlanet()->getData("galaxy");
 		$system = ($system > 0) ? (int) $system : Bengine::getPlanet()->getData("system");
@@ -252,6 +252,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 	 */
 	protected function selectMission($galaxy, $system, $position, $targetType, $speed, $code, $formation)
 	{
+		$this->noAction = true;
 		$result = Core::getQuery()->select("temp_fleet", "data", "", "planetid = '".Core::getUser()->get("curplanet")."'");
 		if($row = Core::getDB()->fetch($result))
 		{
@@ -374,6 +375,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 	 */
 	protected function sendFleet($mode, $metal, $silicon, $hydrogen, $holdingtime)
 	{
+		$this->noAction = true;
 		$fleetEvents = Bengine::getEH()->getOwnFleetEvents();
 		if($fleetEvents && Bengine::getResearch(14) + 1 <= count(Bengine::getEH()->getOwnFleetEvents()))
 		{
@@ -547,6 +549,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 	 */
 	protected function retreatFleet($id)
 	{
+		$this->noAction = true;
 		Hook::event("RetreatFleet", array(&$id));
 		Bengine::getEH()->removeEvent($id);
 		$this->redirect("game.php/".SID."/Mission");
@@ -562,6 +565,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 	 */
 	protected function formation($eventid)
 	{
+		$this->noAction = true;
 		$result = Core::getQuery()->select("events", "time", "", "(mode = '10' OR mode = '12') AND user = '".Core::getUser()->get("userid")."' AND eventid = '".$eventid."'");
 		if($row = Core::getDB()->fetch($result))
 		{
@@ -603,6 +607,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 	 */
 	protected function invite($eventid, $name, $username)
 	{
+		$this->noAction = true;
 		$result = Core::getQuery()->select("events", "time", "", "(mode = '10' OR mode = '12') AND user = '".Core::getUser()->get("userid")."' AND eventid = '".$eventid."'");
 		if($row = Core::getDB()->fetch($result))
 		{
@@ -653,6 +658,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 	 */
 	protected function executeJump($moonid)
 	{
+		$this->noAction = true;
 		$result = Core::getQuery()->select("temp_fleet", "data", "", "planetid = '".Core::getUser()->get("curplanet")."'");
 		if($temp = Core::getDB()->fetch($result))
 		{
@@ -705,6 +711,7 @@ class Bengine_Page_Mission extends Bengine_Page_Abstract
 	 */
 	protected function starGateJump($ships)
 	{
+		$this->noAction = true;
 		$data = array();
 		Core::getQuery()->delete("temp_fleet", "planetid = '".Core::getUser()->get("curplanet")."'");
 		$select = array("u2s.unitid", "u2s.quantity", "d.capicity", "d.speed", "d.consume", "b.name");
