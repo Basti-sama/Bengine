@@ -10,7 +10,7 @@ plugins: "safari,style,table,advhr,advimage,advlist,advlink,emotions,iespell,inl
 <script type="text/javascript">
 //<![CDATA[
 tinyMCE.init({
-language: "{@langcode}",forced_root_block: "div",theme: "advanced",skin : "alliancetext",mode: "exact",elements: "textextern,textintern",theme_advanced_toolbar_location: "top",theme_advanced_toolbar_align : "left",theme_advanced_disable: "anchor,styleselect",theme_advanced_statusbar_location: "bottom",theme_advanced_resizing: true,theme_advanced_resize_horizontal: false,width: 505,height: 370,relative_urls: false,remove_script_host: false,
+language: "{@langcode}",forced_root_block: "div",theme: "advanced",skin : "alliancetext",mode: "exact",elements: "textextern,textintern",theme_advanced_toolbar_location: "top",theme_advanced_toolbar_align : "left",theme_advanced_disable: "anchor,styleselect",theme_advanced_statusbar_location: "bottom",theme_advanced_resizing: true,theme_advanced_resize_horizontal: false,width: 500,height: 370,relative_urls: false,remove_script_host: false,
 theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
 theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,insertdate,inserttime,preview",
 theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,forecolor,backcolor",
