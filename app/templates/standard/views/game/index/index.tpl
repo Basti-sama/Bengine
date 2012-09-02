@@ -68,10 +68,8 @@ $("#news").newsticker(9500);
 				<b>{lang=CURRENT_SHIPYARD}</b><br/>
 				<?php if(count($this->get("shipyardMissions"))): ?>
 				<?php foreach($this->get("shipyardMissions") as $shipyard): ?>
-				<?php if($shipyard["time_finished"] > TIME): ?>
 				<?php echo $shipyard["mission"] ?> (<?php echo $shipyard["quantity"] ?>)
 				<span class="finish-time"><?php echo Date::timeToString(1, $shipyard["time_finished"]) ?></span><br/>
-				<?php endif ?>
 				<?php endforeach ?>
 				<?php else: ?>
 				{lang=NONE}

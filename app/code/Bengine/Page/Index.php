@@ -139,13 +139,16 @@ class Bengine_Page_Index extends Bengine_Page_Abstract
 		$shipyardMissions = array();
 		while($row = Core::getDB()->fetch($result))
 		{
-			$quantity = ($row["time"] < TIME) ? ceil(($row["finished"] - TIME) / $row["one"]) : $row["quantity"];
-			$shipyardMissions[] = array(
-				"time_left" => $row["finished"] - TIME,
-				"time_finished" => $row["finished"],
-				"quantity" => $quantity,
-				"mission" => Core::getLanguage()->getItem($row["name"])
-			);
+			if($row["finished"] > TIME)
+			{
+				$quantity = ($row["time"] < TIME) ? ceil(($row["finished"] - TIME) / $row["one"]) : $row["quantity"];
+				$shipyardMissions[] = array(
+					"time_left" => $row["finished"] - TIME,
+					"time_finished" => $row["finished"],
+					"quantity" => $quantity,
+					"mission" => Core::getLanguage()->getItem($row["name"])
+				);
+			}
 		}
 		Core::getTemplate()->assign("shipyardMissions", $shipyardMissions);
 
