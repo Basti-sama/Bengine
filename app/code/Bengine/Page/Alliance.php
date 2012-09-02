@@ -797,7 +797,10 @@ class Bengine_Page_Alliance extends Bengine_Page_Abstract
 					$members[$uid]["rank"] = Core::getLanguage()->getItem("NEWBIE");
 				}
 				$members[$uid]["position"] = getCoordLink($row["galaxy"], $row["system"], $row["position"]);
-				$members[$uid]["message"] = Link::get("game.php/".SID."/MSG/Write/".$row["username"], Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE")));
+				if(Core::getUser()->get("userid") != $uid)
+				{
+					$members[$uid]["message"] = Link::get("game.php/".SID."/MSG/Write/".$row["username"], Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE")));
+				}
 				if(TIME - $row["last"] < 900)
 				{
 					$members[$uid]["online"] = Image::getImage("on.gif", getTimeTerm(TIME - $row["last"]));
