@@ -28,9 +28,9 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Creates an new map.
 	 *
-	 * @param mixed		Pre-defined content [optional]
+	 * @param mixed $map Pre-defined content [optional]
 	 *
-	 * @return void
+	 * @return Map
 	 */
 	public function __construct($map = null)
 	{
@@ -38,9 +38,9 @@ class Map extends Type implements IteratorAggregate
 		{
 			$this->map = $map;
 		}
-		else if(!is_null($map))
+		else if($map !== null)
 		{
-			$map = array($map);
+			$this->map = array($map);
 		}
 		return;
 	}
@@ -48,9 +48,9 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Returns a value.
 	 *
-	 * @param mixed		Element key [optional]
+	 * @param mixed $key	Element key [optional]
 	 *
-	 * @return mixed	Element value
+	 * @return mixed		Element value
 	 */
 	public function get($key = null)
 	{
@@ -74,8 +74,8 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Adds an element.
 	 *
-	 * @param mixed		Map key
-	 * @param mixed		Element value
+	 * @param mixed $key		Map key
+	 * @param mixed $value		Element value
 	 *
 	 * @return Map
 	 */
@@ -89,8 +89,8 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Searches the map content for needle.
 	 *
-	 * @param mixed		Search element
-	 * @param boolean	Type save search [optional]
+	 * @param mixed $needle		Search element
+	 * @param boolean $strict	Type save search [optional]
 	 *
 	 * @return boolean	True, if needle has been found, false otherwise
 	 */
@@ -104,7 +104,7 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Checks if key exsits.
 	 *
-	 * @param mixed		Key to search for
+	 * @param mixed $key		Key to search for
 	 *
 	 * @return boolean	True, if key has been found, false otherwise
 	 */
@@ -116,7 +116,7 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Push an element onto the end.
 	 *
-	 * @param mixed		The pushed value
+	 * @param mixed $var		The pushed value
 	 *
 	 * @return Map
 	 */
@@ -129,7 +129,7 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Adds an element to the beginning of the map.
 	 *
-	 * @param mixed		The added value
+	 * @param mixed $var		The added value
 	 *
 	 * @return Map
 	 */
@@ -225,8 +225,8 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Searches the map for a given value and returns the corresponding key if successful.
 	 *
-	 * @param mixed		The searched value
-	 * @param boolean	Type save search [optional]
+	 * @param mixed $needle		The searched value
+	 * @param boolean $strict	Type save search [optional]
 	 *
 	 * @return mixed	The key for needle, false otherwise.
 	 */
@@ -251,7 +251,7 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Sorts the map.
 	 *
-	 * @param boolean	Reversed sort [optional]
+	 * @param bool $reversed Reversed sort [optional]
 	 *
 	 * @return Map
 	 */
@@ -269,11 +269,12 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Returns the current value.
 	 *
-	 * @return mixed	The value, false otherwise
+	 * @throws Recipe_Exception_Issue
+	 * @return mixed    The value, false otherwise
 	 */
 	public function current()
 	{
-		if(is_null($this->iterator))
+		if($this->iterator === null)
 		{
 			throw new Recipe_Exception_Issue("Iterator is not initialized. Please call next() first.");
 		}
@@ -291,7 +292,7 @@ class Map extends Type implements IteratorAggregate
 	 */
 	public function next()
 	{
-		if(is_null($this->iterator))
+		if($this->iterator === null)
 		{
 			$this->iterator = -1;
 		}
@@ -306,11 +307,12 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Sets the internal pointer on the previous element.
 	 *
-	 * @return boolean	True, if the map has a previous element, false otherwise
+	 * @throws Recipe_Exception_Issue
+	 * @return boolean    True, if the map has a previous element, false otherwise
 	 */
 	public function prev()
 	{
-		if(is_null($this->iterator))
+		if($this->iterator === null)
 		{
 			throw new Recipe_Exception_Issue("Iterator is not initialized. Please call end() first.");
 		}
@@ -325,11 +327,12 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Returns the current pointer.
 	 *
-	 * @return interger
+	 * @throws Recipe_Exception_Issue
+	 * @return integer
 	 */
 	public function key()
 	{
-		if(is_null($this->iterator))
+		if($this->iterator === null)
 		{
 			throw new Recipe_Exception_Issue("Iterator is not initialized. Please call next() first.");
 		}
@@ -410,7 +413,7 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Creates a string from each element.
 	 *
-	 * @param string	Glue string to join the elements [optional]
+	 * @param string $glue	Glue string to join the elements [optional]
 	 *
 	 * @return string
 	 */
@@ -427,7 +430,7 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Returns a String from each map element.
 	 *
-	 * @param string	Glue string to join the elements [optional]
+	 * @param string $glue	Glue string to join the elements [optional]
 	 *
 	 * @return String
 	 */
@@ -472,9 +475,9 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Extracts a slice of the map.
 	 *
-	 * @param integer	Start of sequence
-	 * @param integer	End of sequence [optional]
-	 * @param boolean	Rescue Keys [optional]
+	 * @param integer $offset		Start of sequence
+	 * @param integer $length		End of sequence [optional]
+	 * @param boolean $preserveKeys	Rescue Keys [optional]
 	 *
 	 * @return Map
 	 */
@@ -526,8 +529,8 @@ class Map extends Type implements IteratorAggregate
 	 * Called when an unkown method has been requested.
 	 * Warning: Use only functions with an array as return value!
 	 *
-	 * @param string	Method name
-	 * @param array		Arguments
+	 * @param string $method	Method name
+	 * @param array $args		Arguments
 	 *
 	 * @return Map
 	 */
