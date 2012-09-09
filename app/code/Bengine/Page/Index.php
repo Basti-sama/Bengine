@@ -124,7 +124,7 @@ class Bengine_Page_Index extends Bengine_Page_Abstract
 			Core::getDB()->free_result($result);
 			Core::getTPL()->assign("moon", $row["planetname"]);
 			$img = Image::getImage("planets/".$row["picture"].Core::getConfig()->get("PLANET_IMG_EXT"), $row["planetname"], 50, 50);
-			Core::getTPL()->assign("moonImage", "<a title=\"".$row["planetname"]."\" class=\"goto pointer\" rel=\"".$row["planetid"]."\">".$img."</a>");
+			Core::getTPL()->assign("moonImage", "<a title=\"".$row["planetname"]."\" class=\"goto pointer\" href=\"".$row["planetid"]."\">".$img."</a>");
 		}
 		else
 		{
