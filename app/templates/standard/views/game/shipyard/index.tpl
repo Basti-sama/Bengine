@@ -10,11 +10,13 @@
 		</tr>
 		<?php endif ?>
 	</thead>
+	<?php if($this->get("canBuildUnits")): ?>
 	<tfoot>
 		<tr>
 			<td colspan="3"><input type="submit" name="sendmission" value="{lang}COMMIT{/lang}" class="button" /></td>
 		</tr>
 	</tfoot>
+	<?php endif ?>
 	<tbody>
 		<?php foreach($this->getLoop("units") as $unit): ?>
 		<?php $id = $unit->get("buildingid") ?>
