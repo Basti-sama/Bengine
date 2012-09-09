@@ -336,10 +336,6 @@ class Bengine_Page_Shipyard extends Bengine_Page_Construction_Abstract
 		{
 			$this->redirect("game.php/".SID."/Shipyard");
 		}
-		if(Core::getRequest()->getPOST("verify") == "no")
-		{
-			$this->redirect("game.php/".SID."/Shipyard/Merchant");
-		}
 		Core::getLanguage()->load(array("info", "buildings"));
 		$selUnits = Core::getRequest()->getPOST("unit");
 		$availUnits = Application::getCollection("fleet", "unit");
