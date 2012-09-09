@@ -72,3 +72,5 @@ ALTER TABLE `bengine_assault` CHANGE `result` `result` TINYINT( 1 ) UNSIGNED NUL
 ALTER TABLE `bengine_user` DROP `planetorder`;
 
 ALTER TABLE `bengine_user` DROP `qpoints`;
+
+DELETE FROM `bengine_requirements` WHERE `needs` = 54 AND `level` = 100;
