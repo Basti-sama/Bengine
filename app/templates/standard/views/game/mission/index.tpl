@@ -1,7 +1,7 @@
 <script type="text/javascript">
 //<![CDATA[
 $(function() {
-	$("input[name=step2], input[name=stargatejump]").click(function() {
+	$("#mission_next, #stargate_next").click(function() {
 		var ships = 0;
 		$(".ships").each(function() {
 			ships += parseInt($(this).val());
@@ -12,6 +12,10 @@ $(function() {
 			$("#content").prepend('<div class="error dyn-message" style="display:none;">{lang=NO_SHIPS_SELECTED}</div>');
 			$(".dyn-message").fadeIn("slow");
 			return false;
+		}
+		if(this.id == "stargate_next")
+		{
+			$("input[name=step2]").attr("name", "stargatejump");
 		}
 	});
 });
@@ -106,10 +110,9 @@ quantities[<?php echo $unit->getId() ?>] = <?php echo $unit->getQty() ?>;
 			<td colspan="5" class="center">
 				{if[{var}canSendFleet{/var}]}
 				<input type="hidden" name="step2" value="1"/>
-				<input type="submit" value="{lang}NEXT{/lang}" class="button"/>
+				<input type="submit" id="mission_next" value="{lang}NEXT{/lang}" class="button"/>
 				{if[Bengine::getPlanet()->getBuilding("STAR_GATE") > 0]}
-				<input type="hidden" name="stargatejump" value="1"/>
-				<input type="submit" value="{lang}STAR_GATE_JUMP{/lang}" class="button"/>
+				<input type="submit" id="stargate_next" value="{lang}STAR_GATE_JUMP{/lang}" class="button"/>
 				{/if}
 				{else}
 				{lang}NO_FREE_FLEET_SLOTS{/lang}
