@@ -194,7 +194,7 @@ class Bengine_Page_Constructions extends Bengine_Page_Construction_Abstract
 		{
 			Recipe_Header::redirect("game.php/".SID."/Constructions", false);
 		}
-		$result = Core::getQuery()->select("construction", array("basic_metal", "basic_silicon", "basic_hydrogen", "charge_metal", "charge_silicon", "charge_hydrogen", "name", "demolish"), "", "buildingid = '".$id."' AND mode = '".$this->getMode()."'");
+		$result = Core::getQuery()->select("building2planet b2p", array("c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.charge_metal", "c.charge_silicon", "c.charge_hydrogen", "c.name", "c.demolish"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = b2p.buildingid)", "b2p.buildingid = '".$id."'");
 		if(!$row = Core::getDB()->fetch($result))
 		{
 			Core::getDB()->free_result($result);
