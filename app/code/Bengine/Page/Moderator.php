@@ -97,7 +97,7 @@ class Bengine_Page_Moderator extends Bengine_Page_Abstract
 
 				if($row["to"] > TIME)
 				{
-					$bans[$i]["annul"] = Link::get("game.php/".SID."/Moderator/".$this->userid."/AnnulBan/".$row["banid"], Core::getLanguage()->getItem("ANNUL"));
+					$bans[$i]["annul"] = Link::get("game.php/".SID."/Moderator/AnnulBan/".$row["banid"], Core::getLanguage()->getItem("ANNUL"));
 				}
 				else
 				{
