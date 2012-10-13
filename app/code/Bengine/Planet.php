@@ -430,11 +430,10 @@ class Bengine_Planet
 			$fields = $this->getBuilding("MOON_BASE") * 3 + 1;
 			if($fields < $fmax)
 			{
-				return $fields;
+				$fmax = $fields;
 			}
-			return $fmax;
 		}
-		Hook::event("GetMaxFields", array(&$fmax));
+		Hook::event("GetMaxFields", array(&$fmax, $this));
 		$addition = ($this->data["ismoon"]) ? 0 : Core::getOptions()->get("PLANET_FIELD_ADDITION");
 		return $fmax + $addition;
 	}
