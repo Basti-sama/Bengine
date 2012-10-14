@@ -30,8 +30,7 @@ hosts. Installation should be done by advanced server administrators.
 - MySQL 5.1 or higher incl. InnoDB
 
 3. Upload files
-Just upload all files except for "compiler.php" into the root directory
-of your webhost.
+Just upload all files into the root directory of your webhost.
 
 4. Setup database
 Open the file /etc/Config.inc.php and enter your database access data.
@@ -91,8 +90,7 @@ erfahrenen Server Administrator durchgeführt werden.
 - MySQL 5.1 oder höher inkl. InnoDB
 
 3. Datei-Upload
-Lade alle Dateien außer "compiler.php" in das Root-Verzeichnis deines
-Webhosts.
+Lade alle Dateien in das Root-Verzeichnis deines Webhosts.
 
 4. Datenbank
 Öffne die Datei /etc/Config.inc.php und gebe dort die Zugangsdaten für die
