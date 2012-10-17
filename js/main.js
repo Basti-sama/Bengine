@@ -257,7 +257,7 @@ $(document).ready(function() {
 			planets.push($(this).find("a:first").attr("href"));
 		});
 		$.post(this.href, { planets: planets });
-		$(".goto").bind("click", gotoEvent);
+		$("#planets .goto").bind("click", gotoEvent);
 		return false;
 	});
 	$("#planets").hover(function() {
