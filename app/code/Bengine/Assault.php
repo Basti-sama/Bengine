@@ -167,14 +167,16 @@ class Bengine_Assault
 		$jrePath = $cs["jre"];
 		$jarPath = APP_ROOT_DIR."app/Assault.jar";
 		$cmd = $jrePath.' -jar "'.$jarPath.'" "'.$cs["host"].'" "'.$cs["user"].'" "'.$cs["userpw"].'" "'.$database["databasename"].'" "'.$database["tableprefix"].'" '.escapeshellarg($this->assaultid).' 2>&1';
-		exec($cmd, $output);
+		$output = "";
+		$commandResult = null;
+		exec($cmd, $output, $commandResult);
 
 		$result = Core::getQuery()->select("assault", array("result", "moonchance", "moon", "accomplished", "lostunits_defender"), "", "assaultid = '".$this->assaultid."'");
 		$row = Core::getDB()->fetch($result);
 		Core::getDB()->free_result($result);
 		$this->data = $row;
 
-		if(!$row["accomplished"])
+		if($commandResult !== 0 || !$row["accomplished"])
 		{
 			$output = implode("<br/>", $output);
 			Logger::addMessage("Sorry, could not start battle <strong>".$this->assaultid."</strong>:<br/>".$output);
