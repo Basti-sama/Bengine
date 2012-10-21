@@ -111,14 +111,14 @@ quantities[<?php echo $unit->getId() ?>] = <?php echo $unit->getQty() ?>;
 				{if[{var}canSendFleet{/var}]}
 				<input type="hidden" name="step2" value="1"/>
 				<input type="submit" id="mission_next" value="{lang}NEXT{/lang}" class="button"/>
-				{if[Bengine::getPlanet()->getBuilding("STAR_GATE") > 0]}
+				{if[Game::getPlanet()->getBuilding("STAR_GATE") > 0]}
 				<input type="submit" id="stargate_next" value="{lang}STAR_GATE_JUMP{/lang}" class="button"/>
 				{/if}
 				{else}
 				{lang}NO_FREE_FLEET_SLOTS{/lang}
 				{/if}
 				<div class="right">
-					{lang=FLEET_SLOTS} <?php echo count($this->getLoop("missions")) ?> / <?php echo Bengine::getResearch(14) + 1 ?>
+					{lang=FLEET_SLOTS} <?php echo count($this->getLoop("missions")) ?> / <?php echo Game::getResearch(14) + 1 ?>
 					<?php if(Core::getOptions()->get("ATTACKING_STOPPAGE")): ?>
 					<b class="false">{lang=ATTACKING_STOPPAGE_ENABLED}</b>
 					<?php endif ?>

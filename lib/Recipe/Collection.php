@@ -11,6 +11,7 @@
 
 abstract class Recipe_Collection
 {
+	public abstract function __construct();
 	public abstract function get($var);
 	public abstract function set($var, $value);
 

@@ -30,7 +30,7 @@
 {hook}HtmlBegin{/hook}
 <form method="post" id="planetSelection" action="{@formaction}"><div style="display: none;"><input type="hidden" name="planetid" value="0" id="planetid" /></div></form>
 <div id="topHeader">
-	<?php $planet = Bengine::getPlanet() ?>
+	<?php $planet = Game::getPlanet() ?>
 	<ul>
 		<li>{@planetImageSmall}</li>
 		<li class="header-planet-name"><b>{@currentPlanet}</b> {@currentCoords}</li>
@@ -59,7 +59,7 @@
 <br class="clear" /><br class="clear" />
 <div id="leftMenu">
 	<ul>
-		{foreach[navigation]}<li{loop}inner{/loop}>{loop}content{/loop}</li>{/foreach}
+		{foreach[navigation]}<li{loop}attributes{/loop}>{loop}link{/loop}</li>{/foreach}
 		{hook}ListMenu{/hook}
 	</ul>
 </div>
@@ -76,11 +76,11 @@
 	<ul>
 		{foreach[planetHeaderList]}
 		<li>
-			<a href="{loop}planetid{/loop}" class="goto{if[$row["planetid"] == Bengine::getPlanet()->getPlanetId()]} cur-planet{/if}">
+			<a href="{loop}planetid{/loop}" class="goto{if[$row["planetid"] == Game::getPlanet()->getPlanetId()]} cur-planet{/if}">
 				{loop}picture{/loop}<br />{loop}planetname{/loop}
 			</a>
 			{if[$row["moonid"] > 0]}
-			<a href="{loop}moonid{/loop}" class="goto {if[$row["moonid"] == Bengine::getPlanet()->getPlanetId()]}cur-moon{else}moon-select{/if}">
+			<a href="{loop}moonid{/loop}" class="goto {if[$row["moonid"] == Game::getPlanet()->getPlanetId()]}cur-moon{else}moon-select{/if}">
 				{loop}mpicture{/loop}<br />{loop}moon{/loop}
 			</a>
 			{/if}
@@ -88,7 +88,7 @@
 		{/foreach}
 	</ul>
 	<a href="#" id="edit-order"><span>{lang=EDIT_PLANET_SORTING}</span></a>
-	<a href="{url="game.php/".SID."/Preferences/savePlanetOrder"}" id="save-order"><span>{lang=SAVE_PLANET_SORTING}</span></a>
+	<a href="{url}"game.php/".SID."/Preferences/savePlanetOrder"{/url}" id="save-order"><span>{lang=SAVE_PLANET_SORTING}</span></a>
 </div>
 {hook}HtmlEnd{/hook}
 </div>

@@ -1,13 +1,13 @@
 <?php if(count($this->getLoop("constructions"))): ?>
 <?php $event = $this->get("event") ?>
-<?php $planetFree = Bengine::getPlanet()->planetFree() ?>
+<?php $planetFree = Game::getPlanet()->planetFree() ?>
 <?php $umode = Core::getUser()->get("umode") ?>
 <table class="ntable">
 	<thead><tr><th colspan="3">{lang}CONSTRUCTIONS{/lang} ({lang=OCCUPIED_FIELDS})</th></tr></thead>
 	<tbody>
 		<?php foreach($this->getLoop("constructions") as $key => $building): ?>
 		<?php $id = $building->get("buildingid") ?>
-		<?php $buildable = Bengine::canBuild($id) ?>
+		<?php $buildable = Game::canBuild($id) ?>
 		<?php if($buildable || $building->get("level")): ?>
 		<?php $required = $building->calculateRequiredResources() ?>
 		<tr>
@@ -68,7 +68,7 @@
 			<?php if(!$event): ?>
 			<?php if($this->get("shipyardSize") > 0 && ($id == 7 || $id == 8)): ?>
 			<span class="false">{lang=BUILDING_AT_WORK}</span>
-			<?php elseif(Bengine::getEH()->getResearchEvent() && $id == 12): ?>
+			<?php elseif(Game::getEH()->getResearchEvent() && $id == 12): ?>
 			<span class="false">{lang=BUILDING_AT_WORK}</span>
 			<?php elseif($building->hasResources() && $buildable): ?>
 			<?php if($building->get("level")): ?>

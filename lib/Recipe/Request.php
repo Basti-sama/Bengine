@@ -49,14 +49,14 @@ class Recipe_Request
 	/**
 	 * Constructor.
 	 *
-	 * @return void
+	 * @param string $adapter
+	 * @return \Recipe_Request
 	 */
 	public function __construct($adapter = "default")
 	{
 		$this->files = $_FILES;
-		$this->setLevelNames();
 		$this->requestedURL = $_SERVER["REQUEST_URI"];
-		$this->splitURL()->putArgsIntoRequestVars();
+		$this->splitURL();
 		$this->setAdapter($adapter);
 		$this->flushGlobals();
 		return;
@@ -65,7 +65,7 @@ class Recipe_Request
 	/**
 	 * Set the request adapter.
 	 *
-	 * @param string	Adapter name
+	 * @param string $adapter	Adapter name
 	 *
 	 * @return Recipe_Request
 	 */
@@ -143,6 +143,14 @@ class Recipe_Request
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getRawArguments()
+	{
+		return $this->args;
+	}
+
+	/**
 	 * This function puts the arguments into the
 	 * respective request variables.
 	 * http://www.anypage.com/GoArgument/SpecificArgument:Content
@@ -153,8 +161,9 @@ class Recipe_Request
 	 *
 	 * @return Recipe_Request
 	 */
-	protected function putArgsIntoRequestVars()
+	public function putArgsIntoRequestVars()
 	{
+		$this->setLevelNames();
 		for($i = 0; $i < count($this->args); $i++)
 		{
 			if($this->args[$i] == "")
@@ -184,10 +193,10 @@ class Recipe_Request
 	/**
 	 * Returns the value of the given request type parameter.
 	 *
-	 * @param string	Request type (get, post or cookie)
-	 * @param string	Parameter
+	 * @param string $requestType	Request type (get, post or cookie)
+	 * @param string $param			Parameter
 	 *
-	 * @return mixed	The value or false
+	 * @return mixed				The value or false
 	 */
 	public function getArgument($requestType, $param)
 	{
@@ -213,8 +222,8 @@ class Recipe_Request
 	/**
 	 * Returns the parameter of the GET query.
 	 *
-	 * @param string	Parameter
-	 * @param mixed		Default return value
+	 * @param string $param		Parameter
+	 * @param mixed $default	Default return value
 	 *
 	 * @return mixed	The value or false
 	 */
@@ -226,8 +235,8 @@ class Recipe_Request
 	/**
 	 * Returns the parameter of the POST query.
 	 *
-	 * @param string	Parameter
-	 * @param mixed		Default return value
+	 * @param string $param		Parameter
+	 * @param mixed $default	Default return value
 	 *
 	 * @return mixed	The value or false
 	 */
@@ -239,8 +248,8 @@ class Recipe_Request
 	/**
 	 * Returns the parameter of the COOKIE query.
 	 *
-	 * @param string	Parameter
-	 * @param mixed		Default return value
+	 * @param string $param		Parameter
+	 * @param mixed $default	Default return value
 	 *
 	 * @return mixed	The value or false
 	 */
@@ -256,8 +265,8 @@ class Recipe_Request
 	/**
 	 * Returns uploaded items of the FILES query.
 	 *
-	 * @param string	Upload id
-	 * @param mixed		Default return value
+	 * @param string $fileid	Upload id
+	 * @param mixed $default	Default return value
 	 *
 	 * @return mixed	The file upload data, false otherwise
 	 */
@@ -273,8 +282,8 @@ class Recipe_Request
 	/**
 	 * Returns an HTTP-parameter.
 	 *
-	 * @param string	HTTP-type
-	 * @param string	Parameter
+	 * @param string $http	HTTP-type
+	 * @param string $param	Parameter
 	 *
 	 * @return mixed	The value or false
 	 */
@@ -296,7 +305,7 @@ class Recipe_Request
 	/**
 	 * Sets the request parameter sequence.
 	 *
-	 * @param array		Parameter sequence [optional]
+	 * @param array $levelNames	Parameter sequence [optional]
 	 *
 	 * @return Recipe_Request
 	 */
@@ -314,9 +323,9 @@ class Recipe_Request
 	/**
 	 * Sets a new cookie.
 	 *
-	 * @param string	Cookie name
-	 * @param string	Cookie value
-	 * @param integer	Cookie expires in $ days
+	 * @param string $cookie	Cookie name
+	 * @param string $value		Cookie value
+	 * @param integer $expires	Cookie expires in $ days
 	 *
 	 * @return Recipe_Request
 	 */

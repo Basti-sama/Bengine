@@ -1,0 +1,13 @@
+{
+	"modules": {
+		"bengine": {
+			"comm": {
+				"type": "application",
+				"name": "Bengine Community Login",
+				"version": "0.30-dev",
+				"revision": 30,
+				"pool": "app/code"
+			}
+		}
+	}
+}

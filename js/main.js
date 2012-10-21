@@ -3,7 +3,6 @@
  *
  * @package Bengine
  * @copyright Copyright protected by / Urheberrechtlich geschützt durch "Sebastian Noll"
- * @version $Id: main.js 38 2011-07-21 11:51:54Z secretchampion $
  */
 
 function maxlength(field, max, counterid)
@@ -233,16 +232,18 @@ $(document).ready(function() {
 		submitButton.prop("disabled", true);
 		submitButton.val("Bitte warten…");
 	});
-	$(".goto").click(function() {
+	var gotoEvent = function() {
 		var planetId = ($(this).attr("href"));
 		gotoPlanet("planetSelection", planetId);
 		return false;
-	});
+	};
+	$(".goto").bind("click", gotoEvent);
 	$("#edit-order").click(function() {
 		$("#planets ul").sortable({
 			placeholder: "planet-placeholder"
 		});
 		$(this).hide();
+        $("#planets .goto").unbind("click");
 		$("#save-order").css("display", "block");
 		return false;
 	});
@@ -255,6 +256,7 @@ $(document).ready(function() {
 			planets.push($(this).find("a:first").attr("href"));
 		});
 		$.post(this.href, { planets: planets });
+		$("#planets .goto").bind("click", gotoEvent);
 		return false;
 	});
 	$("#planets").hover(function() {
@@ -262,7 +264,7 @@ $(document).ready(function() {
 		{
 			$("#edit-order").css("display", "block");
 		}
-	}, function() {
+	}, function() {
 		$("#edit-order").css("display", "none");
 	});
 	if($.browser.msie && parseInt($.browser.version) <= 6)

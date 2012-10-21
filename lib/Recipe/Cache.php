@@ -70,7 +70,7 @@ class Recipe_Cache
 	/**
 	 * Constructor: Set basic variables.
 	 *
-	 * @return void
+	 * @return \Recipe_Cache
 	 */
 	public function __construct()
 	{
@@ -87,8 +87,8 @@ class Recipe_Cache
 	/**
 	 * Fetches language cache.
 	 *
-	 * @param string	Language code
-	 * @param array		Language groups to load
+	 * @param string $langcode	Language code
+	 * @param array $groups		Language groups to load
 	 *
 	 * @return string	Cache content
 	 */
@@ -153,7 +153,7 @@ class Recipe_Cache
 	/**
 	 * Fetches permission cache.
 	 *
-	 * @param integer	Group Id
+	 * @param integer $groupid	Group Id
 	 *
 	 * @return array
 	 */
@@ -181,7 +181,7 @@ class Recipe_Cache
 	/**
 	 * Fetches user variables for a session.
 	 *
-	 * @param string	Session Id
+	 * @param string $sid	Session Id
 	 *
 	 * @return array	Session data
 	 */
@@ -230,8 +230,8 @@ class Recipe_Cache
 	/**
 	 * Caches the language variables.
 	 *
-	 * @param string	Language code
-	 * @param integer	Life time [optional]
+	 * @param string $langcode	Language code
+	 * @param integer $lifetime	Life time [optional]
 	 *
 	 * @return Recipe_Cache
 	 */
@@ -254,7 +254,7 @@ class Recipe_Cache
 			Core::getDB()->free_result($res);
 			$cacheContent .= $this->cacheFileClose;
 			try { $this->putCacheContent($this->getLanguageCacheDir()."lang.".$langcode.".".$row["grouptitle"].".php", $cacheContent); }
-			catch(Exception $e) { $e->printError(); }
+			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
 		Core::getDB()->free_result($result);
 		return $this;
@@ -263,9 +263,9 @@ class Recipe_Cache
 	/**
 	 * Caches only a group of language phrases.
 	 *
-	 * @param string	Phrase group
-	 * @param integer	Languageid
-	 * @param integer	Life time [optional]
+	 * @param string $groupname	Phrase group
+	 * @param integer $langcode	Languageid
+	 * @param integer $lifetime	Life time [optional]
 	 *
 	 * @return Recipe_Cache
 	 */
@@ -301,7 +301,7 @@ class Recipe_Cache
 			$compiler->shutdown();
 			$cacheContent .= $this->cacheFileClose;
 			try { $this->putCacheContent($filename, $cacheContent); }
-			catch(Exception $e) { $e->printError(); }
+			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
 		return $this;
 	}
@@ -309,7 +309,7 @@ class Recipe_Cache
 	/**
 	 * Caches the configuration variables.
 	 *
-	 * @param integer	Cache lifetime [optional]
+	 * @param integer $lifetime	Cache lifetime [optional]
 	 * @return Recipe_Cache
 	 */
 	public function buildConfigCache($lifetime = self::DEFAULT_CACHE_LIFE_TIME)
@@ -327,13 +327,15 @@ class Recipe_Cache
 		$cacheContent .= ");\n";
 		$cacheContent .= $this->cacheFileClose;
 		try { $this->putCacheContent($this->cacheDir."options.cache.php", $cacheContent); }
-		catch(Exception $e) { $e->printError(); }
+		catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		return $this;
 	}
 
 	/**
 	 * Caches the permissions.
 	 *
+	 * @param array|int $groupid
+	 * @param int $lifetime
 	 * @return Recipe_Cache
 	 */
 	public function buildPermissionCache($groupid = null, $lifetime = self::DEFAULT_CACHE_LIFE_TIME)
@@ -350,11 +352,11 @@ class Recipe_Cache
 					$grouptitle = $row["grouptitle"];
 				}
 				Core::getDB()->free_result($result);
-				$grouptitle = ($grouptitle == "") ? $group : $grouptitle;
+				$grouptitle = empty($grouptitle) ? $group : $grouptitle;
 				$cacheContent = $this->setCacheFileHeader("Permissions [".$grouptitle."]").$cacheContent;
 				$cacheContent .= $this->cacheFileClose;
 				try { $this->putCacheContent($this->getPermissionCacheDir()."permission.".$group.".php", $cacheContent); }
-				catch(Exception $e) { $e->printError(); }
+				catch(Recipe_Exception_Generic $e) { $e->printError(); }
 			}
 			return $this;
 		}
@@ -372,7 +374,7 @@ class Recipe_Cache
 			$cacheContent = $this->setCacheFileHeader("Permissions [".$grouptitle."]").$cacheContent;
 			$cacheContent .= $this->cacheFileClose;
 			try { $this->putCacheContent($this->getPermissionCacheDir()."permission.".$groupid.".php", $cacheContent); }
-			catch(Exception $e) { $e->printError(); }
+			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 			return $this;
 		}
 		$result = Core::getQuery()->select("usergroup", array("usergroupid", "grouptitle"));
@@ -388,7 +390,7 @@ class Recipe_Cache
 			Core::getDB()->free_result($_result);
 			$cacheContent .= $this->cacheFileClose;
 			try { $this->putCacheContent($this->getPermissionCacheDir()."permission.".$row["usergroupid"].".php", $cacheContent); }
-			catch(Exception $e) { $e->printError(); }
+			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
 		Core::getDB()->free_result($result);
 		return $this;
@@ -397,7 +399,7 @@ class Recipe_Cache
 	/**
 	 * Caches a session.
 	 *
-	 * @param string	Session Id
+	 * @param string $sid	Session Id
 	 *
 	 * @return Recipe_Cache
 	 */
@@ -441,7 +443,7 @@ class Recipe_Cache
 	/**
 	 * Generates header for cache file.
 	 *
-	 * @param string	Title or name for cache file
+	 * @param string $title	Title or name for cache file
 	 *
 	 * @return string	Complete Header
 	 */
@@ -460,9 +462,10 @@ class Recipe_Cache
 	/**
 	 * Write new cache content into file.
 	 *
-	 * @param string	Filename
-	 * @param string	Content
+	 * @param string $file		Filename
+	 * @param string $content	Content
 	 *
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Cache
 	 */
 	protected function putCacheContent($file, $content)
@@ -488,7 +491,7 @@ class Recipe_Cache
 	/**
 	 * Parse cache content concerning the quotes.
 	 *
-	 * @param string	Content to parse
+	 * @param string $content	Content to parse
 	 *
 	 * @return string	Parsed content
 	 */
@@ -519,7 +522,7 @@ class Recipe_Cache
 	/**
 	 * Deletes old sessions in the cache.
 	 *
-	 * @param integer	User Id
+	 * @param integer $userid	User Id
 	 *
 	 * @return Recipe_Cache
 	 */
@@ -532,7 +535,7 @@ class Recipe_Cache
 			if(file_exists($cacheFile))
 			{
 				try { File::rmFile($cacheFile); }
-				catch(Exception $e) { $e->printError(); }
+				catch(Recipe_Exception_Generic $e) { $e->printError(); }
 			}
 		}
 		Core::getDB()->free_result($result);
@@ -555,10 +558,10 @@ class Recipe_Cache
 	/**
 	 * Builds an unkown cache object.
 	 *
-	 * @param string	Object name
-	 * @param resource	SQL-Query
-	 * @param string	Index name of the table
-	 * @param string	Index type (int or char)
+	 * @param string $name		Object name
+	 * @param resource $result	SQL-Query
+	 * @param string $index		Index name of the table
+	 * @param string $itype		Index type (int or char)
 	 *
 	 * @return Recipe_Cache
 	 */
@@ -589,7 +592,7 @@ class Recipe_Cache
 			$cacheContent .= "\$data = \"".$this->compileContent(serialize($data))."\";\n";
 			$cacheContent .= $this->cacheFileClose;
 			try { $this->putCacheContent($this->cacheDir.$name.".cache.php", $cacheContent); }
-			catch(Exception $e) { $e->printError(); }
+			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
 		return $this;
 	}
@@ -597,9 +600,10 @@ class Recipe_Cache
 	/**
 	 * Reads a cache object.
 	 *
-	 * @param string	Object name
+	 * @param string $name Object name
 	 *
-	 * @return array	Cache data
+	 * @throws Recipe_Exception_Generic
+	 * @return array    Cache data
 	 */
 	public function readObject($name)
 	{
@@ -618,7 +622,7 @@ class Recipe_Cache
 	/**
 	 * Deletes a cache object.
 	 *
-	 * @param string	Object name
+	 * @param string $name	Object name
 	 *
 	 * @return boolean	True on success, false on failure
 	 */
@@ -630,7 +634,7 @@ class Recipe_Cache
 			return false;
 		}
 		try { File::rmFile($file); }
-		catch(Exception $e) { $e->printError(); }
+		catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		return true;
 	}
 
@@ -720,6 +724,71 @@ class Recipe_Cache
 	{
 		$this->permissionCacheDir = $permissionCacheDir;
 		return $this;
+	}
+
+	/**
+	 * Build meta data cache.
+	 *
+	 * @param int $lifetime
+	 * @return \Recipe_Cache
+	 */
+	public function buildMetaCache($lifetime = self::DEFAULT_CACHE_LIFE_TIME)
+	{
+		$data = array();
+		$applicationDirectory = APP_ROOT_DIR."etc/applications";
+		$moduleDirectory = APP_ROOT_DIR."ext/modules/etc";
+		/* @var DirectoryIterator $fileObj */
+		foreach(new DirectoryIterator($applicationDirectory) as $fileObj)
+		{
+			if(!$fileObj->isDot() && $fileObj->isDir())
+			{
+				$metaFile = $fileObj->getPathname()."/meta.json";
+				if(file_exists($metaFile))
+				{
+					$data = array_merge_recursive($data, json_decode(file_get_contents($metaFile), true));
+				}
+			}
+		}
+		try {
+			foreach(new DirectoryIterator($moduleDirectory) as $fileObj)
+			{
+				if(!$fileObj->isDot() && $fileObj->isFile())
+				{
+					$data = array_merge_recursive($data, json_decode(file_get_contents($fileObj->getPathname()), true));
+				}
+			}
+		} catch(UnexpectedValueException $e) {
+
+		}
+		$cacheContent  = $this->setCacheFileHeader("Meta data");
+		$cacheContent .= "\$lifetime=".(TIME+$lifetime).";\n";
+		$cacheContent .= "\$data = \"".$this->compileContent(serialize($data))."\";\n";
+		$cacheContent .= $this->cacheFileClose;
+		$this->putCacheContent($this->cacheDir."meta.cache.php", $cacheContent);
+		return $this;
+	}
+
+	/**
+	 * Fetches meta cache.
+	 *
+	 * @return array
+	 */
+	public function getMetaCache()
+	{
+		$cacheFile = $this->cacheDir."meta.cache.php";
+		if(!file_exists($cacheFile))
+		{
+			$this->buildMetaCache();
+		}
+		$data = "";
+		$lifetime = 0;
+		require $cacheFile;
+		if($lifetime < TIME)
+		{
+			$this->buildMetaCache();
+		}
+		$data = unserialize($data);
+		return $data;
 	}
 }
 ?>

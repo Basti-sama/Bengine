@@ -1,0 +1,150 @@
+{
+	"modules": {
+		"bengine": {
+			"game": {
+				"type": "application",
+				"name": "Bengine Game",
+				"version": "0.30-dev",
+				"revision": 30,
+				"pool": "app/code"
+			}
+		}
+	},
+	"config": {
+		"menu": {
+			"production": {
+				"attributes": {
+					"class": "menu-prod"
+				},
+				"items": {
+					"main": {
+						"label": "MENU_MAIN",
+						"link": {
+							"controller": "Index"
+						}
+					},
+					"constructions": {
+						"label": "MENU_CONSTRUCTIONS",
+						"link": {
+							"controller": "Constructions"
+						}
+					},
+					"resource": {
+						"label": "MENU_RESOURCE",
+						"link": {
+							"controller": "Resource"
+						}
+					},
+					"research": {
+						"label": "MENU_RESEARCH",
+						"link": {
+							"controller": "Research"
+						}
+					},
+					"shipyard": {
+						"label": "MENU_SHIPYARD",
+						"link": {
+							"controller": "Shipyard"
+						}
+					},
+					"fleet": {
+						"label": "MENU_FLEET",
+						"link": {
+							"controller": "Mission"
+						}
+					},
+					"techtree": {
+						"label": "MENU_TECHTREE",
+						"link": {
+							"controller": "Techtree"
+						}
+					},
+					"galaxy": {
+						"label": "MENU_GALAXY",
+						"link": {
+							"controller": "Galaxy"
+						}
+					},
+					"defense": {
+						"label": "MENU_DEFENSE",
+						"link": {
+							"controller": "Defense"
+						}
+					}
+				}
+			},
+			"user": {
+				"attributes": {
+					"class": "menu-user"
+				},
+				"items": {
+					"alliance": {
+						"label": "MENU_ALLIANCE",
+						"link": {
+							"controller": "Alliance"
+						}
+					},
+					"ranking": {
+						"label": "MENU_RANKING",
+						"link": {
+							"controller": "Ranking"
+						}
+					},
+					"statistics": {
+						"label": "MENU_STATISTICS",
+						"link": {
+							"controller": "Statistics"
+						}
+					},
+					"search": {
+						"label": "MENU_SEARCH",
+						"link": {
+							"controller": "Search"
+						}
+					}
+				}
+			},
+			"other": {
+				"attributes": {
+					"class": "menu-other"
+				},
+				"items": {
+					"messages": {
+						"label": "MENU_MESSAGES",
+						"link": {
+							"controller": "MSG"
+						}
+					},
+					"friends": {
+						"label": "MENU_FRIENDS",
+						"link": {
+							"controller": "Friends"
+						}
+					},
+					"preferences": {
+						"label": "MENU_PREFERENCES",
+						"link": {
+							"controller": "Preferences"
+						}
+					},
+					"logout": {
+						"label": "MENU_LOGOUT",
+						"link": {
+							"controller": "Logout"
+						}
+					},
+					"version": {
+						"label": {
+							"special": {
+								"function": "version"
+							}
+						},
+						"link": {
+							"controller": "Changelog"
+						}
+					}
+				}
+			}
+		}
+	}
+}

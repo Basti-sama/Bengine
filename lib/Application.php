@@ -19,11 +19,33 @@ abstract class Application
 	protected static $namespace = array();
 
 	/**
-	 * Local application configuration.
+	 * Meta application configuration.
 	 *
-	 * @var XMLObj
+	 * @var array
 	 */
-	protected static $local = null;
+	protected static $meta = null;
+
+	/**
+	 * Controller name.
+	 *
+	 * @var string
+	 */
+	protected static $controllerName = "";
+
+	/**
+	 * Controller object.
+	 *
+	 * @var Recipe_Controller_Abstract
+	 */
+	protected static $controller = null;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct(Core $core)
+	{
+		Core::getRequest()->putArgsIntoRequestVars();
+	}
 
 	/**
 	 * Class rewrites.
@@ -32,6 +54,9 @@ abstract class Application
 	 */
 	protected static $rewrite = array();
 
+	/**
+	 * @var array
+	 */
 	protected static $rewriteCache = array();
 
 	/**
@@ -39,12 +64,9 @@ abstract class Application
 	 *
 	 * @return void
 	 */
-	public static function run()
+	public function run()
 	{
-		new Core();
-		self::loadLocal();
-		self::addNamespace(self::getLocal()->getChildren("namespace"));
-		self::addRewrites(self::getLocal()->getChildren("rewrite"));
+		$this->loadMeta();
 
 		Core::getTPL()->assign("charset", Core::getLang()->getOpt("charset"));
 		Core::getTPL()->assign("langcode", Core::getLang()->getOpt("langcode"));
@@ -66,11 +88,31 @@ abstract class Application
 	}
 
 	/**
+	 * Run dispatch process.
+	 *
+	 * @return mixed
+	 */
+	protected function dispatch()
+	{
+		$controllerName = Core::getRequest()->getGET("controller", "index");
+		$module = Core::getRequest()->getGET("module", DEFAULT_PACKAGE);
+		self::$controllerName = $controllerName;
+		$config = array("action" => Core::getRequest()->getGET("action", "index"));
+		self::$controller = self::factory($module."_controller/".$controllerName, $config);
+		if(!self::$controller)
+		{
+			self::$controller = self::factory($module."_controller/index", array("action" => "noroute"));
+		}
+		return self::$controller->run();
+	}
+
+	/**
 	 * Internal class factory to search for extensions.
 	 *
-	 * @param string	Class path
+	 * @param string $class	Class path
+	 * @param array $args
 	 *
-	 * @return instance	Object of the class
+	 * @return object|boolean	Object of the class
 	 */
 	public static function factory($class, $args = array())
 	{
@@ -106,8 +148,8 @@ abstract class Application
 	/**
 	 * Loads a model and instantiate it.
 	 *
-	 * @param string	Model name
-	 * @param mixed		Initial loaded data
+	 * @param string $model	Model name
+	 * @param mixed $data	Initial loaded data
 	 *
 	 * @return Recipe_Model_Abstract
 	 *
@@ -115,7 +157,8 @@ abstract class Application
 	 */
 	public static function getModel($model, $data = null)
 	{
-		if($modelObj = self::factory("model/".$model, $data))
+		list($package, $modelName)  = explode("/", $model);
+		if($modelObj = self::factory("$package/model_$modelName", $data))
 		{
 			return $modelObj;
 		}
@@ -125,8 +168,8 @@ abstract class Application
 	/**
 	 * Loads a resource model and instantiate it.
 	 *
-	 * @param string	Resource name
-	 * @param mixed		Arguments
+	 * @param string $resource	Resource name
+	 * @param mixed $args		Arguments
 	 *
 	 * @return Recipe_Model_Resource_Abstract
 	 *
@@ -134,7 +177,8 @@ abstract class Application
 	 */
 	public static function getResource($resource, $args = null)
 	{
-		if($resourceObj = self::factory("model/resource_".$resource, $args))
+		list($package, $resourceName)  = explode("/", $resource);
+		if($resourceObj = self::factory("$package/model_resource_$resourceName", $args))
 		{
 			return $resourceObj;
 		}
@@ -144,8 +188,8 @@ abstract class Application
 	/**
 	 * Retrieves a collection of models.
 	 *
-	 * @param string	Collection name
-	 * @param string	Model name [optional]
+	 * @param string $collection	Collection name
+	 * @param string $model			Model name [optional]
 	 *
 	 * @return Recipe_Model_Collection_Abstract
 	 *
@@ -153,11 +197,12 @@ abstract class Application
 	 */
 	public static function getCollection($collection, $model = null)
 	{
-		if(is_null($model))
+		if($model === null)
 		{
 			$model = $collection;
 		}
-		if($collectionObj = self::factory("model/collection_".$collection, $model))
+		list($package, $collectionName)  = explode("/", $collection);
+		if($collectionObj = self::factory("$package/model_collection_$collectionName", $model))
 		{
 			return $collectionObj;
 		}
@@ -165,30 +210,34 @@ abstract class Application
 	}
 
 	/**
-	 * Loads the local configuration.
+	 * Loads the meta configuration.
 	 *
-	 * @return void
+	 * @return Application
 	 */
-	protected static function loadLocal()
+	protected function loadMeta()
 	{
-		self::$local = new XMLObj(file_get_contents(AD."etc/Local.xml"));
-		return;
+		self::$meta = Core::getCache()->getMetaCache();
+		foreach(self::$meta["modules"] as $namespace => $vendor)
+		{
+			self::addNamespace($namespace);
+		}
+		return $this;
 	}
 
 	/**
-	 * Retrieves the local configuration.
+	 * Retrieves the meta configuration.
 	 *
-	 * @return XMLObj
+	 * @return array
 	 */
-	public static final function getLocal()
+	public static final function getMeta()
 	{
-		return self::$local->getChildren();
+		return self::$meta;
 	}
 
 	/**
 	 * Fetches class rewrite rules.
 	 *
-	 * @param string	Class path
+	 * @param string $class	Class path
 	 *
 	 * @return string	Rewrite class, given class otherwise
 	 */
@@ -210,55 +259,22 @@ abstract class Application
 	/**
 	 * Adds a new namespace.
 	 *
-	 * @param string|XMLObj
-	 *
-	 * @return array	Namespace stack
+	 * @param string
 	 */
-	public static function addNamespace($namespace = null)
+	public static function addNamespace($namespace)
 	{
-		if(!is_null($namespace))
-		{
-			if($namespace instanceof XMLObj)
-			{
-				foreach($namespace->getChildren() as $ns)
-				{
-					array_unshift(self::$namespace, $ns->getName());
-				}
-			}
-			else
-			{
-				array_unshift(self::$namespace, $namespace);
-			}
-		}
-		return self::$namespace;
+		self::$namespace[] = $namespace;
 	}
 
 	/**
 	 * Adds a new rewrite class.
 	 *
-	 * @param string|XMLObj
+	 * @param string
 	 *
 	 * @return array	rewrite stack
 	 */
 	public static function addRewrites($rewrite)
 	{
-		if(!is_null($rewrite))
-		{
-			if($rewrite instanceof XMLObj)
-			{
-				foreach($rewrite->getChildren() as $resource)
-				{
-					foreach($resource->getChildren() as $class)
-					{
-						self::$rewrite[$resource->getName()][$class->getName()] = $class->getString();
-					}
-				}
-			}
-			else
-			{
-				self::$rewrite[] = $rewrite;
-			}
-		}
-		return self::$rewrite;
+		self::$rewrite[] = $rewrite;
 	}
 }

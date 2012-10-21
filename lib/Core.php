@@ -110,22 +110,37 @@ class Core
 	protected static $instance = null;
 
 	/**
+	 * Application name.
+	 *
+	 * @var Application
+	 */
+	protected static $application = null;
+
+	/**
+	 * Meta data.
+	 *
+	 * @var stdClass
+	 */
+	protected static $meta = null;
+
+	/**
 	 * Constructor. Initializes classes.
 	 *
-	 * @return void
+	 * @return \Core
 	 */
 	public function __construct()
 	{
 		self::$version["major"] = 1;
-		self::$version["build"] = 2;
+		self::$version["build"] = 3;
 		self::$version["revesion"] = 0;
-		self::$version["release"] = 120;
+		self::$version["release"] = 130;
 		define("RECIPE_VERSION", self::$version["release"]);
 		Hook::event("CoreStart");
 		self::$instance = $this;
 		$this->setTimer()
 			->setDatabase()
 			->setRequest()
+			->setApplication()
 			->setQuery()
 			->setCache()
 			->setOptions()
@@ -167,6 +182,37 @@ class Core
 	{
 		self::$RequestObj = new Recipe_Request(REQUEST_ADAPTER);
 		return $this;
+	}
+
+	/**
+	 * @return Core
+	 */
+	protected function setApplication()
+	{
+		$arguments = $this->getRequest()->getRawArguments();
+		if(empty($arguments[0]))
+		{
+			$application = DEFAULT_PACKAGE;
+		}
+		else
+		{
+			$application = $arguments[0];
+		}
+		$application = strtolower($application);
+		if(!file_exists(APP_ROOT_DIR."etc/applications/".$application."/bootstrap.php"))
+		{
+			$application = DEFAULT_PACKAGE;
+		}
+		self::$application = require_once APP_ROOT_DIR."etc/applications/".$application."/bootstrap.php";
+		return $this;
+	}
+
+	/**
+	 * @return Application
+	 */
+	public static final function getApplication()
+	{
+		return self::$application;
 	}
 
 	/**
@@ -314,6 +360,7 @@ class Core
 	/**
 	 * Initializes the template system.
 	 *
+	 * @param string $engine
 	 * @return Core
 	 */
 	public function setTemplate($engine = null)
@@ -444,9 +491,20 @@ class Core
 	}
 
 	/**
+	 * Runs the application.
+	 *
+	 * @return Core
+	 */
+	public function run()
+	{
+		$this->getApplication()->run();
+		return $this;
+	}
+
+	/**
 	 * Sets the default timezone.
 	 *
-	 * @param string	Timezone to set
+	 * @param string $newTimezone	Timezone to set
 	 *
 	 * @return string	Timezone
 	 */

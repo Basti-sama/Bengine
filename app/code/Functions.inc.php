@@ -23,9 +23,9 @@ function parseFormula($formula, $basic, $level)
 	Hook::event("ParseFormula", array(&$formula, &$basic, &$level));
 	$formula = Str::replace("{level}", $level, $formula);
 	$formula = Str::replace("{basic}", $basic, $formula);
-	$formula = Str::replace("{temp}", Bengine::getPlanet()->getData("temperature"), $formula);
-	$formula = preg_replace("#\{tech\=([0-9]+)\}#ie", 'Bengine::getResearch(\\1)', $formula);
-	$formula = preg_replace("#\{building\=([0-9]+)\}#ie", 'Bengine::getPlanet()->getBuilding(\\1)', $formula);
+	$formula = Str::replace("{temp}", Game::getPlanet()->getData("temperature"), $formula);
+	$formula = preg_replace("#\{tech\=([0-9]+)\}#ie", 'Game::getResearch(\\1)', $formula);
+	$formula = preg_replace("#\{building\=([0-9]+)\}#ie", 'Game::getPlanet()->getBuilding(\\1)', $formula);
 	$result = 0;
 	eval("\$result = ".$formula.";");
 	return (int) $result;
@@ -99,15 +99,15 @@ function getBuildTime($metal, $silicon, $mode)
 	{
 		case 1: // Buildings
 		case 5:
-			$roboFactory = Bengine::getPlanet()->getBuilding("ROBOTIC_FACTORY");
-			$time = (($metal + $silicon) / 2500) * (1 / ($roboFactory + 1)) * pow(0.5, Bengine::getPlanet()->getBuilding("NANO_FACTORY"));
+			$roboFactory = Game::getPlanet()->getBuilding("ROBOTIC_FACTORY");
+			$time = (($metal + $silicon) / 2500) * (1 / ($roboFactory + 1)) * pow(0.5, Game::getPlanet()->getBuilding("NANO_FACTORY"));
 		break;
 		case 2: // Research
-			$time = Bengine::getResearchTime($metal + $silicon);
+			$time = Game::getResearchTime($metal + $silicon);
 		break;
 		case 3: // Shipyard
 		case 4:
-			$time = (($metal + $silicon) / 5000) * (2 / (Bengine::getPlanet()->getBuilding("SHIPYARD") + 1)) * pow(0.5, Bengine::getPlanet()->getBuilding("NANO_FACTORY"));
+			$time = (($metal + $silicon) / 5000) * (2 / (Game::getPlanet()->getBuilding("SHIPYARD") + 1)) * pow(0.5, Game::getPlanet()->getBuilding("NANO_FACTORY"));
 		break;
 	}
 

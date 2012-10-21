@@ -6,7 +6,7 @@
 	<tbody>
 		<?php foreach($this->getLoop("constructions") as $key => $building): ?>
 		<?php $id = $building->get("buildingid") ?>
-		<?php if(Bengine::canBuild($id)): ?>
+		<?php if(Game::canBuild($id)): ?>
 		<?php $required = $building->calculateRequiredResources() ?>
 		<tr>
 			<td>
@@ -44,7 +44,7 @@
 				<?php if($isInWork): ?>
 					<?php $timeleft = $event->get("time") - TIME ?>
 					<?php $abort = Link::get("game.php/".SID."/Research/Abort/".$id, Core::getLanguage()->getItem("ABORT")) ?>
-					<?php if($event->get("planetid") != Bengine::getPlanet()->getPlanetId()): ?>
+					<?php if($event->get("planetid") != Game::getPlanet()->getPlanetId()): ?>
 					<?php $abort .= "<br/>(".Core::getLanguage()->get("ON")." ".$event->get("planetname").")" ?>
 					<?php endif ?>
 					<?php $continue = Link::get("game.php/".SID."/Research", Core::getLanguage()->getItem("CONTINUE")) ?>

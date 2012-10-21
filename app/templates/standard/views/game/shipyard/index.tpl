@@ -20,7 +20,7 @@
 	<tbody>
 		<?php foreach($this->getLoop("units") as $unit): ?>
 		<?php $id = $unit->get("buildingid") ?>
-		<?php if(Bengine::canBuild($id)): ?>
+		<?php if(Game::canBuild($id)): ?>
 		<tr>
 			<td>
 				<?php $image = Image::getImage("buildings/".$unit->get("name").".gif", $unit->getName(), 120, 120) ?>
@@ -48,7 +48,7 @@
 				{lang}PRODUCTION_TIME{/lang} <?php echo $unit->getProductionTime(true) ?>
 			</td>
 			<td>
-				<?php if($id == 49 && Bengine::getEH()->hasSShieldDome() || $id == 50 && Bengine::getEH()->hasLShieldDome()): ?>
+				<?php if($id == 49 && Game::getEH()->hasSShieldDome() || $id == 50 && Game::getEH()->hasLShieldDome()): ?>
 				{lang=ALREADY_BUILDED}
 				<?php elseif($unit->get("quantity") > 0 && ($id == 49 || $id == 50)): ?>
 				{lang=ALREADY_BUILDED}

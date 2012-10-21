@@ -46,7 +46,7 @@
 		<div id="container" class="{@containerClass}">
 			<div id="content">
 				<div class="inner">
-					{if[{var=showDefaultCotnent}]}
+					{if[{var=showDefaultContent}]}
 					<h1>{lang}WELCOME{/lang}</h1>
 					<p>{lang}GAME_DESCRIPTION{/lang}</p>
 					{else}
