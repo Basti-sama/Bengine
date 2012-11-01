@@ -37,7 +37,7 @@ $(document).ready(function() {
 		<td><input type="submit" name="changename" value="{lang}PROCEED{/lang}" class="button" /></td>
 	</tr>
 	<tr>
-		<td colspan="2" class="center">[ {link[DIPLOMACY]}"game.php/".SID."/Alliance/Diplomacy"{/link} ] [ {link[RIGHT_MANAGEMENT]}"game.php/".SID."/Alliance/RightManagement"{/link} ]</td>
+		<td colspan="2" class="center">[ {link[DIPLOMACY]}"game/".SID."/Alliance/Diplomacy"{/link} ] [ {link[RIGHT_MANAGEMENT]}"game/".SID."/Alliance/RightManagement"{/link} ]</td>
 	</tr>
 </table>
 </form>

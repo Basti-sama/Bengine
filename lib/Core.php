@@ -203,6 +203,7 @@ class Core
 		{
 			$application = DEFAULT_PACKAGE;
 		}
+		$_GET["package"] = $application;
 		self::$application = require_once APP_ROOT_DIR."etc/applications/".$application."/bootstrap.php";
 		return $this;
 	}

@@ -89,7 +89,7 @@ class Bengine_Game_Controller_Resource extends Bengine_Game_Controller_Abstract
 		Core::getTPL()->assign("selectProd", $selectBox);
 		Hook::event("ShowResourcesAfter");
 
-		$this->assign("updateAction", BASE_URL."game.php/".SID."/Resource/Update");
+		$this->assign("updateAction", BASE_URL."game/".SID."/Resource/Update");
 		return $this;
 	}
 
@@ -149,7 +149,7 @@ class Bengine_Game_Controller_Resource extends Bengine_Game_Controller_Abstract
 				Core::getQuery()->updateSet("planet", array("solar_satellite_prod" => $satelliteProd), "planetid = '".Core::getUser()->get("curplanet")."'");
 			}
 		}
-		$this->redirect("game.php/".SID."/Resource");
+		$this->redirect("game/".SID."/Resource");
 		return $this;
 	}
 }

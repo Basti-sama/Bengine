@@ -39,8 +39,8 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 	/**
 	 * Shows all unit information.
 	 *
-	 * @param integer $id	Unit id
-	 *
+	 * @param integer $id
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_Controller_Unit
 	 */
 	protected function infoAction($id)
@@ -65,7 +65,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			Core::getTPL()->assign("name", Core::getLanguage()->getItem($row["name"]));
 			Core::getTPL()->assign("description", Core::getLanguage()->getItem($row["name"]."_FULL_DESC"));
 			Core::getTPL()->assign("pic", Image::getImage("buildings/".$row["name"].".gif", Core::getLanguage()->getItem($row["name"]), null, null, "leftImage"));
-			Core::getTPL()->assign("edit", Link::get("game.php/".SID."/Unit/Edit/".$id, "[".Core::getLanguage()->getItem("EDIT")."]"));
+			Core::getTPL()->assign("edit", Link::get("game/".SID."/Unit/Edit/".$id, "[".Core::getLanguage()->getItem("EDIT")."]"));
 
 			// Rapidfire
 			$i = 0; $rf = array();
@@ -73,7 +73,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			while($_row = Core::getDB()->fetch($_result))
 			{
 				Hook::event("ShowUnitRapidfire", array($row, &$_row));
-				$name = Link::get("game.php/".SID."/Unit/Info/".$_row["target"], Core::getLanguage()->getItem($_row["name"]));
+				$name = Link::get("game/".SID."/Unit/Info/".$_row["target"], Core::getLanguage()->getItem($_row["name"]));
 				$rf[$i]["rapidfire"] = sprintf(Core::getLanguage()->getItem("RAPIDFIRE_TO"), $name);
 				$rf[$i]["value"] = "<span class=\"available\">".fNumber($_row["value"])."</span>";
 				$i++;
@@ -83,7 +83,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			while($_row = Core::getDB()->fetch($_result))
 			{
 				Hook::event("ShowUnitRapidfire", array($row, &$_row));
-				$name = Link::get("game.php/".SID."/Unit/Info/".$_row["unitid"], Core::getLanguage()->getItem($_row["name"]));
+				$name = Link::get("game/".SID."/Unit/Info/".$_row["unitid"], Core::getLanguage()->getItem($_row["name"]));
 				$rf[$i]["rapidfire"] = sprintf(Core::getLanguage()->getItem("RAPIDFIRE_FROM"), $name);
 				$rf[$i]["value"] = "<span class=\"notavailable\">".fNumber($_row["value"])."</span>";
 				$i++;
@@ -102,7 +102,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			);
 			while($_row = Core::getDatabase()->fetch($_result))
 			{
-				$_row["name"] = Link::get("game.php/".SID."/Constructions/Info/".$_row["engineid"], Core::getLanguage()->get($_row["name"]));
+				$_row["name"] = Link::get("game/".SID."/Constructions/Info/".$_row["engineid"], Core::getLanguage()->get($_row["name"]));
 				$_row["base_speed"] = fNumber($_row["base_speed"]);
 				$engines[] = $_row;
 			}
@@ -203,8 +203,8 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			$result = Core::getQuery()->select("requirements r", array("r.requirementid", "r.needs", "r.level", "p.content"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs) LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "r.buildingid = '".$this->id."' AND p.languageid = '".$languageid."'");
 			while($row = Core::getDB()->fetch($result))
 			{
-				$req[$i]["delete"] = Link::get("game.php/".SID."/Unit/DeleteRequirement/".$this->id."/".$row["requirementid"], "[".Core::getLanguage()->getItem("DELETE")."]");
-				$req[$i]["name"] = Link::get("game.php/".SID."/Unit/Edit/".$row["needs"], $row["content"]);
+				$req[$i]["delete"] = Link::get("game/".SID."/Unit/DeleteRequirement/".$this->id."/".$row["requirementid"], "[".Core::getLanguage()->getItem("DELETE")."]");
+				$req[$i]["name"] = Link::get("game/".SID."/Unit/Edit/".$row["needs"], $row["content"]);
 				$req[$i]["level"] = $row["level"];
 				$i++;
 			}
@@ -240,7 +240,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 		Core::getUser()->checkPermissions("CAN_EDIT_CONSTRUCTIONS");
 		Core::getQuery()->delete("requirements", "requirementid = '".$delete."'");
 		Core::getCache()->flushObject("requirements");
-		$this->redirect("game.php/".SID."/Unit/Edit/".$unitid);
+		$this->redirect("game/".SID."/Unit/Edit/".$unitid);
 		return $this;
 	}
 

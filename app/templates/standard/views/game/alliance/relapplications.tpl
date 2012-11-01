@@ -20,4 +20,4 @@
 		<td>{loop}accept{/loop} {loop}refuse{/loop}</td>
 	</tr>{/foreach}</tbody>
 </table>
-<div class="idiv">{link[BACK]}"game.php/".SID."/Alliance/Diplomacy"{/link}</div>
+<div class="idiv">{link[BACK]}"game/".SID."/Alliance/Diplomacy"{/link}</div>

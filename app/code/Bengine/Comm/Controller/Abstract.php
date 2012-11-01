@@ -10,13 +10,6 @@
 abstract class Bengine_Comm_Controller_Abstract extends Recipe_Controller_Abstract
 {
 	/**
-	 * Module name.
-	 *
-	 * @var string
-	 */
-	protected $_module = "comm";
-
-	/**
 	 * Called when no action method has been found.
 	 *
 	 * @return Bengine_Comm_Controller_Abstract

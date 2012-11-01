@@ -179,7 +179,7 @@ abstract class Recipe_Model_Abstract extends Object
 	/**
 	 * Sets the data row's id.
 	 *
-	 * @param mixed		Value
+	 * @param mixed $id
 	 *
 	 * @return Recipe_Model_Abstract
 	 */
@@ -191,7 +191,7 @@ abstract class Recipe_Model_Abstract extends Object
 	/**
 	 * Loads the data record by ID.
 	 *
-	 * @param integer	ID
+	 * @param integer $id
 	 *
 	 * @return Recipe_Model_Abstract
 	 */
@@ -209,7 +209,7 @@ abstract class Recipe_Model_Abstract extends Object
 	/**
 	 * Deletes rows. If WHERE parameter is null, deletes current row.
 	 *
-	 * @param mixed		WHERE-condition [optional]
+	 * @param mixed $where	WHERE-condition [optional]
 	 *
 	 * @return Recipe_Model_Abstract
 	 */

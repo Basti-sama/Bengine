@@ -32,13 +32,14 @@ class Bengine_Game_Controller_MonitorPlanet extends Bengine_Game_Controller_Abst
 	protected function init()
 	{
 		$this->planetid = Core::getRequest()->getGET("1");
-		$this->planetData = Game::getModel("planet")->load($this->planetid);
+		$this->planetData = Game::getModel("game/planet")->load($this->planetid);
 		return parent::init();
 	}
 
 	/**
 	 * Checks for validation.
 	 *
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_Controller_MonitorPlanet
 	 */
 	protected function validate()
@@ -91,14 +92,15 @@ class Bengine_Game_Controller_MonitorPlanet extends Bengine_Game_Controller_Abst
 
 		Hook::event("StarSurveillanceStart", array($this->planetData));
 
-		// Load events
-		$collection = Game::getCollection("event");
+		/* @var Bengine_Game_Model_Collection_Event $collection */
+		$collection = Game::getCollection("game/event");
 		$collection
 			->addTimeFilter()
 			->addPlanetFilter($this->planetid)
 			->addBaseTypeFilter("fleet");
 		Hook::event("StarSurveillanceEventsLoaded", array($collection));
 		$events = array();
+		/* @var Bengine_Game_Model_Event $row */
 		foreach($collection as $row)
 		{
 			// Mission is missle attack >> hide

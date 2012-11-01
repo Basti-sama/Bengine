@@ -49,9 +49,9 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 	/**
 	 * Sets the coordinates by POST.
 	 *
-	 * @param integer	Galaxy
-	 * @param integer	System
-	 * @param string	Submit type
+	 * @param integer $galaxy
+	 * @param integer $system
+	 * @param string $submitType
 	 *
 	 * @return Bengine_Game_Controller_Galaxy
 	 */
@@ -103,8 +103,8 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 	/**
 	 * Sets the coordinates by GET.
 	 *
-	 * @param integer	Galaxy
-	 * @param integer	System
+	 * @param integer $galaxy
+	 * @param integer $system
 	 *
 	 * @return Bengine_Game_Controller_Galaxy
 	 */
@@ -204,8 +204,8 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 				$sys[$i]["metal"] = fNumber($sys[$i]["metal"]);
 				$sys[$i]["silicon"] = fNumber($sys[$i]["silicon"]);
 				$sys[$i]["picture"] = Image::getImage("planets/small/s_".$sys[$i]["picture"].Core::getConfig()->get("PLANET_IMG_EXT"), $sys[$i]["planetname"], 30, 30);
-				$sys[$i]["picture"] = Link::get("game.php/".SID."/Mission/Index/".$this->galaxy."/".$this->system."/".$i, $sys[$i]["picture"]);
-				$sys[$i]["planetname"] = Link::get("game.php/".SID."/Mission/Index/".$this->galaxy."/".$this->system."/".$i, $sys[$i]["planetname"]);
+				$sys[$i]["picture"] = Link::get("game/".SID."/Mission/Index/".$this->galaxy."/".$this->system."/".$i, $sys[$i]["picture"]);
+				$sys[$i]["planetname"] = Link::get("game/".SID."/Mission/Index/".$this->galaxy."/".$this->system."/".$i, $sys[$i]["planetname"]);
 				$sys[$i]["moonpicture"] = ($sys[$i]["moonpic"] != "") ? Image::getImage("planets/small/s_".$sys[$i]["moonpic"].Core::getConfig()->get("PLANET_IMG_EXT"), $sys[$i]["moonname"], 22, 22) : "";
 				$sys[$i]["moon"] = sprintf(Core::getLanguage()->getItem("MOON_DESC"), $sys[$i]["moonname"]);
 				$sys[$i]["moonsize"] = fNumber($sys[$i]["moonsize"]);
@@ -225,8 +225,8 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 
 				if(Game::getPlanet()->getBuilding("ROCKET_STATION") > 3 && $sys[$i]["userid"] != Core::getUser()->get("userid") && $this->inMissileRange())
 				{
-					$sys[$i]["rocketattack"] = Link::get("game.php/".SID."/RocketAttack/Index/".$sys[$i]["planetid"], $rockimg);
-					$sys[$i]["moonrocket"] = "<tr><td colspan=&quot;3&quot;>".Str::replace("\"", "", Link::get("game.php/".SID."/RocketAttack/Index/".$sys[$i]["moon"]."/1", Core::getLanguage()->getItem("ROCKET_ATTACK")))."</td></tr>";
+					$sys[$i]["rocketattack"] = Link::get("game/".SID."/RocketAttack/Index/".$sys[$i]["planetid"], $rockimg);
+					$sys[$i]["moonrocket"] = "<tr><td colspan=&quot;3&quot;>".Str::replace("\"", "", Link::get("game/".SID."/RocketAttack/Index/".$sys[$i]["moon"]."/1", Core::getLanguage()->getItem("ROCKET_ATTACK")))."</td></tr>";
 				}
 				else
 				{
@@ -234,7 +234,7 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 					$sys[$i]["moonrocket"] = "";
 				}
 
-				$sys[$i]["allypage"] = Str::replace("\"", "", Link::get("game.php/".SID."/Alliance/Page/".$sys[$i]["aid"], Core::getLanguage()->getItem("ALLIANCE_PAGE"), 1));
+				$sys[$i]["allypage"] = Str::replace("\"", "", Link::get("game/".SID."/Alliance/Page/".$sys[$i]["aid"], Core::getLanguage()->getItem("ALLIANCE_PAGE"), 1));
 				if(($sys[$i]["showhomepage"] || $sys[$i]["aid"] == Core::getUser()->get("aid")) && $sys[$i]["homepage"] != "")
 				{
 					$sys[$i]["homepage"] = "<tr><td>".Str::replace("'", "\'", Link::get($sys[$i]["homepage"], Core::getLanguage()->getItem("HOMEPAGE"), 2))."</td></tr>";
@@ -245,7 +245,7 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 				}
 				if($sys[$i]["showmember"])
 				{
-					$sys[$i]["memberlist"] = "<tr><td>".Str::replace("\"", "", Link::get("game.php/".SID."/Alliance/Memberlist/".$sys[$i]["aid"], Core::getLanguage()->getItem("SHOW_MEMBERLIST"), 3))."</td></tr>";
+					$sys[$i]["memberlist"] = "<tr><td>".Str::replace("\"", "", Link::get("game/".SID."/Alliance/Memberlist/".$sys[$i]["aid"], Core::getLanguage()->getItem("SHOW_MEMBERLIST"), 3))."</td></tr>";
 				}
 				$sys[$i]["debris"] = Image::getImage("debris.jpg", "", 25, 25);
 			}

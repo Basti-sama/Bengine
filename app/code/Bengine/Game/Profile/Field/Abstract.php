@@ -26,7 +26,7 @@ abstract class Bengine_Game_Profile_Field_Abstract
 	/**
 	 * Creates a new profile field object.
 	 *
-	 * @param Bengine_Game_Model_Profile	Profile model
+	 * @param Bengine_Game_Model_Profile $model
 	 *
 	 * @return Bengine_Game_Profile_Field_Abstract
 	 */
@@ -56,7 +56,7 @@ abstract class Bengine_Game_Profile_Field_Abstract
 	/**
 	 * Adds an error.
 	 *
-	 * @param string	Error message
+	 * @param string $error	Error message
 	 *
 	 * @return Bengine_Game_Profile_Field_Abstract
 	 */
@@ -112,8 +112,8 @@ abstract class Bengine_Game_Profile_Field_Abstract
 	/**
 	 * Returns a setup parameter.
 	 *
-	 * @param string	Parameter key
-	 * @param mixed		Default return value
+	 * @param string $key		Parameter key
+	 * @param mixed $default	Default return value
 	 *
 	 * @return array|mixed
 	 */

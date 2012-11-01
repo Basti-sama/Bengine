@@ -1,5 +1,5 @@
 {
-	"modules": {
+	"packages": {
 		"bengine": {
 			"game": {
 				"type": "application",

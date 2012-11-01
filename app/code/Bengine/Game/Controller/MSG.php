@@ -51,9 +51,9 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 				$newMessages = "";
 			}
 			$label = ($row["is_standard"]) ? Core::getLang()->get($row["label"]) : $row["label"];
-			$link = "game.php/".SID."/MSG/ReadFolder/".$row["folder_id"];
+			$link = "game/".SID."/MSG/ReadFolder/".$row["folder_id"];
 			$folders[] = array(
-				"image"		=> Link::get("game.php/".SID."/MSG/markasread/".$row["folder_id"], Image::getImage(strtolower($read).".gif", Core::getLang()->get($read))),
+				"image"		=> Link::get("game/".SID."/MSG/markasread/".$row["folder_id"], Image::getImage(strtolower($read).".gif", Core::getLang()->get($read))),
 				"label"		=> Link::get($link, $label, Core::getLang()->get($read)),
 				"messages"	=> fNumber($row["messages"]),
 				"newMessages" => $newMessages,
@@ -73,7 +73,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 	protected function deleteAllAction()
 	{
 		Core::getQuery()->delete("message", "receiver = '".Core::getUser()->get("userid")."'");
-		return $this->redirect("game.php/".SID."/MSG");
+		return $this->redirect("game/".SID."/MSG");
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 		Core::getTPL()->assign("receiver", $receiver);
 		Core::getTPL()->assign("subject", ($reply != "") ? $reply : Core::getLanguage()->getItem("NO_SUBJECT"));
 		Core::getTPL()->assign("maxpmlength", fNumber(Core::getOptions()->get("MAX_PM_LENGTH")));
-		$sendAction = BASE_URL."game.php/".SID."/MSG/Write/".rawurlencode($receiver);
+		$sendAction = BASE_URL."game/".SID."/MSG/Write/".rawurlencode($receiver);
 		if($reply != "")
 		{
 			$sendAction .= "/".rawurlencode($reply);
@@ -137,7 +137,6 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 					{
 						$TableCleaner = new Recipe_Maintenance_TableCleaner("message", "msgid");
 						$TableCleaner->clean();
-						$TableCleaner->kill();
 					}
 					Logger::addMessage("SENT_SUCCESSFUL", "success");
 				}
@@ -233,7 +232,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 						Core::getLang()->assign("reportSendTime", Date::timeToString(1, $report["time"], "", false));
 						if($report["mode"] == 5)
 						{
-							$assault = Game::getModel("assault")->load((int) $report["message"]);
+							$assault = Game::getModel("game/assault")->load((int) $report["message"]);
 							$url = BASE_URL.Core::getLang()->getOpt("langcode")."/combat/report/".$assault->get("assaultid")."/".$assault->get("key");
 							$gentime = $assault->get("gentime") / 1000;
 							$label = Core::getLanguage()->getItem("ASSAULT_REPORT")." (A: ".fNumber($assault->get("lostunits_attacker")).", D: ".fNumber($assault->get("lostunits_defender")).") ".$gentime."s";
@@ -272,7 +271,8 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 	 */
 	protected function getPagination($id)
 	{
-		$messages = Game::getCollection("message");
+		/* @var Bengine_Game_Model_Collection_Message $messages */
+		$messages = Game::getCollection("game/message");
 		$messages->addReceiverFilter(Core::getUser()->get("userid"))
 			->addFolderFilter($id);
 		$pagination = new Pagination(Core::getOptions()->get("MAX_PMS"), $messages->getCalculatedSize(false));
@@ -297,31 +297,32 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 		$pagination->render();
 
 		$readMessages = array();
-		$messages = Game::getCollection("message");
+		/* @var Bengine_Game_Model_Collection_Message $messages */
+		$messages = Game::getCollection("game/message");
 		$messages->addTimeOrder()
 			->addFolderJoin()
 			->addReceiverFilter(Core::getUser()->get("userid"))
 			->addFolderFilter($id)
 			->setPagination($pagination);
 
-		$folderClassCache = array();
+		$folderObjCache = array();
+		/* @var Bengine_Game_Model_Message $message */
 		foreach($messages as $message)
 		{
 			Hook::event("ReadMessageFirst", array($message));
-			if(!isset($folderClassCache[$message->get("folder_class")]))
+			$folderCode = $message->get("folder_class");
+			if(!isset($folderObjCache[$folderCode]))
 			{
-				$folderClass = explode("/", $message->get("folder_class"));
-				$folderClass[0] = ucwords($folderClass[0]);
-				$folderClass[1] = ucwords($folderClass[1]);
-				$folderClass = $folderClass[0]."_MessageFolder_".$folderClass[1];
-				$folderClass = new $folderClass();
-				$folderClassCache[$message->get("folder_class")] = $folderClass;
+				$folderClass = explode("/", $folderCode);
+				$folderClass = $folderClass[0]."/messageFolder_".$folderClass[1];
+				$folderObj = Application::factory($folderClass);
+				$folderObjCache[$folderCode] = $folderObj;
 			}
 			else
 			{
-				$folderClass = $folderClassCache[$message->get("folder_class")];
+				$folderObj = $folderObjCache[$folderCode];
 			}
-			$folderClass->formatMessage($message);
+			$folderObj->formatMessage($message);
 			if(!$message->get("read"))
 			{
 				$readMessages[] = $message->get("msgid");
@@ -349,7 +350,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 	{
 		Hook::event("MarkFolderAsRead", array($folderId));
 		Core::getQuery()->update("message", array("read"), array(1), "mode = '".$folderId."' AND receiver = '".Core::getUser()->get("userid")."'");
-		$this->redirect("game.php/".SID."/MSG");
+		$this->redirect("game/".SID."/MSG");
 		return $this;
 	}
 }

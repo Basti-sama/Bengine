@@ -31,7 +31,7 @@ $("#news").newsticker(9500);
 
 <table class="ntable">
 	<tr>
-		<th colspan="3">{lang}PLANET{/lang} "{@planetNameLink}" (<a href="{const=BASE_URL}game.php/{const=SID}/Profile">{user}username{/user}</a>)</th>
+		<th colspan="3">{lang}PLANET{/lang} "{@planetNameLink}" (<a href="{const=BASE_URL}game/{const=SID}/Profile">{user}username{/user}</a>)</th>
 	</tr>
 	<tr>
 		<td>{lang}SERVER_TIME{/lang}</td>
@@ -50,7 +50,7 @@ $("#news").newsticker(9500);
 				<b>{lang=CURRENT_RESEARCH}</b><br/>
 				<?php $research = $this->get("research") ?>
 				<?php if($research): ?>
-				<?php echo Link::get("game.php/".SID."/Research", Core::getLanguage()->get($research->getData("buildingname"))) ?><br/>
+				<?php echo Link::get("game/".SID."/Research", Core::getLanguage()->get($research->getData("buildingname"))) ?><br/>
 				<span id="research-countdown"><?php echo $research->getFormattedTimeLeft() ?></span><br/>
 				<span class="finish-time"><?php echo $research->getFormattedTime() ?></span>
 				<script type="text/javascript">

@@ -248,9 +248,9 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Controller_Ajax_Abstract
 		if(is_array($output))
 		{
 			$outstream = "";
-			foreach($output as $output)
+			foreach($output as $_output)
 			{
-				$outstream .= "<div class=\"error\">".Core::getLanguage()->getItem($output)."</div><br />";
+				$outstream .= "<div class=\"error\">".Core::getLanguage()->getItem($_output)."</div><br />";
 			}
 			$this->display($outstream);
 		}

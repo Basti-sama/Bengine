@@ -99,7 +99,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_MoonDestruction extends Bengine_Ga
 				$attacker->finish($assault->getData("result"));
 			}
 
-			$msgAttacker = Game::getModel("message");
+			$msgAttacker = Game::getModel("game/message");
 			$msgAttacker->setReceiver($event->getDestinationUserId())
 				->setMode(Bengine_Game_Model_Message::FLEET_REPORTS_FOLDER_ID)
 				->setSubject(Core::getLang()->get("MD_SUBJECT"))

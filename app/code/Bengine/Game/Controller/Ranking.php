@@ -40,10 +40,10 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 	/**
 	 * Checks for ranking type and calls the page.
 	 *
-	 * @param integer	Ranking mode (Alliance or Player)
-	 * @param integer	Points type and order
-	 * @param boolean	Avarage mode
-	 * @param integer	Start position
+	 * @param integer $mode		Ranking mode (Alliance or Player)
+	 * @param integer $type		Points type and order
+	 * @param boolean $avg		Avarage mode
+	 * @param integer $position	Start position
 	 *
 	 * @return Bengine_Game_Controller_Ranking
 	 */
@@ -85,8 +85,8 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 	/**
 	 * Displays player ranking table.
 	 *
-	 * @param integer	Type of ranking (Fleet, Research, Points)
-	 * @param integer	Position to start ranking
+	 * @param integer $type	Type of ranking (Fleet, Research, Points)
+	 * @param integer $pos	Position to start ranking
 	 *
 	 * @return Bengine_Game_Controller_Ranking
 	 */
@@ -145,8 +145,8 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 	/**
 	 * Shows alliance ranking.
 	 *
-	 * @param integer	Type of ranking (Fleet, Research, Points)
-	 * @param integer	Position to start ranking
+	 * @param integer $type	Type of ranking (Fleet, Research, Points)
+	 * @param integer $pos	Position to start ranking
 	 *
 	 * @return Bengine_Game_Controller_Ranking
 	 */

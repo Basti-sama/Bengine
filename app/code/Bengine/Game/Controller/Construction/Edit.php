@@ -136,8 +136,8 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 			$result = Core::getQuery()->select("requirements r", array("r.requirementid", "r.needs", "r.level", "p.content"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs) LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "r.buildingid = '".$id."' AND p.languageid = '".Core::getLanguage()->getOpt("languageid")."'");
 			while($row = Core::getDB()->fetch($result))
 			{
-				$req[$i]["delete"] = Link::get("game.php/sid:".SID."/Construction_Edit/DeleteRequirement/".$row["requirementid"]."/".$id, "[".Core::getLanguage()->getItem("DELETE")."]");
-				$req[$i]["name"] = Link::get("game.php/".SID."/Construction_Edit/Index/".$row["needs"], $row["content"]);
+				$req[$i]["delete"] = Link::get("game/sid:".SID."/Construction_Edit/DeleteRequirement/".$row["requirementid"]."/".$id, "[".Core::getLanguage()->getItem("DELETE")."]");
+				$req[$i]["name"] = Link::get("game/".SID."/Construction_Edit/Index/".$row["needs"], $row["content"]);
 				$req[$i]["level"] = $row["level"];
 				$i++;
 			}
@@ -186,7 +186,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 	{
 		Core::getQuery()->delete("requirements", "requirementid = '".$delete."'");
 		Core::getCache()->flushObject("requirements");
-		$this->redirect("game.php/".SID."/Construction_Edit/Index/".$returnId);
+		$this->redirect("game/".SID."/Construction_Edit/Index/".$returnId);
 		return $this;
 	}
 

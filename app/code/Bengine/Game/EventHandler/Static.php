@@ -28,7 +28,7 @@ class Bengine_Game_EventHandler_Static
 	 *
 	 * @param string|integer $code
 	 *
-	 * @return XMLObj
+	 * @return Bengine_Game_Model_Event_Type
 	 *
 	 * @throws Recipe_Exception_Generic
 	 */
@@ -54,8 +54,8 @@ class Bengine_Game_EventHandler_Static
 	public static function getHandlerObject($code, Bengine_Game_Model_Event $event = null)
 	{
 		$handler = self::translateCode($code);
-		var_dump($handler);exit;
-		$class = "EventHandler_Handler_".$handler->getBaseType()."_".$handler->getCode();
+		list($package, $class) = explode("/", $handler->get("code"));
+		$class = $package."_EventHandler_Handler_".$handler->get("base_type")."_".$class;
 		if($handlerObj = Application::factory($class, $event))
 		{
 			return $handlerObj;

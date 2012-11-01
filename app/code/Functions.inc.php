@@ -176,7 +176,7 @@ function checkEmail($mail)
 function getCoordLink($galaxy, $system, $position, $sidWildcard = false)
 {
 	$sid = ($sidWildcard) ? "%SID%" : SID;
-	return Link::get("game.php/".$sid."/Galaxy/Index/".$galaxy."/".$system, "[".$galaxy.":".$system.":".$position."]");
+	return Link::get("game/".$sid."/Galaxy/Index/".$galaxy."/".$system, "[".$galaxy.":".$system.":".$position."]");
 }
 
 /**

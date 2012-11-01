@@ -11,7 +11,7 @@
 		{
 			responseElem.html('{image[LOADING]}loading.gif{/image}');
 		}
-		url = "{const=BASE_URL}game.php/{const=SID}/Ajax_Fleet/" + mode + "/" + target;
+		url = "{const=BASE_URL}game/{const=SID}/Ajax_Fleet/" + mode + "/" + target;
 		$.get(url, function(data) {
 			responseElem.html(data);
 		});
@@ -19,7 +19,7 @@
 
 	function openWindow(id)
 	{
-		win = window.open("{const=BASE_URL}game.php/{const=SID}/MonitorPlanet/Index/"+id, "", "width=600,height=400,status=yes,scrollbars=yes,resizable=yes");
+		win = window.open("{const=BASE_URL}game/{const=SID}/MonitorPlanet/Index/"+id, "", "width=600,height=400,status=yes,scrollbars=yes,resizable=yes");
 		win.focus();
 	}
 
@@ -79,7 +79,7 @@
 	};
 //]]>
 </script>
-<form method="post" action="{const=BASE_URL}game.php/{const=SID}/Galaxy" onsubmit="return checkLastSystem();">
+<form method="post" action="{const=BASE_URL}game/{const=SID}/Galaxy" onsubmit="return checkLastSystem();">
 <input type="hidden" name="submittype" value="" />
 <div class="idiv">
 	<table class="ntable galaxy-browser">
@@ -140,7 +140,7 @@
 	</tfoot>
 	<tbody>
 		{foreach[sunsystem]}<tr>
-			<?php $actionsUrl = BASE_URL."game.php/".SID."/Mission/Index/".$this->get("galaxy")."/".$this->get("system")."/".$row["systempos"] ?>
+			<?php $actionsUrl = BASE_URL."game/".SID."/Mission/Index/".$this->get("galaxy")."/".$this->get("system")."/".$row["systempos"] ?>
 			<td class="center">{loop}systempos{/loop}</td>
 			<td class="center">{loop}picture{/loop}</td>
 			<td class="center">{loop}planetname{/loop} {loop}activity{/loop}</td>
@@ -150,7 +150,7 @@
 					var actions = '{if[$row["userid"] != Core::getUser()->get("userid") && $row["userid"]]}<a href="javascript:void(0);" onclick="sendFleet(&quot;espionage&quot;, {loop=moonid})">{lang=SPY}</a> | <a href="<?php echo $actionsUrl."/moon/attack" ?>">{lang=ATTACK}</a>{else}<a href="<?php echo $actionsUrl."/moon/position" ?>">{lang=STATIONATE}</a>{/if} | <a href="<?php echo $actionsUrl."/moon/transport" ?>">{lang=TRANSPORT}</a>';
 					var moon_{loop}systempos{/loop} = '<table class="ttable"><tr><td rowspan="3">{@moon}</td><th colspan="2">{lang}FEATURES{/lang}</th></tr><tr><td>{lang}SIZE{/lang}:</td><td>{loop}moonsize{/loop}km</td></tr><tr><td>{lang}TEMPERATURE{/lang}:</td><td>{loop}moontemp{/loop} &deg;C</td></tr>{loop}moonrocket{/loop}</table>'+actions;
 				//]]></script>
-				<a href="{const=BASE_URL}game.php/{const=SID}/Mission/Index/{@galaxy}/{@system}/{loop=systempos}/moon" onmouseover="Tip(moon_{loop}systempos{/loop}, TITLE, '{loop}moon{/loop}', FADEIN, 300, FADEOUT, 300, STICKY, 1, CLOSEBTN, true);" onmouseout="UnTip();">{loop}moonpicture{/loop}</a>
+				<a href="{const=BASE_URL}game/{const=SID}/Mission/Index/{@galaxy}/{@system}/{loop=systempos}/moon" onmouseover="Tip(moon_{loop}systempos{/loop}, TITLE, '{loop}moon{/loop}', FADEIN, 300, FADEOUT, 300, STICKY, 1, CLOSEBTN, true);" onmouseout="UnTip();">{loop}moonpicture{/loop}</a>
 				{/if}
 			</td>
 			<td class="center">
@@ -158,7 +158,7 @@
 				<script type="text/javascript">//<![CDATA[
 					var debris_{loop}systempos{/loop} = '<table class="ttable"><tr><td rowspan="3">{@debris}</td><th colspan="2">{lang}RESOURCES{/lang}</th></tr><tr><td>{lang}METAL{/lang}:</td><td>{loop}metal{/loop}</td></tr><tr><td>{lang}SILICON{/lang}:</td><td>{loop}silicon{/loop}</td></tr></table>';
 				//]]></script>
-				<a href="{const=BASE_URL}game.php/{const=SID}/Mission/Index/{@galaxy}/{@system}/{loop=systempos}/tf/recycling" onmouseover="Tip(debris_{loop}systempos{/loop}, TITLE, '{lang}DEBRIS{/lang}', FADEIN, 300, FADEOUT, 300, STICKY, 1, CLOSEBTN, true);" onmouseout="UnTip();">{loop}debris{/loop}</a>
+				<a href="{const=BASE_URL}game/{const=SID}/Mission/Index/{@galaxy}/{@system}/{loop=systempos}/tf/recycling" onmouseover="Tip(debris_{loop}systempos{/loop}, TITLE, '{lang}DEBRIS{/lang}', FADEIN, 300, FADEOUT, 300, STICKY, 1, CLOSEBTN, true);" onmouseout="UnTip();">{loop}debris{/loop}</a>
 				{/if}
 			</td>
 			<td class="center normal">{loop}username{/loop} {if[!empty($row["user_status_long"])]}({loop}user_status_long{/loop}){/if}{if[!empty($row["userid"])]}<br /><span class="galaxysub">#{loop}rank{/loop} / {loop}points{/loop}</span>{/if}</td>

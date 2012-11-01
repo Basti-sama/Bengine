@@ -14,12 +14,12 @@
 		<?php foreach($this->getLoop("sessionLog") as $session): ?>
 		<tr>
 			<td>
-				<a href="<?php echo Link::url("game.php/".SID."/Moderator/Index/".$session->get("userid")) ?>">
+				<a href="<?php echo Link::url("game/".SID."/Moderator/Index/".$session->get("userid")) ?>">
 					<?php echo $session->get("username") ?>
 				</a>
 			</td>
 			<td>
-				<a href="<?php echo Link::url("game.php/".SID."/Moderator/Sessions?ip=".$session->get("ipaddress")) ?>">
+				<a href="<?php echo Link::url("game/".SID."/Moderator/Sessions?ip=".$session->get("ipaddress")) ?>">
 					<?php echo $session->get("ipaddress") ?>
 				</a>
 			</td>

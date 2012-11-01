@@ -35,7 +35,7 @@ class Bengine_Game_Controller_Profile extends Bengine_Game_Controller_Abstract
 	/**
 	 * Edit user profile.
 	 *
-	 * @param integer	User id
+	 * @param integer $user_id
 	 *
 	 * @return Bengine_Game_Controller_Profile
 	 */
@@ -51,7 +51,7 @@ class Bengine_Game_Controller_Profile extends Bengine_Game_Controller_Abstract
 		}
 
 		$this->assign("user_id", $user_id);
-		$profile = Game::getCollection("profile");
+		$profile = Game::getCollection("game/profile");
 		$profile->addUserFilter($user_id)
 			->addSortIndex();
 
@@ -59,7 +59,7 @@ class Bengine_Game_Controller_Profile extends Bengine_Game_Controller_Abstract
 		{
 			$this->save(Core::getRequest()->getPOST(), $profile);
 		}
-		$this->backLink = Link::get("game.php/".SID."/Profile/Page/".$user_id, Core::getLang()->get("BACK_TO_PROFILE"));
+		$this->backLink = Link::get("game/".SID."/Profile/Page/".$user_id, Core::getLang()->get("BACK_TO_PROFILE"));
 
 		Core::getTPL()->addLoop("profile", $profile);
 		return $this;
@@ -68,20 +68,20 @@ class Bengine_Game_Controller_Profile extends Bengine_Game_Controller_Abstract
 	/**
 	 * Displays the profile page for an user.
 	 *
-	 * @param integer	User id
+	 * @param integer $user_id
 	 *
 	 * @return Bengine_Game_Controller_Profile
 	 */
 	protected function pageAction($user_id)
 	{
-		$user = Game::getModel("user")->load($user_id);
-		$profile = Game::getCollection("profile");
+		$user = Game::getModel("game/user")->load($user_id);
+		$profile = Game::getCollection("game/profile");
 		$profile->addUserFilter($user_id)
 			->addSortIndex()
 			->addListFilter();
 
-		$avatar = Game::getModel("profile")->loadByCode("AVATAR", $user_id);
-		$about = Game::getModel("profile")->loadByCode("ABOUT_ME", $user_id);
+		$avatar = Game::getModel("game/profile")->loadByCode("AVATAR", $user_id);
+		$about = Game::getModel("game/profile")->loadByCode("ABOUT_ME", $user_id);
 
 		$this->assign("user", $user);
 		$this->assign("aboutMe", $about->getData());
@@ -98,7 +98,7 @@ class Bengine_Game_Controller_Profile extends Bengine_Game_Controller_Abstract
 		$this->assign("allianceName", ($user->getAid()) ? $user->getAlliance()->getPageLink() : "&nbsp;");
 		Core::getTPL()->addLoop("profile", $profile);
 		$this->assign("canEdit", Core::getUser()->get("userid") == $user_id || Core::getUser()->ifPermissions(array("CAN_EDIT_PROFILES")));
-		$this->assign("editLink", Link::get("game.php/".SID."/Profile/Edit/".$user_id, Core::getLang()->get("EDIT_PROFILE")));
+		$this->assign("editLink", Link::get("game/".SID."/Profile/Edit/".$user_id, Core::getLang()->get("EDIT_PROFILE")));
 		Core::getLang()->assign("profileUsername", $user->getUsername());
 		return $this;
 	}
@@ -106,8 +106,8 @@ class Bengine_Game_Controller_Profile extends Bengine_Game_Controller_Abstract
 	/**
 	 * Saves the profile data.
 	 *
-	 * @param array		$_POST
-	 * @param Bengine_Game_Model_Collection_Profile
+	 * @param array $post
+	 * @param Bengine_Game_Model_Collection_Profile $profile
 	 *
 	 * @return Bengine_Game_Controller_Profile
 	 */
@@ -135,7 +135,7 @@ class Bengine_Game_Controller_Profile extends Bengine_Game_Controller_Abstract
 	/**
 	 * Saves the about me text.
 	 *
-	 * @param integer	User id
+	 * @param integer $user_id
 	 *
 	 * @return Bengine_Game_Controller_Profile
 	 */
@@ -153,7 +153,7 @@ class Bengine_Game_Controller_Profile extends Bengine_Game_Controller_Abstract
 		if($this->isPost())
 		{
 			$aboutText = $this->getParam("text");
-			$about = Game::getModel("profile")->loadByCode("ABOUT_ME", $user_id);
+			$about = Game::getModel("game/profile")->loadByCode("ABOUT_ME", $user_id);
 
 			if(!$about->getUserId())
 			{

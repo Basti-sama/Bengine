@@ -79,7 +79,8 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			Core::getTPL()->addLoop("missions", $fleetEvents);
 			Core::getQuery()->delete("temp_fleet", "planetid = '".Core::getUser()->get("curplanet")."'");
 
-			$fleet = Game::getModel("fleet")->getCollection();
+			/* @var Bengine_Game_Model_Collection_Fleet $fleet */
+			$fleet = Game::getModel("game/fleet")->getCollection();
 			$fleet->addPlanetFilter(Core::getUser()->get("curplanet"));
 			Hook::event("MissionFlettList", array($fleet));
 			Core::getTPL()->addLoop("fleet", $fleet);
@@ -97,10 +98,12 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	/**
 	 * Select the mission's target and speed.
 	 *
-	 * @param integer	Galaxy
-	 * @param integer	System
-	 * @param integer	Position
-	 * @param array		Fleet to send
+	 * @param integer $galaxy
+	 * @param integer $system
+	 * @param integer $position
+	 * @param string $targetType
+	 * @param string $code
+	 * @param array $ships
 	 *
 	 * @return Bengine_Game_Controller_Mission
 	 */
@@ -124,6 +127,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 		$capacity = 0;
 		$consumption = 0;
 		$speed = 0;
+		$quantity = 0;
 		while($row = Core::getDB()->fetch($result))
 		{
 			$id = $row["unitid"];
@@ -242,11 +246,13 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	/**
 	 * Select the mission to start and stored resources.
 	 *
-	 * @param integer	Galaxy
-	 * @param integer	System
-	 * @param integer	Position
-	 * @param string	Target type
-	 * @param integer	Speed
+	 * @param integer $galaxy
+	 * @param integer $system
+	 * @param integer $position
+	 * @param string $targetType
+	 * @param integer $speed
+	 * @param string $code
+	 * @param int $formation
 	 *
 	 * @return Bengine_Game_Controller_Mission
 	 */
@@ -306,8 +312,10 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			$showHoldingTime = false;
 			// Check for available missions
 			$missions = array();
-			$eventTypes = Application::getCollection("event_type");
+			/* @var Bengine_Game_Model_Collection_Event_Type $eventTypes */
+			$eventTypes = Application::getCollection("game/event_type");
 			$eventTypes->addBaseTypeFilter("fleet");
+			/* @var Bengine_Game_Model_Event_Type $eventType */
 			foreach($eventTypes as $eventType)
 			{
 				/* @var $handler Bengine_Game_EventHandler_Handler_Fleet_Abstract */
@@ -365,15 +373,15 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	/**
 	 * This starts the missions and shows a quick overview of the flight.
 	 *
-	 * @param integer	Mission type
-	 * @param integer	Metal
-	 * @param integer	Silicon
-	 * @param integer	Hydrogen
-	 * @param integer	Holding time
-	 *
+	 * @param integer $mode
+	 * @param integer $metal
+	 * @param integer $silicon
+	 * @param integer $hydrogen
+	 * @param integer $holdingTime
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_Controller_Mission
 	 */
-	protected function sendFleet($mode, $metal, $silicon, $hydrogen, $holdingtime)
+	protected function sendFleet($mode, $metal, $silicon, $hydrogen, $holdingTime)
 	{
 		$this->noAction = true;
 		$fleetEvents = Game::getEH()->getOwnFleetEvents();
@@ -431,7 +439,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 
 			if($mode == 13)
 			{
-				$data["duration"] = _pos($holdingtime);
+				$data["duration"] = _pos($holdingTime);
 				if($data["duration"] > 24)
 				{
 					$data["duration"] = 24;
@@ -501,6 +509,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 				$allFleets = Game::getEH()->getFormationFleets($data["alliance_attack"]["eventid"]);
 				$numFleets = 1;
 				$formationUser[$mainFleet->get("user")] = true;
+				/* @var Bengine_Game_Model_Fleet $oneFleet */
 				foreach($allFleets as $oneFleet)
 				{
 					$numFleets++;
@@ -543,7 +552,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	/**
 	 * Retreats a fleet back to its origin planet.
 	 *
-	 * @param integer	Event id to retreat
+	 * @param integer $id
 	 *
 	 * @return Bengine_Game_Controller_Mission
 	 */
@@ -552,14 +561,14 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 		$this->noAction = true;
 		Hook::event("RetreatFleet", array(&$id));
 		Game::getEH()->removeEvent($id);
-		$this->redirect("game.php/".SID."/Mission");
+		$this->redirect("game/".SID."/Mission");
 		return $this;
 	}
 
 	/**
 	 * Invite friends for alliance attack.
 	 *
-	 * @param integer	Event id
+	 * @param integer $eventid
 	 *
 	 * @return Bengine_Game_Controller_Mission
 	 */
@@ -599,9 +608,9 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	/**
 	 * Executes an invitation.
 	 *
-	 * @param integer	Event id
-	 * @param string	Formation name
-	 * @param string	Invited username
+	 * @param integer $eventid
+	 * @param string $name
+	 * @param string $username
 	 *
 	 * @return Bengine_Game_Controller_Mission
 	 */
@@ -639,9 +648,9 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			}
 			else
 			{
-				foreach($error as $error)
+				foreach($error as $_error)
 				{
-					Logger::addMessage($error);
+					Logger::addMessage($_error);
 				}
 			}
 		}
@@ -652,8 +661,8 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	/**
 	 * Executes star gate jump and update shipyard informations.
 	 *
-	 * @param integer	Target moon id
-	 *
+	 * @param integer $moonid
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_Controller_Mission
 	 */
 	protected function executeJump($moonid)
@@ -681,7 +690,8 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 					throw new Recipe_Exception_Generic("Sorry, you have been attacked. Process stopped.");
 				}
 				Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - '".$value["quantity"]."' WHERE unitid = '".$key."' AND planetid = '".Core::getUser()->get("curplanet")."'");
-				$shipyard = Game::getCollection("fleet");
+				/* @var Bengine_Game_Model_Collection_Fleet $shipyard */
+				$shipyard = Game::getCollection("game/fleet");
 				$shipyard->addPlanetFilter($moonid);
 				$shipyard->getSelect()->where("u2s.unitid = ?", $key);
 				if($shipyard->count() > 0)
@@ -705,7 +715,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	/**
 	 * Select the ships for jump.
 	 *
-	 * @param array		Ships for jump
+	 * @param array $ships
 	 *
 	 * @return Bengine_Game_Controller_Mission
 	 */

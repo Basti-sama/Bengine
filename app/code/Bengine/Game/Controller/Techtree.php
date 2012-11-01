@@ -42,6 +42,7 @@ class Bengine_Game_Controller_Techtree extends Bengine_Game_Controller_Abstract
 			foreach($reqs[$bid] as $r)
 			{
 				$buffer = Core::getLanguage()->getItem($r["name"])." (".Core::getLanguage()->getItem("LEVEL")." ".$r["level"].")</span><br />";
+				$rLevel = 0;
 				if($r["mode"] == 1 || $r["mode"] == 5) { $rLevel = Game::getPlanet()->getBuilding($r["needs"]); }
 				else if($r["mode"] == 2) { $rLevel = Game::getResearch($r["needs"]); }
 				if($rLevel >= $r["level"])
@@ -57,23 +58,23 @@ class Bengine_Game_Controller_Techtree extends Bengine_Game_Controller_Abstract
 			switch($row["mode"])
 			{
 				case 1:
-					$cons[$bid]["name"] = Link::get("game.php/".SID."/Constructions/Info/".$row["buildingid"], $name);
+					$cons[$bid]["name"] = Link::get("game/".SID."/Constructions/Info/".$row["buildingid"], $name);
 					$cons[$bid]["requirements"] = $requirements;
 				break;
 				case 2:
-					$research[$bid]["name"] = Link::get("game.php/".SID."/Constructions/Info/".$row["buildingid"], $name);
+					$research[$bid]["name"] = Link::get("game/".SID."/Constructions/Info/".$row["buildingid"], $name);
 					$research[$bid]["requirements"] = $requirements;
 				break;
 				case 3:
-					$ships[$bid]["name"] = Link::get("game.php/".SID."/Unit/Info/".$row["buildingid"], $name);
+					$ships[$bid]["name"] = Link::get("game/".SID."/Unit/Info/".$row["buildingid"], $name);
 					$ships[$bid]["requirements"] = $requirements;
 				break;
 				case 4:
-					$def[$bid]["name"] = Link::get("game.php/".SID."/Unit/Info/".$row["buildingid"], $name);
+					$def[$bid]["name"] = Link::get("game/".SID."/Unit/Info/".$row["buildingid"], $name);
 					$def[$bid]["requirements"] = $requirements;
 				break;
 				case 5:
-					$moon[$bid]["name"] = Link::get("game.php/".SID."/Constructions/Info/".$row["buildingid"], $name);
+					$moon[$bid]["name"] = Link::get("game/".SID."/Constructions/Info/".$row["buildingid"], $name);
 					$moon[$bid]["requirements"] = $requirements;
 				break;
 			}

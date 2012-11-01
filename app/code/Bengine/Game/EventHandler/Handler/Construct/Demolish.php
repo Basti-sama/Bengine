@@ -39,7 +39,7 @@ class Bengine_Game_EventHandler_Handler_Construct_Demolish extends Bengine_Game_
 	 */
 	protected function _add(Bengine_Game_Model_Event $event, array $data)
 	{
-		$collection = Game::getCollection("event");
+		$collection = Game::getCollection("game/event");
 		$collection->addUserFilter($event->getUserid())
 			->addPlanetFilter($event->getPlanetid())
 			->addBaseTypeFilter($event->getMode);
@@ -58,7 +58,7 @@ class Bengine_Game_EventHandler_Handler_Construct_Demolish extends Bengine_Game_
 	 */
 	protected function _remove(Bengine_Game_Model_Event $event, array $data)
 	{
-		$_event = Game::getModel("event")->load($event->getId());
+		$_event = Game::getModel("game/event")->load($event->getId());
 		if(!$_event->getId())
 		{
 			return false;

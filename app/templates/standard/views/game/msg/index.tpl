@@ -13,7 +13,7 @@
 	</thead>
 	<tfoot>
 		<tr>
-			<td colspan="3" class="center"><a href="{const=BASE_URL}game.php/{const=SID}/MSG/DeleteAll" onclick="return confirm('{lang=CONFIRM_DELETE_ALL}')">{lang=DELETE_ALL}</a> {link[CREATE_NEW_MESSAGE]}"game.php/".SID."/MSG/Write"{/link}</td>
+			<td colspan="3" class="center"><a href="{const=BASE_URL}game/{const=SID}/MSG/DeleteAll" onclick="return confirm('{lang=CONFIRM_DELETE_ALL}')">{lang=DELETE_ALL}</a> {link[CREATE_NEW_MESSAGE]}"game/".SID."/MSG/Write"{/link}</td>
 		</tr>
 	</tfoot>
 	<tbody>{foreach[folders]}

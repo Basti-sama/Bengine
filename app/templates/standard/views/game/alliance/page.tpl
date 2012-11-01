@@ -27,7 +27,7 @@
 		<td>{@rank} {@manage}</td>
 	</tr>{/if}
 	{if[{var=CAN_WRITE_GLOBAL_MAILS} || {var=founder} == Core::getUser()->get("userid")]}<tr>
-		<td colspan="2" class="center">{link[WRITE_GLOBAL_MAIL]}"game.php/".SID."/Alliance/GlobalMail"{/link}</td>
+		<td colspan="2" class="center">{link[WRITE_GLOBAL_MAIL]}"game/".SID."/Alliance/GlobalMail"{/link}</td>
 	</tr>{/if}
 	<tr>
 		<td colspan="2">{@textextern}</td>
@@ -46,7 +46,7 @@
 		<td colspan="2" class="center"><input name="leave" type="submit" value="{lang}LEAVE{/lang}" class="button"/></td>
 	</tr>{/if}
 	{if[!Core::getUser()->get("aid") && !{var=appInProgress}]}<tr>
-		<td colspan="2" class="center"><input name="enter" type="button" value="{lang}JOIN{/lang}" class="button" onclick="javascript:location.href='{const=BASE_URL}game.php/{const=SID}/Alliance/Apply/{@aid}'"/></td>
+		<td colspan="2" class="center"><input name="enter" type="button" value="{lang}JOIN{/lang}" class="button" onclick="javascript:location.href='{const=BASE_URL}game/{const=SID}/Alliance/Apply/{@aid}'"/></td>
 	</tr>{/if}
 	{if[{var=appInProgress}]}<tr>
 		<td colspan="2" class="center">{lang}APPLICATION_IN_PROGRESS{/lang}</td>

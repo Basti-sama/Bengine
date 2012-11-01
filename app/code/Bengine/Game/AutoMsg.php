@@ -40,12 +40,12 @@ class Bengine_Game_AutoMsg
 	/**
 	 * Start the message generator.
 	 *
-	 * @param integer
-	 * @param integer
-	 * @param integer
-	 * @param array
+	 * @param integer $mode
+	 * @param integer $userid
+	 * @param integer $time
+	 * @param array $data
 	 *
-	 * @return void
+	 * @return Bengine_Game_AutoMsg
 	 */
 	public function __construct($mode, $userid, $time, array $data)
 	{
@@ -320,6 +320,7 @@ class Bengine_Game_AutoMsg
 	 */
 	protected function colonizeReport()
 	{
+		$msg = "";
 		if(isset($this->data["success"]))
 		{
 			if($this->data["success"] == "occupied")
@@ -345,8 +346,8 @@ class Bengine_Game_AutoMsg
 	/**
 	 * Write the message into database.
 	 *
-	 * @param string	Message subject
-	 * @param string	Message
+	 * @param string $subject
+	 * @param string $msg
 	 *
 	 * @return Bengine_Game_AutoMsg
 	 */
@@ -421,6 +422,7 @@ class Bengine_Game_AutoMsg
 	protected function espionageBengine_Game_Committed()
 	{
 		$msg = Core::getLanguage()->getItem("ESPIOANGE_COMMITTED");
+		/* @var Bengine_Game_Model_Event $event */
 		$event = $this->data["event"];
 		$coordss = getCoordLink($event->get("galaxy"), $event->get("system"), $event->get("position"), true);
 		$coordinates = getCoordLink($event->get("galaxy2"), $event->get("system2"), $event->get("position2"), true);

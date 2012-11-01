@@ -17,13 +17,14 @@ class Bengine_Game_Model_Event_Type extends Recipe_Model_Abstract
 	protected function init()
 	{
 		$this->setTableName("event_type");
+		$this->setModelName("game/event_type");
 		return parent::init();
 	}
 
 	/**
 	 * Loads the event type data by code.
 	 *
-	 * @param string	Code name
+	 * @param string $code	Code name
 	 *
 	 * @return Bengine_Game_Model_Event_Type
 	 */

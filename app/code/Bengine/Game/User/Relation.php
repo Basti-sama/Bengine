@@ -66,10 +66,10 @@ class Bengine_Game_User_Relation
 	/**
 	 * Creates a new relation object.
 	 *
-	 * @param integer	User id
-	 * @param integer	Alliance id
+	 * @param integer $userid
+	 * @param integer|bool $aid
 	 *
-	 * @return void
+	 * @return Bengine_Game_User_Relation
 	 */
 	public function __construct($userid, $aid = false)
 	{
@@ -77,14 +77,13 @@ class Bengine_Game_User_Relation
 		$this->aid = $aid;
 		$this->alliances = new Map();
 		$this->players = new Map();
-		return;
 	}
 
 	/**
 	 * Checks is the users has positive relation.
 	 *
-	 * @param integer	User id
-	 * @param integer	Alliance id
+	 * @param integer $userid
+	 * @param integer|boolean $aid
 	 *
 	 * @return boolean
 	 */
@@ -108,7 +107,7 @@ class Bengine_Game_User_Relation
 	/**
 	 * Checks an relation to the indicated alliance.
 	 *
-	 * @param integer	Alliance id to check
+	 * @param integer|boolean $aid
 	 *
 	 * @return mixed	The relation mode or false
 	 */
@@ -163,7 +162,7 @@ class Bengine_Game_User_Relation
 	/**
 	 * Checks an relation to the indicated user.
 	 *
-	 * @param integer	Userid
+	 * @param integer $userid
 	 *
 	 * @return boolean	True if a relation exists, false if not
 	 */
@@ -208,7 +207,7 @@ class Bengine_Game_User_Relation
 	/**
 	 * Fetches the alliance relations and returns the CSS class.
 	 *
-	 * @param integer	Alliance id
+	 * @param integer|boolean $aid
 	 *
 	 * @return string	CSS class to format the name
 	 */
@@ -225,9 +224,9 @@ class Bengine_Game_User_Relation
 	/**
 	 * Fetches the player relations and returns the CSS class.
 	 *
-	 * @param integer	User id
-	 *
-	 * @return string	CSS class to format the name
+	 * @param integer $userid
+	 * @param bool $aid
+	 * @return string CSS class to format the name
 	 */
 	public function getPlayerRelationClass($userid, $aid = false)
 	{

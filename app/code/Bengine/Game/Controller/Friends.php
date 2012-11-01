@@ -60,10 +60,10 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 				{
 					$status = Image::getImage("off.gif", getTimeTerm(TIME - $row["lastlogin2"]));
 				}
-				$username = Link::get("game.php/".SID."/MSG/Write/".rawurlencode($row["user2"]), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE")))." ".Link::get("game.php/".SID."/MSG/Write/".rawurlencode($row["user2"]), $row["user2"]);
+				$username = Link::get("game/".SID."/MSG/Write/".rawurlencode($row["user2"]), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE")))." ".Link::get("game/".SID."/MSG/Write/".rawurlencode($row["user2"]), $row["user2"]);
 				$points = $row["points2"];
 				$position = getCoordLink($row["gala2"], $row["sys2"], $row["pos2"]);
-				$ally = Link::get("game.php/".SID."/Alliance/Page/".$row["allyid2"], $row["ally2"]);
+				$ally = Link::get("game/".SID."/Alliance/Page/".$row["allyid2"], $row["ally2"]);
 			}
 			else
 			{
@@ -75,10 +75,10 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 				{
 					$status = Image::getImage("off.gif", getTimeTerm(TIME - $row["lastlogin1"]));
 				}
-				$username = Link::get("game.php/".SID."/MSG/Write/".rawurlencode($row["user1"]), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE")))." ".Link::get("game.php/".SID."/MSG/Write/".rawurlencode($row["user1"]), $row["user1"]);
+				$username = Link::get("game/".SID."/MSG/Write/".rawurlencode($row["user1"]), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE")))." ".Link::get("game/".SID."/MSG/Write/".rawurlencode($row["user1"]), $row["user1"]);
 				$points = $row["points1"];
 				$position = getCoordLink($row["gala1"], $row["sys1"], $row["pos1"]);
-				$ally = Link::get("game.php/".SID."/Alliance/Page/".$row["allyid1"], $row["ally1"]);
+				$ally = Link::get("game/".SID."/Alliance/Page/".$row["allyid1"], $row["ally1"]);
 			}
 			$bl[$row["relid"]]["f1"] = $row["friend1"];
 			$bl[$row["relid"]]["f2"] = $row["friend2"];
@@ -99,7 +99,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 	/**
 	 * Adds an user to buddylist.
 	 *
-	 * @param integer	User to add
+	 * @param integer $userid
 	 *
 	 * @return Bengine_Game_Controller_Friends
 	 */
@@ -116,20 +116,21 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 			Hook::event("AddToBuddyList", array($userid));
 			Core::getQuery()->insertInto("buddylist", array("friend1" => Core::getUser()->get("userid"), "friend2" => $userid));
 
-			$pm = Game::getModel("message");
+			/* @var Bengine_Game_Model_Message $pm */
+			$pm = Game::getModel("game/message");
 			$pm->set("receiver", $userid)
 				->set("mode", Bengine_Game_Model_Message::USER_FOLDER_ID)
 				->set("subject", Core::getLang()->get("FRIEND_REQUEST_RECEIVED"))
 				->set("message", Core::getLang()->get("FRIEND_REQUEST_RECEIVED_MESSAGE"));
 			$pm->send();
 		}
-		return $this->redirect("game.php/".SID."/Friends");
+		return $this->redirect("game/".SID."/Friends");
 	}
 
 	/**
 	 * Removes an user from the buddylist.
 	 *
-	 * @param integer	User to remove
+	 * @param array $remove
 	 *
 	 * @return Bengine_Game_Controller_Friends
 	 */
@@ -143,7 +144,8 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 				Hook::event("RemoveFromBuddyList", array($relid));
 				Core::getQuery()->delete("buddylist", "relid = '".$relid."'");
 
-				$pm = Game::getModel("message");
+				/* @var Bengine_Game_Model_Message $pm */
+				$pm = Game::getModel("game/message");
 				$pm->set("receiver", $row["friend1"] == Core::getUser()->get("userid") ? $row["friend2"] : $row["friend1"])
 					->set("mode", Bengine_Game_Model_Message::USER_FOLDER_ID);
 				if($row["accepted"] || $row["friend1"] == Core::getUser()->get("userid"))
@@ -159,13 +161,13 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 				$pm->send();
 			}
 		}
-		return $this->redirect("game.php/".SID."/Friends");
+		return $this->redirect("game/".SID."/Friends");
 	}
 
 	/**
 	 * Accepts a buddylist request.
 	 *
-	 * @param array		Post
+	 * @param int $relid
 	 *
 	 * @return Bengine_Game_Controller_Friends
 	 */
@@ -179,7 +181,8 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 			$result = Core::getQuery()->select("buddylist", array("friend1"), "", $where);
 			if($friend = Core::getDatabase()->fetch_field($result, "friend1"))
 			{
-				$pm = Game::getModel("message");
+				/* @var Bengine_Game_Model_Message $pm */
+				$pm = Game::getModel("game/message");
 				$pm->set("receiver", $friend)
 					->set("mode", Bengine_Game_Model_Message::USER_FOLDER_ID)
 					->set("subject", Core::getLang()->get("FRIEND_REQUEST_ACCEPTED"))
@@ -187,7 +190,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 				$pm->send();
 			}
 		}
-		return $this->redirect("game.php/".SID."/Friends");
+		return $this->redirect("game/".SID."/Friends");
 	}
 }
 ?>

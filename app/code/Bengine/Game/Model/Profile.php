@@ -24,6 +24,7 @@ class Bengine_Game_Model_Profile extends Recipe_Model_Abstract
 	protected function init()
 	{
 		$this->setTableName("profile");
+		$this->setModelName("game/profile");
 		return parent::init();
 	}
 
@@ -36,7 +37,7 @@ class Bengine_Game_Model_Profile extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("user"))
 		{
-			$this->set("user", Game::getModel("user")->load($this->getUserId()));
+			$this->set("user", Game::getModel("game/user")->load($this->getUserId()));
 		}
 		return $this->get("user");
 	}
@@ -44,8 +45,8 @@ class Bengine_Game_Model_Profile extends Recipe_Model_Abstract
 	/**
 	 * Loads the profile field by code.
 	 *
-	 * @param string					Code
-	 * @param integer|Bengine_Game_Model_User	User id
+	 * @param string $code
+	 * @param integer|Bengine_Game_Model_User $user
 	 *
 	 * @return Bengine_Game_Model_Profile
 	 */
@@ -69,7 +70,7 @@ class Bengine_Game_Model_Profile extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("field_object"))
 		{
-			$field = Game::factory("profile_field/".strtolower($this->getType()), $this);
+			$field = Game::factory("game/profile_field_".strtolower($this->getType()), $this);
 			$field->setData($this->getData());
 			$this->set("field_object", $field);
 		}
@@ -135,8 +136,8 @@ class Bengine_Game_Model_Profile extends Recipe_Model_Abstract
 	/**
 	 * Returns a setup parameter.
 	 *
-	 * @param string	Parameter key
-	 * @param mixed		Default return value
+	 * @param string $var
+	 * @param mixed $default
 	 *
 	 * @return array|mixed
 	 */
@@ -152,8 +153,8 @@ class Bengine_Game_Model_Profile extends Recipe_Model_Abstract
 	/**
 	 * Sets a setup parameter.
 	 *
-	 * @param string|array	Parameter key
-	 * @param mixed			Value
+	 * @param string|array $var
+	 * @param mixed $value
 	 *
 	 * @return Bengine_Game_Model_Profile
 	 */

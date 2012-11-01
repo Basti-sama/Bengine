@@ -133,7 +133,7 @@ class Bengine_Game_EventHandler
 			{
 				if(!($event instanceof Bengine_Game_Model_Event))
 				{
-					$event = Game::getModel("event")->load($event);
+					$event = Game::getModel("game/event")->load($event);
 				}
 				$event->removeFromHandler();
 			}
@@ -185,7 +185,7 @@ class Bengine_Game_EventHandler
 	 */
 	public function getFormationFleets($parent)
 	{
-		return Game::getCollection("event")->addParentIdFilter($parent);
+		return Game::getCollection("game/event")->addParentIdFilter($parent);
 	}
 
 	/**
@@ -197,7 +197,7 @@ class Bengine_Game_EventHandler
 	 */
 	public function getMainFormationFleet($eventid)
 	{
-		return Game::getModel("event")->load($eventid);
+		return Game::getModel("game/event")->load($eventid);
 	}
 
 	/**

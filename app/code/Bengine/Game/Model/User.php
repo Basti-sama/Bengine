@@ -17,6 +17,7 @@ class Bengine_Game_Model_User extends Recipe_Model_Abstract
 	{
 		$this->setTableName("user");
 		$this->setPrimaryKey("userid");
+		$this->setModelName("game/user");
 		return parent::init();
 	}
 
@@ -152,7 +153,7 @@ class Bengine_Game_Model_User extends Recipe_Model_Abstract
 	public function getPMLink()
 	{
 		$img = Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE"));
-		return Link::get("game.php/".SID."/MSG/Write/".rawurlencode($this->getUsername()), $img);
+		return Link::get("game/".SID."/MSG/Write/".rawurlencode($this->getUsername()), $img);
 	}
 
 	/**
@@ -163,7 +164,7 @@ class Bengine_Game_Model_User extends Recipe_Model_Abstract
 	public function getFriendLink()
 	{
 		$img = Image::getImage("b.gif", Core::getLanguage()->getItem("ADD_TO_BUDDYLIST"));
-		return Link::get("game.php/".SID."/Friends/Add/".$this->getUserid(), $img);
+		return Link::get("game/".SID."/Friends/Add/".$this->getUserid(), $img);
 	}
 
 	/**
@@ -174,7 +175,7 @@ class Bengine_Game_Model_User extends Recipe_Model_Abstract
 	public function getModerateLink()
 	{
 		$img = Image::getImage("moderator.gif", Core::getLanguage()->getItem("MODERATE"));
-		return Link::get("game.php/".SID."/Moderator/Index/".$this->getUserid(), $img);
+		return Link::get("game/".SID."/Moderator/Index/".$this->getUserid(), $img);
 	}
 
 	/**
@@ -184,7 +185,7 @@ class Bengine_Game_Model_User extends Recipe_Model_Abstract
 	 */
 	public function getAlliance()
 	{
-		return Application::getModel("alliance")->load($this->getAid());
+		return Application::getModel("game/alliance")->load($this->getAid());
 	}
 
 	/**
@@ -196,7 +197,7 @@ class Bengine_Game_Model_User extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("home_planet"))
 		{
-			$this->set("home_planet", Application::getModel("planet")->load($this->getHp()));
+			$this->set("home_planet", Application::getModel("game/planet")->load($this->getHp()));
 		}
 		return $this->get("home_planet");
 	}

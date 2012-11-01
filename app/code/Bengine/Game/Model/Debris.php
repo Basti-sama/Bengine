@@ -7,7 +7,7 @@
  * @version $Id: Debris.php 8 2010-10-17 20:55:04Z secretchampion $
  */
 
-class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
+class Bengine_Game_Model_Debris extends Recipe_Model_Abstract
 {
 	/**
 	 * (non-PHPdoc)
@@ -17,6 +17,7 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 	{
 		$this->setTableName("galaxy");
 		$this->setPrimaryKey("planetid");
+		$this->setModelName("game/debris");
 		return parent::init();
 	}
 

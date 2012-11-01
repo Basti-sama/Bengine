@@ -56,13 +56,13 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Creates a new model collection object.
 	 *
-	 * @param string	Model name [optional]
+	 * @param string $modelName	Model name [optional]
 	 *
 	 * @return Recipe_Model_Collection_Abstract
 	 */
 	public function __construct($modelName = null)
 	{
-		if(!is_null($modelName))
+		if($modelName !== null)
 		{
 			$this->setModelName($modelName);
 		}
@@ -87,7 +87,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	 */
 	public function getSelect()
 	{
-		if(is_null($this->select))
+		if($this->select === null)
 		{
 			$this->resetSelect();
 		}
@@ -121,7 +121,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Contains the loading procedure.
 	 *
-	 * @param Recipe_Database_Select	Custom select object [optional]
+	 * @param Recipe_Database_Select $select	Custom select object [optional]
 	 *
 	 * @return Recipe_Model_Collection_Abstract
 	 */
@@ -171,6 +171,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Starts the loading procedure.
 	 *
+	 * @param Recipe_Database_Select $select
 	 * @return Recipe_Model_Collection_Abstract
 	 */
 	public function load(Recipe_Database_Select $select = null)
@@ -191,7 +192,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Returns a random collection element.
 	 *
-	 * @param mixed		Default return value [optional]
+	 * @param mixed $default	Default return value [optional]
 	 *
 	 * @return Recipe_Model_Abstract
 	 */
@@ -204,7 +205,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Returns the first collection element.
 	 *
-	 * @param mixed		Default return value [optional]
+	 * @param mixed $default	Default return value [optional]
 	 *
 	 * @return Recipe_Model_Abstract
 	 */
@@ -216,7 +217,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Returns the last collection element.
 	 *
-	 * @param mixed		Default return value [optional]
+	 * @param mixed $default	Default return value [optional]
 	 *
 	 * @return Recipe_Model_Abstract
 	 */
@@ -228,8 +229,8 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Returns collection elements.
 	 *
-	 * @param integer	Index key [optional]
-	 * @param mixed		Default return value [optional]
+	 * @param integer $index	Index key [optional]
+	 * @param mixed $default	Default return value [optional]
 	 *
 	 * @return array|Recipe_Model_Abstract
 	 */
@@ -246,7 +247,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Checks an index key for existence.
 	 *
-	 * @param integer	Index key
+	 * @param integer $index	Index key
 	 *
 	 * @return boolean
 	 */
@@ -323,7 +324,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Checks if the collection holds a pagination object.
 	 *
-	 * @return unknown_type
+	 * @return boolean
 	 */
 	public function hasPagination()
 	{
@@ -333,6 +334,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	/**
 	 * Returns the loading state.
 	 *
+	 * @param bool $isLoaded
 	 * @return boolean
 	 */
 	public function isLoaded($isLoaded = null)
@@ -351,7 +353,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	 */
 	public function getResource()
 	{
-		if(is_null($this->resource))
+		if($this->resource === null)
 		{
 			$this->setResource($this->getModel()->getResource());
 		}

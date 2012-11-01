@@ -33,7 +33,7 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 	/**
 	 * Relation object.
 	 *
-	 * @var Relation
+	 * @var Bengine_Game_User_Relation
 	 */
 	protected $relation = null;
 
@@ -54,9 +54,9 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 	/**
 	 * Creates a new alliance list object.
 	 *
-	 * @param resource	Query result for a list
-	 *
-	 * @return void
+	 * @param resource $list Query result for a list
+	 * @param int $start
+	 * @return \Bengine_Game_Alliance_List
 	 */
 	public function __construct($list = null, $start = 0)
 	{
@@ -70,14 +70,13 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 		{
 			$this->load($list, $start);
 		}
-		return;
 	}
 
 	/**
 	 * Loads the list from a sql query.
 	 *
-	 * @param resource	Result set
-	 * @param integer	Rank/Counter start
+	 * @param resource $result	Result set
+	 * @param integer $start	Rank/Counter start
 	 *
 	 * @return Bengine_Game_Alliance_List
 	 */
@@ -99,8 +98,8 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 	/**
 	 * Sets the list by an array.
 	 *
-	 * @param array		Contains a list of all elements
-	 * @param integer	Rank/Counter start
+	 * @param array $list		Contains a list of all elements
+	 * @param integer $start	Rank/Counter start
 	 *
 	 * @return Bengine_Game_Alliance_List
 	 */
@@ -120,7 +119,7 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 	/**
 	 * Formats an alliance record.
 	 *
-	 * @param array		Alliance data
+	 * @param array $row Alliance data
 	 *
 	 * @return array	Formatted alliance data
 	 */
@@ -133,7 +132,7 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 		}
 		if(!Core::getUser()->get("aid") && $row["open"] > 0)
 		{
-			$row["join"] = Link::get("game.php/".SID."/Alliance/Apply/".$row["aid"], Image::getImage("apply.gif", Core::getLanguage()->getItem("JOIN")));
+			$row["join"] = Link::get("game/".SID."/Alliance/Apply/".$row["aid"], Image::getImage("apply.gif", Core::getLanguage()->getItem("JOIN")));
 		}
 		$row["average"] = ($row["members"] > 0) ? fNumber(floor($row["points"] / $row["members"])) : 0;
 		$row["members"] = fNumber($row["members"]);
@@ -161,9 +160,10 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 	/**
 	 * Fetches the alliance rank from database.
 	 *
-	 * @param integer	Alliance id
+	 * @param int $aid
+	 * @param string $pointType
 	 *
-	 * @return integer	Rank
+	 * @return integer
 	 */
 	protected function getAllianceRank($aid, $pointType)
 	{
@@ -179,18 +179,18 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 	/**
 	 * Formats an alliance tag as a link.
 	 *
-	 * @param string	Alliance tag
-	 * @param string	Alliance name
-	 * @param integer	Alliance id
+	 * @param string $tag
+	 * @param string $name
+	 * @param int $aid
 	 *
-	 * @return string	Formatted alliance tag
+	 * @return string    Formatted alliance tag
 	 */
 	protected function formatAllyTag($tag, $name, $aid)
 	{
 		$class = $this->relation->getAllyRelationClass($aid);
 		if($this->tagAsLink)
 		{
-			return Link::get("game.php/".SID."/Alliance/Page/".$aid, $tag, $name, $class);
+			return Link::get("game/".SID."/Alliance/Page/".$aid, $tag, $name, $class);
 		}
 		return "<span class=\"".$class."\">".$tag."</span>";
 	}
@@ -218,7 +218,7 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 	/**
 	 * Setter-function for point type.
 	 *
-	 * @param string	Point type (points, fpoints or rpoints)
+	 * @param string $pointType	Point type (points, fpoints or rpoints)
 	 *
 	 * @return Bengine_Game_Alliance_List
 	 */

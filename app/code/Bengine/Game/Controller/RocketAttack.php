@@ -98,7 +98,7 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 			Core::getDB()->free_result($result);
 			$this->rockets = ($qty) ? $qty : 0;
 		}
-		return parent::init();
+		return;
 	}
 
 	/**
@@ -138,8 +138,8 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 	/**
 	 * Starts the actual rocket attack event.
 	 *
-	 * @param integer	Rocket quantity to send
-	 * @param integer	Primary target
+	 * @param integer $quantity
+	 * @param integer $primaryTarget
 	 *
 	 * @return Bengine_Game_Controller_RocketAttack
 	 */
@@ -178,7 +178,7 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 			$data["planetname"] = $this->t["planetname"];
 			$data["primary_target"] = $primaryTarget;
 			Game::getEH()->addEvent(16, TIME + getRocketFlightDuration($diff), Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), $this->target, $data);
-			$this->redirect("game.php/".SID."/Index");
+			$this->redirect("game/".SID."/Index");
 		}
 		return $this;
 	}

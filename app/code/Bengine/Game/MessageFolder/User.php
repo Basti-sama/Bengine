@@ -12,7 +12,7 @@ class Bengine_Game_MessageFolder_User extends Bengine_Game_MessageFolder_Abstrac
 	/**
 	 * Formats the message.
 	 *
-	 * @param Bengine_Game_Model_Message	Message model
+	 * @param Bengine_Game_Model_Message $message
 	 *
 	 * @return Bengine_Game_MessageFolder_User
 	 */
@@ -21,7 +21,7 @@ class Bengine_Game_MessageFolder_User extends Bengine_Game_MessageFolder_Abstrac
 		$sender = $message->get("sender");
 		if(!empty($sender))
 		{
-			$url = "game.php/".SID."/MSG/Write/".rawurlencode($message->get("username"))."/".rawurlencode("RE: ".$message->get("subject"));
+			$url = "game/".SID."/MSG/Write/".rawurlencode($message->get("username"))."/".rawurlencode("RE: ".$message->get("subject"));
 			$reply = Link::get($url, Image::getImage("pm.gif", Core::getLanguage()->getItem("REPLY")));
 			$message->set("reply_link", $reply);
 			$sender = $message->get("username")." ".getCoordLink($message->get("galaxy"), $message->get("system"), $message->get("position"));

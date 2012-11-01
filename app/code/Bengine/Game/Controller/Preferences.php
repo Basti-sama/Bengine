@@ -36,7 +36,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 	protected function indexAction()
 	{
 		/* @var Bengine_Game_Model_Collection_Event $events */
-		$events = Game::getCollection("event");
+		$events = Game::getCollection("game/event");
 		$events->addVacationModeFilter(Core::getUser()->get("userid"));
 		if($this->isPost())
 		{
@@ -109,7 +109,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 			$this->assign("atom_feed_url", "-");
 		}
 
-		$this->assign("goToSignature", Link::get("game.php/".SID."/Preferences/Signature", Core::getLang()->get("GO_TO_SIGNATURE")));
+		$this->assign("goToSignature", Link::get("game/".SID."/Preferences/Signature", Core::getLang()->get("GO_TO_SIGNATURE")));
 		return $this;
 	}
 
@@ -131,7 +131,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		Hook::event("UpdateUserDeletion", array(&$delete));
 		Core::getQuery()->update("user", "delete", $delete, "userid = '".Core::getUser()->get("userid")."'");
 		Core::getUser()->rebuild();
-		$this->redirect("game.php/".SID."/Preferences");
+		$this->redirect("game/".SID."/Preferences");
 		return $this;
 	}
 
@@ -278,7 +278,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		{
 			// Check if umode can be activated
 			/* @var Bengine_Game_Model_Collection_Event $events */
-			$events = Game::getCollection("event");
+			$events = Game::getCollection("game/event");
 			$events->addVacationModeFilter(Core::getUser()->get("userid"));
 			$eventCount = $events->getCalculatedSize();
 			if($eventCount > 0)

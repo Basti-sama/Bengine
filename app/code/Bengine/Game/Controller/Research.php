@@ -45,7 +45,7 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 		Core::getLanguage()->load(array("info", "buildings"));
 
 		/* @var Bengine_Game_Model_Collection_Construction $collection */
-		$collection = Application::getCollection("construction");
+		$collection = Application::getCollection("game/construction");
 		$collection->addTypeFilter(self::RESEARCH_CONSTRUCTION_TYPE, Game::getPlanet()->getData("ismoon"))
 			->addUserJoin(Core::getUser()->get("userid"))
 			->addDisplayOrder();
@@ -65,8 +65,8 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 	/**
 	 * Check for sufficient resources and start research upgrade.
 	 *
-	 * @param integer $id	Building id to upgrade
-	 *
+	 * @param integer $id    Building id to upgrade
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_Controller_Research
 	 */
 	protected function upgradeAction($id)
@@ -74,7 +74,7 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 		// Check events
 		if($this->event != false || Core::getUser()->get("umode"))
 		{
-			$this->redirect("game.php/".SID."/Research");
+			$this->redirect("game/".SID."/Research");
 		}
 
 		// Check for requirements
@@ -90,7 +90,7 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 		}
 
 		/* @var Bengine_Game_Model_Construction $construction */
-		$construction = Game::getModel("construction");
+		$construction = Game::getModel("game/construction");
 		$construction->load($id);
 		if(!$construction->getId())
 		{
@@ -98,11 +98,11 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 		}
 		if($construction->get("mode") != self::RESEARCH_CONSTRUCTION_TYPE)
 		{
-			throw new Exception("Research not allowed.");
+			throw new Recipe_Exception_Generic("Research not allowed.");
 		}
 		if(Game::getPlanet()->getData("ismoon") && !$construction->get("allow_on_moon"))
 		{
-			throw new Exception("Research not allowed.");
+			throw new Recipe_Exception_Generic("Research not allowed.");
 		}
 		Hook::event("UpgradeResearchFirst", array($construction));
 
@@ -127,7 +127,7 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 			$data["buildingname"] = $construction->get("name");
 			Hook::event("UpgradeResearchLast", array($construction, &$data, &$time));
 			Game::getEH()->addEvent(3, $time + TIME, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), null, $data);
-			$this->redirect("game.php/".SID."/Research");
+			$this->redirect("game/".SID."/Research");
 		}
 		else
 		{
@@ -147,7 +147,7 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 	{
 		if(Core::getUser()->get("umode") || !$this->event)
 		{
-			$this->redirect("game.php/".SID."/Research");
+			$this->redirect("game/".SID."/Research");
 		}
 		$result = Core::getQuery()->select("construction", array("buildingid"), "", "buildingid = '".$id."' AND mode = '2'");
 		if($row = Core::getDB()->fetch($result))
@@ -155,7 +155,7 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 			Core::getDB()->free_result($result);
 			Hook::event("AbortResearch", array($this));
 			Game::getEH()->removeEvent($this->event->get("eventid"));
-			$this->redirect("game.php/".SID."/Research");
+			$this->redirect("game/".SID."/Research");
 		}
 		Core::getDB()->free_result($result);
 		return $this;

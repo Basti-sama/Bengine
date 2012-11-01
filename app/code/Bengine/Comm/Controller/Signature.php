@@ -191,7 +191,7 @@ class Bengine_Comm_Controller_Signature extends Bengine_Comm_Controller_Abstract
 	{
 		if($this->_user === null)
 		{
-			$this->_user = Application::getModel("user")->load($this->getUserId());
+			$this->_user = Application::getModel("game/user")->load($this->getUserId());
 			if(!$this->_user->getUserid())
 			{
 				throw new Recipe_Exception_Generic("Unkown user signature.");

@@ -35,7 +35,7 @@ tinyMCE.init({
 	save_callback: function(element_id, html, body) {
 		if(saveAbout && typeof(html) != "undefined")
 		{
-			$.post("{const=BASE_URL}game.php/{const=SID}/Profile/SaveAbout/{request[get]}1{/request}", { text: html },
+			$.post("{const=BASE_URL}game/{const=SID}/Profile/SaveAbout/{request[get]}1{/request}", { text: html },
 				function(data) {
 					if(data != "")
 					{
@@ -115,7 +115,7 @@ function statusTooltip()
 				</div>
 				<div class="profile-about">
 					<div class="profile-text">
-						<form action="{const=BASE_URL}game.php/{const=SID}/Profile/SaveAbout/{request[get]}1{/request}" method="post" onsubmit="return false;">
+						<form action="{const=BASE_URL}game/{const=SID}/Profile/SaveAbout/{request[get]}1{/request}" method="post" onsubmit="return false;">
 							<div class="text" id="text-editor">
 								<?php if($this->get("aboutMe") == ""): ?>
 								{lang=DEFAULT_ABOUT_ME}

@@ -14,11 +14,11 @@ class Bengine_Game_Account_Password_Changer extends Bengine_Game_Controller_Ajax
 	/**
 	 * Key check and set new password.
 	 *
-	 * @param integer User id
-	 * @param string Key, transmitted by email
-	 * @param string New password
+	 * @param integer $userid
+	 * @param string $key Key, transmitted by email
+	 * @param string $newpw New password
 	 *
-	 * @return void
+	 * @return Bengine_Game_Account_Password_Changer
 	 */
 	public function __construct($userid, $key, $newpw)
 	{
@@ -46,8 +46,8 @@ class Bengine_Game_Account_Password_Changer extends Bengine_Game_Controller_Ajax
 	/**
 	 * Prints either an error or success message.
 	 *
-	 * @param string Output stream
-	 * @param boolean Message is error
+	 * @param string $output
+	 * @param boolean $error
 	 *
 	 * @return Bengine_Game_Account_Password_Changer
 	 */

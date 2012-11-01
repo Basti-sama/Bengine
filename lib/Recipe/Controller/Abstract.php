@@ -33,11 +33,11 @@ abstract class Recipe_Controller_Abstract
 	protected $_action = "index";
 
 	/**
-	 * The module name.
+	 * The package name.
 	 *
 	 * @var string
-	 */
-	protected $_module = null;
+	*/
+	protected $_package = null;
 
 	/**
 	 * The output template.
@@ -81,10 +81,8 @@ abstract class Recipe_Controller_Abstract
 			$this->_action = strtolower($args["action"]);
 		}
 		$this->_requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
-		if($this->_module !== null)
-		{
-			$this->setMainTemplate($this->getModule());
-		}
+		$this->setPackage(Core::getRequest()->getGET("package"));
+		$this->setMainTemplate($this->getPackage());
 		$this->init();
 		return $this;
 	}
@@ -174,17 +172,17 @@ abstract class Recipe_Controller_Abstract
 	 */
 	public function getTemplate($action)
 	{
-		$module = $this->getModule();
-		if(!empty($module))
+		$package = $this->getPackage();
+		if(!empty($package))
 		{
-			$module .= "/";
+			$package .= "/";
 		}
 		if(!empty($this->_template))
 		{
-			return strtolower($module.$this->_template);
+			return strtolower($package.$this->_template);
 		}
 		$controller = $this->getParam("controller", self::DEFAULT_CONTROLLER_NAME);
-		return strtolower($module.$controller."/".$action);
+		return strtolower($package.$controller."/".$action);
 	}
 
 	/**
@@ -293,7 +291,7 @@ abstract class Recipe_Controller_Abstract
 	 * @param string $url		Uri or Url
 	 * @param boolean $session	Append session? [optional]
 	 *
-	 * @return Bengine_Page_Abstract
+	 * @return Bengine_Game_Controller_Abstract
 	 */
 	protected function redirect($url, $session = false)
 	{
@@ -325,21 +323,21 @@ abstract class Recipe_Controller_Abstract
 	}
 
 	/**
-	 * @param string $module
+	 * @param string $package
 	 * @return Recipe_Controller_Abstract
 	 */
-	public function setModule($module)
+	public function setPackage($package)
 	{
-		$this->_module = $module;
+		$this->_package = $package;
 		return $this;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getModule()
+	public function getPackage()
 	{
-		return $this->_module;
+		return $this->_package;
 	}
 }
 ?>

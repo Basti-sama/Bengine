@@ -12,7 +12,7 @@ class Bengine_Game_MessageFolder_Combat extends Bengine_Game_MessageFolder_Abstr
 	/**
 	 * Formats the message.
 	 *
-	 * @param Bengine_Game_Model_Message	Message model
+	 * @param Bengine_Game_Model_Message $message
 	 *
 	 * @return Bengine_Game_MessageFolder_Combat
 	 */
@@ -22,7 +22,7 @@ class Bengine_Game_MessageFolder_Combat extends Bengine_Game_MessageFolder_Abstr
 		{
 			$message->set("sender", Core::getLanguage()->getItem("FLEET_COMMAND"));
 		}
-		$assault = Game::getModel("assault")->load((int) $message->get("message"));
+		$assault = Game::getModel("game/assault")->load((int) $message->get("message"));
 		if($assault->get("assaultid"))
 		{
 			if(!$assault->get("galaxy"))
@@ -62,16 +62,16 @@ class Bengine_Game_MessageFolder_Combat extends Bengine_Game_MessageFolder_Abstr
 	}
 
 	/**
-	 * Formates the message for news feeds.
+	 * Formats the message for news feeds.
 	 *
-	 * @param Bengine_Game_Model_Message	Message model
+	 * @param Bengine_Game_Model_Message $message
 	 *
 	 * @return Bengine_Game_MessageFolder_Combat
 	 */
 	protected function _formatFeed(Bengine_Game_Model_Message $message)
 	{
 		$assaultId = (int) $message->get("message");
-		$assault = Game::getModel("assault")->load($assaultId);
+		$assault = Game::getModel("game/assault")->load($assaultId);
 		$link = BASE_URL.Core::getLang()->getOpt("langcode")."/combat/report/".$assaultId."/".$assault->get("key");
 		$gentime = $assault->get("gentime") / 1000;
 		$text = Core::getLanguage()->getItem("ASSAULT_REPORT")." (A: ".fNumber($assault->get("lostunits_attacker")).", D: ".fNumber($assault->get("lostunits_defender")).") ".$gentime."s";

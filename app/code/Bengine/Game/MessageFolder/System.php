@@ -12,7 +12,7 @@ class Bengine_Game_MessageFolder_System extends Bengine_Game_MessageFolder_Abstr
 	/**
 	 * Formats the message.
 	 *
-	 * @param Bengine_Game_Model_Message	Message model
+	 * @param Bengine_Game_Model_Message $message
 	 *
 	 * @return Bengine_Game_MessageFolder_System
 	 */

@@ -40,7 +40,7 @@ class Bengine_Game_Model_Collection_Construction extends Recipe_Model_Collection
 	/**
 	 * Adds a planet join.
 	 *
-	 * @param integer	Planet ID
+	 * @param integer $planetId
 	 * @return Bengine_Game_Model_Collection_Construction
 	 */
 	public function addPlanetJoin($planetId)
@@ -57,7 +57,7 @@ class Bengine_Game_Model_Collection_Construction extends Recipe_Model_Collection
 	/**
 	 * Adds a user join.
 	 *
-	 * @param integer	User ID
+	 * @param integer $userId
 	 * @return Bengine_Game_Model_Collection_Construction
 	 */
 	public function addUserJoin($userId)
@@ -74,7 +74,7 @@ class Bengine_Game_Model_Collection_Construction extends Recipe_Model_Collection
 	/**
 	 * Adds a shipyard join.
 	 *
-	 * @param integer	Planet ID
+	 * @param integer $planetId
 	 * @return Bengine_Game_Model_Collection_Construction
 	 */
 	public function addShipyardJoin($planetId)

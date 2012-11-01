@@ -88,7 +88,7 @@
 		{/foreach}
 	</ul>
 	<a href="#" id="edit-order"><span>{lang=EDIT_PLANET_SORTING}</span></a>
-	<a href="{url}"game.php/".SID."/Preferences/savePlanetOrder"{/url}" id="save-order"><span>{lang=SAVE_PLANET_SORTING}</span></a>
+	<a href="{url}"game/".SID."/Preferences/savePlanetOrder"{/url}" id="save-order"><span>{lang=SAVE_PLANET_SORTING}</span></a>
 </div>
 {hook}HtmlEnd{/hook}
 </div>

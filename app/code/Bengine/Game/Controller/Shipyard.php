@@ -97,7 +97,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		$this->setTemplate("shipyard/index");
 
 		/* @var Bengine_Game_Model_Collection_Construction $collection */
-		$collection = Application::getCollection("construction", "unit");
+		$collection = Application::getCollection("game/construction", "game/unit");
 		$collection->addTypeFilter($this->mode, Game::getPlanet()->getData("ismoon"))
 			->addShipyardJoin(Core::getUser()->get("curplanet"))
 			->addDisplayOrder();
@@ -144,7 +144,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		Core::getTPL()->addLoop("units", $collection);
 		Core::getTPL()->assign("canBuildUnits", $this->canBuildUnits);
 		Core::getTPL()->assign("canBuildRockets", $this->canBuildRockets);
-		$this->assign("orderAction", BASE_URL."game.php/".SID."/".$this->getParam("controller")."/Order");
+		$this->assign("orderAction", BASE_URL."game/".SID."/".$this->getParam("controller")."/Order");
 		return $this;
 	}
 
@@ -157,18 +157,18 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 	{
 		if(Core::getUser()->get("umode") || Game::isDbLocked())
 		{
-			$this->redirect("game.php/".SID."/".Core::getRequest()->getGET("controller"));
+			$this->redirect("game/".SID."/".Core::getRequest()->getGET("controller"));
 		}
 		if(!$this->canBuildUnits)
 			throw new Recipe_Exception_Generic("Shipyard or nano factory in progress.");
 		$post = Core::getRequest()->getPOST();
 		/* @var Bengine_Game_Model_Collection_Construction $collection */
-		$collection = Application::getCollection("construction", "unit");
+		$collection = Application::getCollection("game/construction", "game/unit");
 		$collection->addTypeFilter($this->mode, Game::getPlanet()->getData("ismoon"))
 			->addShipyardJoin(Core::getUser()->get("curplanet"));
 		foreach($collection as $construction)
 		{
-			/* @var Bengine_Game_Model_Unit $collection */
+			/* @var Bengine_Game_Model_Unit $construction */
 			$id = $construction->getId();
 			if(isset($post[$id]) && $post[$id] > 0)
 			{
@@ -263,7 +263,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 				}
 			}
 		}
-		$this->redirect("game.php/".SID."/".Core::getRequest()->getGET("controller"));
+		$this->redirect("game/".SID."/".Core::getRequest()->getGET("controller"));
 		return $this;
 	}
 
@@ -314,11 +314,12 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 	{
 		if(!Core::getConfig()->get("SCRAP_MERCHANT_RATE"))
 		{
-			$this->redirect("game.php/".SID."/Shipyard");
+			$this->redirect("game/".SID."/Shipyard");
 		}
 		Core::getLanguage()->load(array("info", "buildings"));
 		$this->setTemplate("shipyard/merchant");
-		$units = Application::getCollection("fleet", "unit");
+		/* @var Bengine_Game_Model_Collection_Fleet $units */
+		$units = Application::getCollection("game/fleet", "game/unit");
 		$units->addPlanetFilter(Core::getUser()->get("curplanet"));
 		$this->assign("units", $units);
 		Core::getLang()->assign("merchantRate", Core::getConfig()->get("SCRAP_MERCHANT_RATE")*100);
@@ -334,11 +335,12 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 	{
 		if(!Core::getConfig()->get("SCRAP_MERCHANT_RATE"))
 		{
-			$this->redirect("game.php/".SID."/Shipyard");
+			$this->redirect("game/".SID."/Shipyard");
 		}
 		Core::getLanguage()->load(array("info", "buildings"));
 		$selUnits = Core::getRequest()->getPOST("unit");
-		$availUnits = Application::getCollection("fleet", "unit");
+		/* @var Bengine_Game_Model_Collection_Fleet $availUnits */
+		$availUnits = Application::getCollection("game/fleet", "game/unit");
 		$availUnits->addPlanetFilter(Core::getUser()->get("curplanet"));
 		$metalCredit = 0;
 		$siliconCredit = 0;
@@ -346,6 +348,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		$totalQty = 0;
 		$realUnits = array();
 		$rate = (double) Core::getConfig()->get("SCRAP_MERCHANT_RATE");
+		/* @var Bengine_Game_Model_Unit $unit */
 		foreach($availUnits as $unit)
 		{
 			$unitId = $unit->getUnitid();
@@ -372,6 +375,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		));
 		if(Core::getRequest()->getPOST("verify") == "yes")
 		{
+			/* @var Bengine_Game_Model_Unit $unit */
 			foreach($availUnits as $unit)
 			{
 				$unitId = (int) $unit->getUnitid();
@@ -393,7 +397,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 			Core::getDatabase()->query($sql);
 			$sql = "UPDATE `".PREFIX."user` SET `points` = `points` - '{$points}' WHERE `userid` = '".Core::getUser()->get("userid")."'";
 			Core::getDatabase()->query($sql);
-			$this->redirect("game.php/".SID."/Shipyard");
+			$this->redirect("game/".SID."/Shipyard");
 		}
 		$this->setTemplate("shipyard/change");
 		$this->assign("units", $realUnits);

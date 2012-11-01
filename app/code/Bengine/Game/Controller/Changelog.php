@@ -33,15 +33,19 @@ class Bengine_Game_Controller_Changelog extends Bengine_Game_Controller_Abstract
 	 */
 	protected function indexAction()
 	{
+		$meta = Game::getMeta();
+		define("BENGINE_REVISION", $meta["packages"]["bengine"]["game"]["revision"]);
 		$ip = rawurlencode($_SERVER["SERVER_ADDR"]);
 		$host = rawurlencode(HTTP_HOST);
 		// Fetching changelog data from remote server
-		$xml = file_get_contents(VERSION_CHECK_PAGE."?ip=".$ip."&host=".$host."&vers=".BENGINE_VERSION);
+		$xml = file_get_contents(VERSION_CHECK_PAGE."?ip=".$ip."&host=".$host."&vers=".Game::getVersion());
 		$data = new XMLObj($xml);
 		$release = array();
+		/* @var XMLObj $version */
 		foreach($data as $version)
 		{
 			$changes = "";
+			/* @var XMLObj $change */
 			foreach($version->getChildren("changes")->getChildren() as $change)
 			{
 				$changes .= "# ".$change->getString()."\n";

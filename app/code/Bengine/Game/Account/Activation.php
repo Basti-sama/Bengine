@@ -56,7 +56,7 @@ class Bengine_Game_Account_Activation
 				Core::getDB()->free_result($result);
 				Hook::event("ActivateAccount", array($this));
 				Core::getQuery()->update("user", array("activation", "email"), array("", $row["temp_email"]), "userid = '".$row["userid"]."'");
-				$login = new Bengine_Game_Login($row["username"], $row["password"], "game.php", "trim");
+				$login = new Bengine_Game_Login($row["username"], $row["password"], "game", "trim");
 				$login->setCountLoginAttempts(false);
 				$login->checkData();
 				$login->startSession();

@@ -26,7 +26,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 		Core::getUser()->checkPermissions("CAN_MODERATE_USER");
 		Core::getLanguage()->load(array("Prefs" ,"Statistics"));
 		$this->userid = (Core::getRequest()->getPOST("userid")) ? Core::getRequest()->getPOST("userid") : Core::getRequest()->getGET("1");
-		return parent::init();
+		parent::init();
 	}
 
 	/**
@@ -86,7 +86,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 			$result = Core::getQuery()->select("languages", array("languageid", "title"), "", "", "title ASC");
 			Core::getTPL()->addLoop("langs", $result);
 
-			Core::getTPL()->assign("loginLink", Link::get("game.php/".SID."/Moderator/SwitchUser/".$row["userid"], Core::getLang()->get("SWITCH_USER")));
+			Core::getTPL()->assign("loginLink", Link::get("game/".SID."/Moderator/SwitchUser/".$row["userid"], Core::getLang()->get("SWITCH_USER")));
 
 			$bans = array(); $i = 0;
 			$result = Core::getQuery()->select("ban_u", array("`banid`", "`to`", "`reason`"), "", "userid = '".$this->userid."'");
@@ -97,7 +97,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 
 				if($row["to"] > TIME)
 				{
-					$bans[$i]["annul"] = Link::get("game.php/".SID."/Moderator/AnnulBan/".$row["banid"], Core::getLanguage()->getItem("ANNUL"));
+					$bans[$i]["annul"] = Link::get("game/".SID."/Moderator/AnnulBan/".$row["banid"], Core::getLanguage()->getItem("ANNUL"));
 				}
 				else
 				{
@@ -108,7 +108,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 			Core::getDB()->free_result($result);
 			Core::getTPL()->addLoop("bans", $bans);
 			Core::getTPL()->assign("eBans", $i);
-			Core::getTPL()->assign("sessionsLink", Link::get("game.php/".SID."/Moderator/Sessions?id=".$this->userid, "Sessions"));
+			Core::getTPL()->assign("sessionsLink", Link::get("game/".SID."/Moderator/Sessions?id=".$this->userid, "Sessions"));
 		}
 		return $this;
 	}
@@ -116,10 +116,10 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	/**
 	 * Bans an user.
 	 *
-	 * @param integer	Ban factor
-	 * @param integer	Ban time
-	 * @param string	Reason for ban
-	 * @param boolean	Set user into umode
+	 * @param integer $ban
+	 * @param integer $timeEnd
+	 * @param string $reason
+	 * @param boolean $forceUmode
 	 *
 	 * @return Bengine_Game_Controller_Moderator
 	 */
@@ -143,7 +143,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	/**
 	 * Annuls a ban.
 	 *
-	 * @param integer	Ban to annul
+	 * @param integer $banid
 	 *
 	 * @return Bengine_Game_Controller_Moderator
 	 */
@@ -154,15 +154,29 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 		$result = Core::getQuery()->select("ban_u", "userid", "", "banid = '".$banid."'");
 		$row = Core::getDB()->fetch($result);
 		Core::getDB()->free_result($result);
-		$this->redirect("game.php/".SID."/Moderator/Index/".$row["userid"], false);
+		$this->redirect("game/".SID."/Moderator/Index/".$row["userid"], false);
 		return $this;
 	}
 
 	/**
 	 * Updates the moderator form.
 	 *
-	 * @param array _POST
-	 *
+	 * @param string $username
+	 * @param string $usertitle
+	 * @param string $email
+	 * @param int $delete
+	 * @param int $umode
+	 * @param string $activation
+	 * @param string $ipcheck
+	 * @param int $usergroupid
+	 * @param int $points
+	 * @param int $fpoints
+	 * @param int $rpoints
+	 * @param string $password
+	 * @param int $languageid
+	 * @param string $templatepackage
+	 * @param string $theme
+	 * @param string $js_interface
 	 * @return Bengine_Game_Controller_Moderator
 	 */
 	protected function updateUser($username, $usertitle, $email, $delete, $umode, $activation, $ipcheck, $usergroupid, $points, $fpoints, $rpoints, $password, $languageid, $templatepackage, $theme, $js_interface)
@@ -237,7 +251,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 		if($row = Core::getDB()->fetch($result))
 		{
 			Core::getDB()->free_result($result);
-			$login = new Bengine_Game_Login($row["username"], $row["password"], "game.php", "trim");
+			$login = new Bengine_Game_Login($row["username"], $row["password"], "game", "trim");
 			$login->setCountLoginAttempts(false);
 			$login->checkData();
 			$login->startSession();
@@ -253,7 +267,9 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	 */
 	protected function sessionsAction()
 	{
-		$sessionLog = Game::getCollection("sessionLog")->addTimeOrder();
+		/* @var Bengine_Game_Model_Collection_SessionLog $sessionLog */
+		$sessionLog = Game::getCollection("game/sessionLog");
+		$sessionLog->addTimeOrder();
 		if($ip = $this->getParam("ip"))
 		{
 			$sessionLog->addIpFilter($ip);
@@ -264,7 +280,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 		}
 		else
 		{
-			$this->redirect("game.php/".SID."/Index");
+			$this->redirect("game/".SID."/Index");
 		}
 
 		Core::getTPL()->addLoop("sessionLog", $sessionLog);

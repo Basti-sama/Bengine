@@ -12,7 +12,7 @@ class Bengine_Game_MessageFolder_Alliance extends Bengine_Game_MessageFolder_Abs
 	/**
 	 * Formats the message.
 	 *
-	 * @param Bengine_Game_Model_Message	Message model
+	 * @param Bengine_Game_Model_Message $message
 	 *
 	 * @return Bengine_Game_MessageFolder_Alliance
 	 */
@@ -27,7 +27,7 @@ class Bengine_Game_MessageFolder_Alliance extends Bengine_Game_MessageFolder_Abs
 			$subject = "RE: ".preg_replace("#((RE|FW):\s)+#is", "\\1", $message->get("subject"));
 			$subject = rawurlencode($subject);
 
-			$linkUrl = "game.php/";
+			$linkUrl = "game/";
 			if(URL_SESSION)
 			{
 				$linkUrl .= SID."/";

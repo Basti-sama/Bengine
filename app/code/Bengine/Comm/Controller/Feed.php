@@ -134,7 +134,7 @@ class Bengine_Comm_Controller_Feed extends Bengine_Comm_Controller_Abstract
 		$folderClassCache = array();
 		$items = array();
 		/* @var Bengine_Game_Model_Collection_Message $messages */
-		$messages = Game::getCollection("message");
+		$messages = Game::getCollection("game/message");
 		$messages->addTimeOrder()
 			->addReceiverFilter($this->user_id)
 			->addFolderJoin();
@@ -144,25 +144,24 @@ class Bengine_Comm_Controller_Feed extends Bengine_Comm_Controller_Abstract
 		/* @var Bengine_Game_Model_Message $message */
 		foreach($messages as $message)
 		{
-			/* @var Bengine_Game_MessageFolder_Abstract $folderClass */
-			if(!isset($folderClassCache[$message->get("folder_class")]))
+			/* @var Bengine_Game_MessageFolder_Abstract $folderObj */
+			$folderCode = $message->get("folder_class");
+			if(!isset($folderClassCache[$folderCode]))
 			{
-				$folderClass = explode("/", $message->get("folder_class"));
-				$folderClass[0] = ucwords($folderClass[0]);
-				$folderClass[1] = ucwords($folderClass[1]);
-				$folderClass = $folderClass[0]."_MessageFolder_".$folderClass[1];
-				$folderClass = new $folderClass();
-				$folderClassCache[$message->get("folder_class")] = $folderClass;
+				$folderClass = explode("/", $folderCode);
+				$folderClass = $folderClass[0]."/messageFolder_".$folderClass[1];
+				$folderObj = Application::factory($folderClass);
+				$folderClassCache[$folderCode] = $folderObj;
 			}
 			else
 			{
-				$folderClass = $folderClassCache[$message->get("folder_class")];
+				$folderObj = $folderClassCache[$folderCode];
 			}
-			$folderClass->formatMessage($message, true);
+			$folderObj->formatMessage($message, true);
 
 			$items[] = array(
 				"date"	=> Date::timeToString(3, $message->getTime(), "D, d M Y H:i:s O", false),
-				"author" => ($message->getUsername()) ? $message->getUsername() : "System",
+				"author" => ($message->get("username")) ? $message->get("username") : "System",
 				"title" => strip_tags($message->get("subject")),
 				"text" => $message->get("message"),
 				"link" => $message->get("link"),

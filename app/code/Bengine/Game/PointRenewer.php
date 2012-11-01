@@ -12,7 +12,7 @@ class Bengine_Game_PointRenewer
 	/**
 	 * Caclulates points of buildings.
 	 *
-	 * @param integer	Planet id
+	 * @param integer $planetid
 	 *
 	 * @return float	Points
 	 */
@@ -45,7 +45,7 @@ class Bengine_Game_PointRenewer
 	/**
 	 * Caclulates research points.
 	 *
-	 * @param integer	User id
+	 * @param integer $userid
 	 *
 	 * @return integer	Points
 	 */
@@ -64,7 +64,7 @@ class Bengine_Game_PointRenewer
 	/**
 	 * Caclulates points of research.
 	 *
-	 * @param integer	User id
+	 * @param integer $userid
 	 *
 	 * @return float	Points
 	 */
@@ -97,7 +97,7 @@ class Bengine_Game_PointRenewer
 	/**
 	 * Caclulates points of fleet.
 	 *
-	 * @param integer	Planet id
+	 * @param integer $planetid
 	 *
 	 * @return float	Points
 	 */
@@ -116,7 +116,7 @@ class Bengine_Game_PointRenewer
 	/**
 	 * Caclulates points of fleet from events.
 	 *
-	 * @param integer	User id
+	 * @param integer $userid
 	 *
 	 * @return float	Points
 	 */
@@ -146,7 +146,7 @@ class Bengine_Game_PointRenewer
 	/**
 	 * Caclulates fleet points.
 	 *
-	 * @param integer	Planet of calculating fleet point
+	 * @param integer $planetid
 	 *
 	 * @return integer	Points
 	 */
@@ -165,7 +165,7 @@ class Bengine_Game_PointRenewer
 	/**
 	 * Caclulates fleet points from events.
 	 *
-	 * @param integer	User id
+	 * @param integer $userid
 	 *
 	 * @return integer	Fleet points
 	 */

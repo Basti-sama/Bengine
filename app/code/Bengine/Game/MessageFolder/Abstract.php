@@ -17,9 +17,9 @@ abstract class Bengine_Game_MessageFolder_Abstract
 	/**
 	 * Formats the message.
 	 *
-	 * @param Bengine_Game_Model_Message	Message model
-	 * @param boolean				Format for news feed
-	 * @param boolean				Replace message object
+	 * @param Bengine_Game_Model_Message $message Message model
+	 * @param boolean $isFeed Format for news feed
+	 * @param boolean $replace Replace message object
 	 *
 	 * @return Bengine_Game_Model_Message
 	 */
@@ -39,7 +39,7 @@ abstract class Bengine_Game_MessageFolder_Abstract
 	/**
 	 * Formates the message for news feeds.
 	 *
-	 * @param Bengine_Game_Model_Message	Message model
+	 * @param Bengine_Game_Model_Message $message
 	 *
 	 * @return Bengine_Game_MessageFolder_Abstract
 	 */
@@ -53,7 +53,7 @@ abstract class Bengine_Game_MessageFolder_Abstract
 	/**
 	 * Formats the message.
 	 *
-	 * @param Bengine_Game_Model_Message	Message model
+	 * @param Bengine_Game_Model_Message $message
 	 *
 	 * @return Bengine_Game_MessageFolder_Abstract
 	 */

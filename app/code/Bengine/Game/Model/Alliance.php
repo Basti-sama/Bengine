@@ -17,6 +17,7 @@ class Bengine_Game_Model_Alliance extends Recipe_Model_Abstract
 	protected function init()
 	{
 		$this->setTableName("alliance");
+		$this->setModelName("game/alliance");
 		return parent::init();
 	}
 
@@ -27,7 +28,7 @@ class Bengine_Game_Model_Alliance extends Recipe_Model_Abstract
 	 */
 	public function getPageLink()
 	{
-		return Link::get("game.php/".SID."/Alliance/Page/".$this->getAid(), $this->getTag(), $this->getName());
+		return Link::get("game/".SID."/Alliance/Page/".$this->getAid(), $this->getTag(), $this->getName());
 	}
 }
 ?>

@@ -89,14 +89,14 @@ class Bengine_Game_Planet_Creator
 	/**
 	 * Starts creator.
 	 *
-	 * @param integer	User id of this planet/moon
-	 * @param integer	Galaxy
-	 * @param integer	System
-	 * @param integer	Position
-	 * @param boolean	If planet is moon
-	 * @param integer	Moon formation percent
+	 * @param integer $userid    User id of this planet/moon
+	 * @param integer $galaxy    Galaxy
+	 * @param integer $system    System
+	 * @param integer $position    Position
+	 * @param bool|int $ismoon If planet is moon
+	 * @param integer $percent    Moon formation percent
 	 *
-	 * @return void
+	 * @return Bengine_Game_Planet_Creator
 	 */
 	public function __construct($userid, $galaxy = null, $system = null, $position = null, $ismoon = 0, $percent = 0)
 	{
@@ -283,7 +283,7 @@ class Bengine_Game_Planet_Creator
 	/**
 	 * Returns the XML config data.
 	 *
-	 * @param string	Config name
+	 * @param string $name
 	 *
 	 * @return XMLObj
 	 */

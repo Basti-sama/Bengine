@@ -87,9 +87,9 @@ class Bengine_Game_Alliance_Page_Parser
 	/**
 	 * Sets alliance id.
 	 *
-	 * @param integer
+	 * @param integer $aid
 	 *
-	 * @return void
+	 * @return \Bengine_Game_Alliance_Page_Parser
 	 */
 	public function __construct($aid)
 	{
@@ -104,7 +104,10 @@ class Bengine_Game_Alliance_Page_Parser
 	 */
 	protected function loadRelations()
 	{
-		if($this->relsLoaded) { return; }
+		if($this->relsLoaded)
+		{
+			return $this;
+		}
 		$this->relsLoaded = true;
 
 		$joins  = "LEFT JOIN ".PREFIX."alliance a ON (ar.rel1 = a.aid)";
@@ -135,13 +138,16 @@ class Bengine_Game_Alliance_Page_Parser
 	/**
 	 * Loads list of member.
 	 *
-	 * @param string	Order by term
+	 * @param string $order	Order by term
 	 *
 	 * @return Bengine_Game_Alliance_Page_Parser
 	 */
 	protected function loadMember($order = "")
 	{
-		if($this->memberLoaded) { return; }
+		if($this->memberLoaded)
+		{
+			return $this;
+		}
 		$this->memberLoaded = true;
 		switch($order)
 		{
@@ -172,7 +178,7 @@ class Bengine_Game_Alliance_Page_Parser
 	/**
 	 * Starts parsing a text.
 	 *
-	 * @param string	Text to parse
+	 * @param string $text	Text to parse
 	 *
 	 * @return string	Parsed text
 	 */
@@ -244,10 +250,10 @@ class Bengine_Game_Alliance_Page_Parser
 	/**
 	 * Generates a diplomacy list of the given mode.
 	 *
-	 * @param string	List mode (confed, war, ...)
-	 * @param string	Make names clickable
-	 * @param string	Append points
-	 * @param string	Show number of members
+	 * @param string $mode			List mode (confed, war, ...)
+	 * @param string $asLink		Make names clickable
+	 * @param string $showPoints	Append points
+	 * @param string $showMember	Show number of members
 	 *
 	 * @return string	Formatted diplomacy list
 	 */
@@ -271,7 +277,7 @@ class Bengine_Game_Alliance_Page_Parser
 		{
 			if($asLink)
 			{
-				$out .= Link::get("game.php/".SID."/Alliance/Page/".$rels["aid"], $rels["tag"], $rels["name"]);
+				$out .= Link::get("game/".SID."/Alliance/Page/".$rels["aid"], $rels["tag"], $rels["name"]);
 			}
 			else
 			{
@@ -294,8 +300,8 @@ class Bengine_Game_Alliance_Page_Parser
 	/**
 	 * Generates a list of alliance member.
 	 *
-	 * @param string	Show points of members
-	 * @param string	List order
+	 * @param string $showPoints	Show points of members
+	 * @param string $order			List order
 	 *
 	 * @return string	Formatted list
 	 */
@@ -321,7 +327,7 @@ class Bengine_Game_Alliance_Page_Parser
 	/**
 	 * Makes an boolean value of the given expression.
 	 *
-	 * @param string	Expression
+	 * @param string $expr
 	 *
 	 * @return boolean
 	 */

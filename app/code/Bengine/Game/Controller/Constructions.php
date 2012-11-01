@@ -72,18 +72,18 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 		return $this;
 	}
 
-	 /**
+	/**
 	 * Check for sufficient resources and start to upgrade building.
 	 *
-	 * @param integer $id	Building id to upgrade
-	 *
+	 * @param integer $id    Building id to upgrade
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_Controller_Constructions
 	 */
 	protected function upgradeAction($id)
 	{
 		// Check events
 		if($this->event != false || Core::getUser()->get("umode"))
-			$this->redirect("game.php/".SID."/Constructions");
+			$this->redirect("game/".SID."/Constructions");
 		if($id == 12 && Game::getEH()->getResearchEvent())
 			throw new Recipe_Exception_Generic("Do not mess with the url.");
 		$shipyardSize = Game::getEH()->getShipyardEvents()->getCalculatedSize();
@@ -107,7 +107,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 		$isMoon = Game::getPlanet()->getData("ismoon");
 
 		/* @var Bengine_Game_Model_Construction $construction */
-		$construction = Game::getModel("construction");
+		$construction = Game::getModel("game/construction");
 		$construction->load($id);
 		if(!$construction->getId())
 		{
@@ -146,7 +146,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 			$data["buildingname"] = $construction->get("name");
 			Hook::event("UpgradeBuildingLast", array($construction, &$data, &$time));
 			Game::getEH()->addEvent(1, $time + TIME, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), null, $data);
-			$this->redirect("game.php/".SID."/Constructions");
+			$this->redirect("game/".SID."/Constructions");
 		}
 		else
 		{
@@ -166,7 +166,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 	{
 		if(!$this->event || !$id || Core::getUser()->get("umode"))
 		{
-			$this->redirect("game.php/".SID."/Constructions");
+			$this->redirect("game/".SID."/Constructions");
 		}
 		$result = Core::getQuery()->select("construction", array("buildingid"), "", "buildingid = '".$id."'");
 		if($row = Core::getDB()->fetch($result))
@@ -174,7 +174,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 			Core::getDB()->free_result($result);
 			Hook::event("AbortBuilding", array($this));
 			Game::getEH()->removeEvent($this->event->get("eventid"));
-			$this->redirect("game.php/".SID."/Constructions");
+			$this->redirect("game/".SID."/Constructions");
 		}
 		Core::getDB()->free_result($result);
 		$this->setNoDisplay();
@@ -184,15 +184,15 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 	/**
 	 * Demolish a building ...
 	 *
-	 * @param integer $id	Building id
-	 *
+	 * @param integer $id
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_Controller_Constructions
 	 */
 	protected function demolishAction($id)
 	{
 		if($this->event != false || Core::getUser()->get("umode"))
 		{
-			Recipe_Header::redirect("game.php/".SID."/Constructions", false);
+			Recipe_Header::redirect("game/".SID."/Constructions", false);
 		}
 		$result = Core::getQuery()->select("building2planet b2p", array("c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.charge_metal", "c.charge_silicon", "c.charge_hydrogen", "c.name", "c.demolish"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = b2p.buildingid)", "b2p.buildingid = '".$id."'");
 		if(!$row = Core::getDB()->fetch($result))
@@ -228,7 +228,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 			$time = getBuildTime($data["metal"], $data["silicon"], self::BUILDING_CONSTRUCTION_TYPE);
 			Hook::event("DemolishBuldingLast", array(&$data, &$time));
 			Game::getEH()->addEvent(2, $time + TIME, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), null, $data);
-			$this->redirect("game.php/".SID."/Constructions");
+			$this->redirect("game/".SID."/Constructions");
 		}
 		else
 		{
@@ -250,8 +250,8 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 	/**
 	 * Shows all building information.
 	 *
-	 * @param integer $id	Building id
-	 *
+	 * @param integer $id
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_Controller_Constructions
 	 */
 	protected function infoAction($id)
@@ -274,7 +274,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 			Core::getTPL()->assign("buildingName", Core::getLanguage()->getItem($row["name"]));
 			Core::getTPL()->assign("buildingDesc", Core::getLanguage()->getItem($row["name"]."_FULL_DESC"));
 			Core::getTPL()->assign("buildingImage", Image::getImage("buildings/".$row["name"].".gif", Core::getLanguage()->getItem($row["name"]), null, null, "leftImage"));
-			Core::getTPL()->assign("edit", Link::get("game.php/".SID."/Construction_Edit/Index/".$id, "[".Core::getLanguage()->getItem("EDIT")."]"));
+			Core::getTPL()->assign("edit", Link::get("game/".SID."/Construction_Edit/Index/".$id, "[".Core::getLanguage()->getItem("EDIT")."]"));
 
 			// Production and consumption of the building
 			$prodFormula = false;
@@ -416,7 +416,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 				$showLink = (Game::getPlanet()->getData("metal") >= $_metal && Game::getPlanet()->getData("silicon") >= $_silicon && Game::getPlanet()->getData("hydrogen") >= $_hydrogen);
 				Core::getTPL()->assign("showLink", $showLink && !$this->event);
 
-				Core::getTPL()->assign("demolishNow", Link::get("game.php/".SID."/Constructions/Demolish/{$id}", Core::getLanguage()->getItem("DEMOLISH_NOW")));
+				Core::getTPL()->assign("demolishNow", Link::get("game/".SID."/Constructions/Demolish/{$id}", Core::getLanguage()->getItem("DEMOLISH_NOW")));
 			}
 			else
 			{

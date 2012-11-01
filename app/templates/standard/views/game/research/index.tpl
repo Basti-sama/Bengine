@@ -11,7 +11,7 @@
 		<tr>
 			<td>
 				<?php $image = Image::getImage("buildings/".$building->get("name").".gif", $building->getName(), 120, 120) ?>
-				<?php echo Link::get("game.php/".SID."/Constructions/Info/".$id, $image); ?>
+				<?php echo Link::get("game/".SID."/Constructions/Info/".$id, $image); ?>
 			</td>
 			<td style="vertical-align: top;">
 			<?php echo $building->getLinkName() ?>
@@ -43,11 +43,11 @@
 			<?php if(!$umode): ?>
 				<?php if($isInWork): ?>
 					<?php $timeleft = $event->get("time") - TIME ?>
-					<?php $abort = Link::get("game.php/".SID."/Research/Abort/".$id, Core::getLanguage()->getItem("ABORT")) ?>
+					<?php $abort = Link::get("game/".SID."/Research/Abort/".$id, Core::getLanguage()->getItem("ABORT")) ?>
 					<?php if($event->get("planetid") != Game::getPlanet()->getPlanetId()): ?>
 					<?php $abort .= "<br/>(".Core::getLanguage()->get("ON")." ".$event->get("planetname").")" ?>
 					<?php endif ?>
-					<?php $continue = Link::get("game.php/".SID."/Research", Core::getLanguage()->getItem("CONTINUE")) ?>
+					<?php $continue = Link::get("game/".SID."/Research", Core::getLanguage()->getItem("CONTINUE")) ?>
 					<span id="bCountDown"><?php echo getTimeTerm($timeleft) ?><br /><?php echo $abort ?></span>
 					<script type="text/javascript">
 					//<![CDATA[
@@ -69,9 +69,9 @@
 				<?php if(!$event && $this->get("canResearch")): ?>
 					<?php if($building->hasResources()): ?>
 						<?php if($building->get("level")): ?>
-							<?php echo Link::get("game.php/".SID."/Research/Upgrade/".$id, Core::getLanguage()->getItem("RESEARCH_OF_LEVEL")." ".($building->get("level")+1), "", "true") ?>
+							<?php echo Link::get("game/".SID."/Research/Upgrade/".$id, Core::getLanguage()->getItem("RESEARCH_OF_LEVEL")." ".($building->get("level")+1), "", "true") ?>
 						<?php else: ?>
-							<?php echo Link::get("game.php/".SID."/Research/Upgrade/".$id, Core::getLanguage()->getItem("RESEARCH"), "", "true") ?>
+							<?php echo Link::get("game/".SID."/Research/Upgrade/".$id, Core::getLanguage()->getItem("RESEARCH"), "", "true") ?>
 						<?php endif ?>
 					<?php else: ?>
 						<?php if($building->get("level")): ?>

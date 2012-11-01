@@ -6,7 +6,7 @@
 		</tr>
 		<?php if(Core::getConfig()->get("SCRAP_MERCHANT_RATE") > 0): ?>
 		<tr>
-			<td colspan="3" class="center"><a href="<?php echo Link::url("game.php/".SID."/Shipyard/Merchant") ?>">{lang=GO_TO_MERCHANT}</a></td>
+			<td colspan="3" class="center"><a href="<?php echo Link::url("game/".SID."/Shipyard/Merchant") ?>">{lang=GO_TO_MERCHANT}</a></td>
 		</tr>
 		<?php endif ?>
 	</thead>
@@ -24,7 +24,7 @@
 		<tr>
 			<td>
 				<?php $image = Image::getImage("buildings/".$unit->get("name").".gif", $unit->getName(), 120, 120) ?>
-				<?php echo Link::get("game.php/".SID."/Unit/Info/".$id, $image); ?>
+				<?php echo Link::get("game/".SID."/Unit/Info/".$id, $image); ?>
 			</td>
 			<td style="vertical-align:top;">
 				<?php echo $unit->getLinkName() ?>

@@ -96,19 +96,17 @@ class Bengine_Game_Assault_Participant
 	/**
 	 * Creates a new participant.
 	 *
-	 * @param Bengine_Game_EventHandler
-	 *
-	 * @return void
+	 * @return \Bengine_Game_Assault_Participant
 	 */
 	public function __construct()
 	{
-		return;
+
 	}
 
 	/**
 	 * Sets the data and ships.
 	 *
-	 * @param array		Data field
+	 * @param array $data
 	 *
 	 * @return Bengine_Game_Assault_Participant
 	 */
@@ -123,7 +121,7 @@ class Bengine_Game_Assault_Participant
 	/**
 	 * Retuns the data.
 	 *
-	 * @param string	Data parameter [optional]
+	 * @param string $param	Data parameter [optional]
 	 *
 	 * @return mixed	Data value or false
 	 */
@@ -181,7 +179,7 @@ class Bengine_Game_Assault_Participant
 	/**
 	 * Makes final calculations and sends the fleet back.
 	 *
-	 * @param integer	Assault result
+	 * @param integer $result	Assault result
 	 *
 	 * @return Bengine_Game_Assault_Participant
 	 */
@@ -213,7 +211,7 @@ class Bengine_Game_Assault_Participant
 			$this->data["oldmode"] = 10;
 			if(count($this->data["ships"]) > 0 && $this->mode == 1)
 			{
-				$event = Game::getModel("event");
+				$event = Game::getModel("game/event");
 				$event->setMode(20)
 					->setTime($this->data["time"] + $this->time)
 					->setUserid($this->userid)
@@ -253,7 +251,7 @@ class Bengine_Game_Assault_Participant
 	/**
 	 * Setter-method for combat location.
 	 *
-	 * @param integer	Planet id
+	 * @param integer $planetid
 	 *
 	 * @return Bengine_Game_Assault_Participant
 	 */

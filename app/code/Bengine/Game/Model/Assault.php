@@ -17,7 +17,7 @@ class Bengine_Game_Model_Assault extends Recipe_Model_Abstract
 	protected function init()
 	{
 		$this->setTableName("assault")
-			->setModelName("assault")
+			->setModelName("game/assault")
 			->setPrimaryKey("assaultid");
 		return $this;
 	}
@@ -25,8 +25,8 @@ class Bengine_Game_Model_Assault extends Recipe_Model_Abstract
 	/**
 	 * Coordinates of the planet.
 	 *
-	 * @param boolean	Link or simple string
-	 * @param boolean	Replace session with wildcard
+	 * @param boolean $link			Link or simple string
+	 * @param boolean $sidWildcard	Replace session with wildcard
 	 *
 	 * @return string	Coordinates
 	 */

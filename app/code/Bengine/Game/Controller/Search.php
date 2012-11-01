@@ -37,8 +37,8 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 	/**
 	 * Starts the search.
 	 *
-	 * @param string	The search item
-	 * @param string	The search mode
+	 * @param string $what	The search item
+	 * @param string $where	The search mode
 	 *
 	 * @return Bengine_Game_Controller_Search
 	 */
@@ -168,8 +168,8 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 	/**
 	 * Returns a similar word for a search item.
 	 *
-	 * @param string	Search type
-	 * @param string	Search item
+	 * @param String $item
+	 * @param string $type
 	 *
 	 * @return array
 	 */

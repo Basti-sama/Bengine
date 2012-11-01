@@ -43,6 +43,7 @@ class Bengine_Game_Controller_Ajax_Fleet extends Bengine_Game_Controller_Ajax_Ab
 	/**
 	 * Sends espionage probes.
 	 *
+	 * @param int $target
 	 * @return Bengine_Game_Controller_Ajax_Fleet
 	 */
 	protected function espionageAction($target)
@@ -158,14 +159,14 @@ class Bengine_Game_Controller_Ajax_Fleet extends Bengine_Game_Controller_Ajax_Ab
 	/**
 	 * Formats the output text.
 	 *
-	 * @param string Text to format.
-	 * @param boolean Success or error format.
+	 * @param string $text Text to format.
+	 * @param boolean $success Success or error format.
 	 *
 	 * @return string Formatted text.
 	 */
-	protected function format($text, $success = 0)
+	protected function format($text, $success = false)
 	{
-		$class = ($success == 1) ? "success" : "false";
+		$class = $success ? "success" : "false";
 		return "<span class=\"".$class."\" style=\"font-weight: bold;\">".$text."</span>";
 	}
 }

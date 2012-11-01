@@ -20,7 +20,7 @@
 				<td>
 					<input type="hidden" name="verify" value="yes"/>
 					<button type="submit" value="yes" class="button">Ja</button>
-					<button type="button" value="no" class="button" onclick="location.href='<?php echo Link::url("game.php/".SID."/Shipyard/Merchant") ?>';">Nein</button>
+					<button type="button" value="no" class="button" onclick="location.href='<?php echo Link::url("game/".SID."/Shipyard/Merchant") ?>';">Nein</button>
 				</td>
 			</tr>
 		</tfoot>

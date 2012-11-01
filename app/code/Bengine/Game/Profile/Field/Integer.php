@@ -12,8 +12,6 @@ class Bengine_Game_Profile_Field_Integer extends Bengine_Game_Profile_Field_Abst
 	/**
 	 * Validate the data.
 	 *
-	 * @param string	Data
-	 *
 	 * @return boolean
 	 */
 	public function validate()

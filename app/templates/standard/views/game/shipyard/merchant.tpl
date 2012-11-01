@@ -1,4 +1,4 @@
-<form action="{const=BASE_URL}game.php/{const=SID}/Shipyard/Change" method="post">
+<form action="{const=BASE_URL}game/{const=SID}/Shipyard/Change" method="post">
 	<table class="ntable">
 		<thead>
 			<tr>

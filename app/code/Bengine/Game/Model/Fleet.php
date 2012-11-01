@@ -15,8 +15,10 @@ class Bengine_Game_Model_Fleet extends Bengine_Game_Model_Construction
 	 */
 	protected function init()
 	{
-		$this->setModelName("fleet");
-		return parent::init();
+		parent::init();
+		$this->setModelName("game/fleet")
+			->setCollectionName("game/fleet");
+		return ;
 	}
 
 	/**
@@ -77,7 +79,7 @@ class Bengine_Game_Model_Fleet extends Bengine_Game_Model_Construction
 	/**
 	 * Spelling fix for "capicity".
 	 *
-	 * @param integer	Capacity value
+	 * @param integer $capacity	Capacity value
 	 *
 	 * @return Bengine_Game_Model_Fleet
 	 */

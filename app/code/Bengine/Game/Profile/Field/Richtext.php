@@ -12,8 +12,6 @@ class Bengine_Game_Profile_Field_Richtext extends Bengine_Game_Profile_Field_Abs
 	/**
 	 * Validate the data.
 	 *
-	 * @param string	Data
-	 *
 	 * @return boolean
 	 */
 	public function validate()

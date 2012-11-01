@@ -33,9 +33,9 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 	/**
 	 * Creates a new user list object.
 	 *
-	 * @param resource	Query result for a list
-	 *
-	 * @return void
+	 * @param resource $list Query result for a list
+	 * @param int $start
+	 * @return \Bengine_Game_User_List
 	 */
 	public function __construct($list = null, $start = 0)
 	{
@@ -44,15 +44,14 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 		$this->modPic = Image::getImage("moderator.gif", Core::getLanguage()->getItem("MODERATE"));
 		$this->points = Core::getUser()->get("points");
 		parent::__construct($list, $start);
-		return;
 	}
 
 	/**
 	 * Formats an user record.
 	 *
-	 * @param array		User data
+	 * @param array $row	User data
 	 *
-	 * @return array	Formatted user data
+	 * @return array		Formatted user data
 	 */
 	protected function formatRow(array $row)
 	{
@@ -63,9 +62,9 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 		}
 
 		// Quick buttons
-		$row["message"] = Link::get("game.php/".SID."/MSG/Write/".$row["username"], $this->pmPic);
-		$row["buddyrequest"] = Link::get("game.php/".SID."/Friends/Add/".$row["userid"], $this->buddyPic);
-		$row["moderator"] = Link::get("game.php/".SID."/Moderator/Index/".$row["userid"], $this->modPic);
+		$row["message"] = Link::get("game/".SID."/MSG/Write/".$row["username"], $this->pmPic);
+		$row["buddyrequest"] = Link::get("game/".SID."/Friends/Add/".$row["userid"], $this->buddyPic);
+		$row["moderator"] = Link::get("game/".SID."/Moderator/Index/".$row["userid"], $this->modPic);
 
 		$userClass = ""; $inactive = ""; $ban = ""; $umode = ""; $status = "";
 		// Newbie protection
@@ -110,7 +109,7 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 		$row["user_status"] = sprintf("%s%s%s", $inactive, $ban, $umode);
 		$row["user_status_long"] = sprintf("%s%s%s%s", $inactive, $ban, $umode, $status);
 		$title = (!empty($row["usertitle"])) ? $row["usertitle"] : Core::getLang()->get("GO_TO_PROFILE");
-		$row["username"] = Link::get("game.php/".SID."/Profile/Page/".$row["userid"], $this->formatUsername($row["username"], $row["userid"], $row["aid"], $userClass), $title);
+		$row["username"] = Link::get("game/".SID."/Profile/Page/".$row["userid"], $this->formatUsername($row["username"], $row["userid"], $row["aid"], $userClass), $title);
 
 		$row["alliance"] = "";
 		if(!empty($row["aid"]) && !empty($row["tag"]))
@@ -159,9 +158,9 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 	/**
 	 * Fetches the user rank from database.
 	 *
-	 * @param integer	Points
-	 *
-	 * @return integer	Rank
+	 * @param integer $points
+	 * @param string $pointType
+	 * @return integer
 	 */
 	protected function getUserRank($points, $pointType)
 	{
@@ -174,10 +173,10 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 	/**
 	 * Sets the CSS class for the username.
 	 *
-	 * @param string	Username
-	 * @param integer	User id
-	 * @param integer	Alliance id
-	 * @param string	Default CSS class
+	 * @param string $username
+	 * @param integer $userid
+	 * @param integer $aid
+	 * @param string $defaultClass
 	 *
 	 * @return string	Formatted username
 	 */

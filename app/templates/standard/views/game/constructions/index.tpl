@@ -13,7 +13,7 @@
 		<tr>
 			<td>
 				<?php $image = Image::getImage("buildings/".$building->get("name").".gif", $building->getName(), 120, 120) ?>
-				<?php echo Link::get("game.php/".SID."/Constructions/Info/".$id, $image); ?>
+				<?php echo Link::get("game/".SID."/Constructions/Info/".$id, $image); ?>
 			</td>
 			<td style="vertical-align: top;">
 			<?php echo $building->getLinkName() ?>
@@ -45,8 +45,8 @@
 			<?php if(!$umode && $planetFree): ?>
 			<?php if($isInWork): ?>
 			<?php $timeleft = $event->get("time") - TIME ?>
-			<?php $abort = Link::get("game.php/".SID."/Constructions/Abort/".$id, Core::getLanguage()->getItem("ABORT")) ?>
-			<?php $continue = Link::get("game.php/".SID."/Constructions", Core::getLanguage()->getItem("CONTINUE")) ?>
+			<?php $abort = Link::get("game/".SID."/Constructions/Abort/".$id, Core::getLanguage()->getItem("ABORT")) ?>
+			<?php $continue = Link::get("game/".SID."/Constructions", Core::getLanguage()->getItem("CONTINUE")) ?>
 			<span id="bCountDown"><?php echo getTimeTerm($timeleft) ?><br /><?php echo $abort ?></span>
 			<script type="text/javascript">
 			//<![CDATA[
@@ -72,9 +72,9 @@
 			<span class="false">{lang=BUILDING_AT_WORK}</span>
 			<?php elseif($building->hasResources() && $buildable): ?>
 			<?php if($building->get("level")): ?>
-			<?php echo Link::get("game.php/".SID."/Constructions/Upgrade/".$id, Core::getLanguage()->getItem("UPGRADE_TO_LEVEL")." ".($building->get("level")+1), "", "true") ?>
+			<?php echo Link::get("game/".SID."/Constructions/Upgrade/".$id, Core::getLanguage()->getItem("UPGRADE_TO_LEVEL")." ".($building->get("level")+1), "", "true") ?>
 			<?php else: ?>
-			<?php echo Link::get("game.php/".SID."/Constructions/Upgrade/".$id, Core::getLanguage()->getItem("BUILD"), "", "true") ?>
+			<?php echo Link::get("game/".SID."/Constructions/Upgrade/".$id, Core::getLanguage()->getItem("BUILD"), "", "true") ?>
 			<?php endif ?>
 			<?php else: ?>
 			<?php if($building->get("level")): ?>

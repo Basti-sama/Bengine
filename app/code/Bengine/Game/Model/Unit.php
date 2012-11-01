@@ -17,25 +17,25 @@ class Bengine_Game_Model_Unit extends Bengine_Game_Model_Construction
 	{
 		$this->setTableName("construction")
 			->setPrimaryKey("buildingid")
-			->setModelName("unit")
-			->setCollectionName("construction")
-			->setResourceName("unit");
+			->setModelName("game/unit")
+			->setCollectionName("game/construction")
+			->setResourceName("game/unit");
 		return $this;
 	}
 
 	public function getLinkName()
 	{
-		return Link::get("game.php/".SID."/Unit/Info/".$this->get("buildingid"), $this->getName());
+		return Link::get("game/".SID."/Unit/Info/".$this->get("buildingid"), $this->getName());
 	}
 
 	public function getImage()
 	{
-		return Link::get("game.php/".SID."/Unit/Info/".$this->get("buildingid"), Image::getImage("buildings/".$this->get("name").".gif", $this->getName()));
+		return Link::get("game/".SID."/Unit/Info/".$this->get("buildingid"), Image::getImage("buildings/".$this->get("name").".gif", $this->getName()));
 	}
 
 	public function getEditLink()
 	{
-		return Link::get("game.php/".SID."/Unit/Edit/".$this->get("buildingid"), "[".Core::getLanguage()->getItem("EDIT")."]");
+		return Link::get("game/".SID."/Unit/Edit/".$this->get("buildingid"), "[".Core::getLanguage()->getItem("EDIT")."]");
 	}
 
 	public function hasResources()

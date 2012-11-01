@@ -17,6 +17,7 @@ class Bengine_Game_Model_Construction extends Recipe_Model_Abstract
 	protected function init()
 	{
 		$this->setTableName("construction");
+		$this->setModelName("game/construction");
 		$this->setPrimaryKey("buildingid");
 		return parent::init();
 	}
@@ -48,7 +49,7 @@ class Bengine_Game_Model_Construction extends Recipe_Model_Abstract
 	 */
 	public function getLinkName()
 	{
-		return Link::get("game.php/".SID."/Constructions/Info/".$this->get("buildingid"), $this->getName());
+		return Link::get("game/".SID."/Constructions/Info/".$this->get("buildingid"), $this->getName());
 	}
 
 	/**
@@ -58,7 +59,7 @@ class Bengine_Game_Model_Construction extends Recipe_Model_Abstract
 	 */
 	public function getImage()
 	{
-		return Link::get("game.php/".SID."/Constructions/Info/".$this->get("buildingid"), Image::getImage("buildings/".$this->get("name").".gif", $this->getName()));
+		return Link::get("game/".SID."/Constructions/Info/".$this->get("buildingid"), Image::getImage("buildings/".$this->get("name").".gif", $this->getName()));
 	}
 
 	/**
@@ -68,7 +69,7 @@ class Bengine_Game_Model_Construction extends Recipe_Model_Abstract
 	 */
 	public function getEditLink()
 	{
-		return Link::get("game.php/".SID."/Construction_Edit/Index/".$this->get("buildingid"), "[".Core::getLanguage()->getItem("EDIT")."]");
+		return Link::get("game/".SID."/Construction_Edit/Index/".$this->get("buildingid"), "[".Core::getLanguage()->getItem("EDIT")."]");
 	}
 
 	/**

@@ -26,7 +26,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 	/**
 	 * Shows account and planet overview.
 	 *
-	 * @return Bengine_Game_Controller_Main
+	 * @return Bengine_Game_Controller_Index
 	 */
 	protected function init()
 	{
@@ -37,7 +37,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 	/**
 	 * Index action.
 	 *
-	 * @return Bengine_Game_Controller_Main
+	 * @return Bengine_Game_Controller_Index
 	 */
 	protected function indexAction()
 	{
@@ -50,8 +50,8 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		$msgs = Core::getDB()->num_rows($result);
 		Core::getDB()->free_result($result);
 		Core::getTPL()->assign("unreadmsg", $msgs);
-		if($msgs == 1) { Core::getTPL()->assign("newMessages", Link::get("game.php/".SID."/MSG", Core::getLanguage()->getItem("F_NEW_MESSAGE"))); }
-		else if($msgs > 1)  { Core::getTPL()->assign("newMessages", Link::get("game.php/".SID."/MSG", sprintf(Core::getLanguage()->getItem("F_NEW_MESSAGES"), $msgs))); }
+		if($msgs == 1) { Core::getTPL()->assign("newMessages", Link::get("game/".SID."/MSG", Core::getLanguage()->getItem("F_NEW_MESSAGE"))); }
+		else if($msgs > 1)  { Core::getTPL()->assign("newMessages", Link::get("game/".SID."/MSG", sprintf(Core::getLanguage()->getItem("F_NEW_MESSAGES"), $msgs))); }
 
 		// Fleet events
 		$fleetEvent = Game::getEH()->getFleetEvents();
@@ -89,16 +89,16 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 			<span id=\"bCountDown\">".getTimeTerm($timeleft)."<br />".$abort."</span>";
 		}
 		else { $timer = ""; }
-		$planetAction = Link::get("game.php/".SID."/Constructions", $planetAction).$timer;
+		$planetAction = Link::get("game/".SID."/Constructions", $planetAction).$timer;
 		Core::getTPL()->assign("planetAction", $planetAction); unset($planetAction);
 		Core::getTPL()->assign("occupiedFields", Game::getPlanet()->getFields(true));
 		Core::getTPL()->assign("planetImage", Image::getImage("planets/".Game::getPlanet()->getData("picture").Core::getConfig()->get("PLANET_IMG_EXT"), Game::getPlanet()->getData("planetname"), "200px", "200px"));
 		Core::getTPL()->assign("freeFields", Game::getPlanet()->getMaxFields());
 		Core::getTPL()->assign("planetDiameter", fNumber(Game::getPlanet()->getData("diameter")));
-		Core::getTPL()->assign("planetNameLink", Link::get("game.php/".SID."/Index/PlanetOptions", Game::getPlanet()->getData("planetname")));
+		Core::getTPL()->assign("planetNameLink", Link::get("game/".SID."/Index/PlanetOptions", Game::getPlanet()->getData("planetname")));
 		Core::getTPL()->assign("planetPosition", Game::getPlanet()->getCoords());
 		Core::getTPL()->assign("planetTemp", Game::getPlanet()->getData("temperature"));
-		Core::getTPL()->assign("points", Link::get("game.php/".SID."/Ranking", fNumber(floor(Core::getUser()->get("points")))));
+		Core::getTPL()->assign("points", Link::get("game/".SID."/Ranking", fNumber(floor(Core::getUser()->get("points")))));
 
 		// Points
 		$result = Core::getQuery()->select("user", "userid");
@@ -152,6 +152,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		}
 		Core::getTemplate()->assign("shipyardMissions", $shipyardMissions);
 
+		/* @var Bengine_Game_Model_Collection_News $news */
 		$news = Game::getCollection("game/news");
 		$news->addSortIndexOrder()
 			->addEnabledFilter()
@@ -164,7 +165,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 	/**
 	 * Shows form for planet options.
 	 *
-	 * @return Bengine_Game_Controller_Main
+	 * @return Bengine_Game_Controller_Index
 	 */
 	protected function planetOptionsAction()
 	{
@@ -181,9 +182,11 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 	/**
 	 * Shows form for planet options.
 	 *
-	 * @param array		_POST
+	 * @param string $planetname
+	 * @param boolean $abandon
+	 * @param string $password
 	 *
-	 * @return Bengine_Game_Controller_Main
+	 * @return Bengine_Game_Controller_Index
 	 */
 	protected function changePlanetOptions($planetname, $abandon, $password)
 	{
@@ -217,13 +220,13 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 				deletePlanet(Game::getPlanet()->getPlanetId(), Core::getUser()->get("userid"), Game::getPlanet()->getData("ismoon"));
 				Core::getQuery()->update("user", "curplanet", Core::getUser()->get("hp"), "userid = '".Core::getUser()->get("userid")."'");
 				Core::getUser()->rebuild();
-				$this->redirect("game.php/".SID."/Index");
+				$this->redirect("game/".SID."/Index");
 			}
 		}
 		else if(checkCharacters($planetname))
 		{
 			Core::getQuery()->update("planet", "planetname", $planetname, "planetid = '".Core::getUser()->get("curplanet")."'");
-			$this->redirect("game.php/".SID."/Index");
+			$this->redirect("game/".SID."/Index");
 		}
 		else
 		{
@@ -235,7 +238,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 	/**
 	 * Parses an event.
 	 *
-	 * @param Bengine_Game_Model_Event		Event data
+	 * @param Bengine_Game_Model_Event $f
 	 *
 	 * @return array	Parsed event data
 	 */
@@ -259,7 +262,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		Core::getLanguage()->assign("silicon", fNumber($f->getData("silicon", 0)));
 		Core::getLanguage()->assign("hydrogen", fNumber($f->getData("hydrogen", 0)));
 		Core::getLanguage()->assign("username", $f->getUsername());
-		Core::getLanguage()->assign("message", Link::get("game.php/".SID."/MSG/Write/".rawurlencode($f->getUsername()), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE"))));
+		Core::getLanguage()->assign("message", Link::get("game/".SID."/MSG/Write/".rawurlencode($f->getUsername()), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE"))));
 		Core::getLanguage()->assign("mission", ($f->getCode() == "return") ? $f->getOrgModeName() : $f->getModeName());
 
 		Core::getLanguage()->assign("fleet", $f->getFleetString());
@@ -286,7 +289,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		}
 		else if($f->getCode() == "alliedFleet")
 		{
-			$mainFleet = Game::getModel("event")->load($f->getParentId());
+			$mainFleet = Game::getModel("game/event")->load($f->getParentId());
 			if($mainFleet->getUsierid() == Core::getUser()->get("userid"))
 			{
 				return false;

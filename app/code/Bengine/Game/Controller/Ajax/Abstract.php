@@ -33,7 +33,7 @@ abstract class Bengine_Game_Controller_Ajax_Abstract extends Bengine_Game_Contro
 	/**
 	 * Displays the text for clear Ajax output.
 	 *
-	 * @param string	The text to output
+	 * @param string $outstream	The text to output
 	 *
 	 * @return Bengine_Game_Controller_Ajax_Abstract
 	 */

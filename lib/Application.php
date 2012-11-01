@@ -95,13 +95,13 @@ abstract class Application
 	protected function dispatch()
 	{
 		$controllerName = Core::getRequest()->getGET("controller", "index");
-		$module = Core::getRequest()->getGET("module", DEFAULT_PACKAGE);
+		$package = Core::getRequest()->getGET("package", DEFAULT_PACKAGE);
 		self::$controllerName = $controllerName;
 		$config = array("action" => Core::getRequest()->getGET("action", "index"));
-		self::$controller = self::factory($module."_controller/".$controllerName, $config);
+		self::$controller = self::factory($package."_controller/".$controllerName, $config);
 		if(!self::$controller)
 		{
-			self::$controller = self::factory($module."_controller/index", array("action" => "noroute"));
+			self::$controller = self::factory($package."_controller/index", array("action" => "noroute"));
 		}
 		return self::$controller->run();
 	}
@@ -217,7 +217,7 @@ abstract class Application
 	protected function loadMeta()
 	{
 		self::$meta = Core::getCache()->getMetaCache();
-		foreach(self::$meta["modules"] as $namespace => $vendor)
+		foreach(self::$meta["packages"] as $namespace => $vendor)
 		{
 			self::addNamespace($namespace);
 		}

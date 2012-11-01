@@ -17,7 +17,7 @@ class Bengine_Game_Model_SessionLog extends Recipe_Model_Abstract
 	protected function init()
 	{
 		$this->setTableName("sessions")
-			->setModelName("sessionLog")
+			->setModelName("game/sessionLog")
 			->setPrimaryKey("sessionid");
 		return $this;
 	}

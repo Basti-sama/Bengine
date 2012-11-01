@@ -121,7 +121,7 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 		$startPlanet = ($startPlanet === false) ? $event->getDestination() : $startPlanet;
 		$destinationPlanet = ($destinationPlanet === false) ? $event->getPlanetid() : $destinationPlanet;
 
-		$rEvent = Game::getModel("event");
+		$rEvent = Game::getModel("game/event");
 		$rEvent->setMode(self::RETURN_EVENT_ID)
 			->setTime($time)
 			->setPlanetid($startPlanet)
@@ -182,7 +182,7 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 	 */
 	public function add($mode, $time, $planetid, $userid, $destination, array $data)
 	{
-		$event = Game::getModel("event");
+		$event = Game::getModel("game/event");
 		$this->setEvent($event);
 		$event->setMode($mode)
 			->setTime($time)

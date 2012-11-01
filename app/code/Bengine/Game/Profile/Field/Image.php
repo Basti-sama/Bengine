@@ -9,12 +9,13 @@
 
 class Bengine_Game_Profile_Field_Image extends Bengine_Game_Profile_Field_Abstract
 {
+	/**
+	 * @var array
+	 */
 	private $allowedMimes = array("image/gif", "image/jpeg", "image/png");
 
 	/**
 	 * Validate the data.
-	 *
-	 * @param string	Data
 	 *
 	 * @return boolean
 	 */

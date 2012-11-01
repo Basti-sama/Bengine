@@ -75,13 +75,13 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 	/**
 	 * Sets essentail data for the espionage report.
 	 *
-	 * @param integer	Target planet id
-	 * @param integer	Bengine_Game_Committing user
-	 * @param integer	Target user id
-	 * @param string	Traget user name
-	 * @param integer	Number of espionage probes
+	 * @param integer $planetid		Target planet id
+	 * @param integer $userid		Bengine_Game_Committing user
+	 * @param integer $targetUser	Target user id
+	 * @param string $targetName	Traget user name
+	 * @param integer $probes		Number of espionage probes
 	 *
-	 * @return void
+	 * @return Bengine_Game_Espionage_Report
 	 */
 	public function __construct($planetid, $userid, $targetUser, $targetName, $probes)
 	{
@@ -98,7 +98,6 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 		$this->loadEspData()
 			->generateReport()
 			->sendESPR();
-		return;
 	}
 
 	/**
@@ -294,7 +293,7 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 			$this->espReport .= "<tr><td colspan=\"4\" style=\"text-align: center; font-weight: bold;\" class=\"false\">".Core::getLanguage()->getItem("ESP_PROBES_DESTROYED")."</td></tr>";
 		}
 
-		$_baseUrl = "game.php/%SID%/Mission/Index/".$this->getData("galaxy")."/".$this->getData("system")."/".$this->getData("position")."/";
+		$_baseUrl = "game/%SID%/Mission/Index/".$this->getData("galaxy")."/".$this->getData("system")."/".$this->getData("position")."/";
 		$baseUrl = $_baseUrl.($this->getData("ismoon") ? "moon" : "planet")."/";
 		$attackLink = Link::get($baseUrl."attack", Core::getLanguage()->getItem("ATTACK"));
 		$transportLink = Link::get($baseUrl."transport", Core::getLanguage()->getItem("TRANSPORT"));

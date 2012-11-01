@@ -59,6 +59,7 @@ class Bengine_Game_Model_Message extends Recipe_Model_Abstract
 	{
 		$this->setTableName("message");
 		$this->setPrimaryKey("msgid");
+		$this->setModelName("game/message");
 		return parent::init();
 	}
 
@@ -106,7 +107,7 @@ class Bengine_Game_Model_Message extends Recipe_Model_Abstract
 		}
 		if($this->getSender() && $this->getSendToOutbox())
 		{
-			$message = Game::getModel("message");
+			$message = Game::getModel("game/message");
 			$message->setReceiver($this->getSender())
 				->setMode(self::OUTBOX_FOLDER_ID)
 				->setMessage($this->getMessage())
