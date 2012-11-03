@@ -23,8 +23,6 @@ define("EXEC_CRON", false);
 define("COOKIE_PREFIX", "bengine_");	// Prefix for cookies.
 define("CACHE_ACTIVE", true); 		// Global switch to enable/disable cache funcion.
 define("GZIP_ACITVATED", true);		// Enables GZIP compression.
-define("COOKIE_SESSION", false);	// Session will be stored in cookies.
-define("URL_SESSION", true);		// Session will be committed via URL.
 define("IPCHECK", true);			// Enables IP check for sessions.
 
 // Short constants

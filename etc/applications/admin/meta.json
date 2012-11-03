@@ -1,0 +1,13 @@
+{
+	"packages": {
+		"bengine": {
+			"admin": {
+				"type": "application",
+				"name": "Bengine Admin Interface",
+				"version": "0.30-dev",
+				"revision": 30,
+				"pool": "app/code"
+			}
+		}
+	}
+}
