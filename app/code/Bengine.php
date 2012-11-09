@@ -98,8 +98,8 @@ class Bengine extends Application
 		$second = mt_rand(0,100);
 		if($first == 42 && $second == 49 && Core::getUser()->get("asteroid") < TIME - 604800)
 		{
-			$data["metal"] = mt_rand(0,Core::getOptions()->get("MAX_ASTEROID_SIZE")) * 1000;
-			$data["silicon"] = mt_rand(0,$data["metal"]/1000) * 1000;
+			$data["metal"] = mt_rand(1, Core::getOptions()->get("MAX_ASTEROID_SIZE")) * 1000;
+			$data["silicon"] = mt_rand(1, $data["metal"]/1000) * 1000;
 			$data["galaxy"] = self::getPlanet()->getData("galaxy");
 			$data["system"] = self::getPlanet()->getData("system");
 			$data["position"] = self::getPlanet()->getData("position");
