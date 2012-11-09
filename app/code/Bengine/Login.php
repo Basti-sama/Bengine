@@ -38,9 +38,21 @@ class Bengine_Login extends Login
 			else
 			{
 				$this->canLogin = false;
-				if(!Str::compare($row["username"], $this->usr)) { $this->loginFailed("USERNAME_DOES_NOT_EXIST"); }
-				if(Str::length($row["activation"]) > 0) { $this->loginFailed("NO_ACTIVATION"); }
-				if(isset($row["to"]) && $row["to"] > TIME) { $this->loginFailed("ACCOUNT_BANNED"); }
+				if(!Str::compare($row["username"], $this->usr))
+				{
+					$this->loginFailed("USERNAME_DOES_NOT_EXIST");
+				}
+				if(Str::length($row["activation"]) > 0)
+				{
+					$this->loginFailed("NO_ACTIVATION");
+				}
+				if($row["banid"])
+				{
+					Core::getLanguage()->load(array("Prefs"));
+					Core::getLanguage()->assign("banReason", empty($row["reason"]) ? Core::getLanguage()->get("NO_BAN_REASON") : $row["reason"]);
+					Core::getLanguage()->assign("pilloryLink", Link::get(Core::getLanguage()->getOpt("langcode")."/pillory", Core::getLanguage()->get("PILLORY")));
+					$this->loginFailed("ACCOUNT_BANNED");
+				}
 				$this->loginFailed("PASSWORD_INVALID");
 			}
 		}
