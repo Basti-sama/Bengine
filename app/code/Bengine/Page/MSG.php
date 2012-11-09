@@ -92,12 +92,12 @@ class Bengine_Page_MSG extends Bengine_Page_Abstract
 		}
 		Core::getLanguage()->load("Message");
 		Core::getTPL()->assign("receiver", $receiver);
-		Core::getTPL()->assign("subject", ($reply != "") ? $reply : Core::getLanguage()->getItem("NO_SUBJECT"));
+		Core::getTPL()->assign("subject", ($reply != "") ? Link::urlDecode($reply) : Core::getLanguage()->getItem("NO_SUBJECT"));
 		Core::getTPL()->assign("maxpmlength", fNumber(Core::getOptions()->get("MAX_PM_LENGTH")));
 		$sendAction = BASE_URL."game.php/".SID."/MSG/Write/".rawurlencode($receiver);
 		if($reply != "")
 		{
-			$sendAction .= "/".rawurlencode($reply);
+			$sendAction .= "/".Link::urlEncode($reply);
 		}
 		Core::getTPL()->assign("sendAction", $sendAction);
 		Core::getLang()->assign("receiver", empty($receiver) ? "[".Core::getLang()->get("RECEIVER")."]" : $receiver);

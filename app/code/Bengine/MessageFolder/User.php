@@ -21,7 +21,7 @@ class Bengine_MessageFolder_User extends Bengine_MessageFolder_Abstract
 		$sender = $message->get("sender");
 		if(!empty($sender))
 		{
-			$url = "game.php/".SID."/MSG/Write/".rawurlencode($message->get("username"))."/".rawurlencode("RE: ".$message->get("subject"));
+			$url = "game.php/".SID."/MSG/Write/".rawurlencode($message->get("username"))."/".Link::urlEncode("RE: ".$message->get("subject"));
 			$reply = Link::get($url, Image::getImage("pm.gif", Core::getLanguage()->getItem("REPLY")));
 			$message->set("reply_link", $reply);
 			$sender = $message->get("username")." ".getCoordLink($message->get("galaxy"), $message->get("system"), $message->get("position"));
