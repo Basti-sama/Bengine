@@ -98,6 +98,7 @@ class Recipe_Database_Select
 	/**
 	 * Assembles all select elements.
 	 *
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Database_Select
 	 */
 	public function render()
@@ -166,16 +167,11 @@ class Recipe_Database_Select
 	/**
 	 * Executes the select query.
 	 *
-	 * @return resource
+	 * @return Recipe_Database_Statement_Abstract
 	 */
-	public function getResource()
+	public function getStatement()
 	{
-		try {
-			$resource = Core::getDB()->query($this->getSql());
-		} catch(Recipe_Exception_Generic $e) {
-			$e->printError();
-		}
-		return $resource;
+		return Core::getDB()->query($this->getSql());
 	}
 
 	/**
@@ -209,8 +205,8 @@ class Recipe_Database_Select
 	/**
 	 * Adds a from table element.
 	 *
-	 * @param array|string	Table to select
-	 * @param boolean		Prepend table prefix [optional]
+	 * @param array|string $table	Table to select
+	 * @param boolean $prefix		Prepend table prefix [optional]
 	 *
 	 * @return Recipe_Database_Select
 	 */
@@ -240,9 +236,9 @@ class Recipe_Database_Select
 	/**
 	 * Adds a where clause.
 	 *
-	 * @param array|string	Where condition
-	 * @param mixed			Value to check [optional]
-	 * @param string		Link (AND, OR) [optional]
+	 * @param array|string $condition	Where condition
+	 * @param mixed $value				Value to check [optional]
+	 * @param string $link				Link (AND, OR) [optional]
 	 *
 	 * @return Recipe_Database_Select
 	 */
@@ -256,7 +252,7 @@ class Recipe_Database_Select
 	 * Creates a condition term.
 	 *
 	 * @param array|string	Where condition
-	 * @param mixed			Value to check [optional]
+	 * @param mixed $value	Value to check [optional]
 	 *
 	 * @return string		SQL condition
 	 */
@@ -358,8 +354,8 @@ class Recipe_Database_Select
 	/**
 	 * Adds an order condition.
 	 *
-	 * @param string|array	Order condition
-	 * @param string		Sorting (ASC or DESC) [optional]
+	 * @param string|array $term	Order condition
+	 * @param string $sort			Sorting (ASC or DESC) [optional]
 	 *
 	 * @return Recipe_Database_Select
 	 */
@@ -385,8 +381,8 @@ class Recipe_Database_Select
 	/**
 	 * Adds a limit condition.
 	 *
-	 * @param integer	Count result items
-	 * @param integer	Offset result items [optional]
+	 * @param integer $count	Count result items
+	 * @param integer $offset	Offset result items [optional]
 	 *
 	 * @return Recipe_Database_Select
 	 */
@@ -405,10 +401,10 @@ class Recipe_Database_Select
 	/**
 	 * Adds a join to another table.
 	 *
-	 * @param array			The table name
-	 * @param array|string	ON-condition
-	 * @param boolean		Prepend table prefix [optional]
-	 * @param string		Join type (LEFT, RIGHT, ...) [optional]
+	 * @param array $table			The table name
+	 * @param array|string $on		ON-condition
+	 * @param boolean $prefix		Prepend table prefix [optional]
+	 * @param string $type			Join type (LEFT, RIGHT, ...) [optional]
 	 *
 	 * @return Recipe_Database_Select
 	 */
@@ -497,9 +493,9 @@ class Recipe_Database_Select
 	/**
 	 * Adds am HAVING clause to the SQL query.
 	 *
-	 * @param string	Condition
-	 * @param mixed		Value
-	 * @param string	Link
+	 * @param string $condition
+	 * @param mixed $value
+	 * @param string $link
 	 *
 	 * @return Recipe_Database_Select
 	 */

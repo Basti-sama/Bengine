@@ -13,11 +13,9 @@ class Recipe_Exception_Sql extends Recipe_Exception_Generic
 	/**
 	 * Creates a new SQL exception.
 	 *
-	 * @param string	Error message
-	 * @param integer	Error number
-	 * @param string	SQL query code
-	 *
-	 * @return void
+	 * @param string $message
+	 * @param integer $code
+	 * @param string $sql
 	 */
 	public function __construct($message, $code, $sql)
 	{

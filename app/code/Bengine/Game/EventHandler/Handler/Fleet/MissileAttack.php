@@ -25,25 +25,25 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 
 		// Load shelltech for defender
 		$_result = Core::getQuery()->select("research2user", "level", "", "userid = '".$event["destination_user_id"]."' AND buildingid = '17'");
-		$_row = Core::getDB()->fetch($_result);
-		Core::getDB()->free_result($_result);
+		$_row = $_result->fetchRow();
+		$_result->closeCursor();
 		$shell = (int) $_row["level"];
 
 		// Load defending units
 		$_result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity", "b.name", "basic_metal", "basic_silicon", "basic_hydrogen"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", "b.mode = '4' AND u2s.planetid = '".$event["destination"]."'", "b.display_order ASC, b.buildingid ASC");
-		while($_row = Core::getDB()->fetch($_result))
+		foreach($_result->fetchAll() as $_row)
 		{
 			$def[$_row["unitid"]] = $_row;
 			$def[$_row["unitid"]]["name"] = Core::getLanguage()->getItem($_row["name"]);
 			$def[$_row["unitid"]]["shell"] = ($_row["basic_metal"] + $_row["basic_silicon"]) / 10;
 			$def[$_row["unitid"]]["shell"] = floor($def[$_row["unitid"]]["shell"] * (1 + $shell / 10));
 		}
-		Core::getDB()->free_result($_result);
+		$_result->closeCursor();
 
 		// Load guntech for attacker
 		$_result = Core::getQuery()->select("research2user", "level", "", "userid = '".$event["userid"]."' AND buildingid = '15'");
-		$_row = Core::getDB()->fetch($_result);
-		Core::getDB()->free_result($_result);
+		$_row = $_result->fetchRow();
+		$_result->closeCursor();
 		$gun = (int) $_row["level"];
 
 		Hook::event("EhMissileAttackLoaded", array($event, &$_row, &$data, &$def, &$attack, &$shell, &$gun, &$primaryTarget));
@@ -51,9 +51,9 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 		if(!array_key_exists($primaryTarget, $def)) { $primaryTarget = 0; }
 
 		// Start attack
+		$pointsLost = 0;
 		if(count($def) > 0)
 		{
-			$pointsLost = 0;
 			if(isset($def[51]))
 			{
 				$attackingRockets -= $def[51]["quantity"];
@@ -146,17 +146,17 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 		$report  = "<table class=\"ntable\" style=\"width: 400px;\">";
 		$report .= "<tr><th colspan=\"4\">".Core::getLanguage()->getItem("ROCKET_ATTACK_REPORT_HEADLINE")."</th></tr>";
 		$i = 0;
-		foreach($def as $key => $def)
+		foreach($def as $key => $_def)
 		{
 			if($i % 2 == 0) { $report .= "<tr>"; }
 			if(!isset($destroyed[$key]))
 			{
 				$destroyed[$key] = 0;
 			}
-			$quantity = $def["quantity"] - $destroyed[$key];
+			$quantity = $_def["quantity"] - $destroyed[$key];
 			$dest = ($destroyed[$key] > 0) ? " (-".$destroyed[$key].")" : "";
-			$report .= "<td>".$def["name"]."</td><td>".$quantity.$dest."</td>";
-			if(count($def) == $i + 1 && $i % 2 == 0)
+			$report .= "<td>".$_def["name"]."</td><td>".$quantity.$dest."</td>";
+			if(count($_def) == $i + 1 && $i % 2 == 0)
 			{
 				$report .= "<td></td><td></td></tr>";
 			}
@@ -173,10 +173,10 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 		// Send report
 		$message = Core::getLanguage()->getItem("ROCKET_ATTACK_MSG_ATTACKER").$report;
 		Hook::event("EhMissileAttackReportGeneratedAttacker", array($event, &$_row, &$data, &$message));
-		Core::getQuery()->insertInto("message", array("mode" => 3, "time" => TIME, "sender" => null, "receiver" => $event["userid"], "message" => $message, "subject" => Core::getLanguage()->getItem("ROCKET_ATTACK_SUBJECT"), "read" => 0));
+		Core::getQuery()->insert("message", array("mode" => 3, "time" => TIME, "sender" => null, "receiver" => $event["userid"], "message" => $message, "subject" => Core::getLanguage()->getItem("ROCKET_ATTACK_SUBJECT"), "read" => 0));
 		$message = Core::getLanguage()->getItem("ROCKET_ATTACK_MSG_DEFENDER").$report;
 		Hook::event("EhMissileAttactReportGeneratedDefender", array($event, &$_row, &$data, &$message));
-		Core::getQuery()->insertInto("message", array("mode" => 3, "time" => TIME, "sender" => null, "receiver" => $event["destination_user_id"], "message" => $message, "subject" => Core::getLanguage()->getItem("ROCKET_ATTACK_SUBJECT"), "read" => 0));
+		Core::getQuery()->insert("message", array("mode" => 3, "time" => TIME, "sender" => null, "receiver" => $event["destination_user_id"], "message" => $message, "subject" => Core::getLanguage()->getItem("ROCKET_ATTACK_SUBJECT"), "read" => 0));
 
 		// Update points for defender
 		$pointsLost /= 1000;

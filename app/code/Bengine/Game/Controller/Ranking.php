@@ -96,11 +96,11 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		$oPos = Core::getDB()->num_rows($result);
 		$oPos = ($oPos <= 0) ? 1 : $oPos;
 		$oPos = ceil($oPos / Core::getOptions()->get("USER_PER_PAGE"));
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 
 		$result = Core::getQuery()->select("user u", "userid", "", "u.userid > '0'");
 		$pages = ceil(Core::getDB()->num_rows($result) / Core::getOptions()->get("USER_PER_PAGE"));
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		if(!is_numeric($pos))
 		{
 			$pos = $oPos;
@@ -158,10 +158,10 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		$oPos = Core::getDB()->num_rows($result);
 		$oPos = ($oPos <= 0) ? 1 : $oPos;
 		$oPos = ceil($oPos / Core::getOptions()->get("USER_PER_PAGE"));
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$result = Core::getQuery()->select("alliance", "aid", "", "aid > '0'");
 		$pages = ceil(Core::getDB()->num_rows($result) / Core::getOptions()->get("USER_PER_PAGE"));
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		if(!is_numeric($pos))
 		{
 			$pos = $oPos;
@@ -203,14 +203,14 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 	{
 		$relations = array();
 		$result = Core::getQuery()->select("ally_relationship_type", array("name", "css"), "", "storable = '1'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$relations[] = array(
 				"name"	=> Core::getLang()->get($row["name"]),
 				"css"	=> $row["css"]
 			);
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		Core::getTPL()->addLoop("relationTypes", $relations);
 		return $this;
 	}

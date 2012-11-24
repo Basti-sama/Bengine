@@ -20,7 +20,7 @@ class Bengine_Game_PointRenewer
 	{
 		$points = 0;
 		$result = Core::getQuery()->select("building2planet b2p", array("b2p.level", "c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.charge_metal", "c.charge_silicon", "c.charge_hydrogen"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = b2p.buildingid)", "b2p.planetid = '".$planetid."' AND (c.mode = '1' OR c.mode = '5')");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			for($i = 1; $i <= $row["level"]; $i++)
 			{
@@ -38,7 +38,7 @@ class Bengine_Game_PointRenewer
 				}
 			}
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $points / 1000;
 	}
 
@@ -53,11 +53,11 @@ class Bengine_Game_PointRenewer
 	{
 		$points = 0;
 		$result = Core::getQuery()->select("research2user", array("SUM(level) AS points"), "", "userid = '".$userid."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			$points = $row["points"];
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $points;
 	}
 
@@ -72,7 +72,7 @@ class Bengine_Game_PointRenewer
 	{
 		$points = 0;
 		$result = Core::getQuery()->select("research2user r2u", array("r2u.level", "c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.charge_metal", "c.charge_silicon", "c.charge_hydrogen"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = r2u.buildingid)", "r2u.userid = '".$userid."' AND c.mode = '2'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			for($i = 1; $i <= $row["level"]; $i++)
 			{
@@ -90,7 +90,7 @@ class Bengine_Game_PointRenewer
 				}
 			}
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $points / 1000;
 	}
 
@@ -105,11 +105,11 @@ class Bengine_Game_PointRenewer
 	{
 		$points = 0;
 		$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.quantity", "c.basic_metal", "c.basic_silicon", "c.basic_hydrogen"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = u2s.unitid)", "u2s.planetid = '".$planetid."' AND (c.mode = '3' OR c.mode = '4')");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$points += $row["quantity"] * $row["basic_metal"] + $row["quantity"] * $row["basic_silicon"] + $row["quantity"] * $row["basic_hydrogen"];
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $points / 1000;
 	}
 
@@ -124,7 +124,7 @@ class Bengine_Game_PointRenewer
 	{
 		$points = 0;
 		$result = Core::getQuery()->select("events", "data", "", "mode > '5' AND mode < '21' AND user = '".$userid."'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$row["data"] = unserialize($row["data"]);
 			if(!is_array($row["data"]["ships"]))
@@ -134,12 +134,12 @@ class Bengine_Game_PointRenewer
 			foreach($row["data"]["ships"] as $ship)
 			{
 				$_result = Core::getQuery()->select("construction", array("basic_metal", "basic_silicon", "basic_hydrogen"), "", "buildingid = '".$ship["id"]."'");
-				$shipData = Core::getDB()->fetch($_result);
-				Core::getDB()->free_result($_result);
+				$shipData = $_result->fetchRow();
+				$_result->closeCursor();
 				$points += ($shipData["basic_metal"] + $shipData["basic_silicon"] + $shipData["basic_hydrogen"]) * $ship["quantity"];
 			}
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $points / 1000;
 	}
 
@@ -154,11 +154,11 @@ class Bengine_Game_PointRenewer
 	{
 		$points = 0;
 		$result = Core::getQuery()->select("unit2shipyard u2s", array("SUM(u2s.quantity) AS points"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = u2s.unitid)", "u2s.planetid = '".$planetid."' AND c.mode = '3'", "", "", "u2s.planetid");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$points = $row["points"];
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $points;
 	}
 
@@ -173,7 +173,7 @@ class Bengine_Game_PointRenewer
 	{
 		$fpoints = 0;
 		$result = Core::getQuery()->select("events", "data", "", "mode > '5' AND mode < '21' AND user = '".$userid."'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$row["data"] = unserialize($row["data"]);
 			if(!is_array($row["data"]["ships"]))
@@ -185,7 +185,7 @@ class Bengine_Game_PointRenewer
 				$fpoints += $ship["quantity"];
 			}
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $fpoints;
 	}
 }

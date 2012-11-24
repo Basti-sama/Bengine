@@ -128,7 +128,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 		$consumption = 0;
 		$speed = 0;
 		$quantity = 0;
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$id = $row["unitid"];
 			$quantity = (isset($ships[$id])) ? (int) $ships[$id] : 0;
@@ -151,7 +151,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
    				$consumption += $row["consume"] * $quantity;
 			}
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		if(count($data["ships"]) > 0 && $speed > 0)
 		{
 			$distance = Game::getDistance($galaxy, $system, $position);
@@ -260,9 +260,9 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	{
 		$this->noAction = true;
 		$result = Core::getQuery()->select("temp_fleet", "data", "", "planetid = '".Core::getUser()->get("curplanet")."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 
 			$targetMode = ($targetType == "moon") ? "moonid" : "planetid";
 
@@ -288,7 +288,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			$joins .= "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.userid = u.userid)";
 			$result = Core::getQuery()->select("galaxy g", $select, $joins, "galaxy = '".$galaxy."' AND system = '".$system."' AND position = '".$position."'");
 			$target = Core::getDB()->fetch($result);
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			if($target === false)
 			{
 				$target = null;
@@ -390,9 +390,9 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			throw new Recipe_Exception_Generic("Too many fleets on missions.");
 		}
 		$result = Core::getQuery()->select("temp_fleet", "data", "", "planetid = '".Core::getUser()->get("curplanet")."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$temp = unserialize($row["data"]);
 			if(!in_array($mode, $temp["amissions"])) { Logger::dieMessage("UNKOWN_MISSION"); }
 
@@ -576,9 +576,9 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	{
 		$this->noAction = true;
 		$result = Core::getQuery()->select("events", "time", "", "(mode = '10' OR mode = '12') AND user = '".Core::getUser()->get("userid")."' AND eventid = '".$eventid."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$invitation = array();
 			$joins  = "LEFT JOIN ".PREFIX."formation_invitation fi ON (fi.eventid = af.eventid)";
 			$joins .= "LEFT JOIN ".PREFIX."user u ON (u.userid = fi.userid)";
@@ -599,7 +599,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			}
 			Core::getTPL()->addLoop("invitation", $invitation);
 			Core::getTPL()->assign("formationName", $name);
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$this->setTemplate("mission/formation");
 		}
 		return $this;
@@ -618,13 +618,13 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	{
 		$this->noAction = true;
 		$result = Core::getQuery()->select("events", "time", "", "(mode = '10' OR mode = '12') AND user = '".Core::getUser()->get("userid")."' AND eventid = '".$eventid."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$error = "";
 			$time = $row["time"];
 			$result = Core::getQuery()->select("user u", array("u.userid", "u2a.aid"), "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.userid = u.userid)", "u.username = '".$username."'");
-			$row = Core::getDB()->fetch($result);
+			$row = $result->fetchRow();
 			$userid = $row["userid"];
 			$aid = $row["aid"];
 			$Relation = new Bengine_Game_User_Relation(Core::getUser()->get("userid"), Core::getUser()->get("aid"));
@@ -671,7 +671,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 		$result = Core::getQuery()->select("temp_fleet", "data", "", "planetid = '".Core::getUser()->get("curplanet")."'");
 		if($temp = Core::getDB()->fetch($result))
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$temp = unserialize($temp["data"]);
 			Hook::event("ExecuteStarGateJump", array(&$temp));
 			if(!in_array($moonid, $temp["moons"]))
@@ -728,7 +728,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 		$joins  = "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)";
 		$joins .= "LEFT JOIN ".PREFIX."ship_datasheet d ON (d.unitid = u2s.unitid)";
 		$result = Core::getQuery()->select("unit2shipyard u2s", $select, $joins, "b.mode = '3' AND u2s.planetid = '".Core::getUser()->get("curplanet")."'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$id = $row["unitid"];
 			if(isset($ships[$id]))
@@ -745,10 +745,10 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 				}
 			}
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$result = Core::getQuery()->select("stargate_jump", "time", "", "planetid = '".Core::getUser()->get("curplanet")."'", "time DESC");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$row = $result->fetchRow();
+		$result->closeCursor();
 		$requiredReloadTime = ((int) Core::getConfig()->get("STAR_GATE_RELOAD_TIME")) * 60;
 		$reloadTime = $row["time"] + $requiredReloadTime;
 		if(count($data) > 0 && $reloadTime < TIME)
@@ -772,12 +772,12 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 				->group(array("p" => "planetid"))
 				->order(array("g" => "galaxy"))->order(array("g" => "system"))->order(array("g" => "position"));
 			$result = $select->getResource();
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$moons[] = $row;
 				$data["moons"][] = $row["planetid"];
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			Hook::event("ShowStarGates", array(&$moons, &$data));
 			Core::getTPL()->addLoop("moons", $moons);
 			$data = serialize($data);

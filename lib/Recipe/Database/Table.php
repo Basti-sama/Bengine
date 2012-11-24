@@ -56,7 +56,7 @@ class Recipe_Database_Table
 	/**
 	 * Creates a new table object.
 	 *
-	 * @param string	Table name [optional]
+	 * @param string $name	Table name [optional]
 	 *
 	 * @return Recipe_Database_Table
 	 */
@@ -83,11 +83,11 @@ class Recipe_Database_Table
 	/**
 	 * Fetches all rows.
 	 *
-	 * @param array|string|Recipe_Database_Select	WHERE statement [optional]
-	 * @param array		ORDER statement [optional]
-	 * @param array		LIMIT statement [optional]
+	 * @param array|string|Recipe_Database_Select $where	WHERE statement [optional]
+	 * @param array $order									ORDER statement [optional]
+	 * @param array $limit									LIMIT statement [optional]
 	 *
-	 * @return array	The rows
+	 * @return array										The rows
 	 */
 	public function fetchAll($where = null, array $order = null, array $limit = null)
 	{
@@ -116,21 +116,15 @@ class Recipe_Database_Table
 			}
 		}
 
-		$result = $select->render()->getResource();
-		$data = array();
-		while($row = $this->getDb()->fetch($result))
-		{
-			$data[] = $row;
-		}
-		$this->getDb()->free_result($result);
-		return $data;
+		$result = $select->render()->getStatement();
+		return $result->fetchAll();
 	}
 
 	/**
 	 * Fetches one row.
 	 *
-	 * @param mixed|string|Recipe_Database_Select	WHERE condition [optional]
-	 * @param mixed		Value [optional]
+	 * @param mixed|string|Recipe_Database_Select $where	WHERE condition [optional]
+	 * @param mixed $value									Value [optional]
 	 *
 	 * @return array	Row data
 	 */
@@ -153,13 +147,13 @@ class Recipe_Database_Table
 			}
 		}
 		$select->limit(1);
-		return $this->getDb()->fetch($select->render()->getResource());
+		return $select->render()->getStatement()->fetchRow();
 	}
 
 	/**
 	 * Fetches a row by primary key.
 	 *
-	 * @param integer|string	Primary key value to find.
+	 * @param integer|string $id	Primary key value to find.
 	 *
 	 * @return array
 	 */
@@ -171,7 +165,7 @@ class Recipe_Database_Table
 	/**
 	 * Deletes existing rows.
 	 *
-	 * @param string|integer	WHERE condition or ID to delete
+	 * @param string|integer $where	WHERE condition or ID to delete
 	 *
 	 * @return Recipe_Database_Table
 	 */
@@ -183,7 +177,7 @@ class Recipe_Database_Table
 		}
 		$this->_beforeDelete();
 		Core::getQuery()->delete($this->getName(), $where);
-		$this->affectedRows = $this->getDb()->affected_rows();
+		$this->affectedRows = $this->getDb()->affectedRows();
 		$this->_afterDelete();
 		return $this;
 	}
@@ -191,7 +185,7 @@ class Recipe_Database_Table
 	/**
 	 * Update existing rows.
 	 *
-	 * @param array		Column-value pairs
+	 * @param array $data	Column-value pairs
 	 *
 	 * @return Recipe_Database_Table
 	 */
@@ -209,7 +203,7 @@ class Recipe_Database_Table
 		}
 		$this->_beforeInsert();
 		Core::getQuery()->insert($this->getName(), $attrs, $values);
-		$this->insertId = $this->getDb()->insert_id();
+		$this->insertId = $this->getDb()->lastInsertId();
 		$this->_afterInsert();
 		return $this;
 	}
@@ -217,8 +211,8 @@ class Recipe_Database_Table
 	/**
 	 * Update existing rows.
 	 *
-	 * @param array		Column-value pairs
-	 * @param string	Where clause
+	 * @param array $data	Column-value pairs
+	 * @param string $where	Where clause
 	 *
 	 * @return Recipe_Database_Table
 	 */
@@ -236,7 +230,7 @@ class Recipe_Database_Table
 		}
 		$this->_beforeUpdate();
 		Core::getQuery()->update($this->getName(), $attrs, $values, $where);
-		$this->affectedRows = Core::getDB()->affected_rows();
+		$this->affectedRows = Core::getDB()->affectedRows();
 		$this->_afterUpdate();
 		return $this;
 	}
@@ -304,11 +298,10 @@ class Recipe_Database_Table
 		if(empty($this->schema))
 		{
 			$result = Core::getQuery()->showFields($this->getName());
-			while($field = $this->getDb()->fetch($result))
+			foreach($result->fetchAll() as $field)
 			{
 				$this->schema[] = $field;
 			}
-			$this->getDb()->free_result($result);
 		}
 		return $this->schema;
 	}
@@ -316,6 +309,7 @@ class Recipe_Database_Table
 	/**
 	 * Sets the table name.
 	 *
+	 * @param string $name
 	 * @return Recipe_Database_Table
 	 */
 	public function setName($name)

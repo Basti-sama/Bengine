@@ -58,16 +58,16 @@ class Bengine_Game_Controller_Ajax_Fleet extends Bengine_Game_Controller_Ajax_Ab
 		$joins .= "LEFT JOIN ".PREFIX."ship_datasheet sd ON (sd.unitid = u2s.unitid)";
 		$joins .= "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)";
 		$result = Core::getQuery()->select("planet p", $select, $joins, "p.planetid = '".Core::getUser()->get("curplanet")."' AND u2s.unitid = '38'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$joins  = "LEFT JOIN ".PREFIX."planet p ON (g.planetid = p.planetid)";
 			$joins .= "LEFT JOIN ".PREFIX."user u ON (u.userid = p.userid)";
 			$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (u.userid = b.userid)";
 			$result = Core::getQuery()->select("galaxy g", array("g.galaxy", "g.system", "g.position", "u.points", "u.last", "u.umode", "b.to"), $joins, "g.planetid = '".$target."' OR g.moonid = '".$target."'");
-			if($tar = Core::getDB()->fetch($result))
+			if($tar = $result->fetchRow())
 			{
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 				Hook::event("AjaxSendFleetEspionage", array($this, &$row, &$tar));
 				$ignoreNP = false;
 				if($tar["last"] <= TIME - 604800)
@@ -144,13 +144,13 @@ class Bengine_Game_Controller_Ajax_Fleet extends Bengine_Game_Controller_Ajax_Ab
 			}
 			else
 			{
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 				$this->display($this->format("Unkown destination"));
 			}
 		}
 		else
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$this->display($this->format(Core::getLanguage()->getItem("DEFICIENT_ESPS")));
 		}
 		return $this;

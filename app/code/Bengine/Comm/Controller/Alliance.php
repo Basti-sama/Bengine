@@ -26,8 +26,7 @@ class Bengine_Comm_Controller_Alliance extends Bengine_Comm_Controller_Abstract
 		$joins  = "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.aid = a.aid) ";
 		$joins .= "LEFT JOIN ".PREFIX."user u ON (u2a.userid = u.userid) ";
 		$result = Core::getQuery()->select("alliance a", $attr, $joins, "tag = '".$tag."'", "", 1, "a.aid");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$row = $result->fetchRow();
 		if($row)
 		{
 			foreach($fNumber as $field)

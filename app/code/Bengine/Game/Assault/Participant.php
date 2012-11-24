@@ -167,11 +167,28 @@ class Bengine_Game_Assault_Participant
 		{
 			$data = "";
 		}
-		Core::getQuery()->insert("assaultparticipant", array("assaultid", "userid", "planetid", "mode", "consumption", "preloaded", "data"), array($this->assaultid, $this->userid, $this->planetid, $this->mode, $this->data["consumption"], $preloaded, $data));
-		$this->participantid = Core::getDB()->insert_id();
+		$spec = array(
+			"assaultid" => $this->assaultid,
+			"userid" => $this->userid,
+			"planetid" => $this->planetid,
+			"mode" => $this->mode,
+			"consumption" => $this->data["consumption"],
+			"preloaded" => $preloaded,
+			"data" => $data,
+		);
+		Core::getQuery()->insert("assaultparticipant", $spec);
+		$this->participantid = Core::getDB()->lastInsertId();
 		foreach($this->ships as $ship)
 		{
-			Core::getQuery()->insert("fleet2assault", array("assaultid", "participantid", "userid", "unitid", "quantity", "mode"), array($this->assaultid, $this->participantid, $this->userid, $ship["id"], $ship["quantity"], $this->mode));
+			$spec = array(
+				"assaultid" => $this->assaultid,
+				"participantid" => $this->participantid,
+				"userid" => $this->userid,
+				"unitid" => $ship["id"],
+				"quantity" => $ship["quantity"],
+				"mode" => $this->mode,
+			);
+			Core::getQuery()->insert("fleet2assault", $spec);
 		}
 		return $this;
 	}
@@ -191,7 +208,7 @@ class Bengine_Game_Assault_Participant
 			$this->data["ships"] = array();
 			$metal = 0; $silicon = 0; $hydrogen = 0;
 			$result = Core::getQuery()->select("assaultparticipant ap", array("f2a.unitid", "f2a.quantity", "b.name", "ap.haul_metal", "ap.haul_silicon", "ap.haul_hydrogen"), "LEFT JOIN ".PREFIX."fleet2assault f2a ON (ap.participantid = f2a.participantid) LEFT JOIN ".PREFIX."construction b ON (b.buildingid = f2a.unitid)", "f2a.participantid = '".$this->participantid."'");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				if($row["quantity"] > 0)
 				{
@@ -204,7 +221,7 @@ class Bengine_Game_Assault_Participant
 				$silicon = $row["haul_silicon"];
 				$hydrogen = $row["haul_hydrogen"];
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$this->data["metal"] += $metal;
 			$this->data["silicon"] += $silicon;
 			$this->data["hydrogen"] += $hydrogen;
@@ -224,7 +241,7 @@ class Bengine_Game_Assault_Participant
 			{
 				if(count($this->data["ships"]) > 0)
 				{
-					Core::getQuery()->update("events", "data", serialize($this->data), "eventid = '".$this->eventid."'");
+					Core::getQuery()->update("events", array("data" => serialize($this->data)), "eventid = '".$this->eventid."'");
 				}
 				else
 				{
@@ -316,7 +333,7 @@ class Bengine_Game_Assault_Participant
 	 *
 	 * @return integer
 	 */
-	public function getTime($time)
+	public function getTime()
 	{
 		return $this->time;
 	}
@@ -324,7 +341,7 @@ class Bengine_Game_Assault_Participant
 	/**
 	 * Sets the assault id.
 	 *
-	 * @param integer
+	 * @param integer $assaultid
 	 *
 	 * @return Bengine_Game_Assault_Participant
 	 */

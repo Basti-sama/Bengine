@@ -116,22 +116,22 @@ class Bengine_Game_Alliance_Page_Parser
 		$joins .= "LEFT JOIN ".PREFIX."ally_relationship_type rt ON (rt.type_id = ar.mode)";
 		$select = array("rt.name AS relation_name", "a.aid", "a.tag", "a.name", "COUNT(u2a.userid) AS member", "FLOOR(SUM(u.points)) AS points");
 		$result = Core::getQuery()->select("ally_relationships ar", $select, $joins, "ar.rel2 = '".$this->aid."'", "a.tag ASC", "", "u2a.aid");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$this->rels[$row["relation_name"]][] = $row;
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 
 		$joins  = "LEFT JOIN ".PREFIX."alliance a ON (ar.rel2 = a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."user2ally u2a ON (ar.rel2 = u2a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."user u ON (u2a.userid = u.userid)";
 		$joins .= "LEFT JOIN ".PREFIX."ally_relationship_type rt ON (rt.type_id = ar.mode)";
 		$result = Core::getQuery()->select("ally_relationships ar", $select, $joins, "ar.rel1 = '".$this->aid."'", "a.tag ASC", "", "u2a.aid");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$this->rels[$row["relation_name"]][] = $row;
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 
@@ -164,14 +164,14 @@ class Bengine_Game_Alliance_Page_Parser
 		}
 
 		$result = Core::getQuery()->select("user2ally u2a", array("u.username", "u.points"), "LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid)", "u2a.aid = '".$this->aid."'", "u.".$order." ".$sort);
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$this->member[] = $row;
 			$this->points += $row["points"];
 		}
 		$this->points = floor($this->points);
-		$this->totalMember = Core::getDB()->num_rows($result);
-		Core::getDB()->free_result($result);
+		$this->totalMember = $result->rowCount();
+		$result->closeCursor();
 		return $this;
 	}
 
@@ -242,8 +242,8 @@ class Bengine_Game_Alliance_Page_Parser
 		$joins  = "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.aid = a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid)";
 		$result = Core::getQuery()->select("alliance a", "a.aid", $joins, "", "", "", "u2a.aid", "HAVING SUM(u.points) >= '".$this->points."'");
-		$this->number = fNumber(Core::getDB()->num_rows($result));
-		Core::getDB()->free_result($result);
+		$this->number = fNumber($result->rowCount());
+		$result->closeCursor();
 		return $this->number;
 	}
 

@@ -86,8 +86,8 @@ class Game extends Application
 		$second = mt_rand(0,100);
 		if($first == 42 && $second == 49 && Core::getUser()->get("asteroid") < TIME - 604800)
 		{
-			$data["metal"] = mt_rand(0,Core::getOptions()->get("MAX_ASTEROID_SIZE")) * 1000;
-			$data["silicon"] = mt_rand(0,$data["metal"]/1000) * 1000;
+			$data["metal"] = mt_rand(1, Core::getOptions()->get("MAX_ASTEROID_SIZE")) * 1000;
+			$data["silicon"] = mt_rand(1, $data["metal"]/1000) * 1000;
 			$data["galaxy"] = self::getPlanet()->getData("galaxy");
 			$data["system"] = self::getPlanet()->getData("system");
 			$data["position"] = self::getPlanet()->getData("position");
@@ -190,7 +190,7 @@ class Game extends Application
 		$atts = array("p.planetid", "p.ismoon", "p.planetname", "p.picture", "g.galaxy", "g.system", "g.position", "m.planetid AS moonid", "m.planetname AS moon", "m.picture AS mpicture");
 		$result = Core::getQuery()->select("planet p", $atts, $joins, "p.userid = '".Core::getUser()->get("userid")."' AND p.ismoon = '0'", $order);
 		unset($order);
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$planets[$i] = $row;
 			$coords = $row["galaxy"].":".$row["system"].":".$row["position"];
@@ -204,7 +204,6 @@ class Game extends Application
 			self::$planetStack[] = $row["planetid"];
 			$i++;
 		}
-		Core::getDB()->free_result($result);
 		Hook::event("YuPlanetList", array(&$planets));
 		Core::getTPL()->addLoop("planetHeaderList", $planets);
 
@@ -305,11 +304,10 @@ class Game extends Application
 	protected static function loadResearch()
 	{
 		$result = Core::getQuery()->select("research2user", array("buildingid", "level"), "", "userid = '".Core::getUser()->get("userid")."'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			self::$research[$row["buildingid"]] = $row["level"];
 		}
-		Core::getDB()->free_result($result);
 		Hook::event("YuResearchLoaded", array(&self::$research));
 		return;
 	}
@@ -335,7 +333,7 @@ class Game extends Application
 		$where  = "s2e.unitid = '".$id."' AND r2u.level >= s2e.level AND r2u.userid = '".Core::getUser()->get("userid")."'";
 		$order  = "s2e.level DESC";
 		$result = Core::getQuery()->select("ship2engine s2e", $select, $joins, $where, $order, "1");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			Hook::event("YuGetFlySpeedFirst", array($id, &$speed, &$row));
 			if($row["base_speed"] > 0)
@@ -521,11 +519,10 @@ class Game extends Application
 	{
 		if(self::$labsLoaded) { return; }
 		$result = Core::getQuery()->select("building2planet b2p", array("b2p.level", "b2p.planetid"), "LEFT JOIN ".PREFIX."planet p ON (p.planetid = b2p.planetid)", "p.userid = '".Core::getUser()->get("userid")."' AND b2p.buildingid = '12' AND b2p.planetid != '".Core::getUser()->get("curplanet")."'", "b2p.level DESC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			self::$researchLabs[] = $row["level"];
 		}
-		Core::getDB()->free_result($result);
 		self::$labsLoaded = true;
 		Hook::event("YuLoadResearchLabs", array(&self::$researchLabs));
 		return;
@@ -540,7 +537,7 @@ class Game extends Application
 	{
 		$mods = array();
 		$result = Core::getQuery()->select("user2group", array("userid"), "", "usergroupid = '2' OR usergroupid = '4'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			if(!in_array($row["userid"], $mods))
 			{

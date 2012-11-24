@@ -465,10 +465,9 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 			$select->group($groupBy);
 		}
 
-		$result = $select->getResource();
-		$count = Core::getDatabase()->fetch_field($result, "collection_count");
-		Core::getDatabase()->free_result($result);
-		return (int) $count;
+		$result = $select->getStatement();
+		$row = $result->fetchRow();
+		return (int) $row["collection_count"];
 	}
 }
 ?>

@@ -12,13 +12,6 @@
 class Core
 {
 	/**
-	 * Timer object.
-	 *
-	 * @var Recipe_Timer
-	 */
-	protected static $TimerObj = null;
-
-	/**
 	 * Database object.
 	 *
 	 * @var Recipe_Database_Abstract
@@ -137,8 +130,7 @@ class Core
 		define("RECIPE_VERSION", self::$version["release"]);
 		Hook::event("CoreStart");
 		self::$instance = $this;
-		$this->setTimer()
-			->setDatabase()
+		$this->setDatabase()
 			->setRequest()
 			->setApplication()
 			->setQuery()
@@ -150,27 +142,6 @@ class Core
 			->initCron();
 		Hook::event("CoreFinished");
 		return;
-	}
-
-	/**
-	 * Initializes the timer class.
-	 *
-	 * @return Core
-	 */
-	protected function setTimer()
-	{
-		self::$TimerObj = new Recipe_Timer(MICROTIME);
-		return $this;
-	}
-
-	/**
-	 * Returns the timer object.
-	 *
-	 * @return Recipe_Timer
-	 */
-	public static final function getTimer()
-	{
-		return self::$TimerObj;
 	}
 
 	/**
@@ -199,12 +170,12 @@ class Core
 			$application = $arguments[0];
 		}
 		$application = strtolower($application);
-		if(!file_exists(APP_ROOT_DIR."etc/applications/".$application."/bootstrap.php"))
+		if(!file_exists(APP_ROOT_DIR."app/bootstrap/".$application."/index.php"))
 		{
 			$application = DEFAULT_PACKAGE;
 		}
 		$_GET["package"] = $application;
-		self::$application = require_once APP_ROOT_DIR."etc/applications/".$application."/bootstrap.php";
+		self::$application = require_once APP_ROOT_DIR."app/bootstrap/".$application."/index.php";
 		return $this;
 	}
 

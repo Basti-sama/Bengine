@@ -12,28 +12,15 @@
 class Arr
 {
 	/**
-	 * Trims all elements of an array.
-	 *
-	 * @param array		Array to be trimed
-	 *
-	 * @return array	Trimed array
-	 *
-	 * @deprecated		use Arr:trim() instead
-	 */
-	public static function trimArray(array $array)
-	{
-		return array_map("trim", $array);
-	}
-
-	/**
 	 * Remove all elements with no content.
 	 *
-	 * @param array		Array to be cleaned
+	 * @param array $array	Array to be cleaned
 	 *
-	 * @return array	Cleaned array
+	 * @return array		Cleaned array
 	 */
 	public static function clean($array)
 	{
+		$rArray = array();
 		for($i = 0; $i < count($array); $i++)
 		{
 			if(Str::length($array[$i]) > 0) { $rArray[$i] = $array[$i]; }
@@ -44,20 +31,20 @@ class Arr
 	/**
 	 * Alias to trimArray()-method.
 	 *
-	 * @param array		Array to be trimed
+	 * @param array $array	Array to be trimed
 	 *
-	 * @return array	Trimed array
+	 * @return array		Trimed array
 	 */
 	public static function trim($array)
 	{
-		return self::trimArray($array);
+		return array_map("trim", $array);
 	}
 
 	/**
 	 * Improved array_map function.
 	 *
-	 * @param callback	The function to perform
-	 * @param array		The array to iterate through
+	 * @param callback $callback	The function to perform
+	 * @param array $array			The array to iterate through
 	 *
 	 * @return array
 	 */

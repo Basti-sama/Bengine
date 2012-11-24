@@ -47,7 +47,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 		$joins .= "LEFT JOIN ".PREFIX."alliance a1 ON (a1.aid = u2a1.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."alliance a2 ON (a2.aid = u2a2.aid)";
 		$result = Core::getQuery()->select("buddylist b", $select, $joins, "b.friend1 = '".Core::getUser()->get("userid")."' OR b.friend2 = '".Core::getUser()->get("userid")."'", "u1.points DESC, u2.points DESC, u1.username ASC, u2.username ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			Hook::event("ShowBuddyFirst", array(&$row));
 			if($row["friend1"] == Core::getUser()->get("userid"))
@@ -91,7 +91,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 			$bl[$row["relid"]]["ally"] = $ally;
 			Hook::event("ShowBuddyLast", array($row, &$bl));
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		Core::getTPL()->addLoop("buddylist", $bl);
 		return $this;
 	}

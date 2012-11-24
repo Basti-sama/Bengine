@@ -13,7 +13,7 @@
  * Displays string and shut program down.
  * (Improved function of die().)
  *
- * @param string	The to displayed string.
+ * @param string $string	The to displayed string.
  *
  * @return void
  */
@@ -27,7 +27,7 @@ function terminate($string)
 /**
  * Forward to login page.
  *
- * @param string	Error id to output
+ * @param string $errorid	Error id to output
  *
  * @return void
  */
@@ -51,13 +51,13 @@ function forwardToLogin($errorid)
 /**
  * Perform an header redirection.
  *
- * @param string	URL
- *
+ * @param string $url
+ * @param bool $appendSession
  * @return void
  */
 function doHeaderRedirection($url, $appendSession = false)
 {
-	return Recipe_Header::redirect($url, $appendSession);
+	Recipe_Header::redirect($url, $appendSession);
 }
 
 /**
@@ -122,9 +122,9 @@ function parseUrl($url)
 /**
  * Capitalizes the first letter of each directory part.
  *
- * @param string	Path
- * @param char		Path separator [optional]
- *
+ * @param string $path    Path
+ * @param string $s Path separator [optional]
+ * @param string $r
  * @return string
  */
 function getClassPath($path, $s = "_", $r = "/")

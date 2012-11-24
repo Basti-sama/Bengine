@@ -21,8 +21,8 @@ class Hook
 	/**
 	 * Appends an hook.
 	 *
-	 * @param string	Event name
-	 * @param mixed		Hook data
+	 * @param string $event
+	 * @param Recipe_PluginAbstract $pluginObj
 	 *
 	 * @return void
 	 */
@@ -35,8 +35,8 @@ class Hook
 	/**
 	 * When an event is triggered.
 	 *
-	 * @param string	Event name
-	 * @param array		Event arguments [optional]
+	 * @param string $event
+	 * @param array $args
 	 *
 	 * @return string
 	 */
@@ -49,7 +49,7 @@ class Hook
 
 		try {
 			$return = self::runHooks(self::$hooks[$event], $event, $args);
-		} catch(Exception $e) {
+		} catch(Recipe_Exception_Generic $e) {
 			$e->printError();
 		}
 		return $return;
@@ -58,9 +58,9 @@ class Hook
 	/**
 	 * Executes an hook.
 	 *
-	 * @param mixed		The hook to execute.
-	 * @param string	Event name
-	 * @param array		Event arguments [optional]
+	 * @param mixed $hook	The hook to execute.
+	 * @param string $event	Event name
+	 * @param array $args	Event arguments [optional]
 	 *
 	 * @return string
 	 */

@@ -14,7 +14,13 @@
 			</tr>
 			<tr>
 				<td><label for="f_language">{lang}Language{/lang}</label></td>
-				<td><select name="languageid" id="f_language">{while[langselection]}<option value="{loop}languageid{/loop}" {if[$this->templateVars["languageid"] == $row["languageid"]]} selected="selected" {/if}>{loop}title{/loop}</option>{/while}</select></td>
+				<td>
+					<select name="languageid" id="f_language">
+						<?php foreach($this->getLoop("langselection") as $row): ?>
+						<option value="{loop}languageid{/loop}" <?php if($this->templateVars["languageid"] == $row["languageid"]): ?> selected="selected" <?php endif ?>>{loop}title{/loop}</option>
+						<?php endforeach ?>
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<td><label for="f_position">{lang}Position{/lang}</label></td>
@@ -35,7 +41,7 @@
 			</tr>
 			<tr>
 				<td><label for="f_content">{lang}Content{/lang}</label></td>
-				<td><textarea name="content" cols="70" rows="3">{@content}</textarea></td>
+				<td><textarea name="content" id="f_content" cols="70" rows="3">{@content}</textarea></td>
 			</tr>
 			<tfoot>
 				<tr>

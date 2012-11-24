@@ -1,7 +1,15 @@
 <?php
+/**
+ * CMS controller.
+ *
+ * @package Recipe PHP5 Admin Interface
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2012, Sebastian Noll
+ * @license Proprietary
+ */
+
 class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 {
-
 	/**
 	 * Title of new page
 	 *
@@ -48,7 +56,7 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 
 		$pages = array();
 		$result = Core::getQuery()->select("page", array("pageid", "position", "displayorder", "title"), "", "", "position DESC, displayorder ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$id = $row["pageid"];
 			$pages[$id]["pageid"] = $id;
@@ -76,7 +84,7 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 
 		$pageid = Core::getRequest()->getGET("1");
 
-		$page = Core::getDB()->fetch(Core::getQuery()->select("page", array("pageid", "position", "languageid", "displayorder", "title", "label", "link", "content"), "", "pageid = ".$pageid, ""));
+		$page = Core::getQuery()->select("page", array("pageid", "position", "languageid", "displayorder", "title", "label", "link", "content"), "", "pageid = ".$pageid, "")->fetchRow();
 		Core::getTPL()->assign($page);
 
 		$result = Core::getQuery()->select("languages", array("languageid", "title"), "", "", "title ASC");
@@ -98,15 +106,15 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 		}
 
 		$result = Core::getQuery()->select("languages", array("languageid", "title"), "", "", "title ASC");
-		Core::getTPL()->addLoop("langselection", $result);
+		Core::getTPL()->addLoop("langselection", $result->fetchAll());
 		return $this;
 	}
 
 	/**
 	 * Update pages in DB (from main page)
 	 *
-	 * @param array delete-pages
-	 * @param array pages
+	 * @param array $delete
+	 * @param array $pages
 	 *
 	 * @return Bengine_Admin_Controller_Cms
 	 */
@@ -118,9 +126,12 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 		}
 		foreach($pages as $id)
 		{
-			$atts = array("displayorder", "title", "position");
-			$vals = array(Core::getRequest()->getPOST("displayorder_".$id), Core::getRequest()->getPOST("title_".$id), Core::getRequest()->getPOST("position_".$id));
-			Core::getQuery()->update("page", $atts, $vals, "pageid = '".$id."'");
+			$spec = array(
+				"displayorder" => Core::getRequest()->getPOST("displayorder_".$id),
+				"title" => Core::getRequest()->getPOST("title_".$id),
+				"position" => Core::getRequest()->getPOST("position_".$id),
+			);
+			Core::getQuery()->update("page", $spec, "pageid = '".$id."'");
 		}
 		return $this;
 	}
@@ -128,50 +139,41 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 	/**
 	 * Update page in DB
 	 *
-	 * @param integer Page ID
+	 * @param integer $pageid
 	 *
 	 * @return Bengine_Admin_Controller_Cms
 	 */
 	protected function updatePageAction($pageid)
 	{
-		$atts = array(
-			"position",
-			"languageid",
-			"displayorder",
-			"title",
-			"label",
-			"link",
-			"content"
-			);
-		$vals = array(
-			$this->getParam("position"),
-			$this->getParam("languageid"),
-			$this->getParam("displayorder"),
-			$this->getParam("title"),
-			$this->getParam("label"),
-			$this->getParam("link"),
-			$this->getParam("content")
+		$spec = array(
+			"position" => $this->getParam("position"),
+			"languageid" => $this->getParam("languageid"),
+			"displayorder" => $this->getParam("displayorder"),
+			"title" => $this->getParam("title"),
+			"label" => $this->getParam("label"),
+			"link" => $this->getParam("link"),
+			"content" => $this->getParam("content")
 		);
 
-		$this->title = $vals[3];
-		$this->label = $vals[4];
-		$this->link = $vals[5];
+		$this->title = $spec["title"];
+		$this->label = $spec["label"];
+		$this->link = $spec["link"];
 		$this->checkLink();
-		Core::getQuery()->update("page", $atts, $vals, "pageid = '".$pageid."'");
+		Core::getQuery()->update("page", $spec, "pageid = '".$pageid."'");
 		return $this;
 	}
 
 	/**
 	 * Inserts new page into DB
 	 *
-	 * @param string	Position (header/footer)
-	 * @param integer	Language ID
-	 * @param integer	Displayorder
-	 * @param string	Title
-	 * @param string	Label
-	 * @param string	Link
-	 * @param string	Content
-	 *
+	 * @param string $position
+	 * @param integer $languageid
+	 * @param integer $displayorder
+	 * @param string $title
+	 * @param string $label
+	 * @param string $link
+	 * @param string $content
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Admin_Controller_Cms
 	 */
 	protected function addPageAction($position, $languageid, $displayorder, $title, $label, $link, $content)
@@ -194,14 +196,22 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 		}
 
 		$result = Core::getQuery()->select("page", array("pageid"), "", "label = '".$this->label."' && link = ''");
-		if(Core::getDB()->fetch($result))
+		if($result->fetchRow())
 		{
-			//throw new Recipe_Exception_Generic("Label already in use", __FILE__, __LINE__);
 			throw new Recipe_Exception_Generic("Label already in use");
 		}
 		else
 		{
-			Core::getQuery()->insert("page", array("position", "languageid", "displayorder", "title", "label", "link", "content"), array($position, $languageid, $displayorder, $this->title, $this->label, $this->link, $content));
+			$spec = array(
+				"position" => $position,
+				"languageid" => $languageid,
+				"displayorder" => $displayorder,
+				"title" => $title,
+				"label" => $label,
+				"link" => $link,
+				"content" => $content
+			);
+			Core::getQuery()->insert("page", $spec);
 		}
 		return $this;
 	}

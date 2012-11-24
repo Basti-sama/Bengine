@@ -187,5 +187,27 @@ class Link
 		}
 		return BASE_URL.$url;
 	}
+
+	/**
+	 * Encodes the given string according to RFC 3986.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function urlEncode($string)
+	{
+		return rawurlencode(str_replace("/", ",,", $string));
+	}
+
+	/**
+	 * Decode URL-encoded strings
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function urlDecode($string)
+	{
+		return str_replace(",,", "/", rawurldecode($string));
+	}
 }
 ?>

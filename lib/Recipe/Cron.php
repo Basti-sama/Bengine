@@ -15,13 +15,13 @@ class Recipe_Cron
 	/**
 	 * Constructor.
 	 *
-	 * @return void
+	 * @return Recipe_Cron
 	 */
 	public function __construct()
 	{
 		try {
 			$this->exeCron();
-		} catch(Exception $e) {
+		} catch(Recipe_Exception_Generic $e) {
 			$e->printError();
 		}
 		return;
@@ -30,7 +30,8 @@ class Recipe_Cron
 	/**
 	 * Search in database for expired cron tasks and execute them.
 	 *
-	 * @return void
+	 * @throws Recipe_Exception_Generic
+	 * @return Recipe_Cron
 	 */
 	protected function exeCron()
 	{
@@ -38,7 +39,7 @@ class Recipe_Cron
 			return $this;
 		$select = array("cronid", "class", "month", "day", "weekday", "hour", "minute", "xtime", "active");
 		$_result = Core::getQuery()->select("cronjob", $select, "", "(xtime <= ".TIME." OR xtime IS NULL) AND active = '1'");
-		while($_row = Core::getDB()->fetch($_result))
+		foreach($_result->fetchAll() as $_row)
 		{
 			$cronjobObj = new $_row["class"]();
 			if($cronjobObj instanceof Recipe_CronjobAbstract)
@@ -51,14 +52,14 @@ class Recipe_Cron
 				throw new Recipe_Exception_Generic("Cannot execute cron job \"{$_row["class"]}\".", __FILE__, __LINE__);
 			}
 		}
-		Core::getDatabase()->free_result($_result);
+		$_result->closeCursor();
 		return $this;
 	}
 
 	/**
 	 * Calculate next execution time.
 	 *
-	 * @param array		Database row of cron job
+	 * @param array $row	Database row of cron job
 	 *
 	 * @return integer	Next execution time as Unix timestamp
 	 */
@@ -76,13 +77,13 @@ class Recipe_Cron
 	/**
 	 * Computes the time of the given date parameters.
 	 *
-	 * @param integer	Last execution time
-	 * @param array		Month parameter
-	 * @param array		Day parameter
-	 * @param array		Weekday parameter
-	 * @param array		Hour parameter
-	 * @param array		Minute parameter
-	 * @param integer	Year
+	 * @param integer $last		Last execution time
+	 * @param array $months		Month parameter
+	 * @param array $days		Day parameter
+	 * @param array $weekdays	Weekday parameter
+	 * @param array $hours		Hour parameter
+	 * @param array $minutes	Minute parameter
+	 * @param integer $year		Year
 	 *
 	 * @return boolean|integer	Returns the timestamp or false
 	 */
@@ -119,7 +120,7 @@ class Recipe_Cron
 	/**
 	 * Check incoming cron time data and put them into separate arrays.
 	 *
-	 * @param array		Database row to validate
+	 * @param array $row	Database row to validate
 	 *
 	 * @return array	Validated row
 	 */

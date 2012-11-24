@@ -60,11 +60,11 @@ class Admin extends Application
 				if($options !== null && !empty($options["language"]))
 				{
 					$result = Core::getQuery()->select("languages", array("langcode"), "", "languageid = '{$options["language"]}'");
-					$langcode = Core::getDatabase()->fetch_field($result, "langcode");
+					$langcode = $result->fetchColumn();
 					if(!empty($options["group"]))
 					{
 						$result = Core::getQuery()->select("phrasesgroups", array("title"), "", "phrasegroupid = '{$options["group"]}'");
-						$groupname = Core::getDatabase()->fetch_field($result, "title");
+						$groupname = $result->fetchColumn();
 						Core::getCache()->cachePhraseGroup($groupname, $langcode);
 					}
 					else
@@ -75,7 +75,7 @@ class Admin extends Application
 				else
 				{
 					$result = Core::getQuery()->select("languages", "langcode");
-					while($row = Core::getDB()->fetch($result))
+					foreach($result->fetchAll() as $row)
 					{
 						Core::getCache()->cacheLanguage($row["langcode"]);
 					}

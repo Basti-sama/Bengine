@@ -75,9 +75,9 @@ class Pagination
 	/**
 	 * Creates a new pagination object.
 	 *
-	 * @param integer	Items per page [optional]
-	 * @param integer	Total items [optional]
-	 * @param integer	Current page [optional]
+	 * @param integer $itemsPerPage	Items per page [optional]
+	 * @param integer $totalItems	Total items [optional]
+	 * @param integer $currentPage	Current page [optional]
 	 *
 	 * @return Pagination
 	 */
@@ -92,8 +92,8 @@ class Pagination
 	/**
 	 * Sets a configuration variable.
 	 *
-	 * @param string|array	Variable name
-	 * @param mixed			Value [optional]
+	 * @param string|array $var	Variable name
+	 * @param mixed $value		Value [optional]
 	 *
 	 * @return Pagination
 	 */
@@ -113,7 +113,7 @@ class Pagination
 	/**
 	 * Returns a configuration variable.
 	 *
-	 * @param string	Variable name [optional]
+	 * @param string $var	Variable name [optional]
 	 *
 	 * @return mixed	Value
 	 */
@@ -139,9 +139,9 @@ class Pagination
 	/**
 	 * Generates a page link
 	 *
-	 * @param integer	Page number
-	 * @param string	Title [optional]
-	 * @param string	Image [optional]
+	 * @param integer $page	Page number
+	 * @param string $title	Title [optional]
+	 * @param string $image	Image [optional]
 	 *
 	 * @return string
 	 */
@@ -176,7 +176,7 @@ class Pagination
 	/**
 	 * Generates the page Url.
 	 *
-	 * @param integer	Page number
+	 * @param integer $page	Page number
 	 *
 	 * @return string
 	 */

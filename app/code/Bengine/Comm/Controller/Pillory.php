@@ -37,7 +37,7 @@ class Bengine_Comm_Controller_Pillory extends Bengine_Comm_Controller_Abstract
 		Core::getTPL()->addHTMLHeaderFile("style.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.js", "js");
 		$result = Core::getQuery()->select("ban_u", array("banid"));
-		$pagination = new Pagination(Core::getConfig()->get("PILLORY_ITEMS_PER_PAGE"), Core::getDB()->num_rows($result));
+		$pagination = new Pagination(Core::getConfig()->get("PILLORY_ITEMS_PER_PAGE"), $result->rowCount());
 		$pagination->setConfig("page_url", Core::getLang()->getOpt("langcode")."/pillory/index/%d")
 			->setConfig("main_element_class", "pagination center-table")
 			->setMaxPagesToShow(Core::getConfig()->get("MAX_PILLORY_PAGES"))
@@ -91,7 +91,7 @@ class Bengine_Comm_Controller_Pillory extends Bengine_Comm_Controller_Abstract
 		$joins  = "LEFT JOIN `".PREFIX."user` u ON (u.`userid` = b.`userid`) ";
 		$joins .= "LEFT JOIN `".PREFIX."user` m ON (m.`userid` = b.`modid`)";
 		$result = Core::getQuery()->select("ban_u b", $attr, $joins, "", "b.`from` DESC, b.`banid` DESC", $offset.", ".$count);
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$bans[] = array(
 				"counter" => $row["banid"],
@@ -109,7 +109,6 @@ class Bengine_Comm_Controller_Pillory extends Bengine_Comm_Controller_Abstract
 				"guid" => md5($row["from"]),
 			);
 		}
-		Core::getDB()->free_result($result);
 		return $bans;
 	}
 }

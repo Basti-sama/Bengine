@@ -48,7 +48,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		// Messages
 		$result = Core::getQuery()->select("message", "msgid", "", "`receiver` = '".Core::getUser()->get("userid")."' AND `read` = '0'");
 		$msgs = Core::getDB()->num_rows($result);
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		Core::getTPL()->assign("unreadmsg", $msgs);
 		if($msgs == 1) { Core::getTPL()->assign("newMessages", Link::get("game/".SID."/MSG", Core::getLanguage()->getItem("F_NEW_MESSAGE"))); }
 		else if($msgs > 1)  { Core::getTPL()->assign("newMessages", Link::get("game/".SID."/MSG", sprintf(Core::getLanguage()->getItem("F_NEW_MESSAGES"), $msgs))); }
@@ -103,10 +103,10 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		// Points
 		$result = Core::getQuery()->select("user", "userid");
 		Core::getLang()->assign("totalUsers", fNumber(Core::getDB()->num_rows($result)));
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$result = Core::getQuery()->select("user", array("COUNT(`userid`)+1 AS rank"), "", "(`username` < '".Core::getUser()->get("username")."' AND `points` >= ".Core::getUser()->get("points").") OR `points` > ".Core::getUser()->get("points"), "", 1);
 		Core::getLang()->assign("rank", fNumber(Core::getDB()->fetch_field($result, "rank")));
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 
 		if(Game::getPlanet()->getData("moonid") > 0)
 		{
@@ -120,8 +120,8 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 				// Planet of current moon
 				$result = Core::getQuery()->select("galaxy g", array("p.planetid", "p.planetname", "p.picture"), "LEFT JOIN ".PREFIX."planet p ON (p.planetid = g.moonid)", "g.galaxy = '".Game::getPlanet()->getData("galaxy")."' AND g.system = '".Game::getPlanet()->getData("system")."' AND g.position = '".Game::getPlanet()->getData("position")."'");
 			}
-			$row = Core::getDB()->fetch($result);
-			Core::getDB()->free_result($result);
+			$row = $result->fetchRow();
+			$result->closeCursor();
 			Core::getTPL()->assign("moon", $row["planetname"]);
 			$img = Image::getImage("planets/".$row["picture"].Core::getConfig()->get("PLANET_IMG_EXT"), $row["planetname"], 50, 50);
 			Core::getTPL()->assign("moonImage", "<a title=\"".$row["planetname"]."\" class=\"goto pointer\" href=\"".$row["planetid"]."\">".$img."</a>");
@@ -137,7 +137,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		Core::getTPL()->assign("research", $research);
 		$result = Core::getQuery()->select("shipyard s", array("s.quantity", "s.one", "s.time", "s.finished", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = s.unitid)", "s.planetid = '".Core::getUser()->get("curplanet")."' ORDER BY s.time ASC");
 		$shipyardMissions = array();
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			if($row["finished"] > TIME)
 			{
@@ -206,8 +206,8 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 				$ok = false;
 			}
 			$result = Core::getQuery()->select("password", "password", "", "userid = '".Core::getUser()->get("userid")."'");
-			$row = Core::getDB()->fetch($result);
-			Core::getDB()->free_result($result);
+			$row = $result->fetchRow();
+			$result->closeCursor();
 			$encryption = Core::getOptions("USE_PASSWORD_SALT") ? "md5_salt" : "md5";
 			$password = Str::encode($password, $encryption);
 			if(!Str::compare($row["password"], $password))

@@ -1,4 +1,13 @@
 <?php
+/**
+ * Global mail controller.
+ *
+ * @package Recipe PHP5 Admin Interface
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2012, Sebastian Noll
+ * @license Proprietary
+ */
+
 class Bengine_Admin_Controller_Globalmail extends Bengine_Admin_Controller_Abstract
 {
 	/**
@@ -28,6 +37,9 @@ class Bengine_Admin_Controller_Globalmail extends Bengine_Admin_Controller_Abstr
 		return $this;
 	}
 
+	/**
+	 * @return Bengine_Admin_Controller_Globalmail
+	 */
 	protected function send()
 	{
 		$subject = Str::validateXHTML($this->getParam("subject"));
@@ -42,7 +54,7 @@ class Bengine_Admin_Controller_Globalmail extends Bengine_Admin_Controller_Abstr
 			Core::getTPL()->assign("subjectError", Logger::getMessageField("SUBJECT_TOO_SHORT"));
 			$error = true;
 		}
-		if($error)
+		if(!empty($error))
 		{
 			return $this;
 		}

@@ -52,7 +52,7 @@ class Bengine_Game_Model_User extends Recipe_Model_Abstract
 		{
 			$result = Core::getQuery()->select("user", array("COUNT(`userid`)+1 AS rank"), "", "(`username` < '".$this->get("username")."' AND `points` >= ".$this->get("points", 0).") OR `points` > ".$this->get("points", 0), "", 1);
 			$this->set("rank", (int) Core::getDB()->fetch_field($result, "rank"));
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 		}
 		return $this->get("rank");
 	}

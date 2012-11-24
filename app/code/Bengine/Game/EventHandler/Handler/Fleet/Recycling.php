@@ -17,9 +17,9 @@ class Bengine_Game_EventHandler_Handler_Fleet_Recycling extends Bengine_Game_Eve
 	{
 		Hook::event("EhRecycling", array($event, &$data, $this));
 		$result = Core::getQuery()->select("galaxy", array("metal", "silicon"), "", "galaxy = '".$data["galaxy"]."' AND system = '".$data["system"]."' AND position = '".$data["position"]."'");
-		if($_row = Core::getDB()->fetch($result))
+		if($_row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$capacityMetal = (int) (($data["capacity"] * 66.7) / 100);
 			$capacitySilicon = (int) (($data["capacity"] * 33.3) / 100);
 
@@ -40,7 +40,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Recycling extends Bengine_Game_Eve
 
 			if($_row["silicon"] != 0 || $_row["metal"] != 0)
 			{
-				Core::getQuery()->update("galaxy", array("metal", "silicon"), array($restMetal, $restSilicon), "galaxy = '".$data["galaxy"]."' AND system = '".$data["system"]."' AND position = '".$data["position"]."'");
+				Core::getQuery()->update("galaxy", array("metal" => $restMetal, "silicon" => $restSilicon), "galaxy = '".$data["galaxy"]."' AND system = '".$data["system"]."' AND position = '".$data["position"]."'");
 			}
 		}
 		new Bengine_Game_AutoMsg($event["mode"], $event["userid"], $event["time"], $data);

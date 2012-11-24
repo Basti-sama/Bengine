@@ -168,7 +168,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 			{
 				$language = Core::getUser()->get("languageid");
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 		}
 
 		// Check username
@@ -177,7 +177,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 			$result = Core::getQuery()->select("user", "userid", "", "username = '$username'");
 			if(Core::getDB()->num_rows($result) == 0)
 			{
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 				if(!checkCharacters($username))
 				{
 					$username = Core::getUser()->get("username");
@@ -190,7 +190,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 			}
 			else
 			{
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 				$username = Core::getUser()->get("username");
 				Logger::addMessage("USERNAME_EXISTS");
 			}
@@ -212,7 +212,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 			$result = Core::getQuery()->select("user", "userid", "", "email = '$email'");
 			if(Core::getDB()->num_rows($result) == 0)
 			{
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 				if(!checkEmail($email))
 				{
 					$email = Core::getUser()->get("email");
@@ -237,7 +237,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 			}
 			else
 			{
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 				Logger::addMessage("EMAIL_EXISTS");
 				$email = Core::getUser()->get("email");
 			}

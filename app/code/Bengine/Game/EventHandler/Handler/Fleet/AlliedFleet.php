@@ -12,7 +12,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_AlliedFleet extends Bengine_Game_E
 	/**
 	 * Holds the formation data.
 	 *
-	 * @var array|false
+	 * @var array|bool
 	 */
 	protected $_formations = null;
 
@@ -37,8 +37,8 @@ class Bengine_Game_EventHandler_Handler_Fleet_AlliedFleet extends Bengine_Game_E
 		$time = $event->getTime();
 		if($time > $data["alliance_attack"]["time"])
 		{
-			Core::getQuery()->update("events", array("time"), array($time), "eventid = '".$data["alliance_attack"]["eventid"]."' OR parent_id = '".$data["alliance_attack"]["eventid"]."'");
-			Core::getQuery()->update("attack_formation", array("time"), array($time), "eventid = '".$data["alliance_attack"]["eventid"]."'");
+			Core::getQuery()->update("events", array("time" => $time), "eventid = '".$data["alliance_attack"]["eventid"]."' OR parent_id = '".$data["alliance_attack"]["eventid"]."'");
+			Core::getQuery()->update("attack_formation", array("time" => $time), "eventid = '".$data["alliance_attack"]["eventid"]."'");
 		}
 		else
 		{
@@ -81,7 +81,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_AlliedFleet extends Bengine_Game_E
 	/**
 	 * Returns formation data.
 	 *
-	 * @return array|false
+	 * @return array|bool
 	 */
 	public function getSpecialData()
 	{
@@ -99,11 +99,11 @@ class Bengine_Game_EventHandler_Handler_Fleet_AlliedFleet extends Bengine_Game_E
 					$where .= " AND e.eventid = '".$this->_target["formation"]."'";
 				}
 				$result = Core::getQuery()->select("formation_invitation fi", $select, $joins, $where);
-				if($row = Core::getDB()->fetch($result))
+				if($row = $result->fetchRow())
 				{
 					$this->_formations = $row;
 				}
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 			}
 		}
 		return $this->_formations;

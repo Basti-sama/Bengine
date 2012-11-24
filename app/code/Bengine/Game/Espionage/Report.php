@@ -107,7 +107,7 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 	 */
 	protected function sendESPR()
 	{
-		Core::getQuery()->insertInto("message", array("mode" => 4, "time" => TIME, "sender" => null, "receiver" => $this->userid, "message" => $this->espReport, "subject" => Core::getLanguage()->getItem("ESP_REPORT_SUBJECT"), "read" => 0));
+		Core::getQuery()->insert("message", array("mode" => 4, "time" => TIME, "sender" => null, "receiver" => $this->userid, "message" => $this->espReport, "subject" => Core::getLanguage()->getItem("ESP_REPORT_SUBJECT"), "read" => 0));
 		return $this;
 	}
 
@@ -120,16 +120,16 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 	{
 		// Load research
 		$result = Core::getQuery()->select("research2user", "level", "", "userid = '".$this->userid."' AND buildingid = '13'");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$row = $result->fetchRow();
+		$result->closeCursor();
 		$this->espTech = (int) $row["level"];
 		$result = Core::getQuery()->select("research2user r2u", array("r2u.buildingid", "r2u.level", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r2u.buildingid)", "r2u.userid = '".$this->getData("userid")."'", "b.display_order ASC, b.buildingid ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$this->research[$row["buildingid"]]["level"] = (int) $row["level"];
 			$this->research[$row["buildingid"]]["name"] = Core::getLanguage()->getItem($row["name"]);
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		Hook::event("EspionageReportDataLoaded", array($this));
 
 		// Get the blocks, wich will be viewed.
@@ -152,32 +152,32 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 
 		$units = 0;
 		$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", "u2s.planetid = '".$this->planetid."' AND b.mode = '3'", "b.display_order ASC, b.buildingid ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$units += $row["quantity"];
 			$this->fleet[$row["unitid"]]["quantity"] = $row["quantity"];
 			$this->fleet[$row["unitid"]]["name"] = Core::getLanguage()->getItem($row["name"]);
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$this->loadHoldingFleet();
 		if($this->blocks > 2)
 		{
 			$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", "u2s.planetid = '".$this->planetid."' AND b.mode = '4'", "b.display_order ASC, b.buildingid ASC");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$this->defense[$row["unitid"]]["quantity"] = $row["quantity"];
 				$this->defense[$row["unitid"]]["name"] = Core::getLanguage()->getItem($row["name"]);
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			if($this->blocks > 3)
 			{
 				$result = Core::getQuery()->select("building2planet b2p", array("b2p.buildingid", "b2p.level", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = b2p.buildingid)", "b2p.planetid = '".$this->planetid."' AND (b.mode = '1' OR b.mode = '5')", "b.display_order ASC, b.buildingid ASC");
-				while($row = Core::getDB()->fetch($result))
+				foreach($result->fetchAll() as $row)
 				{
 					$this->building[$row["buildingid"]]["level"] = $row["level"];
 					$this->building[$row["buildingid"]]["name"] = Core::getLanguage()->getItem($row["name"]);
 				}
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 			}
 		}
 
@@ -313,7 +313,7 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 	protected function loadHoldingFleet()
 	{
 		$result = Core::getQuery()->select("events", array("data"), "", "mode = '17' AND destination = '".$this->planetid."'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$row["data"] = unserialize($row["data"]);
 			foreach($row["data"]["ships"] as $ship)
@@ -329,7 +329,7 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 				}
 			}
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 

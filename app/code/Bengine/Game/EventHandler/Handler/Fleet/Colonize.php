@@ -26,17 +26,17 @@ class Bengine_Game_EventHandler_Handler_Fleet_Colonize extends Bengine_Game_Even
 		$id = self::COLONY_SHIP_ID;
 		Hook::event("EhColonize", array($event, &$data, $this));
 		$_result = Core::getQuery()->select("galaxy", "planetid", "", "galaxy = '".$data["galaxy"]."' AND system = '".$data["system"]."' AND position = '".$data["position"]."' AND planetid != '0'");
-		if(Core::getDB()->num_rows($_result) == 0)
+		if($_result->rowCount() == 0)
 		{
 			$_result = Core::getQuery()->select("planet", "planetid", "", "userid = '".$event["userid"]."' AND ismoon = 0");
-			if(Core::getDB()->num_rows($_result) < Core::getOptions()->get("MAX_PLANETS"))
+			if($_result->rowCount() < Core::getOptions()->get("MAX_PLANETS"))
 			{
 				$colony = new Bengine_Game_Planet_Creator($event["userid"], $data["galaxy"], $data["system"], $data["position"]);
 
 				$colonyShip = $data["ships"][$id];
 				$_result = Core::getQuery()->select("construction", array("basic_metal", "basic_silicon", "basic_hydrogen"), "", "buildingid = '".$colonyShip["id"]."'");
-				$shipData = Core::getDB()->fetch($_result);
-				Core::getDB()->free_result($_result);
+				$shipData = $_result->fetchRow();
+				$_result->closeCursor();
 				$points = ($shipData["basic_metal"] + $shipData["basic_silicon"] + $shipData["basic_hydrogen"]) * $colonyShip["quantity"] / 1000;
 				$fpoints = $colonyShip["quantity"];
 				Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - '".$points."', fpoints = fpoints - '".$fpoints."' WHERE userid = '".$event["userid"]."'");
@@ -53,7 +53,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Colonize extends Bengine_Game_Even
 				{
 					foreach($data["ships"] as $ship)
 					{
-						Core::getQuery()->insert("unit2shipyard", array("unitid", "planetid", "quantity"), array($ship["id"], $colony->getPlanetId(), $ship["quantity"]));
+						Core::getQuery()->insert("unit2shipyard", array("unitid" => $ship["id"], "planetid" => $colony->getPlanetId(), "quantity" => $ship["quantity"]));
 					}
 				}
 			}
@@ -106,7 +106,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Colonize extends Bengine_Game_Even
 	 */
 	protected function _isValid()
 	{
-		if(empty($this->_target["planetid"]) && isset($this->_ships[36]) && $this->_targetType != "tf")
+		if(empty($this->_target["planetid"]) && isset($this->_ships[self::COLONY_SHIP_ID]) && $this->_targetType != "tf")
 		{
 			return true;
 		}

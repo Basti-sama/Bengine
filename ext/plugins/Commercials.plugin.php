@@ -52,9 +52,8 @@ class Plugin_Commercials extends Recipe_PluginAbstract
 	{
 		if(!$this->loaded)
 		{
-			$ads = array();
 			$result = Core::getQuery()->select("ad", array("ad_id", "position", "html_code", "views"), "", "(max_views <= views OR max_views = 0 OR max_views IS NULL) AND enabled = 1");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$this->ads[$row["position"]][] = $row;
 			}

@@ -1,6 +1,18 @@
 <?php
+/**
+ * Auth controller.
+ *
+ * @package Recipe PHP5 Admin Interface
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2012, Sebastian Noll
+ * @license Proprietary
+ */
+
 class Bengine_Admin_Controller_Auth extends Bengine_Admin_Controller_Abstract
 {
+	/**
+	 * @return Bengine_Admin_Controller_Auth
+	 */
 	protected function indexAction()
 	{
 		$this->setIsAjax();
@@ -21,6 +33,9 @@ class Bengine_Admin_Controller_Auth extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @return Bengine_Admin_Controller_Auth
+	 */
 	protected function logoutAction()
 	{
 		if(Core::getUser()->getSid())

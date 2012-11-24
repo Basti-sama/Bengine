@@ -52,14 +52,14 @@ class Bengine_Game_EventHandler_Handler_Fleet_MoonDestruction extends Bengine_Ga
 					"c" => array("basic_metal", "basic_silicon", "basic_hydrogen")
 				))
 				->where("f2a.participantid = ?", $attacker->getParticipantId());
-			$result = $select->getResource();
+			$result = $select->getStatement();
 			$fleet = array();
-			while($row = Core::getDatabase()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$fleet[$row["unitid"]] = $row;
 			}
 			$rips = isset($fleet[self::DEATH_STAR_CONSTRUCTION_ID]["quantity"]) ? $fleet[self::DEATH_STAR_CONSTRUCTION_ID]["quantity"] : 0;
-			Core::getDatabase()->free_result($result);
+			$result->closeCursor();
 			$moon = $event->getDestinationPlanet();
 			$message = "";
 
@@ -71,7 +71,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_MoonDestruction extends Bengine_Ga
 			if($rand <= $md)
 			{
 				$message = Core::getLang()->get("MD_MOON_DESTROYED");
-				Core::getQuery()->update("events", array("planetid"), array(null), "planetid = '".$moon->getId()."'");
+				Core::getQuery()->update("events", array("planetid" => null), "planetid = '".$moon->getId()."'");
 				$sql = "UPDATE `".PREFIX."events` e, `".PREFIX."galaxy` g SET e.`destination` = g.`planetid` WHERE g.`moonid` = '".$moon->getId()."' AND e.`destination` = '".$moon->getId()."'";
 				Core::getDB()->query($sql);
 				deletePlanet($moon->getId(), $moon->getUserid(), 1);

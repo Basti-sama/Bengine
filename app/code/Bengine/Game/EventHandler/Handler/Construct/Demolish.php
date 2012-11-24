@@ -23,7 +23,7 @@ class Bengine_Game_EventHandler_Handler_Construct_Demolish extends Bengine_Game_
 		$points = ($data["metal"] + $data["metal"] + $data["metal"]) / 1000;
 		if($data["level"] > 0)
 		{
-			Core::getQuery()->update("building2planet", "level", $data["level"], "buildingid = '".$data["buildingid"]."' AND planetid = '".$event->getPlanetid()."'");
+			Core::getQuery()->update("building2planet", array("level" => $data["level"]), "buildingid = '".$data["buildingid"]."' AND planetid = '".$event->getPlanetid()."'");
 		}
 		else
 		{

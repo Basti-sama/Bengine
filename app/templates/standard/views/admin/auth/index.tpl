@@ -1,4 +1,4 @@
-{include}"admin/html_header"{/include}
+<?php $this->render("admin/html_header") ?>
 	<div id="container">
 		<form method="post" action="{@faction}">
 		<fieldset>
@@ -18,4 +18,4 @@
 		</fieldset>
 		</form>
 	</div>
-{include}"admin/html_footer"{/include}
+<?php $this->render("admin/html_FOOTER") ?>

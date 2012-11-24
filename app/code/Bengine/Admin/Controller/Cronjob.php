@@ -1,14 +1,32 @@
 <?php
+/**
+ * Cronjob controller.
+ *
+ * @package Recipe PHP5 Admin Interface
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2012, Sebastian Noll
+ * @license Proprietary
+ */
+
 class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 {
+	/**
+	 * @var string
+	 */
 	const CRONJOB_PATH = "Cronjob/";
 
+	/**
+	 * @return Bengine_Admin_Controller_Abstract
+	 */
 	protected function init()
 	{
 		Core::getLanguage()->load("AI_Cronjobs");
 		return parent::init();
 	}
 
+	/**
+	 * @return Bengine_Admin_Controller_Cronjob
+	 */
 	protected function indexAction()
 	{
 		if($this->getParam("add_cronjob"))
@@ -51,7 +69,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 
 		$tabs = array();
 		$result = Core::getQuery()->select("cronjob", array("cronid", "class", "xtime", "last", "active"), "ORDER BY xtime ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$id = $row["cronid"];
 			$tabs[$id]["cronid"] = $row["cronid"];
@@ -67,10 +85,14 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $cronid
+	 * @return Bengine_Admin_Controller_Cronjob
+	 */
 	protected function editAction($cronid)
 	{
 		$result = Core::getQuery()->select("cronjob", array("class", "month", "day", "weekday", "hour", "minute"), "", "cronid = '".$cronid."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			if($this->getParam("edit_cronjob"))
 			{
@@ -119,6 +141,16 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $cronid
+	 * @param array $month
+	 * @param array $day
+	 * @param array $weekday
+	 * @param integer $hour
+	 * @param integer $minute
+	 * @param string $class
+	 * @return Bengine_Admin_Controller_Cronjob
+	 */
 	protected function save($cronid, $month, $day, $weekday, $hour, $minute, $class)
 	{
 		if(is_array($month) && is_array($day) && is_array($weekday) && !empty($class))
@@ -126,9 +158,8 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 			$month = implode(",", $month);
 			$day = implode(",", $day);
 			$weekday = implode(",", $weekday);
-			$atts = array("class", "month", "day", "weekday", "hour", "minute", "active");
-			$vals = array($class, $month, $day, $weekday, $hour, $minute, 0);
-			Core::getQuery()->update("cronjob", $atts, $vals, "cronid = '".$cronid."'");
+			$spec = array("class" => $class, "month" => $month, "day" => $day, "weekday" => $weekday, "hour" => $hour, "minute" => $minute, "active" => 0);
+			Core::getQuery()->update("cronjob", $spec, "cronid = '".$cronid."'");
 		}
 		else
 		{
@@ -137,6 +168,15 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param array $month
+	 * @param array $day
+	 * @param array $weekday
+	 * @param integer $hour
+	 * @param integer $minute
+	 * @param string $class
+	 * @return Bengine_Admin_Controller_Cronjob
+	 */
 	protected function add($month, $day, $weekday, $hour, $minute, $class)
 	{
 		if(is_array($month) && is_array($day) && is_array($weekday) && !empty($class))
@@ -144,9 +184,8 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 			$month = implode(",", $month);
 			$day = implode(",", $day);
 			$weekday = implode(",", $weekday);
-			$atts = array("class", "month", "day", "weekday", "hour", "minute", "xtime", "last", "active");
-			$vals = array($class, $month, $day, $weekday, $hour, $minute, TIME, 0, 0);
-			Core::getQuery()->insert("cronjob", $atts, $vals);
+			$spec = array("class" => $class, "month" => $month, "day" => $day, "weekday" => $weekday, "hour" => $hour, "minute" => $minute, "xtime" => TIME, "last" => 0, "active" => 0);
+			Core::getQuery()->insert("cronjob", $spec);
 		}
 		else
 		{
@@ -155,26 +194,38 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $cronid
+	 * @return Bengine_Admin_Controller_Cronjob
+	 */
 	protected function enableAction($cronid)
 	{
 		$result = Core::getQuery()->select("cronjob", array("month", "day", "weekday", "hour", "minute"), "", "cronid = '".$cronid."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			$row["xtime"] = TIME;
 			$next = Core::getCron()->calcNextExeTime($row);
-			Core::getQuery()->update("cronjob", array("xtime", "active"), array($next, 1), "cronid = '".$cronid."'");
+			Core::getQuery()->update("cronjob", array("xtime" => $next, "active" => 1), "cronid = '".$cronid."'");
 		}
 		$this->redirect("cronjob");
 		return $this;
 	}
 
+	/**
+	 * @param integer $cronid
+	 * @return Bengine_Admin_Controller_Cronjob
+	 */
 	protected function disableAction($cronid)
 	{
-		Core::getQuery()->update("cronjob", array("active"), array(0), "cronid = '".$cronid."'");
+		Core::getQuery()->update("cronjob", array("active" => 0), "cronid = '".$cronid."'");
 		$this->redirect("cronjob");
 		return $this;
 	}
 
+	/**
+	 * @param integer $cronid
+	 * @return Bengine_Admin_Controller_Cronjob
+	 */
 	protected function deleteAction($cronid)
 	{
 		Core::getQuery()->delete("cronjob", "cronid = '".$cronid."'");
@@ -182,13 +233,18 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $cronid
+	 * @return Bengine_Admin_Controller_Cronjob
+	 */
 	protected function executeAction($cronid)
 	{
 		$result = Core::getQuery()->select("cronjob", array("cronid", "class", "month", "day", "weekday", "hour", "minute", "last"), "", "cronid = '".$cronid."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			$row["xtime"] = TIME;
 			$next = Core::getCron()->calcNextExeTime($row);
+			/* @var Recipe_CronjobAbstract $cronObj */
 			$cronObj = new $row["class"]();
 			$cronObj->execute($row["cronid"], TIME, $next);
 		}

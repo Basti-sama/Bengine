@@ -34,11 +34,11 @@
 				<td>{lang}Permission_Name{/lang}</td>
 				<td>{lang}Delete{/lang}</td>
 			</tr>
-			{while[perms]}<tr>
+			{foreach[perms]}<tr>
 				<td>{loop}permissionid{/loop}</td>
 				<td><input type="hidden" name="perm[]" value="{loop}permissionid{/loop}" /><input type="text" name="perm_{loop}permissionid{/loop}" value="{loop}permission{/loop}" /></td>
 				<td><input type="checkbox" name="delete[]" value="{loop}permissionid{/loop}" /></td>
-			</tr>{/while}
+			</tr>{/foreach}
 			<tfoot>
 				<tr>
 					<td colspan="3"><input type="submit" name="update_permission" value="{lang}Commit{/lang}" class="button" /></td>

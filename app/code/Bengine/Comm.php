@@ -82,10 +82,10 @@ class Comm extends Application
 	 */
 	protected static function initUniverses()
 	{
-		$xml = new XMLObj(file_get_contents(AD."etc/Unis.xml"));
-		foreach($xml->getChildren() as $uni)
+		$meta = self::getMeta();
+		foreach($meta["config"]["universes"] as $uni)
 		{
-			self::$unis[] = new Bengine_Comm_Uni($uni->getString("name"), $uni->getString("domain"), $uni->getBoolean("external"));
+			self::$unis[] = new Bengine_Comm_Uni($uni["name"], $uni["domain"], $uni["external"]);
 		}
 		return self::$unis;
 	}
@@ -98,6 +98,7 @@ class Comm extends Application
 	protected static function getUnisAsOptionList()
 	{
 		$options = "";
+		/* @var Bengine_Comm_Uni $uni */
 		foreach(self::$unis as $uni)
 		{
 			if($uni->isSelected())
@@ -121,8 +122,8 @@ class Comm extends Application
 	protected static function initLanguage()
 	{
 		$result = Core::getQuery()->select("languages", array("langcode", "title"));
-		Core::getTPL()->addLoop("languages", $result);
-		Core::getTPL()->assign("langCount", Core::getDB()->num_rows($result));
+		Core::getTPL()->addLoop("languages", $result->fetchAll());
+		Core::getTPL()->assign("langCount", $result->rowCount());
 		$selfUrl = "/".Core::getRequest()->getGET("controller")."/".Core::getRequest()->getGET("action");
 		Core::getTPL()->assign("selfUrl", (Core::getRequest()->getGET("controller", false)) ? $selfUrl : "");
 		return;

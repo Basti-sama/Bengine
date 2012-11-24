@@ -126,7 +126,7 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	 * @param string $type
 	 * @return string
 	 */
-	public function render($template, $type)
+	public function render($template, $type = Recipe_Template_Adapter_Abstract::TEMPLATE_TYPE_VIEWS)
 	{
 		Hook::event("TemplateRenderBegin", array($this, $template));
 		$templatePath = $this->getTemplatePath($template, $type);

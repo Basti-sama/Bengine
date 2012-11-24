@@ -14,8 +14,8 @@ class Recipe_Request_Default extends Recipe_Request_Adapter
 	/**
 	 * Retrieves a _GET variable.
 	 *
-	 * @param string	Variable name [optional]
-	 * @param mixed		Default return value [optional]
+	 * @param string $var		Variable name [optional]
+	 * @param mixed $default	Default return value [optional]
 	 *
 	 * @return mixed
 	 */
@@ -23,15 +23,11 @@ class Recipe_Request_Default extends Recipe_Request_Adapter
 	{
 		if(is_null($var))
 		{
-			return Arr::map(array(Core::getDB(), "real_escape_string"), $_GET);
+			return Core::getDB()->escape($_GET);
 		}
 		if(isset($_GET[$var]))
 		{
-			if(is_array($_GET[$var]))
-			{
-				return Arr::map(array(Core::getDB(), "real_escape_string"), $_GET[$var]);
-			}
-			return Core::getDB()->real_escape_string($_GET[$var]);
+			return Core::getDB()->escape($_GET[$var]);
 		}
 		return $default;
 	}
@@ -39,24 +35,20 @@ class Recipe_Request_Default extends Recipe_Request_Adapter
 	/**
 	 * Retrieves a _POST variable.
 	 *
-	 * @param string	Variable name [optional]
-	 * @param mixed		Default return value [optional]
+	 * @param string $var		Variable name [optional]
+	 * @param mixed $default	Default return value [optional]
 	 *
 	 * @return mixed
 	 */
 	public function getPost($var = null, $default = null)
 	{
-		if(is_null($var))
+		if($var === null)
 		{
-			return Arr::map(array(Core::getDB(), "real_escape_string"), $_POST);
+			return Core::getDB()->escape($_POST);
 		}
 		if(isset($_POST[$var]))
 		{
-			if(is_array($_POST[$var]))
-			{
-				return Arr::map(array(Core::getDB(), "real_escape_string"), $_POST[$var]);
-			}
-			return Core::getDB()->real_escape_string($_POST[$var]);
+			return Core::getDB()->escape($_POST[$var]);
 		}
 		return $default;
 	}
@@ -64,24 +56,20 @@ class Recipe_Request_Default extends Recipe_Request_Adapter
 	/**
 	 * Retrieves a _COOKIE variable.
 	 *
-	 * @param string	Variable name [optional]
-	 * @param mixed		Default return value [optional]
+	 * @param string $var		Variable name [optional]
+	 * @param mixed $default	Default return value [optional]
 	 *
 	 * @return mixed
 	 */
 	public function getCookie($var = null, $default = null)
 	{
-		if(is_null($var))
+		if($var === null)
 		{
-			return Arr::map(array(Core::getDB(), "real_escape_string"), $_COOKIE);
+			return Core::getDB()->escape($_COOKIE);
 		}
 		if(isset($_COOKIE[$var]))
 		{
-			if(is_array($_COOKIE[$var]))
-			{
-				return Arr::map(array(Core::getDB(), "real_escape_string"), $_COOKIE[$var]);
-			}
-			return Core::getDB()->real_escape_string($_COOKIE[$var]);
+			return Core::getDB()->escape($_COOKIE[$var]);
 		}
 		return $default;
 	}

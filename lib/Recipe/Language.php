@@ -77,9 +77,10 @@ class Recipe_Language extends Recipe_Collection
 	/**
 	 * Constructor.
 	 *
-	 * @param string	Shortcut of language package.
+	 * @param string $langid	Shortcut of language package.
+	 * @param string|array $groups
 	 *
-	 * @return void
+	 * @return Recipe_Language
 	 */
 	public function __construct($langid, $groups)
 	{
@@ -96,7 +97,7 @@ class Recipe_Language extends Recipe_Collection
 	/**
 	 * Set phrases groups.
 	 *
-	 * @param string	List of groups, separated by comma
+	 * @param string|array $groups	List of groups, separated by comma
 	 *
 	 * @return array	All language variables
 	 */
@@ -104,7 +105,7 @@ class Recipe_Language extends Recipe_Collection
 	{
 		if(!is_array($groups))
 		{
-			$groups = Arr::trimArray(explode(",", $groups));
+			$groups = Arr::trim(explode(",", $groups));
 		}
 		$this->grouplist = array_merge($this->grouplist, $groups);
 		$this->grouplist = Arr::clean($this->grouplist);
@@ -152,14 +153,14 @@ class Recipe_Language extends Recipe_Collection
 		}
 		$select = array("p.title", "p.content");
 		$result = Core::getQuery()->select("phrases AS p", $select, "LEFT JOIN ".PREFIX."phrasesgroups AS pg ON (pg.phrasegroupid = p.phrasegroupid)", $whereclause);
-		while($row = Core::getDatabase()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 		  	$compiler = new Recipe_Language_Compiler($row["content"], true);
 		  	$row["content"] = $compiler->getPhrase();
 		  	$compiler->shutdown();
 			$this->setItem($row["title"], $row["content"]);
 		}
-		Core::getDatabase()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 
@@ -191,8 +192,10 @@ class Recipe_Language extends Recipe_Collection
 	public function getOptions()
 	{
 		try {
-			$row = Core::getDatabase()->query_unique("SELECT * FROM ".PREFIX."languages WHERE languageid = '".$this->langid."'");
-		} catch(Exception $e) { $e->printError(); }
+			$row = Core::getDatabase()->fetchRow("SELECT * FROM ".PREFIX."languages WHERE languageid = ?", array($this->langid));
+		} catch(Recipe_Exception_Generic $e) {
+			$e->printError();
+		}
 		return $row;
 	}
 
@@ -214,16 +217,15 @@ class Recipe_Language extends Recipe_Collection
 			$this->langid = 0;
 		}
 		$result = Core::getQuery()->select("languages", array("languageid"), "", "languageid = '".$this->langid."' OR langcode = '".$this->langcode."'", "", "1");
-		if($row = Core::getDB()->fetch($result)) { $this->langid = $row["languageid"]; }
+		if($row = $result->fetchRow()) { $this->langid = $row["languageid"]; }
 		else { $this->langid = Core::getOptions()->defaultlanguage; }
-		Core::getDatabase()->free_result($result);
 		return $this;
 	}
 
 	/**
 	 * Returns item. If item does not exist, return item name.
 	 *
-	 * @param string	Variable name
+	 * @param string $var	Variable name
 	 *
 	 * @return string	Value
 	 */
@@ -243,7 +245,7 @@ class Recipe_Language extends Recipe_Collection
 	/**
 	 * Alias to getItem().
 	 *
-	 * @param string	Variable name
+	 * @param string $var	Variable name
 	 *
 	 * @return string	Value
 	 */
@@ -255,8 +257,8 @@ class Recipe_Language extends Recipe_Collection
 	/**
 	 * Set and fill item with content.
 	 *
-	 * @param string	Var name
-	 * @param string	Value
+	 * @param string $var	Var name
+	 * @param string $value	Value
 	 *
 	 * @return Recipe_Language
 	 */
@@ -273,10 +275,10 @@ class Recipe_Language extends Recipe_Collection
 	/**
 	 * Alias to setItem().
 	 *
-	 * @param string	Var name
-	 * @param string	Value
+	 * @param string $var	Var name
+	 * @param string $value	Value
 	 *
-	 * @return Language
+	 * @return Recipe_Language
 	 */
 	public function set($var, $value)
 	{
@@ -286,8 +288,8 @@ class Recipe_Language extends Recipe_Collection
 	/**
 	 * Assigns values to phrases variables.
 	 *
-	 * @param string	The variable name
-	 * @param mixed		The value to assign
+	 * @param string $variable	The variable name
+	 * @param mixed $value		The value to assign
 	 *
 	 * @return Recipe_Language
 	 */
@@ -310,7 +312,7 @@ class Recipe_Language extends Recipe_Collection
 	/**
 	 * Returns an phrases assignment.
 	 *
-	 * @param string	The variable name
+	 * @param string $variable	The variable name
 	 *
 	 * @return mixed
 	 */
@@ -334,7 +336,7 @@ class Recipe_Language extends Recipe_Collection
 	/**
 	 * Rebuilds the language cache for the current language.
 	 *
-	 * @param mixed		Indicates a special phrase group
+	 * @param mixed $groups	Indicates a special phrase group
 	 *
 	 * @return Recipe_Language
 	 */
@@ -343,7 +345,7 @@ class Recipe_Language extends Recipe_Collection
 		if(!is_null($groups))
 		{
 			Core::getCache()->cachePhraseGroup($groups, $this->opts["langcode"]);
-			return;
+			return $this;
 		}
 		Core::getCache()->cacheLanguage($this->opts["langcode"]);
 		return $this;
@@ -352,7 +354,7 @@ class Recipe_Language extends Recipe_Collection
 	/**
 	 * Returns an option parameter for the language.
 	 *
-	 * @param string	Parameter name
+	 * @param string $param
 	 *
 	 * @return mixed	Parameter value
 	 */

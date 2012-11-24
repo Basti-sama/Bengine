@@ -12,9 +12,9 @@
 /**
  * Executes a formula.
  *
- * @param string	Formular to execute
- * @param integer	First number to replace
- * @param integer	Second number to replace
+ * @param string $formula	Formular to execute
+ * @param integer $basic	First number to replace
+ * @param integer $level	Second number to replace
  *
  * @return integer	Result
  */
@@ -34,9 +34,9 @@ function parseFormula($formula, $basic, $level)
 /**
  * Executes a simple formula.
  *
- * @param string	Formular to execute
- * @param integer	Basic costs
- * @param integer	Level
+ * @param string $formula	Formular to execute
+ * @param integer $basic	Basic costs
+ * @param integer $level	Level
  *
  * @return integer	Result
  */
@@ -53,7 +53,7 @@ function parseSimpleFormula($formula, $basic, $level)
 /**
  * Generates a time term of given seconds.
  *
- * @param integer	Seconds
+ * @param integer $secs	Seconds
  *
  * @return string	Time term
  */
@@ -74,8 +74,8 @@ function getTimeTerm($secs)
 /**
  * Prettify number: 1000 => 1.000
  *
- * @param integer	The number being formatted
- * @param integer	Sets the number of decimal fs
+ * @param integer $number	The number being formatted
+ * @param integer $decimals	Sets the number of decimal fs
  *
  * @return string	Number
  */
@@ -87,11 +87,11 @@ function fNumber($number, $decimals = 0)
 /**
  * Returns building time due to the used resources.
  *
- * @param integer	Used metal
- * @param integer	Used silicon
- * @param integer	Building mode (1: building, 2: unit, 3: research)
- *
- * @return integer	Time in seconds
+ * @param integer $metal    Used metal
+ * @param integer $silicon    Used silicon
+ * @param integer $mode        Building mode (1: building, 2: unit, 3: research)
+ * @throws Recipe_Exception_Generic
+ * @return integer    Time in seconds
  */
 function getBuildTime($metal, $silicon, $mode)
 {
@@ -108,6 +108,9 @@ function getBuildTime($metal, $silicon, $mode)
 		case 3: // Shipyard
 		case 4:
 			$time = (($metal + $silicon) / 5000) * (2 / (Game::getPlanet()->getBuilding("SHIPYARD") + 1)) * pow(0.5, Game::getPlanet()->getBuilding("NANO_FACTORY"));
+		break;
+		default:
+			throw new Recipe_Exception_Generic("Unknown mode for build time calculation.");
 		break;
 	}
 
@@ -166,10 +169,10 @@ function checkEmail($mail)
 /**
  * Generates a coordinate link
  *
- * @param integer	Galaxy
- * @param integer	System
- * @param integer	Position
- * @param boolean	Replace session with wildcard
+ * @param integer $galaxy
+ * @param integer $system
+ * @param integer $position
+ * @param boolean $sidWildcard	Replace session with wildcard
  *
  * @return string	Link code
  */
@@ -182,7 +185,7 @@ function getCoordLink($galaxy, $system, $position, $sidWildcard = false)
 /**
  * Returns the CSS class of the fleet mode.
  *
- * @param integer	EH-Mode
+ * @param integer $id	EH-Mode
  *
  * @return string	CSS class
  */
@@ -211,7 +214,7 @@ function getFleetMessageClass($id)
 /**
  * Plain BB-Code parser.
  *
- * @param string	Text to parse
+ * @param string $text	Text to parse
  *
  * @return string
  */
@@ -256,7 +259,7 @@ function parseBBCode($text)
 /**
  * Filters some vulnerable HTML-tags from rich text.
  *
- * @param string
+ * @param string $str
  *
  * @return string
  */
@@ -318,7 +321,7 @@ function richText($str)
 /**
  * Extended BB-Code parser to generate HTML list.
  *
- * @param string	Raw code
+ * @param string $list	Raw code
  *
  * @return string	HTML
  */
@@ -334,10 +337,10 @@ function parseList($list)
 /**
  * Generates HTML code for a select option.
  *
- * @param string	Option value
- * @param string	Option name
- * @param boolean	Set selected tag
- * @param string	Additional CSS class
+ * @param string $value		Option value
+ * @param string $option	Option name
+ * @param boolean $selected	Set selected tag
+ * @param string $class	Additional CSS class
  *
  * @return string	HTML
  */
@@ -356,18 +359,17 @@ function createOption($value, $option, $selected, $class = "")
 /**
  * Deletes all data of an alliance.
  *
- * @param integer	Alliance id to delete
+ * @param integer $aid	Alliance id to delete
  *
  * @return void
  */
 function deleteAlliance($aid)
 {
 	$result = Core::getQuery()->select("user2ally u2a", array("u2a.userid", "a.tag"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)", "u2a.aid = '".$aid."'");
-	while($row = Core::getDB()->fetch($result))
+	foreach($result->fetchAll() as $row)
 	{
-		new Bengine_AutoMsg(23, $row["userid"], TIME, $row);
+		new Bengine_Game_AutoMsg(23, $row["userid"], TIME, $row);
 	}
-	Core::getDB()->free_result($result);
 	Core::getQuery()->delete("alliance", "aid = '".$aid."'");
 	Hook::event("DeleteAlliance", array($aid));
 	return;
@@ -376,22 +378,21 @@ function deleteAlliance($aid)
 /**
  * Deletes all planet data.
  *
- * @param integer	Planet id
- * @param integer	User id
- * @param boolean	Planet is moon
+ * @param integer $id		Planet id
+ * @param integer $userid	User id
+ * @param boolean $ismoon	Planet is moon
  *
  * @return void
  */
 function deletePlanet($id, $userid, $ismoon)
 {
-	$points  = Bengine_PointRenewer::getBuildingPoints($id);
-	$points += Bengine_PointRenewer::getFleetPoints($id);
-	$fpoints = Bengine_PointRenewer::getFleetPoints_Fleet($id);
+	$points  = Bengine_Game_PointRenewer::getBuildingPoints($id);
+	$points += Bengine_Game_PointRenewer::getFleetPoints($id);
+	$fpoints = Bengine_Game_PointRenewer::getFleetPoints_Fleet($id);
 	if(!$ismoon)
 	{
 		$result = Core::getQuery()->select("galaxy", "moonid", "", "planetid = '".$id."'");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$row = $result->fetchRow();
 		if($row["moonid"]) { deletePlanet($row["moonid"], $userid, 1); }
 	}
 	Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - '".$points."', fpoints = fpoints - '".$fpoints."' WHERE userid = '".$userid."'");
@@ -411,7 +412,7 @@ function deletePlanet($id, $userid, $ismoon)
 /**
  * Returns the planet order.
  *
- * @param integer	Order mode
+ * @param integer $mode	Order mode
  *
  * @return string	ORDER BY term for SQL query
  */
@@ -439,8 +440,8 @@ function getPlanetOrder($mode)
 /**
  * Checks if user is newbie protected.
  *
- * @param integer	Points of requesting user
- * @param integer	Points of target user
+ * @param integer $committer	Points of requesting user
+ * @param integer $target		Points of target user
  *
  * @return integer	0: no protection, 1: weak, 2: strong
  */
@@ -479,7 +480,7 @@ function isNewbieProtected($committer, $target)
 /**
  * Time that a rocket needs to reach is destination.
  *
- * @param integer	Difference between galaxies
+ * @param integer $diff	Difference between galaxies
  *
  * @return integer	Time in seconds
  */
@@ -491,7 +492,7 @@ function getRocketFlightDuration($diff)
 /**
  * Replaces special characters.
  *
- * @param string	String to convert
+ * @param string $string	String to convert
  *
  * @return string	Converted string
  */
@@ -506,7 +507,7 @@ function convertSpecialChars($string)
 /**
  * Checks a string for valid url.
  *
- * @param string	String to check
+ * @param string $string	String to check
  *
  * @return boolean
  */
@@ -520,7 +521,7 @@ function isValidURL($string)
 /**
  * Checks a string for valid image url.
  *
- * @param string	String to check
+ * @param string $string	String to check
  *
  * @return boolean
  */
@@ -534,8 +535,8 @@ function isValidImageURL($string)
 /**
  * Sets the production factor of an user (e.g. for vacation mode).
  *
- * @param integer	The user id
- * @param integer	The new production factor
+ * @param integer $userid
+ * @param integer $prod	The new production factor
  *
  * @return void
  */
@@ -543,7 +544,7 @@ function setProdOfUser($userid, $prod)
 {
 	$sql = "UPDATE `".PREFIX."building2planet` b2p, `".PREFIX."planet` p SET b2p.`prod_factor` = '".$prod."' WHERE b2p.`planetid` = p.`planetid` AND p.`userid` = '".$userid."'";
 	try { Core::getDB()->query($sql); }
-	catch(Exception $e)
+	catch(Recipe_Exception_Generic $e)
 	{
 		$e->printError();
 	}

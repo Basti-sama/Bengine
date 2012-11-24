@@ -67,9 +67,9 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 		);
 		$joins  = "LEFT JOIN ".PREFIX."phrases p ON (p.title = c.name)";
 		$result = Core::getQuery()->select("construction c", $select, $joins, "c.buildingid = '".$id."' AND p.languageid = '".Core::getLanguage()->getOpt("languageid")."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			Hook::event("EditUnitDataLoaded", array(&$row));
 
 			// Set production
@@ -124,17 +124,17 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 			Core::getTPL()->assign($row);
 
 			$result = Core::getQuery()->select("phrases", "content", "", "languageid = '".Core::getLanguage()->getOpt("languageid")."' AND title = '".$row["name_id"]."_DESC'");
-			$_row = Core::getDB()->fetch($result);
-			Core::getDB()->free_result($result);
+			$_row = $result->fetchRow();
+			$result->closeCursor();
 			Core::getTPL()->assign("description", Str::replace("<br />", "", $_row["content"]));
 			$result = Core::getQuery()->select("phrases", "content", "", "languageid = '".Core::getLanguage()->getOpt("languageid")."' AND title = '".$row["name_id"]."_FULL_DESC'");
-			$_row = Core::getDB()->fetch($result);
-			Core::getDB()->free_result($result);
+			$_row = $result->fetchRow();
+			$result->closeCursor();
 			Core::getTPL()->assign("full_description", Str::replace("<br />", "", $_row["content"]));
 
 			$req = array(); $i = 0;
 			$result = Core::getQuery()->select("requirements r", array("r.requirementid", "r.needs", "r.level", "p.content"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs) LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "r.buildingid = '".$id."' AND p.languageid = '".Core::getLanguage()->getOpt("languageid")."'");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$req[$i]["delete"] = Link::get("game/sid:".SID."/Construction_Edit/DeleteRequirement/".$row["requirementid"]."/".$id, "[".Core::getLanguage()->getItem("DELETE")."]");
 				$req[$i]["name"] = Link::get("game/".SID."/Construction_Edit/Index/".$row["needs"], $row["content"]);
@@ -145,13 +145,13 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 
 			$const = array(); $i = 0;
 			$result = Core::getQuery()->select("construction b", array("b.buildingid", "p.content"), "LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "(b.mode = '1' OR b.mode = '2' OR b.mode = '5') AND p.languageid = '".Core::getLanguage()->getOpt("languageid")."'", "p.content ASC");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$const[$i]["name"] = $row["content"];
 				$const[$i]["id"] = $row["buildingid"];
 				$i++;
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			Core::getTPL()->addLoop("constructions", $const);
 	   	}
 	   	return $this;
@@ -169,7 +169,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 	protected function addRequirement($id, $level, $needs)
 	{
 		if(!is_numeric($level) || $level < 0) { $level = 1; }
-		Core::getQuery()->insert("requirements", array("buildingid", "needs", "level"), array($id, $needs, $level));
+		Core::getQuery()->insert("requirements", array("buildingid" => $id, "needs" => $needs, "level" => $level));
 		Core::getCache()->flushObject("requirements");
 		return $this;
 	}
@@ -262,60 +262,54 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 		}
 
 		// Now generate the sql query.
-		$atts = array("special", "allow_on_moon",
-			"basic_metal", "basic_silicon", "basic_hydrogen", "basic_energy",
-			"prod_metal", "prod_silicon", "prod_hydrogen", "prod_energy",
-			"cons_metal", "cons_silicon", "cons_hydrogen", "cons_energy",
-			"charge_metal", "charge_silicon", "charge_hydrogen", "charge_energy"
+		$spec = array("special" => $special, "allow_on_moon" => (int) $allowOnMoon,
+			"basic_metal" => $basicMetal, "basic_silicon" => $basicSilicon, "basic_hydrogen" => $basicHydrogen, "basic_energy" => $basicEnergy,
+			"prod_metal" => $prodMetal, "prod_silicon" => $prodSilicon, "prod_hydrogen" => $prodHydrogen, "prod_energy" => $prodEnergy,
+			"cons_metal" => $consMetal, "cons_silicon" => $consSilicon, "cons_hydrogen" => $consHydrogen, "cons_energy" => $consEnergy,
+			"charge_metal" => $chargeMetal, "charge_silicon" => $chargeSilicon, "charge_hydrogen" => $chargeHydrogen, "charge_energy" => $chargeEnergy,
 		);
-		$vals = array($special, (int) $allowOnMoon,
-			$basicMetal, $basicSilicon, $basicHydrogen, $basicEnergy,
-			$prodMetal, $prodSilicon, $prodHydrogen, $prodEnergy,
-			$consMetal, $consSilicon, $consHydrogen, $consEnergy,
-			$chargeMetal, $chargeSilicon, $chargeHydrogen, $chargeEnergy
-		);
-		Core::getQuery()->update("construction", $atts, $vals, "name = '".$nameId."'");
+		Core::getQuery()->update("construction", $spec, "name = '".$nameId."'");
 
 		// Save the name and description
 		$languageId = Core::getLang()->getOpt("languageid");
 		if(Str::length($name) > 0)
 		{
 			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."'");
-			if(Core::getDB()->num_rows($result) > 0)
+			if($result->rowCount() > 0)
 			{
-				Core::getQuery()->update("phrases", array("content"), array(convertSpecialChars($name)), "title = '".$nameId."'");
+				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($name)), "title = '".$nameId."'");
 			}
 			else
 			{
-				Core::getQuery()->insert("phrases", array("languageid", "phrasegroupid", "title", "content"), array($languageId, 4, $nameId, convertSpecialChars($name)));
+				Core::getQuery()->insert("phrases", array("languageid" => $languageId, "phrasegroupid" => 4, "title" => $nameId, "content" => convertSpecialChars($name)));
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 		}
 		if(Str::length($desc) > 0)
 		{
 			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."_DESC'");
-			if(Core::getDB()->num_rows($result) > 0)
+			if($result->rowCount() > 0)
 			{
-				Core::getQuery()->update("phrases", array("content"), array(convertSpecialChars($desc)), "title = '".$nameId."_DESC'");
+				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($desc)), "title = '".$nameId."_DESC'");
 			}
 			else
 			{
-				Core::getQuery()->insert("phrases", array("languageid", "phrasegroupid", "title", "content"), array($languageId, 4, $nameId."_DESC", convertSpecialChars($desc)));
+				Core::getQuery()->insert("phrases", array("languageid" => $languageId, "phrasegroupid" => 4, "title" => $nameId."_DESC", "content" => convertSpecialChars($desc)));
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 		}
 		if(Str::length($fullDesc) > 0)
 		{
 			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."_FULL_DESC'");
-			if(Core::getDB()->num_rows($result) > 0)
+			if($result->rowCount() > 0)
 			{
-				Core::getQuery()->update("phrases", array("content"), array(convertSpecialChars($fullDesc)), "title = '".$nameId."_FULL_DESC'");
+				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($fullDesc)), "title = '".$nameId."_FULL_DESC'");
 			}
 			else
 			{
-				Core::getQuery()->insert("phrases", array("languageid", "phrasegroupid", "title", "content"), array($languageId, 4, $nameId."_FULL_DESC", convertSpecialChars($fullDesc)));
+				Core::getQuery()->insert("phrases", array("languageid" => $languageId, "phrasegroupid" => 4, "title" => $nameId."_FULL_DESC", "content" => convertSpecialChars($fullDesc)));
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 		}
 
 		// Rebuild language cache

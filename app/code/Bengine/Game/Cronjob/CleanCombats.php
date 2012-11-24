@@ -12,7 +12,7 @@ class Bengine_Game_Cronjob_CleanCombats extends Recipe_CronjobAbstract
 	/**
 	 * Deletes old combats.
 	 *
-	 * @param integer	Storing time of combats
+	 * @param integer $days	Storing time of combats
 	 *
 	 * @return integer	Number of delteted combats
 	 */
@@ -21,7 +21,7 @@ class Bengine_Game_Cronjob_CleanCombats extends Recipe_CronjobAbstract
 		$days = (int) $days;
 		$time = TIME - 86400 * $days;
 		Core::getQuery()->delete("assault", "time <= '".$time."'");
-		return Core::getDatabase()->affected_rows();
+		return Core::getDatabase()->affectedRows();
 	}
 
 	/**

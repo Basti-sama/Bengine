@@ -60,9 +60,9 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 		$joins .= "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."user2group u2g ON (u.userid = u2g.userid)";
 		$result = Core::getQuery()->select("user u", $select, $joins, "u.userid = '".$this->userid."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			Hook::event("ModerateUser", array(&$row));
 			$row["deletion"] = $row["delete"];
  			unset($row["delete"]);
@@ -90,7 +90,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 
 			$bans = array(); $i = 0;
 			$result = Core::getQuery()->select("ban_u", array("`banid`", "`to`", "`reason`"), "", "userid = '".$this->userid."'");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$bans[$i]["reason"] = $row["reason"];
 				$bans[$i]["to"] = Date::timeToString(1, $row["to"]);
@@ -105,7 +105,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 				}
 				$i++;
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			Core::getTPL()->addLoop("bans", $bans);
 			Core::getTPL()->assign("eBans", $i);
 			Core::getTPL()->assign("sessionsLink", Link::get("game/".SID."/Moderator/Sessions?id=".$this->userid, "Sessions"));
@@ -152,8 +152,8 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 		Hook::event("UnbanUser", array($banid));
 		Core::getQuery()->update("ban_u", array("to", "reason"), array(TIME, Core::getLanguage()->getItem("ANNULED")), "banid = '".$banid."'");
 		$result = Core::getQuery()->select("ban_u", "userid", "", "banid = '".$banid."'");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$row = $result->fetchRow();
+		$result->closeCursor();
 		$this->redirect("game/".SID."/Moderator/Index/".$row["userid"], false);
 		return $this;
 	}
@@ -183,9 +183,9 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	{
 		$select = array("userid", "username", "email");
 		$result = Core::getQuery()->select("user", $select, "", "userid = '".$this->userid."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			Hook::event("SaveUserModeration", array(&$row));
 			$delete = ($delete == 1) ? 1 : 0;
 			$umode = ($umode == 1) ? 1 : 0;
@@ -248,15 +248,15 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	{
 		Core::getUser()->checkPermissions(array("CAN_SWITCH_USER"));
 		$result = Core::getQuery()->select("user u", array("u.username", "p.password"), "LEFT JOIN ".PREFIX."password p ON p.userid = u.userid", "u.userid = '".$this->userid."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$login = new Bengine_Game_Login($row["username"], $row["password"], "game", "trim");
 			$login->setCountLoginAttempts(false);
 			$login->checkData();
 			$login->startSession();
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 

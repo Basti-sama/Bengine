@@ -201,7 +201,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	 *
 	 * @return Recipe_Template_Adapter_Abstract
 	 */
-	abstract public function render($template, $type);
+	abstract public function render($template, $type = self::TEMPLATE_TYPE_VIEWS);
 
 	/**
 	 * Clears assignment of all template variables.

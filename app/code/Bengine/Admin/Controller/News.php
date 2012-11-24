@@ -1,4 +1,13 @@
 <?php
+/**
+ * News controller.
+ *
+ * @package Recipe PHP5 Admin Interface
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2012, Sebastian Noll
+ * @license Proprietary
+ */
+
 class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 {
 	/**
@@ -8,12 +17,18 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 	 */
 	protected $languages = null;
 
+	/**
+	 * @return Bengine_Admin_Controller_Abstract
+	 */
 	protected function init()
 	{
 		Core::getLanguage()->load("AI_News");
 		return parent::init();
 	}
 
+	/**
+	 * @return Bengine_Admin_Controller_News
+	 */
 	protected function indexAction()
 	{
 		if($this->getParam("add"))
@@ -25,8 +40,8 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 		$i = 1;
 		$news = array();
 		$result = Core::getQuery()->select("news", array("news_id", "title", "text", "time", "enabled", "sort_index"), "", "", "sort_index ASC, news_id DESC");
-		$total = Core::getDB()->num_rows($result);
-		while($row = Core::getDatabase()->fetch($result))
+		$total = $result->rowCount();
+		foreach($result->fetchAll() as $row)
 		{
 			$down = "";
 			$up = "";
@@ -59,7 +74,6 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 				"up"		=> $up,
 			);
 		}
-		Core::getDB()->free_result($result);
 		Core::getTemplate()->addLoop("news", $news);
 
 		$languages = $this->getLanguages();
@@ -75,24 +89,35 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $languageId
+	 * @param string $title
+	 * @param string $text
+	 * @return Bengine_Admin_Controller_News
+	 */
 	protected function add($languageId, $title, $text)
 	{
 		$result = Core::getQuery()->select("news", array("MAX(sort_index) AS sort_index"), "", "", "", 1);
-		$sortIndex = (int) Core::getDB()->fetch_field($result, "sort_index");
+		$sortIndex = (int) $result->fetchColumn();
 		$sortIndex++;
-		Core::getQuery()->insert("news", array("language_id", "title", "text", "user_id", "time", "sort_index"), array($languageId, $title, $text, Core::getUser()->get("userid"), TIME, $sortIndex));
+		$spec = array("language_id" => $languageId, "title" => $title, "text" => $text, "user_id" => Core::getUser()->get("userid"), "time" => TIME, "sort_index" => $sortIndex);
+		Core::getQuery()->insert("news", $spec);
 		return $this;
 	}
 
+	/**
+	 * @param integer $newsId
+	 * @return Bengine_Admin_Controller_News
+	 */
 	protected function editAction($newsId)
 	{
 		if($this->getParam("save"))
 		{
-			Core::getQuery()->update("news", array("language_id", "title", "text"), array($this->getParam("language_id"), $this->getParam("title"), $this->getParam("text")), "news_id = '".$newsId."'");
+			Core::getQuery()->update("news", array("language_id" => $this->getParam("language_id"), "title" => $this->getParam("title"), "text" => $this->getParam("text")), "news_id = '".$newsId."'");
 		}
 
 		$result = Core::getQuery()->select("news", array("news_id", "language_id", "title", "text"), "", "news_id = '".$newsId."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			Core::getTPL()->assign($row);
 			$languages = $this->getLanguages();
@@ -110,10 +135,13 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 		{
 			$this->redirect("news");
 		}
-		Core::getDB()->free_result($result);
 		return $this;
 	}
 
+	/**
+	 * @param integer $newsId
+	 * @return Bengine_Admin_Controller_News
+	 */
 	protected function deleteAction($newsId)
 	{
 		Core::getQuery()->delete("news", "news_id = '".$newsId."'");
@@ -121,63 +149,81 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $newsId
+	 * @return Bengine_Admin_Controller_News
+	 */
 	protected function enableAction($newsId)
 	{
-		Core::getQuery()->update("news", array("enabled"), array(1), "news_id = '".$newsId."'");
+		Core::getQuery()->update("news", array("enabled" => 1), "news_id = '".$newsId."'");
 		$this->redirect("news");
 		return $this;
 	}
 
+	/**
+	 * @param integer $newsId
+	 * @return Bengine_Admin_Controller_News
+	 */
 	protected function disableAction($newsId)
 	{
-		Core::getQuery()->update("news", array("enabled"), array(0), "news_id = '".$newsId."'");
+		Core::getQuery()->update("news", array("enabled" => 0), "news_id = '".$newsId."'");
 		$this->redirect("news");
 		return $this;
 	}
 
+	/**
+	 * @param integer $newsId
+	 * @return Bengine_Admin_Controller_News
+	 */
 	protected function moveupAction($newsId)
 	{
 		$result = Core::getQuery()->select("news", array("sort_index"), "", "news_id = '{$newsId}'", "", "1");
-		$sortIndex = Core::getDB()->fetch_field($result, "sort_index");
+		$sortIndex = $result->fetchColumn();
 		$_result = Core::getQuery()->select("news", array("MAX(sort_index) as max_sort_index"), "", "sort_index < '{$sortIndex}'", "", "1");
-		$maxSortIndex = (int) Core::getDB()->fetch_field($_result, "max_sort_index");
+		$maxSortIndex = (int) $_result->fetchColumn();
 		$maxSortIndex = ($maxSortIndex-1<0) ? 0 : $maxSortIndex-1;
-		Core::getQuery()->update("news", array("sort_index"), array($maxSortIndex), "news_id = '{$newsId}'");
-		Core::getDB()->free_result($_result);
-		Core::getDB()->free_result($result);
+		Core::getQuery()->update("news", array("sort_index" => $maxSortIndex), "news_id = '{$newsId}'");
 		$this->redirect("news");
 		return $this;
 	}
 
+	/**
+	 * @param integer $newsId
+	 * @return Bengine_Admin_Controller_News
+	 */
 	protected function movedownAction($newsId)
 	{
 		$result = Core::getQuery()->select("news", array("sort_index"), "", "news_id = '{$newsId}'", "", "1");
-		$sortIndex = Core::getDB()->fetch_field($result, "sort_index");
+		$sortIndex = $result->fetchColumn();
 		$_result = Core::getQuery()->select("news", array("MIN(sort_index) as min_sort_index"), "", "sort_index > '{$sortIndex}'", "", "1");
-		$minSortIndex = (int) Core::getDB()->fetch_field($_result, "min_sort_index");
+		$minSortIndex = (int) $_result->fetchColumn();
 		$minSortIndex++;
-		Core::getQuery()->update("news", array("sort_index"), array($minSortIndex), "news_id = '{$newsId}'");
-		Core::getDB()->free_result($_result);
-		Core::getDB()->free_result($result);
+		Core::getQuery()->update("news", array("sort_index" => $minSortIndex), "news_id = '{$newsId}'");
 		$this->redirect("news");
 		return $this;
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function getLanguages()
 	{
-		if(is_null($this->languages))
+		if($this->languages === null)
 		{
 			$this->languages = array();
 			$result = Core::getQuery()->select("languages", array("languageid", "title"), "", "", "title ASC");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$this->languages[$row["languageid"]] = $row["title"];
 			}
-			Core::getDB()->free_result($result);
 		}
 		return $this->languages;
 	}
 
+	/**
+	 * @param integer $langId
+	 * @return string
+	 */
 	protected function getLanguageSelect($langId = 0)
 	{
 		$select = "";

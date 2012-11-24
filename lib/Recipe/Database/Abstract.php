@@ -2,11 +2,10 @@
 /**
  * Abstract database class.
  *
- * @package Recipe 1.2
+ * @package Recipe 1.3
  * @author Sebastian Noll
- * @copyright Copyright (c) 2009, Sebastian Noll
+ * @copyright Copyright (c) 2012, Sebastian Noll
  * @license Proprietary
- * @version $Id: Abstract.php 8 2010-10-17 20:55:04Z secretchampion $
  */
 
 abstract class Recipe_Database_Abstract
@@ -37,7 +36,7 @@ abstract class Recipe_Database_Abstract
 	 *
 	 * @var string
 	 */
-	protected $pw = "";
+	protected $password = "";
 
 	/**
 	 * Name of the to used database.
@@ -54,53 +53,113 @@ abstract class Recipe_Database_Abstract
 	protected $queryCount = 0;
 
 	/**
-	 * Last executed query.
-	 *
-	 * @var resource
-	 */
-	protected $query = null;
-
-	/**
-	 * Last result set.
-	 *
-	 * @var mixed
-	 */
-	protected $result = null;
-
-	/**
 	 * Constructor: Set database access data.
 	 *
-	 * @param string	The database host
-	 * @param string	The database username
-	 * @param string	The database password
-	 * @param string	The database name
-	 * @param integer	The database port
+	 * @param string $host
+	 * @param string $user
+	 * @param string $password
+	 * @param string $database
+	 * @param integer $port
 	 *
-	 * @return void
+	 * @return \Recipe_Database_Abstract
 	 */
-	public function __construct($host, $user, $pw, $db, $port)
+	public function __construct($host, $user, $password, $database, $port = null)
 	{
 		$this->host = $host;
 		$this->user = $user;
-		$this->pw = $pw;
-		$this->database = $db;
+		$this->password = $password;
+		$this->database = $database;
 		$this->port = $port;
-		return;
+		$this->connect();
 	}
 
-	abstract function query($sql);
-	abstract function fetch_object($resource);
-	abstract function fetch_array($resource);
-	abstract function fetch($resource); // fetch_assoc
-	abstract function fetch_row($resource);
-	abstract function fetch_field($resource, $field, $row = null);
-	abstract function num_rows($sql);
-	abstract function affected_rows();
-	abstract function insert_id();
-	abstract function __destruct();
-	abstract function getVersion();
-	abstract function getDatabaseType();
-	abstract function free_result($resource);
+	/**
+	 * @param string|Recipe_Database_Select $sql
+	 * @param array $bind
+	 * @param integer $fetchType
+	 * @return array
+	 */
+	public function fetchAll($sql, array $bind = null, $fetchType = null)
+	{
+		$statement = $this->query($sql, $bind);
+		return $statement->fetchAll($fetchType);
+	}
+
+	/**
+	 * @param string|Recipe_Database_Select $sql
+	 * @param array $bind
+	 * @param integer $fetchType
+	 * @return array
+	 */
+	public function fetchRow($sql, array $bind = null, $fetchType = null)
+	{
+		$statement = $this->query($sql, $bind);
+		return $statement->fetchRow($fetchType);
+	}
+
+	/**
+	 * @param Recipe_Database_Select|string $sql
+	 * @param array $bind
+	 * @return integer
+	 */
+	public function rowCount($sql, array $bind = null)
+	{
+		return $this->query($sql, $bind)->rowCount();
+	}
+
+	/**
+	 * @return Recipe_Database_Abstract
+	 */
+	abstract protected function connect();
+
+	/**
+	 * @param string|Recipe_Database_Select $sql
+	 * @param array $bind
+	 * @return Recipe_Database_Statement_Abstract
+	 */
+	abstract public function query($sql, array $bind = null);
+
+	/**
+	 * @param string $name
+	 * @return integer
+	 */
+	abstract public function lastInsertId($name = null);
+
+	/**
+	 * @return integer
+	 */
+	abstract public function affectedRows();
+
+	/**
+	 * @return mixed
+	 */
+	abstract public function getConnection();
+
+	/**
+	 * @return Recipe_Database_Abstract
+	 */
+	abstract protected function disconnect();
+
+	/**
+	 * @return string
+	 */
+	abstract public function getClientVersion();
+
+	/**
+	 * @return string
+	 */
+	abstract public function getServerVersion();
+
+	/**
+	 * @return mixed
+	 */
+	abstract public function getDatabaseType();
+
+	/**
+	 * @param array|string|mixed $value
+	 * @return mixed
+	 */
+	abstract public function escape($value);
 
 	/**
 	 * Returns the total number of all queries in a script.
@@ -113,32 +172,16 @@ abstract class Recipe_Database_Abstract
 	}
 
 	/**
-	 * Returns an unique database row.
+	 * Returns all available tables from the current selected database.
 	 *
-	 * @param string	The SQL query
-	 *
-	 * @return array	One database row
-	 */
-	public function query_unique($sql)
-	{
-		try { $result = $this->query($sql); }
-		catch(Exception $e) { $e->printError(); }
-		if($row = $this->fetch($result)) { return $row; }
-		return false;
-	}
-
-	/**
-	 * Returns all available tablse from the current selected database.
-	 *
-	 * @return array	Tables
+	 * @return array
 	 */
 	public function getTables()
 	{
 		$tables = array();
-		$result = $this->query("SHOW TABLES FROM `".$this->database."`");
-		while($row = $this->fetch_array($result))
+		foreach($this->fetchAll("SHOW TABLES FROM `".$this->database."`") as $table)
 		{
-			array_push($tables, $row[0]);
+			$tables[] = $table["Tables_in_".$this->database];
 		}
 		return $tables;
 	}
@@ -151,8 +194,7 @@ abstract class Recipe_Database_Abstract
 	public function getVariables()
 	{
 		$vars = array();
-		$result = $this->query("SHOW VARIABLES");
-		while($row = Core::getDB()->fetch($result))
+		foreach($this->fetchAll("SHOW VARIABLES") as $row)
 		{
 			$vars[$row["Variable_name"]] = $row["Value"];
 		}

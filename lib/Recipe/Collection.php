@@ -18,7 +18,7 @@ abstract class Recipe_Collection
 	/**
 	 * Holds collection data.
 	 *
-	 * @var unknown_type
+	 * @var array
 	 */
 	protected $item = array();
 
@@ -26,9 +26,9 @@ abstract class Recipe_Collection
 	 * Supports access to collection variable as class property.
 	 * ($collection->variable)
 	 *
-	 * @param string	Variable name
+	 * @param string $var
 	 *
-	 * @return string	Value
+	 * @return string
 	 */
 	public function __get($var)
 	{
@@ -39,8 +39,8 @@ abstract class Recipe_Collection
 	 * Supports access to collection variable as class property.
 	 * ($collection->variable = "Value")
 	 *
-	 * @param string	Variable name
-	 * @param mixed		Value
+	 * @param string $var
+	 * @param mixed $value
 	 *
 	 * @return Recipe_Collection
 	 */
@@ -53,7 +53,7 @@ abstract class Recipe_Collection
 	/**
 	 * Checks if the given key or index exists in the collection.
 	 *
-	 * @param string	Variable to check
+	 * @param string $var	Variable to check
 	 *
 	 * @return boolean	True if the given key is set in the session
 	 */

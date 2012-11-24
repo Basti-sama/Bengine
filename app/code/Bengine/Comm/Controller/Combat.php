@@ -33,9 +33,8 @@ class Bengine_Comm_Controller_Combat extends Bengine_Comm_Controller_Abstract
 			))
 			->where(array("a" => "assaultid"), $this->getParam("1"))
 			->where(array("a" => "key"), $this->getParam("2"));
-		$result = $select->getResource();
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$result = $select->getStatement();
+		$row = $result->fetchRow();
 		if($row)
 		{
 			$report = $row["report"];

@@ -21,32 +21,44 @@ class Bengine_Game_Login extends Login
 		$joins  = "LEFT JOIN ".PREFIX."password p ON (u.userid = p.userid)";
 		$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (b.userid = u.userid AND b.to > '".TIME."')";
 		$result = Core::getQuery()->select("user u", $select, $joins, "u.username = '".$this->usr."'", "b.to DESC");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDatabase()->free_result($result);
+			$result->closeCursor();
 			if(Str::compare($row["username"], $this->usr) && Str::compare($row["password"], $this->pw) && Str::length($row["activation"]) == 0 && !$row["banid"])
 			{
 				$this->userid = $row["userid"];
 				Core::getQuery()->delete("loginattempts", "ip = '".IPADDRESS."' OR username = '".$this->usr."'");
-				Core::getQuery()->update("sessions", "logged", "0", "userid = '".$this->userid."'");
+				Core::getQuery()->update("sessions", array("logged" => "0"), "userid = '".$this->userid."'");
 				if($row["umode"])
 				{
-					Core::getQuery()->update("planet", array("last"), array(TIME), "userid = '".$row["userid"]."'");
+					Core::getQuery()->update("planet", array("last" => TIME), "userid = '".$row["userid"]."'");
 				}
 				$this->canLogin = true;
 			}
 			else
 			{
 				$this->canLogin = false;
-				if(!Str::compare($row["username"], $this->usr)) { $this->loginFailed("USERNAME_DOES_NOT_EXIST"); }
-				if(Str::length($row["activation"]) > 0) { $this->loginFailed("NO_ACTIVATION"); }
-				if(isset($row["to"]) && $row["to"] > TIME) { $this->loginFailed("ACCOUNT_BANNED"); }
+				if(!Str::compare($row["username"], $this->usr))
+				{
+					$this->loginFailed("USERNAME_DOES_NOT_EXIST");
+				}
+				if(Str::length($row["activation"]) > 0)
+				{
+			 		$this->loginFailed("NO_ACTIVATION");
+				}
+				if($row["banid"])
+				{
+					Core::getLanguage()->load(array("Prefs"));
+					Core::getLanguage()->assign("banReason", empty($row["reason"]) ? Core::getLanguage()->get("NO_BAN_REASON") : $row["reason"]);
+					Core::getLanguage()->assign("pilloryLink", Link::get(Core::getLanguage()->getOpt("langcode")."/pillory", Core::getLanguage()->get("PILLORY")));
+					$this->loginFailed("ACCOUNT_BANNED");
+				}
 				$this->loginFailed("PASSWORD_INVALID");
 			}
 		}
 		else
 		{
-			Core::getDatabase()->free_result($result);
+			$result->closeCursor();
 			$this->canLogin = false;
 			$this->loginFailed("USERNAME_DOES_NOT_EXIST");
 		}

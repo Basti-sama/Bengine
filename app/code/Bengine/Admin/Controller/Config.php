@@ -1,6 +1,18 @@
 <?php
+/**
+ * Config controller.
+ *
+ * @package Recipe PHP5 Admin Interface
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2012, Sebastian Noll
+ * @license Proprietary
+ */
+
 class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 {
+	/**
+	 * @var array
+	 */
 	protected $inputTypes = array(
 		"char" => "Text field",
 		"string" => "Text area",
@@ -9,14 +21,23 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		"enum" => "Select box"
 	);
 
+	/**
+	 * @var array
+	 */
 	protected $configGroups = null;
 
+	/**
+	 * @return Bengine_Admin_Controller_Abstract
+	 */
 	protected function init()
 	{
 		Core::getLanguage()->load("AI_Configuration");
 		return parent::init();
 	}
 
+	/**
+	 * @return Bengine_Admin_Controller_Config
+	 */
 	protected function indexAction()
 	{
 		if($this->isPost() && $this->getParam("add_var"))
@@ -30,7 +51,7 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		Core::getTPL()->assign("varTypes", $this->getInputTypeSelect());
 		$groups = array(); $i = 0;
 		$result = Core::getQuery()->select("configgroups", array("groupid", "groupname"), "ORDER BY groupname ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$groups[$i]["groupid"] = $row["groupid"];
 			$groups[$i]["title"] = $row["groupname"];
@@ -41,11 +62,16 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param array $groups
+	 * @param array $delete
+	 * @return Bengine_Admin_Controller_Config
+	 */
 	protected function saveGroups($groups, $delete)
 	{
 		foreach($groups as $groupid)
 		{
-			Core::getQuery()->update("configgroups", "groupname", Core::getRequest()->getPOST("title_".$groupid), "groupid = '".$groupid."'");
+			Core::getQuery()->update("configgroups", array("groupname" => Core::getRequest()->getPOST("title_".$groupid)), "groupid = '".$groupid."'");
 		}
 		foreach($delete as $del)
 		{
@@ -55,6 +81,11 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $groupid
+	 * @param string $var
+	 * @return Bengine_Admin_Controller_Config
+	 */
 	protected function deleteVariableAction($groupid, $var)
 	{
 		Core::getQuery()->delete("config", "var = '".$var."'");
@@ -63,6 +94,11 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $groupid
+	 * @param string $var
+	 * @return Bengine_Admin_Controller_Config
+	 */
 	protected function editVariableAction($groupid, $var)
 	{
 		if($this->getParam("save_var"))
@@ -70,8 +106,7 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 			$this->saveVariable($this->getParam("var"), $this->getParam("type"), $this->getParam("options"), $this->getParam("description"), $this->getParam("groupid"));
 		}
 		$result = Core::getQuery()->select("config", array("var", "type", "description", "options", "groupid"), "", "var = '".$var."' AND islisted = '1'");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$row = $result->fetchRow();
 		$row["groups"] = $this->getGroupSelect($row["groupid"]);
 		$row["type"] = $this->getInputTypeSelect($row["type"]);
 		$row["options"] = $this->unserialize($row["options"]);
@@ -79,26 +114,44 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param string $var
+	 * @param string $type
+	 * @param string $options
+	 * @param string $description
+	 * @param integer $groupid
+	 * @return Bengine_Admin_Controller_Config
+	 */
 	protected function saveVariable($var, $type, $options, $description, $groupid)
 	{
 		$options = $this->serialize($options);
-		$atts = array("type", "options", "description", "groupid");
-		$vals = array($type, $options, Str::validateXHTML($description), $groupid);
+		$spec = array("type" => $type, "options" => $options, "description" => Str::validateXHTML($description), "groupid" => $groupid);
 		$where = "var = '".$var."'";
-		Core::getQuery()->update("config", $atts, $vals, $where);
+		Core::getQuery()->update("config", $spec, $where);
 		Logger::addMessage("Saving_Successful", "success");
 		return $this;
 	}
 
+	/**
+	 * @param string $var
+	 * @param string $value
+	 * @param string $type
+	 * @param string $options
+	 * @param integer $groupid
+	 * @return Bengine_Admin_Controller_Config
+	 */
 	protected function addVar($var, $value, $type, $options, $groupid)
 	{
 		$options = $this->serialize($options);
-		$atts = array("var", "value", "type", "options", "groupid", "islisted");
-		$vals = array(Str::replace(" ", "_", $var), $value, $type, $options, $groupid, 1);
-		Core::getQuery()->insert("config", $atts, $vals);
+		$spec = array("var" => Str::replace(" ", "_", $var), "value" => $value, "type" => $type, "options" => $options, "groupid" => $groupid, "islisted" => 1);
+		Core::getQuery()->insert("config", $spec);
 		return $this;
 	}
 
+	/**
+	 * @param array $options
+	 * @return string
+	 */
 	protected function serialize($options)
 	{
 		if(!empty($options))
@@ -121,6 +174,10 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		return "";
 	}
 
+	/**
+	 * @param string $options
+	 * @return string
+	 */
 	protected function unserialize($options)
 	{
 		if(!empty($options))
@@ -136,6 +193,10 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		return "";
 	}
 
+	/**
+	 * @param integer $id
+	 * @return Bengine_Admin_Controller_Config
+	 */
 	protected function showvariablesAction($id)
 	{
 		if($this->isPost() && $this->getParam("save_vars"))
@@ -144,7 +205,7 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		}
 		$vars = array();
 		$result = Core::getQuery()->select("config", array("var", "value", "type", "description", "options"), "", "groupid = '".$id."' AND islisted = '1'", "sort_index ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$vars[] = array(
 				"description" => $row["description"],
@@ -158,6 +219,10 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param string $type
+	 * @return string
+	 */
 	protected function getInputTypeSelect($type = "none")
 	{
 		$select = "";
@@ -168,6 +233,13 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		return $select;
 	}
 
+	/**
+	 * @param string $type
+	 * @param string $var
+	 * @param string $value
+	 * @param string $options
+	 * @return string
+	 */
 	protected function getInputType($type, $var, $value, $options = null)
 	{
 		switch($type)
@@ -189,7 +261,7 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 			break;
 			case "select":
 			case "enum":
-				if($options === null) { return; }
+				if($options === null) { return ""; }
 				$options = unserialize($options);
 				$select = "<select name=\"".$var."\" id=\"config-".$var."\" class=\"enum\">";
 				foreach($options as $key => $val)
@@ -203,32 +275,41 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		return "";
 	}
 
+	/**
+	 * @return Bengine_Admin_Controller_Config
+	 */
 	protected function saveVars()
 	{
 		$result = Core::getQuery()->select("config", array("var"), "", "groupid = '".Core::getRequest()->getGET("1")."' AND islisted = '1'", "sort_index ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
-			Core::getQuery()->update("config", array("value"), array(Core::getRequest()->getPOST($row["var"])), "var = '".$row["var"]."'");
+			Core::getQuery()->update("config", array("value" => Core::getRequest()->getPOST($row["var"])), "var = '".$row["var"]."'");
 		}
 		Admin::rebuildCache("config");
 		return $this;
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function getConfigGroups()
 	{
 		if(is_null($this->configGroups))
 		{
 			$this->configGroups = array();
 			$result = Core::getQuery()->select("configgroups", array("groupid", "groupname"), "", "", "groupname ASC");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$this->configGroups[] = $row;
 			}
-			Core::getDB()->free_result($result);
 		}
 		return $this->configGroups;
 	}
 
+	/**
+	 * @param int $groupid
+	 * @return string
+	 */
 	protected function getGroupSelect($groupid = 0)
 	{
 		$select = "";
@@ -239,11 +320,14 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		return $select;
 	}
 
+	/**
+	 * @return Bengine_Admin_Controller_Config
+	 */
 	protected function addGroupAction()
 	{
 		if($this->isPost())
 		{
-			Core::getQuery()->insert("configgroups", "groupname", $this->getParam("groupname"));
+			Core::getQuery()->insert("configgroups", array("groupname" => $this->getParam("groupname")));
 		}
 		return $this;
 	}

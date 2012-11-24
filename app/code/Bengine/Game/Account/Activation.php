@@ -51,18 +51,18 @@ class Bengine_Game_Account_Activation
 		if(!empty($this->key))
 		{
 			$result = Core::getQuery()->select("user u", array("u.userid", "u.username", "p.password", "temp_email"), "LEFT JOIN ".PREFIX."password p ON (p.userid = u.userid)", "u.activation = '".$this->getKey()."'");
-			if($row = Core::getDB()->fetch($result))
+			if($row = $result->fetchRow())
 			{
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 				Hook::event("ActivateAccount", array($this));
-				Core::getQuery()->update("user", array("activation", "email"), array("", $row["temp_email"]), "userid = '".$row["userid"]."'");
+				Core::getQuery()->update("user", array("activation" => "", "email" => $row["temp_email"]), "userid = '".$row["userid"]."'");
 				$login = new Bengine_Game_Login($row["username"], $row["password"], "game", "trim");
 				$login->setCountLoginAttempts(false);
 				$login->checkData();
 				$login->startSession();
 				return $this;
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 		}
 		Recipe_Header::redirect("?error=ACTIVATION_FAILED", false);
 		return $this;

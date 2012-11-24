@@ -1,4 +1,13 @@
 <?php
+/**
+ * Admin abstract controller.
+ *
+ * @package Recipe PHP5 Admin Interface
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2012, Sebastian Noll
+ * @license Proprietary
+ */
+
 abstract class Bengine_Admin_Controller_Abstract extends Recipe_Controller_Abstract
 {
 	/**

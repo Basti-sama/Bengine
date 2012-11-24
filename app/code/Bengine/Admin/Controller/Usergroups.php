@@ -1,14 +1,29 @@
 <?php
+/**
+ * User group controller.
+ *
+ * @package Recipe PHP5 Admin Interface
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2012, Sebastian Noll
+ * @license Proprietary
+ */
+
 class Bengine_Admin_Controller_Usergroups extends Bengine_Admin_Controller_Abstract
 {
+	/**
+	 * @return Bengine_Admin_Controller_Abstract
+	 */
 	protected function init()
 	{
 		Core::getLanguage()->load("AI_User");
 		$perms = Core::getQuery()->select("permissions", array("permissionid", "permission"), "ORDER BY permission ASC");
-		Core::getTPL()->addLoop("perms", $perms);
+		Core::getTPL()->addLoop("perms", $perms->fetchAll());
 		return parent::init();
 	}
 
+	/**
+	 * @return Bengine_Admin_Controller_Usergroups
+	 */
 	protected function indexAction()
 	{
 		if($this->getParam("delete_usergroups"))
@@ -21,7 +36,7 @@ class Bengine_Admin_Controller_Usergroups extends Bengine_Admin_Controller_Abstr
 		}
 		$groups = array();
 		$result = Core::getQuery()->select("usergroup", array("usergroupid", "grouptitle", "standard"), "ORDER BY grouptitle ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$id = $row["usergroupid"];
 			$groups[$id]["usergroupid"] = $id;
@@ -33,6 +48,10 @@ class Bengine_Admin_Controller_Usergroups extends Bengine_Admin_Controller_Abstr
 		return $this;
 	}
 
+	/**
+	 * @param integer $groupid
+	 * @return Bengine_Admin_Controller_Usergroups
+	 */
 	protected function editAction($groupid)
 	{
 		if($this->isPost() && $this->getParam("save_usergroup"))
@@ -41,15 +60,16 @@ class Bengine_Admin_Controller_Usergroups extends Bengine_Admin_Controller_Abstr
 		}
 		$permissions = array();
 		$result = Core::getQuery()->select("group2permission g2p", array("g2p.permissionid", "g2p.value", "g.grouptitle"), "LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = g2p.groupid)", "g2p.groupid = '".$groupid."'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$grouptitle = $row["grouptitle"];
-			($row["value"])? $permissions[] = $row["permissionid"] : 0;
+			if($row["value"]) $permissions[] = $row["permissionid"];
 		}
-		if(!$grouptitle)
+		if(empty($grouptitle))
 		{
+			$grouptitle = "";
 			$result = Core::getQuery()->select("usergroup", "grouptitle", "", "usergroupid = '".$groupid."'");
-			if($row = Core::getDB()->fetch($result))
+			if($row = $result->fetchRow())
 			{
 				$grouptitle = $row["grouptitle"];
 			}
@@ -60,22 +80,31 @@ class Bengine_Admin_Controller_Usergroups extends Bengine_Admin_Controller_Abstr
 		return $this;
 	}
 
-	protected function add($grouptitle, $perms)
+	/**
+	 * @param string $grouptitle
+	 * @param array $perms
+	 * @return Bengine_Admin_Controller_Usergroups
+	 */
+	protected function add($grouptitle, array $perms)
 	{
-		Core::getQuery()->insert("usergroup", array("grouptitle", "standard"), array($grouptitle, 0));
-		$groupid = Core::getDB()->insert_id();
+		Core::getQuery()->insert("usergroup", array("grouptitle" => $grouptitle, "standard" => 0));
+		$groupid = Core::getDB()->lastInsertId();
 		if(count($perms) > 0)
 		{
 			foreach($perms as $permid)
 			{
-				($permid > 0) ? Core::getQuery()->insert("group2permission", array("permissionid", "groupid", "value"), array($permid, $groupid, 1)) : false;
+				if($permid > 0) Core::getQuery()->insert("group2permission", array("permissionid" => $permid, "groupid" => $groupid, "value" => 1));
 			}
 		}
 		Admin::rebuildCache("perm");
 		return $this;
 	}
 
-	protected function delete($delete)
+	/**
+	 * @param array $delete
+	 * @return Bengine_Admin_Controller_Usergroups
+	 */
+	protected function delete(array $delete)
 	{
 		foreach($delete as $groupid)
 		{
@@ -85,15 +114,21 @@ class Bengine_Admin_Controller_Usergroups extends Bengine_Admin_Controller_Abstr
 		return $this;
 	}
 
-	protected function save($groupid, $grouptitle, $perms)
+	/**
+	 * @param integer $groupid
+	 * @param string $grouptitle
+	 * @param array $perms
+	 * @return Bengine_Admin_Controller_Usergroups
+	 */
+	protected function save($groupid, $grouptitle, array $perms)
 	{
-		Core::getQuery()->update("usergroup", "grouptitle", $grouptitle, "usergroupid = '".$groupid."'");
+		Core::getQuery()->update("usergroup", array("grouptitle" => $grouptitle), "usergroupid = '".$groupid."'");
 		Core::getQuery()->delete("group2permission", "groupid = '".$groupid."'");
 		if(count($perms) > 0)
 		{
 			foreach($perms as $permid)
 			{
-				($permid > 0) ? Core::getQuery()->insert("group2permission", array("permissionid", "groupid", "value"), array($permid, $groupid, 1)) : false;
+				if($permid > 0) Core::getQuery()->insert("group2permission", array("permissionid" => $permid, "groupid" => $groupid, "value" => 1));
 			}
 		}
 		return $this;

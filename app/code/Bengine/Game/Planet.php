@@ -126,12 +126,12 @@ class Bengine_Game_Planet
 		}
 		$atts = array("p.planetname", "p.userid", "p.ismoon", "p.picture", "p.temperature", "p.diameter", "p.last", "p.solar_satellite_prod", "g.galaxy", "g.system", "g.position", "gm.galaxy AS moongala", "gm.system AS moonsys", "gm.position AS moonpos", "g.moonid");
 		$result = Core::getQuery()->select("planet p", $atts, "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = p.planetid) LEFT JOIN ".PREFIX."galaxy gm ON (gm.moonid = p.planetid)", $where);
-		if(!$this->data = Core::getDB()->fetch($result))
+		if(!($this->data = $result->fetchRow()))
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			throw new Recipe_Exception_Generic("Could not found planet ".$this->planetid.".");
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		if($this->data["ismoon"])
 		{
 			$this->data["galaxy"] = $this->data["moongala"];
@@ -177,7 +177,7 @@ class Bengine_Game_Planet
 			array("u2s.unitid", "u2s.quantity"),
 			"LEFT JOIN ".PREFIX."construction c ON (u2s.unitid = c.buildingid)",
 			"u2s.planetid = '".$this->planetid."' AND c.name = '".$solarSatId."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			$this->building[$solarSatId] = $row["quantity"];
 			$this->building[$row["unitid"]] = $row["quantity"];
@@ -186,12 +186,12 @@ class Bengine_Game_Planet
 		{
 			$this->building[$solarSatId] = 0;
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 
 		$join = "LEFT JOIN ".PREFIX."building2planet b2p ON (b2p.buildingid = b.buildingid)";
 		$atts = array("b.buildingid", "b.name", "b.prod_metal", "b.prod_silicon", "b.prod_hydrogen", "b.prod_energy", "b.cons_metal", "b.cons_silicon", "b.cons_hydrogen", "b.cons_energy", "b.special", "b2p.level", "b2p.prod_factor AS factor");
 		$result = Core::getQuery()->select("construction b", $atts, $join, "(b.mode = '1' OR b.mode = '5') AND b2p.planetid = '".$this->planetid."'", "b.display_order ASC, b.buildingid ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			Hook::event("RessProdGetBuilding", array(&$row, $this));
 
@@ -262,7 +262,7 @@ class Bengine_Game_Planet
 				break;
 			}
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 
 		// Add solar satellite prod
 		if($this->getBuilding($solarSatId) > 0)
@@ -328,7 +328,7 @@ class Bengine_Game_Planet
 	public function loadResources()
 	{
 		$result = Core::getQuery()->select("planet", array("metal", "silicon", "hydrogen"), "", "planetid = '".$this->getPlanetId()."'", "", 1);
-		$row = Core::getDB()->fetch($result);
+		$row = $result->fetchRow();
 		$this->setData("metal", $row["metal"])->setData("silicon", $row["silicon"])->setData("hydrogen", $row["hydrogen"]);
 		return $this;
 	}
@@ -403,9 +403,13 @@ class Bengine_Game_Planet
 		Hook::event("AddRessProd", array($this, &$totalMetProd, &$totalHydProd, &$totalSilProd));
 
 		// Now write new resources into db and update times.
-		$atts = array("metal", "silicon", "hydrogen", "last");
-		$vals = array($this->data["metal"], $this->data["silicon"], $this->data["hydrogen"], TIME);
-		Core::getQuery()->update("planet", $atts, $vals, "planetid = '".$this->planetid."'");
+		$spec = array(
+			"metal" => $this->data["metal"],
+			"silicon" => $this->data["silicon"],
+			"hydrogen" => $this->data["hydrogen"],
+			"last" => TIME
+		);
+		Core::getQuery()->update("planet", $spec, "planetid = '".$this->planetid."'");
 
 		// Truncate resources.
 		$this->data["metal"] = floor($this->data["metal"]);

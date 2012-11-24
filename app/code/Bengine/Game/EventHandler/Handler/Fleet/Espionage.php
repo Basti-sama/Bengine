@@ -34,12 +34,13 @@ class Bengine_Game_EventHandler_Handler_Fleet_Espionage extends Bengine_Game_Eve
 		if($espReport->getProbesLost())
 		{
 			$points = 0; $fpoints = 0;
+			$tfMetal = 0; $tfSilicon = 0;
 			$intoTF = floatval(Core::getOptions()->get("FLEET_INTO_DEBRIS"));
 			foreach($data["ships"] as $key => $ship)
 			{
 				$_result = Core::getQuery()->select("construction", array("basic_metal", "basic_silicon", "basic_hydrogen"), "", "buildingid = '".$key."'");
-				$shipData = Core::getDB()->fetch($_result);
-				Core::getDB()->free_result($_result);
+				$shipData = $_result->fetchRow();
+				$_result->closeCursor();
 				$points += ($shipData["basic_metal"] + $shipData["basic_silicon"] + $shipData["basic_hydrogen"]) * $ship["quantity"] / 1000;
 				$fpoints += $ship["quantity"];
 				$tfMetal = $shipData["basic_metal"] * $ship["quantity"] * $intoTF;

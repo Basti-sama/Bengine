@@ -9,11 +9,11 @@
 			</thead>
 			<tr>
 				<td><label for="f_language">{lang}Language{/lang}</label></td>
-				<td><select name="languageid" id="f_language">{while[langselection]}<option value="{loop}languageid{/loop}">{loop}title{/loop}</option>{/while}</select></td>
+				<td><select name="languageid" id="f_language">{foreach[langselection]}<option value="{loop}languageid{/loop}">{loop}title{/loop}</option>{/foreach}</select></td>
 			</tr>
 			<tr>
 				<td><label for="f_phrasegroup">{lang}Phrase_Group{/lang}</label></td>
-				<td><select name="phrasegroupid" id="f_phrasegroup">{while[groupselection]}<option value="{loop}phrasegroupid{/loop}">{loop}title{/loop}</option>{/while}</select></td>
+				<td><select name="phrasegroupid" id="f_phrasegroup">{foreach[groupselection]}<option value="{loop}phrasegroupid{/loop}">{loop}title{/loop}</option>{/foreach}</select></td>
 			</tr>
 			<tr>
 				<td><label for="f_title">{lang}Phrase_Name{/lang}</label></td>
@@ -46,12 +46,12 @@
 				<td>{lang}Variables{/lang}</td>
 				<td>{lang}Delete{/lang}</td>
 			</tr>
-			{while[languages]}<tr>
+			{foreach[languages]}<tr>
 				<td>[{loop}langcode{/loop}] <input type="hidden" name="langs[]" value="{loop}languageid{/loop}" /><input type="text" name="title_{loop}languageid{/loop}" value="{loop}title{/loop}" maxlength="128" /></td>
 				<td><input type="text" name="charset_{loop}languageid{/loop}" value="{loop}charset{/loop}" maxlength="128" /></td>
 				<td>{loop}phrases{/loop}</td>
 				<td><input type="checkbox" name="delete[]" value="{loop}languageid{/loop}" /></td> {loop}link{/loop}
-			</tr>{/while}
+			</tr>{/foreach}
 			<tfoot>
 				<tr>
 					<td colspan="4">

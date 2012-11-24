@@ -165,8 +165,8 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 	protected function getUserRank($points, $pointType)
 	{
 		$result = Core::getQuery()->select("user", "userid", "", $pointType." >= FLOOR('".$points."')");
-		$rank = fNumber(Core::getDB()->num_rows($result));
-		Core::getDB()->free_result($result);
+		$rank = fNumber($result->rowCount());
+		$result->closeCursor();
 		return $rank;
 	}
 

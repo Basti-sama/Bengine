@@ -25,7 +25,7 @@ class Bengine_Game_Cronjob_CleanSessions extends Recipe_CronjobAbstract
 		File::rmDirectoryContent($sessionCache);
 
 		// Disable sessions
-		Core::getQuery()->update("sessions", array("logged"), array(0), "logged = '1'");
+		Core::getQuery()->update("sessions", array("logged" => 0), "logged = '1'");
 
 		// Delete old sessions
 		$deleteTime = TIME - $deletionDays * 86400;

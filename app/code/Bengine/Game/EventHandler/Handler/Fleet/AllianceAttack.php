@@ -48,9 +48,9 @@ class Bengine_Game_EventHandler_Handler_Fleet_AllianceAttack extends Bengine_Gam
 	protected function _remove(Bengine_Game_Model_Event $event, array $data)
 	{
 		$result = Core::getQuery()->select("events", array("eventid", "planetid", "destination", "start"), "", "parent_id = '".$event->get("eventid")."'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
-			Core::getQuery()->updateSet("events", array("mode" => 20, "planetid" => $row["destination"], "destination" => $row["planetid"], "time" => TIME + (TIME - $row["start"])), "eventid = '".$row["eventid"]."'");
+			Core::getQuery()->update("events", array("mode" => 20, "planetid" => $row["destination"], "destination" => $row["planetid"], "time" => TIME + (TIME - $row["start"])), "eventid = '".$row["eventid"]."'");
 		}
 		$this->sendBack($data);
 		return $this;

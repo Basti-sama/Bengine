@@ -102,16 +102,14 @@ class Bengine_Comm_Controller_Signature extends Bengine_Comm_Controller_Abstract
 		if($statsConfig->getInteger("show"))
 		{
 			$result = Core::getQuery()->select("user", array("userid"));
-			$totalUser = fNumber(Core::getDB()->num_rows($result));
-			Core::getDB()->free_result($result);
+			$totalUser = fNumber($result->rowCount());
 			$this->_addParamToImage($img, "stats", Core::getLang()->get("RANK")." ".$user->getFormattedRank()."/".$totalUser);
 		}
 
 		if($planetsConfig->getInteger("show"))
 		{
 			$result = Core::getQuery()->select("planet", array("planetid"), "", "userid = '{$user->getUserid()}' AND ismoon = 0");
-			$planets = Core::getLang()->get("NUMBER_OF_COLONY")." ".fNumber(Core::getDB()->num_rows($result) - 1);
-			Core::getDB()->free_result($result);
+			$planets = Core::getLang()->get("NUMBER_OF_COLONY")." ".fNumber($result->rowCount() - 1);
 			$this->_addParamToImage($img, "planets", $planets);
 		}
 

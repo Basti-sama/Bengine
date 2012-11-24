@@ -178,8 +178,8 @@ class Bengine_Game_AutoMsg
 		$hydrogen = fNumber($this->data["hydrogen"]);
 		$rShips = $this->getShipsString();
 		$result = Core::getQuery()->select("planet", array("planetname"), "", "planetid = '".$this->data["destination"]."'");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$row = $result->fetchRow();
+		$result->closeCursor();
 		$planet = $row["planetname"];
 		$coordinates = getCoordLink($this->data["galaxy"], $this->data["system"], $this->data["position"], true);
 		$msg = sprintf($msg, $rShips, $planet, $coordinates, $metal, $silicon, $hydrogen);
@@ -231,7 +231,7 @@ class Bengine_Game_AutoMsg
 
 		if(!empty($this->data["targetuser"]))
 		{
-			Core::getQuery()->insertInto("transport_log", array(
+			Core::getQuery()->insert("transport_log", array(
 				"user_1" => $this->userid,
 				"user_2" => $this->data["targetuser"],
 				"message" => strip_tags($msg),
@@ -282,8 +282,8 @@ class Bengine_Game_AutoMsg
 		$rShips = $this->getShipsString();
 		$coordinates = getCoordLink($this->data["galaxy"], $this->data["system"], $this->data["position"], true);
 		$result = Core::getQuery()->select("planet", array("planetname"), "", "planetid = '".$this->data["destination"]."'");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$row = $result->fetchRow();
+		$result->closeCursor();
 		$planet = $row["planetname"];
 		$coords = getCoordLink($this->data["sgalaxy"], $this->data["ssystem"], $this->data["sposition"], true);
 		$msg = sprintf($msg, $rShips, $coordinates, $planet, $coords, $metal, $silicon, $hydrogen);
@@ -353,7 +353,7 @@ class Bengine_Game_AutoMsg
 	 */
 	protected function sendMsg($subject, $msg)
 	{
-		Core::getQuery()->insertInto("message", array("mode" => $this->folder, "time" => $this->time, "sender" => null, "receiver" => $this->userid, "message" => $msg, "subject" => $subject, "read" => 0));
+		Core::getQuery()->insert("message", array("mode" => $this->folder, "time" => $this->time, "sender" => null, "receiver" => $this->userid, "message" => $msg, "subject" => $subject, "read" => 0));
 		return $this;
 	}
 

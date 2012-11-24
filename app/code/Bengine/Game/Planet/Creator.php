@@ -142,8 +142,8 @@ class Bengine_Game_Planet_Creator
 			$this->system = mt_rand(1, Core::getOptions()->get("SYSTEMS"));
 			$this->position = mt_rand(4, 12);
 			$result = Core::getQuery()->select("galaxy", "planetid", "", "galaxy = '".$this->galaxy."' AND system = '".$this->system."' AND position = '".$this->position."'");
-		} while(Core::getDB()->num_rows($result) > 0);
-		Core::getDB()->free_result($result);
+		} while($result->rowCount() > 0);
+		$result->closeCursor();
 		return $this;
 	}
 
@@ -227,21 +227,39 @@ class Bengine_Game_Planet_Creator
 		Hook::event("PlanetCreatorSavePlanet", array($this));
 		if($this->moon == 0)
 		{
-			$atts = array("userid", "planetname", "diameter", "picture", "temperature", "last", "metal", "silicon", "hydrogen", "solar_satellite_prod");
-			$vals = array($this->userid, $this->name, $this->size, $this->picture, $this->temperature, TIME, Core::getOptions()->get("DEFAULT_METAL"), Core::getOptions()->get("DEFAULT_SILICON"), Core::getConfig()->get("DEFAULT_HYDROGEN"), 100);
-			Core::getQuery()->insert("planet", $atts, $vals);
-			$this->planetid = Core::getDB()->insert_id();
-			$atts = array("galaxy", "system", "position", "planetid");
-			$vals = array($this->galaxy, $this->system, $this->position, $this->planetid);
-			Core::getQuery()->insert("galaxy", $atts, $vals);
+			$spec = array(
+				"userid" => $this->userid,
+				"planetname" => $this->name,
+				"diameter" => $this->size,
+				"picture" => $this->picture,
+				"temperature" => $this->temperature,
+				"last" => TIME,
+				"metal" => Core::getOptions()->get("DEFAULT_METAL"),
+				"silicon" => Core::getOptions()->get("DEFAULT_SILICON"),
+				"hydrogen" => Core::getConfig()->get("DEFAULT_HYDROGEN"),
+				"solar_satellite_prod" => 100
+			);
+			Core::getQuery()->insert("planet", $spec);
+			$this->planetid = Core::getDB()->lastInsertId();
+			$spec = array("galaxy" => $this->galaxy, "system" => $this->system, "position" => $this->position, "planetid" => $this->planetid);
+			Core::getQuery()->insert("galaxy", $spec);
 		}
 		else
 		{
-			$atts = array("userid", "ismoon", "planetname", "diameter", "picture", "temperature", "last", "metal", "silicon");
-			$vals = array($this->userid, 1, Core::getLanguage()->getItem("MOON"), $this->size, "mond", $this->temperature - mt_rand(15, 35), TIME, 0, 0);
-			Core::getQuery()->insert("planet", $atts, $vals);
-			$this->planetid = Core::getDB()->insert_id();
-			Core::getQuery()->update("galaxy", "moonid", $this->planetid, "galaxy = '".$this->galaxy."' AND system = '".$this->system."' AND position = '".$this->position."'");
+			$spec = array(
+				"userid" => $this->userid,
+				"ismoon" => 1,
+				"planetname" => Core::getLanguage()->getItem("MOON"),
+				"diameter" => $this->size,
+				"picture" => "mond",
+				"temperature" => $this->temperature - mt_rand(15, 35), // TODO: variable value
+				"last" => TIME,
+				"metal" => 0, // TODO: variable value
+				"silicon" => 0 // TODO: variable value
+			);
+			Core::getQuery()->insert("planet", $spec);
+			$this->planetid = Core::getDB()->lastInsertId();
+			Core::getQuery()->update("galaxy", array("moonid" => $this->planetid), "galaxy = '".$this->galaxy."' AND system = '".$this->system."' AND position = '".$this->position."'");
 		}
 		return $this;
 	}

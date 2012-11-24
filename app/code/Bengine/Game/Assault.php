@@ -60,8 +60,8 @@ class Bengine_Game_Assault
 		$this->owner = $owner;
 
 		// Create a new assault in the database.
-		Core::getQuery()->insert("assault", array("planetid", "time"), array($this->location, TIME));
-		$this->assaultid = Core::getDB()->insert_id();
+		Core::getQuery()->insert("assault", array("planetid" => $this->location, "time" => TIME));
+		$this->assaultid = Core::getDB()->lastInsertId();
 
 		// If the location is a planet, we have to update the ressource production.
 		if(!is_null($this->location))
@@ -117,19 +117,19 @@ class Bengine_Game_Assault
 	protected function loadDefenders()
 	{
 		Hook::event("AssaultLoadDefender", array($this));
-		Core::getQuery()->insert("assaultparticipant", array("assaultid", "userid", "planetid", "mode"), array($this->assaultid, $this->owner, $this->location, 0));
-		$participantid = Core::getDB()->insert_id();
+		Core::getQuery()->insert("assaultparticipant", array("assaultid" => $this->assaultid, "userid" => $this->owner, "planetid" => $this->location, "mode" => 0));
+		$participantid = Core::getDB()->lastInsertId();
 		$joins = "LEFT JOIN ".PREFIX."planet p ON (p.planetid = u2s.planetid)";
 		$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity"), $joins, "u2s.planetid = '".$this->location."'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
-			Core::getQuery()->insert("fleet2assault", array("assaultid", "participantid", "userid", "unitid", "quantity", "mode"), array($this->assaultid, $participantid, $this->owner, $row["unitid"], $row["quantity"], 0));
+			Core::getQuery()->insert("fleet2assault", array("assaultid" => $this->assaultid, "participantid" => $participantid, "userid" => $this->owner, "unitid" => $row["unitid"], "quantity" => $row["quantity"], "mode" => 0));
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 
 		// Get holding fleets.
 		$result = Core::getQuery()->select("events", array("eventid", "user AS userid", "planetid", "time", "data"), "", "mode = '17' AND destination = '".$this->location."'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$participant = new Bengine_Game_Assault_Participant();
 			$participant->setMode(Bengine_Game_Assault_Participant::DEFENDER_MODE)
@@ -142,7 +142,7 @@ class Bengine_Game_Assault
 						->setDBEntry();
 			$this->defenders->push($participant);
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 
@@ -172,8 +172,8 @@ class Bengine_Game_Assault
 		exec($cmd, $output, $commandResult);
 
 		$result = Core::getQuery()->select("assault", array("result", "moonchance", "moon", "accomplished", "lostunits_defender"), "", "assaultid = '".$this->assaultid."'");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$row = $result->fetchRow();
+		$result->closeCursor();
 		$this->data = $row;
 
 		if($commandResult !== 0 || !$row["accomplished"])
@@ -234,7 +234,7 @@ class Bengine_Game_Assault
 		if($lostUnits > 0 && !is_null($this->owner))
 		{
 			$result = Core::getQuery()->select("fleet2assault", array("unitid", "quantity"), "", "userid = '".$this->owner."' AND assaultid = '".$this->assaultid."'");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				if($row["quantity"] > 0)
 				{
@@ -245,7 +245,7 @@ class Bengine_Game_Assault
 					Core::getQuery()->delete("unit2shipyard", "unitid = '".$row["unitid"]."' AND planetid = '".$this->location."'");
 				}
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 		}
 		return $this;
 	}

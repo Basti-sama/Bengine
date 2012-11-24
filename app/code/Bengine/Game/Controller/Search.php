@@ -119,7 +119,7 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 		$joins .= "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (b.userid = u.userid)";
 		$result = Core::getQuery()->select("planet p", $select, $joins, "p.planetname LIKE '".$this->searchItem->get()."' AND u.username IS NOT NULL", "p.planetname ASC, u.username ASC", "25", "u.userid");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$sr[$i] = $row;
 			if($row["planetid"] == $row["hp"])
@@ -134,7 +134,7 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 			$sr[$i]["planetname"] = $row["planetname"].$p_addition;
 			$i++;
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 
 		$UserList = new Bengine_Game_User_List();
 		$UserList->setByArray($sr);
@@ -194,7 +194,7 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 		$ret = array();
 		$where = "SUBSTRING(SOUNDEX(".$field."), 2, 4) = SUBSTRING(SOUNDEX('".$item->replace("%", "")."'), 2, 4)";
 		$result = Core::getQuery()->select($table, array($field), "", $where);
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			if(!$item->compareTo($row[$field]))
 			{

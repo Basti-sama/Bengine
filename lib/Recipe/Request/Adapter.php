@@ -50,8 +50,8 @@ abstract class Recipe_Request_Adapter
 	/**
 	 * Retrieves a _GET variable.
 	 *
-	 * @param string	Variable name
-	 * @param mixed		Default return value [optional]
+	 * @param string $var		Variable name
+	 * @param mixed $default	Default return value [optional]
 	 *
 	 * @return mixed
 	 */
@@ -60,8 +60,8 @@ abstract class Recipe_Request_Adapter
 	/**
 	 * Retrieves a _POST variable.
 	 *
-	 * @param string	Variable name
-	 * @param mixed		Default return value [optional]
+	 * @param string $var		Variable name
+	 * @param mixed $default	Default return value [optional]
 	 *
 	 * @return mixed
 	 */
@@ -70,8 +70,8 @@ abstract class Recipe_Request_Adapter
 	/**
 	 * Retrieves a _COOKIE variable.
 	 *
-	 * @param string	Variable name
-	 * @param mixed		Default return value [optional]
+	 * @param string $var		Variable name
+	 * @param mixed $default	Default return value [optional]
 	 *
 	 * @return mixed
 	 */

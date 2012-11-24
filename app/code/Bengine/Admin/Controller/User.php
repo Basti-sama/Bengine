@@ -1,12 +1,27 @@
 <?php
+/**
+ * User controller.
+ *
+ * @package Recipe PHP5 Admin Interface
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2012, Sebastian Noll
+ * @license Proprietary
+ */
+
 class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 {
+	/**
+	 * @return Bengine_Admin_Controller_Abstract
+	 */
 	protected function init()
 	{
 		Core::getLanguage()->load("AI_User");
 		return parent::init();
 	}
 
+	/**
+	 * @return Bengine_Admin_Controller_User
+	 */
 	protected function indexAction()
 	{
 		if($this->getParam("add_user"))
@@ -25,16 +40,22 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 		$groups = Core::getQuery()->select("usergroup", array("usergroupid", "grouptitle"), "", "", "grouptitle ASC");
 
 		Core::getTPL()->addLoop("templatepacks", $this->getTemplatePackages());
-		Core::getTPL()->addLoop("langs", $langs);
-		Core::getTPL()->addLoop("groups", $groups);
+		Core::getTPL()->addLoop("langs", $langs->fetchAll());
+		Core::getTPL()->addLoop("groups", $groups->fetchAll());
 		return $this;
 	}
 
+	/**
+	 * @param bool $asArray
+	 * @param string $package
+	 * @return array|string
+	 */
 	protected function getTemplatePackages($asArray = true, $package = "none")
 	{
 		$templates = ($asArray) ? array() : "";
 		if($directory = new DirectoryIterator(APP_ROOT_DIR."app/templates/"))
 		{
+			/* @var DirectoryIterator $dir */
 			foreach($directory as $dir)
 			{
 				$dirname = $dir->getFilename();
@@ -54,20 +75,33 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 		return $templates;
 	}
 
-	protected function add($username, $email, $languageid, $templatepackage, $ipcheck, $password, $usergroup)
+	/**
+	 * @param string $username
+	 * @param string $email
+	 * @param integer $languageid
+	 * @param string $templatepackage
+	 * @param integer $ipcheck
+	 * @param string $password
+	 * @param array $usergroup
+	 * @return Bengine_Admin_Controller_User
+	 */
+	protected function add($username, $email, $languageid, $templatepackage, $ipcheck, $password, array $usergroup)
 	{
 		$spec = array("username" => $username, "email" => $email, "languageid" => $languageid, "templatepackage" => $templatepackage, "ipcheck" => $ipcheck);
-		Core::getQuery()->insertInto("user", $spec);
-		$userid = Core::getDB()->insert_id();
+		Core::getQuery()->insert("user", $spec);
+		$userid = Core::getDB()->lastInsertId();
 		$password = Str::encode($password, Core::getConfig()->get("USE_PASSWORD_SALT") ? "md5_salt" : "md5");
-		Core::getQuery()->insertInto("password", array("userid" => $userid, "password" => $password, "time" => TIME));
+		Core::getQuery()->insert("password", array("userid" => $userid, "password" => $password, "time" => TIME));
 		foreach($usergroup as $groupid)
 		{
-			if($groupid > 0) { Core::getQuery()->insert("user2group", array("usergroupid", "userid"), array($groupid, $userid)); }
+			if($groupid > 0) { Core::getQuery()->insert("user2group", array("usergroupid" => $groupid, "userid" => $userid)); }
 		}
 		return $this;
 	}
 
+	/**
+	 * @return Bengine_Admin_Controller_User
+	 */
 	protected function seekAction()
 	{
 		$username = $this->getParam("username");
@@ -100,17 +134,20 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 		if($s)
 		{
 			$where = "";
-			if($userwhere != "")
+			if(!empty($userwhere))
 			{
 				$where = $userwhere;
-				if($mailwhere != "")
+				if(!empty($mailwhere))
 				{
 					$where .= " OR ".$mailwhere;
 				}
 			}
-			else if($mailwhere != "") { $where = $mailwhere; }
+			else if(!empty($mailwhere))
+			{
+				$where = $mailwhere;
+			}
 			$result = Core::getQuery()->select("user", array("userid", "username", "email"), "", $where);
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$id = $row["userid"];
 				$sr[$id]["userid"] = $id;
@@ -124,6 +161,10 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $userid
+	 * @return Bengine_Admin_Controller_User
+	 */
 	protected function editAction($userid)
 	{
 		if($this->getParam("save_user"))
@@ -139,7 +180,7 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 			);
 		}
 		$result = Core::getQuery()->select("user", array("username", "email", "languageid", "templatepackage", "ipcheck"), "", "userid = '".$userid."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			if($this->getParam("add_usermembership"))
 			{
@@ -149,7 +190,7 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 			$groups = Core::getQuery()->select("usergroup", array("usergroupid", "grouptitle"), "", "", "grouptitle ASC");
 			$membership = array();
 			$_result = Core::getQuery()->select("user2group u2g", array("g.grouptitle", "u2g.usergroupid"), "LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = u2g.usergroupid)", "u2g.userid = '".$userid."'");
-			while($_row = Core::getDB()->fetch($_result))
+			foreach($_result->fetchAll() as $_row)
 			{
 				$id = $_row["usergroupid"];
 				$membership[$id]["grouptitle"] = $_row["grouptitle"];
@@ -167,26 +208,45 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $usergroup
+	 * @param integer $userid
+	 * @param string $data
+	 * @return Bengine_Admin_Controller_User
+	 */
 	protected function addUser2Group($usergroup, $userid, $data)
 	{
-		Core::getQuery()->insert("user2group", array("usergroupid", "userid", "data"), array($usergroup, $userid, $data));
+		Core::getQuery()->insert("user2group", array("usergroupid" => $usergroup, "userid" => $userid, "data" => $data));
 		return $this;
 	}
 
+	/**
+	 * @param integer $userid
+	 * @param string $username
+	 * @param string $email
+	 * @param integer $languageid
+	 * @param string $templatepackage
+	 * @param integer $ipcheck
+	 * @param string $password
+	 * @return Bengine_Admin_Controller_User
+	 */
 	protected function saveUser($userid, $username, $email, $languageid, $templatepackage, $ipcheck, $password)
 	{
-		$atts = array("username", "email", "languageid", "templatepackage", "ipcheck");
-		$vals = array($username, $email, $languageid, $templatepackage, $ipcheck);
-		Core::getQuery()->update("user", $atts, $vals, "userid = '".$userid."'");
+		$spec = array("username" => $username, "email" => $email, "languageid" => $languageid, "templatepackage" => $templatepackage, "ipcheck" => $ipcheck);
+		Core::getQuery()->update("user", $spec, "userid = '".$userid."'");
 		if($password != "")
 		{
 			$password = Str::encode($password, Core::getConfig()->get("USE_PASSWORD_SALT") ? "md5_salt" : "md5");
-			Core::getQuery()->updateSet("password", array("password" => $password, "time" => TIME), "userid = '".$userid."'");
+			Core::getQuery()->update("password", array("password" => $password, "time" => TIME), "userid = '".$userid."'");
 		}
 		return $this;
 	}
 
-	protected function deleteUser($users)
+	/**
+	 * @param array $users
+	 * @return Bengine_Admin_Controller_User
+	 */
+	protected function deleteUser(array $users)
 	{
 		foreach($users as $userid)
 		{
@@ -197,6 +257,11 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 		return $this;
 	}
 
+	/**
+	 * @param integer $userid
+	 * @param integer $groupid
+	 * @return Bengine_Admin_Controller_User
+	 */
 	protected function deletefromgroupAction($userid, $groupid)
 	{
 		Core::getQuery()->delete("user2group", "userid = '".$userid."' AND usergroupid = '".$groupid."'");

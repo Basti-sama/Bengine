@@ -104,9 +104,9 @@ class Recipe_User extends Recipe_Collection
 	/**
 	 * Constructor: Starts user check.
 	 *
-	 * @param string	The session id
+	 * @param string $sid
 	 *
-	 * @return void
+	 * @return Recipe_User
 	 */
 	public function __construct($sid)
 	{
@@ -147,8 +147,8 @@ class Recipe_User extends Recipe_Collection
 				$joins .= " ".Str::replace("PREFIX", PREFIX, Core::getConfig()->get("userjoins"));
 			}
 			$result = Core::getQuery()->select("sessions s", $select, $joins, "s.sessionid = '".$this->sid."' AND s.logged = '1'");
-			$this->item = Core::getDatabase()->fetch($result);
-			Core::getDatabase()->free_result($result);
+			$this->item = $result->fetchRow();
+			$result->closeCursor();
 		}
 		if($this->size() > 0)
 		{
@@ -177,12 +177,12 @@ class Recipe_User extends Recipe_Collection
 	{
 		$select = array("usergroupid", "data");
 		$result = Core::getQuery()->select("user2group", $select, "", "userid = '".$this->get("userid")."'");
-		while($row = Core::getDatabase()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			array_push($this->groups, $row["usergroupid"]);
 			$this->groupdata[$row["usergroupid"]] = $row["data"];
 		}
-		Core::getDatabase()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 
@@ -210,11 +210,11 @@ class Recipe_User extends Recipe_Collection
 				{
 					$select = array("p.permission", "p2g.value");
 					$result = Core::getQuery()->select("group2permission p2g", $select, "LEFT JOIN ".PREFIX."permissions AS p ON (p2g.permissionid = p.permissionid)", "p2g.groupid = '".$group."'");
-					while($row = Core::getDatabase()->fetch($result))
+					foreach($result->fetchAll() as $row)
 					{
 						if(!isset($this->permissions[$row["permission"]]) || $this->permissions[$row["permission"]] == 0) { $this->permissions[$row["permission"]] = $row["value"]; }
 					}
-					Core::getDatabase()->free_result($result);
+					$result->closeCursor();
 				}
 			}
 		}
@@ -228,11 +228,11 @@ class Recipe_User extends Recipe_Collection
 			{
 				$select = array("p.permission", "p2g.value");
 				$result = Core::getQuery()->select("group2permission p2g", $select, "LEFT JOIN ".PREFIX."permissions AS p ON (p2g.permissionid = p.permissionid)", "p2g.groupid = '".$this->groups[0]."'");
-				while($row = Core::getDatabase()->fetch($result))
+				foreach($result->fetchAll() as $row)
 				{
 					$this->permissions[$row["permission"]] = $row["value"];
 				}
-				Core::getDatabase()->free_result($result);
+				$result->closeCursor();
 			}
 		}
 		return $this;
@@ -241,7 +241,7 @@ class Recipe_User extends Recipe_Collection
 	/**
 	 * Checks if user has permissions and if so issue an error.
 	 *
-	 * @param string	The permissions; Splitted with commas
+	 * @param string $perms	The permissions; Splitted with commas
 	 *
 	 * @return Recipe_User
 	 */
@@ -258,13 +258,13 @@ class Recipe_User extends Recipe_Collection
 	/**
 	 * Checks if user has permissions.
 	 *
-	 * @param mixed		The permissions; Splitted with commas
+	 * @param mixed $perms	The permissions; Splitted with commas
 	 *
-	 * @return boolean	True, if all permissions are valid, false, if not
+	 * @return boolean		True, if all permissions are valid, false, if not
 	 */
 	public function ifPermissions($perms)
 	{
-		if(!is_array($perms)) { $perms = Arr::trimArray(explode(",", $perms)); }
+		if(!is_array($perms)) { $perms = Arr::trim(explode(",", $perms)); }
 		Hook::event("USER_HAS_PERMISSIONS", array($perms));
 		foreach($perms as $p)
 		{
@@ -327,9 +327,9 @@ class Recipe_User extends Recipe_Collection
 	/**
 	 * Returns a session value.
 	 *
-	 * @param string	Session variable
+	 * @param string $var
 	 *
-	 * @return mixed	Value
+	 * @return mixed
 	 */
 	public function get($var)
 	{
@@ -347,9 +347,9 @@ class Recipe_User extends Recipe_Collection
 	/**
 	 * Sets a session value.
 	 *
-	 * @param string	Session variable
-	 * @param mixed		Value
-	 *
+	 * @param string $var
+	 * @param mixed $value
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_User
 	 */
 	public function set($var, $value)
@@ -367,7 +367,7 @@ class Recipe_User extends Recipe_Collection
 	/**
 	 * Checks group membership.
 	 *
-	 * @param integer	Group id
+	 * @param integer $groupid
 	 *
 	 * @return boolean
 	 */
@@ -379,7 +379,7 @@ class Recipe_User extends Recipe_Collection
 	/**
 	 * Returns specific group membership data.
 	 *
-	 * @param integer	Group id
+	 * @param integer $groupid
 	 *
 	 * @return mixed	Group membership data
 	 */
@@ -411,7 +411,7 @@ class Recipe_User extends Recipe_Collection
 	/**
 	 * Sets the guest group id.
 	 *
-	 * @param integer	Guest group id [optional]
+	 * @param integer $guestGroupId	Guest group id [optional]
 	 *
 	 * @return Recipe_User
 	 */

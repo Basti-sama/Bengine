@@ -9,5 +9,14 @@
 				"pool": "app/code"
 			}
 		}
+	},
+	"config": {
+		"universes": [
+			{
+				"name": "Uni 1",
+				"domain": "",
+				"external": false
+			}
+		]
 	}
 }

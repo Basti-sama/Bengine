@@ -150,14 +150,14 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 			$this->redirect("game/".SID."/Research");
 		}
 		$result = Core::getQuery()->select("construction", array("buildingid"), "", "buildingid = '".$id."' AND mode = '2'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			Hook::event("AbortResearch", array($this));
 			Game::getEH()->removeEvent($this->event->get("eventid"));
 			$this->redirect("game/".SID."/Research");
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 }

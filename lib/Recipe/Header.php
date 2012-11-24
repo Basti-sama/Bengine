@@ -35,8 +35,8 @@ class Recipe_Header
 	/**
 	 * Adds a new header option.
 	 *
-	 * @param string|array	Type name or array of elements
-	 * @param mixed			Value [optional]
+	 * @param string|array $type	Type name or array of elements
+	 * @param mixed $value			Value [optional]
 	 *
 	 * @return array		Header elements
 	 */
@@ -46,7 +46,7 @@ class Recipe_Header
 		{
 			foreach($type as $header)
 			{
-				self::addHeader($header["type"], $header["value"]);
+				self::add($header["type"], $header["value"]);
 			}
 			return self::$header;
 		}
@@ -64,8 +64,8 @@ class Recipe_Header
 	/**
 	 * Sets the header.
 	 *
-	 * @param string|array	Type name or array of elements
-	 * @param mixed			Value [optional]
+	 * @param string|array $type	Type name or array of elements
+	 * @param mixed $value			Value [optional]
 	 *
 	 * @return array		Header elements
 	 */
@@ -125,8 +125,8 @@ class Recipe_Header
 	 * Sets Location header and response code. Forces replacement of any prior
      * redirects.
 	 *
-	 * @param string	URL to redirect
-	 * @param boolean	Append the session string
+	 * @param string $url				URL to redirect
+	 * @param boolean $appendSession	Append the session string
 	 *
 	 * @return void
 	 */
@@ -153,7 +153,7 @@ class Recipe_Header
 	/**
 	 * Sets and/or returns the HTTP status code.
 	 *
-	 * @param integer	Status code [optional]
+	 * @param integer $statusCode	Status code [optional]
 	 *
 	 * @return integer	Status code
 	 */
@@ -169,7 +169,7 @@ class Recipe_Header
 	/**
 	 * Sets and/or returns the HTTP protocol version.
 	 *
-	 * @param string	Protocol version [optional]
+	 * @param string $protocol	Protocol version [optional]
 	 *
 	 * @return string	Protocol version
 	 */

@@ -30,7 +30,7 @@ class Bengine_Game_Controller_Techtree extends Bengine_Game_Controller_Abstract
 		$reqs = Game::getAllRequirements();
 		$cons = array(); $research = array(); $ships = array(); $def = array(); $moon = array();
 		$result = Core::getQuery()->select("construction", array("buildingid", "mode", "name"), "ORDER BY display_order ASC, buildingid ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			Hook::event("LoadTechtree", array(&$row));
 			$bid = $row["buildingid"];
@@ -79,7 +79,7 @@ class Bengine_Game_Controller_Techtree extends Bengine_Game_Controller_Abstract
 				break;
 			}
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		Hook::event("ShowLoadedTechtree", array(&$cons, &$research, &$ships, &$def, &$moon, &$moon));
 		Core::getTPL()->addLoop("construction", $cons);
 		Core::getTPL()->addLoop("research", $research);

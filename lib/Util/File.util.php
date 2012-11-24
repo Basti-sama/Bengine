@@ -320,7 +320,7 @@ class File
 	/**
 	 * Executes a recursive callback function to a direcotry.
 	 *
-	 * @param callback		The callback function
+	 * @param string		The callback function
 	 * @param string		File or directory path
 	 * @param mixed			Callback data
 	 *

@@ -143,7 +143,7 @@ class Bengine_Game_User_Relation
 		$joins  = "LEFT JOIN ".PREFIX."ally_relationship_type rt ON (rt.type_id = ar.mode)";
 		$where  = "(ar.rel1 = '".$this->aid."' OR ar.rel2 = '".$this->aid."')";
 		$result = Core::getQuery()->select("ally_relationships ar", $select, $joins, $where);
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$rel = ($row["rel1"] == $this->aid) ? $row["rel2"] : $row["rel1"];
 			$data = new stdClass;
@@ -153,7 +153,7 @@ class Bengine_Game_User_Relation
 			$data->acs = $row["acs"];
 			$this->alliances->set($rel, $data);
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$this->alliancesLoaded = true;
 		Hook::event("AllianceRelationsLoaded", array(&$this->alliances));
 		return $this;
@@ -193,12 +193,12 @@ class Bengine_Game_User_Relation
 		}
 
 		$result = Core::getQuery()->select("buddylist", array("friend1", "friend2"), "", "accepted = '1' AND (friend1 = '".$this->userid."' OR friend2 = '".$this->userid."')");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$rel = ($row["friend1"] == $this->userid) ? $row["friend2"] : $row["friend1"];
 			$this->players->push($rel);
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$this->playersLoaded = true;
 		Hook::event("PlayerRelationsLoaded", array(&$this->players));
 		return $this;

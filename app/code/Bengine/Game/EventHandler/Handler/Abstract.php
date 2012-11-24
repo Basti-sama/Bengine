@@ -75,7 +75,7 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 		$planet->setData("hydrogen", $planet->getData("hydrogen") - $data["hydrogen"]);
 		if(!isset($data["dont_save_resources"]) || !$data["dont_save_resources"])
 		{
-			Core::getQuery()->updateSet("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = '".Core::getUser()->get("curplanet")."'");
+			Core::getQuery()->update("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = '".Core::getUser()->get("curplanet")."'");
 		}
 		return $this;
 	}
@@ -135,8 +135,8 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 	/**
 	 * Prepares a fleet for launch (remove ships from planet, extract consumption, ...)
 	 *
-	 * @param array $data		Data array
-	 *
+	 * @param array $data
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_EventHandler_Handler_Abstract
 	 */
 	protected function prepareFleet(array $data)
@@ -144,8 +144,8 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 		foreach($data["ships"] as $unit_id => $ships)
 		{
 			$result = Core::getQuery()->select("unit2shipyard", array("quantity"), "", "unitid = '".$unit_id."' AND planetid = '".Game::getPlanet()->getPlanetId()."'");
-			$availQty = Core::getDB()->fetch_field($result, "quantity");
-			Core::getDB()->free_result($result);
+			$availQty = $result->fetchColumn();
+			$result->closeCursor();
 			if($availQty < $ships["quantity"])
 			{
 				throw new Recipe_Exception_Generic("Sorry, you have been attacked. Process stopped.");
@@ -218,8 +218,8 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 	/**
 	 * Contains the logical function to execute an event.
 	 *
-	 * @param Bengine_Game_Model_Event $event		Event model
-	 * @param array $data					Data array
+	 * @param Bengine_Game_Model_Event $event	Event model
+	 * @param array $data						Data array
 	 *
 	 * @return Bengine_Game_EventHandler_Handler_Abstract
 	 */
@@ -228,8 +228,8 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 	/**
 	 * Contains the logical function to add an event.
 	 *
-	 * @param Bengine_Game_Model_Event $event		Event model
-	 * @param array $data					Data array
+	 * @param Bengine_Game_Model_Event $event	Event model
+	 * @param array $data						Data array
 	 *
 	 * @return Bengine_Game_EventHandler_Handler_Abstract
 	 */
@@ -238,8 +238,8 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 	/**
 	 * Contains the logical function to remove an event.
 	 *
-	 * @param Bengine_Game_Model_Event $event		Event model
-	 * @param array $data					Data array
+	 * @param Bengine_Game_Model_Event $event	Event model
+	 * @param array $data						Data array
 	 *
 	 * @return Bengine_Game_EventHandler_Handler_Abstract
 	 */

@@ -75,14 +75,14 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 	/**
 	 * Loads the list from a sql query.
 	 *
-	 * @param resource $result	Result set
+	 * @param Recipe_Database_Statement_Abstract $result	Result set
 	 * @param integer $start	Rank/Counter start
 	 *
 	 * @return Bengine_Game_Alliance_List
 	 */
 	public function load($result, $start = 0)
 	{
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$row["counter"] = $start;
 			$start++;
@@ -91,7 +91,7 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 			$key = (!is_null($this->key)) ? (int) $row[$this->key] : $start;
 			$this->list->set($key, $row);
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 
@@ -171,8 +171,8 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 		$joins .= "LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid)";
 		$subselect = "(SELECT SUM(u.".$pointType.") FROM ".PREFIX."user2ally u2a LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid) WHERE u2a.aid = '".$aid."')";
 		$result = Core::getQuery()->select("alliance a", "a.aid", $joins, "", "", "", "u2a.aid", "HAVING SUM(u.".$pointType.") >= ".$subselect, "");
-		$rank = fNumber(Core::getDB()->num_rows($result));
-		Core::getDB()->free_result($result);
+		$rank = fNumber($result->rowCount());
+		$result->closeCursor();
 		return $rank;
 	}
 

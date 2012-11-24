@@ -18,25 +18,25 @@ class Bengine_Game_Cronjob_PointClean extends Recipe_CronjobAbstract
 	{
 		Hook::event("CleanPointsBegin");
 		$_result = Core::getQuery()->select("user", "userid");
-		while($_row = Core::getDB()->fetch($_result))
+		foreach($_result->fetchAll() as $_row)
 		{
 			$points = 0;
 			$fpoints = 0;
 			$result = Core::getQuery()->select("planet", "planetid", "", "userid = '".$_row["userid"]."'");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$points += Bengine_Game_PointRenewer::getBuildingPoints($row["planetid"]);
 				$points += Bengine_Game_PointRenewer::getFleetPoints($row["planetid"]);
 				$fpoints += Bengine_Game_PointRenewer::getFleetPoints_Fleet($row["planetid"]);
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$points += Bengine_Game_PointRenewer::getResearchPoints($_row["userid"]);
 			$points += Bengine_Game_PointRenewer::getFleetEventPoints($_row["userid"]);
 			$fpoints += Bengine_Game_PointRenewer::getFleetEvent_Fleet($_row["userid"]);
 			$rpoints = Bengine_Game_PointRenewer::getResearchPoints_r($_row["userid"]);
-			Core::getQuery()->update("user", array("points", "fpoints", "rpoints"), array($points, $fpoints, $rpoints), "userid = '".$_row["userid"]."'");
+			Core::getQuery()->update("user", array("points" => $points, "fpoints" => $fpoints, "rpoints" => $rpoints), "userid = '".$_row["userid"]."'");
 		}
-		Core::getDB()->free_result($_result);
+		$_result->closeCursor();
 		return $this;
 	}
 

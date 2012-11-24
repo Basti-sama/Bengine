@@ -26,7 +26,7 @@ class Recipe_Maintenance_TableCleaner
 	protected $primaryKey = null;
 
 	/**
-	 * Field informations of the table.
+	 * Field information of the table.
 	 *
 	 * @var array
 	 */
@@ -42,17 +42,16 @@ class Recipe_Maintenance_TableCleaner
 	/**
 	 * Starts the table cleaner.
 	 *
-	 * @param string Table to clean
-	 * @param string Primary key
+	 * @param string $tableName
+	 * @param string $primaryKey
 	 *
-	 * @return void
+	 * @return \Recipe_Maintenance_TableCleaner
 	 */
 	public function __construct($tableName, $primaryKey = null)
 	{
 		$this->tableName = $tableName;
 		$this->primaryKey = $primaryKey;
 		$this->loadFields();
-		return;
 	}
 
 	/**
@@ -63,7 +62,7 @@ class Recipe_Maintenance_TableCleaner
 	protected function loadFields()
 	{
 		$result = Core::getQuery()->showFields($this->tableName);
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			array_push($this->fields, $row);
 		}
@@ -88,8 +87,7 @@ class Recipe_Maintenance_TableCleaner
 		}
 		$sql .= "PRIMARY KEY (`".$this->primaryKey."`)\n".
 				") ENGINE=InnoDB DEFAULT CHARSET=".$this->defaultCharset." AUTO_INCREMENT=1";
-		try { Core::getDB()->query($sql); }
-		catch(Exception $e) { $e->printError(); }
+		Core::getDB()->query($sql);
 		return;
 	}
 
@@ -113,8 +111,7 @@ class Recipe_Maintenance_TableCleaner
 		}
 		$fields = implode(", ", $fieldList);
 		$sql = "INSERT INTO ".PREFIX.$this->tableName."_buffer (".$fields.") SELECT ".$fields." FROM ".PREFIX.$this->tableName." ORDER BY ".$this->primaryKey." ASC";
-		try { Core::getDB()->query($sql); }
-		catch(Exception $e) { $e->printError(); }
+		Core::getDB()->query($sql);
 
 		Core::getQuery()->drop($this->tableName);
 		Core::getQuery()->rename($this->tableName."_buffer", $this->tableName);

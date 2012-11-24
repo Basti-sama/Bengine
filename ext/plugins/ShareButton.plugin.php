@@ -13,13 +13,12 @@ class Plugin_ShareButton extends Recipe_PluginAbstract
 	/**
 	 * Sets standard plug-in information.
 	 *
-	 * @return void
+	 * @return \Plugin_ShareButton
 	 */
 	public function __construct()
 	{
 		$this->pluginName = "Share Button: Combat Report";
 		$this->pluginVersion = "1.0";
-		return;
 	}
 
 	/**

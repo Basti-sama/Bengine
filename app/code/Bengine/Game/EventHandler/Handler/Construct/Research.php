@@ -23,14 +23,14 @@ class Bengine_Game_EventHandler_Handler_Construct_Research extends Bengine_Game_
 			->attributes(array("level"))
 			->where("buildingid = ?", $data["buildingid"])
 			->where("userid = ?", $event->getUserid());
-		if($row = Core::getDB()->fetch($select->getResource()))
+		if($row = $select->getStatement()->fetchRow())
 		{
-			Core::getQuery()->update("research2user", "level", $data["level"], "buildingid = '".$data["buildingid"]."' AND userid = '".$event->getUserid()."'");
+			Core::getQuery()->update("research2user", array("level" => $data["level"]), "buildingid = '".$data["buildingid"]."' AND userid = '".$event->getUserid()."'");
 			Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + '".$points."', rpoints = rpoints + '1' WHERE userid = '".$event->getUserid()."'");
 		}
 		else if($data["level"] == 1)
 		{
-			Core::getQuery()->insert("research2user", array("buildingid", "userid", "level"), array($data["buildingid"], $event->getUserid(), 1));
+			Core::getQuery()->insert("research2user", array("buildingid" => $data["buildingid"], "userid" => $event->getUserid(), "level" => 1));
 			Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + '".$points."', rpoints = rpoints + '1' WHERE userid = '".$event->getUserid()."'");
 		}
 		return $this;

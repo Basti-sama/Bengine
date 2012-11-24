@@ -156,7 +156,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 			->order(array("c" => "display_order"), "ASC")
 			->order(array("c" => "buildingid"), "ASC");
 		$result = $select->getResource();
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$this->unitCount[$row["name"]] = $row["total"];
 		}

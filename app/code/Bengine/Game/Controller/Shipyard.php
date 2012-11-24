@@ -115,7 +115,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		Core::getQuery()->delete("shipyard", "finished <= '".TIME."'");
 		$missions = array();
 		$result = Core::getQuery()->select("shipyard s", array("s.quantity", "s.one", "s.time", "s.finished", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = s.unitid)", "s.planetid = '".Core::getUser()->get("curplanet")."' ORDER BY s.time ASC");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			Core::getTPL()->assign("hasEvent", true);
 			Core::getTPL()->assign("currentWork", Core::getLanguage()->getItem($row["name"]));
@@ -124,7 +124,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 			Core::getTPL()->assign("remainingTime", getTimeTerm($lefttime));
 
 			Core::getDB()->reset_resource($result);
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$quantity = ($row["time"] < TIME) ? ceil(($row["finished"] - TIME) / $row["one"]) : $row["quantity"];
 				$missions[] = array(
@@ -132,11 +132,11 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 					"mission" => Core::getLanguage()->getItem($row["name"])
 				);
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 		}
 		else
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			Core::getTPL()->assign("hasEvent", false);
 		}
 

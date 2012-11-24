@@ -68,8 +68,7 @@ class Bengine_Comm_Controller_Feed extends Bengine_Comm_Controller_Abstract
 	public function checkKey($user_id, $key)
 	{
 		$result = Core::getQuery()->select("feed_keys", array("feed_key"), "", "user_id = '".$user_id."' AND feed_key = '".$key."'");
-
-		return (Core::getDB()->num_rows($result) > 0);
+		return ($result->rowCount() > 0);
 	}
 
 	/**

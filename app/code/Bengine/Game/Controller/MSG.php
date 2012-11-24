@@ -32,7 +32,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 		$where = "f.userid = '".Core::getUser()->get("userid")."' OR f.is_standard = '1'";
 		$result = Core::getQuery()->select("folder f", $select, $joins, $where, "", "", "f.folder_id");
 		$folders = array();
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$unreadMessages = $row["messages"] - (int) $row["read"];
 			if($unreadMessages > 1)
@@ -60,7 +60,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 				"size"		=> File::bytesToString($row["storage"]),
 			);
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		Core::getTPL()->addLoop("folders", $folders);
 		return $this;
 	}
@@ -92,12 +92,12 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 		}
 		Core::getLanguage()->load("Message");
 		Core::getTPL()->assign("receiver", $receiver);
-		Core::getTPL()->assign("subject", ($reply != "") ? $reply : Core::getLanguage()->getItem("NO_SUBJECT"));
+		Core::getTPL()->assign("subject", ($reply != "") ? Link::urlDecode($reply) : Core::getLanguage()->getItem("NO_SUBJECT"));
 		Core::getTPL()->assign("maxpmlength", fNumber(Core::getOptions()->get("MAX_PM_LENGTH")));
 		$sendAction = BASE_URL."game/".SID."/MSG/Write/".rawurlencode($receiver);
 		if($reply != "")
 		{
-			$sendAction .= "/".rawurlencode($reply);
+			$sendAction .= "/".Link::urlEncode($reply);
 		}
 		Core::getTPL()->assign("sendAction", $sendAction);
 		Core::getLang()->assign("receiver", empty($receiver) ? "[".Core::getLang()->get("RECEIVER")."]" : $receiver);
@@ -123,9 +123,9 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 		if($messageLength >= 3 && $messageLength <= Core::getOptions()->get("MAX_PM_LENGTH") && Str::length($subject) > 0 && Str::length($subject) < 101)
 		{
 			$result = Core::getQuery()->select("user", "userid", "", "username = '".$receiver."'");
-			if($row = Core::getDB()->fetch($result))
+			if($row = $result->fetchRow())
 			{
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 				if($row["userid"] != Core::getUser()->get("userid"))
 				{
 					$subject = preg_replace("#((RE|FW):\s)+#is", "\\1", $subject); // Remove excessive reply or forward notes
@@ -147,7 +147,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 			}
 			else
 			{
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 				Core::getTPL()->assign("userError", Logger::getMessageField("USER_NOT_FOUND"));
 			}
 		}
@@ -189,18 +189,18 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 			break;
 			case 2:
 				$result = Core::getQuery()->select("message", "msgid", "", "receiver = '".Core::getUser()->get("userid")."' AND mode = '".$folder."'", "time DESC", $pagination->getStart().", ".Core::getOptions()->get("MAX_PMS"));
-				while($row = Core::getDB()->fetch($result))
+				foreach($result->fetchAll() as $row)
 				{
 					if(!in_array($row["msgid"], $msgs))
 					{
 						Core::getQuery()->delete("message", "msgid = '".$row["msgid"]."'");
 					}
 				}
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 			break;
 			case 3:
 				$result = Core::getQuery()->select("message", array("msgid"), "", "receiver = '".Core::getUser()->get("userid")."' AND mode = '".$folder."'", "time DESC", $pagination->getStart().", ".Core::getOptions()->get("MAX_PMS"));
-				while($row = Core::getDB()->fetch($result))
+				foreach($result->fetchAll() as $row)
 				{
 					Core::getQuery()->delete("message", "msgid = '".$row["msgid"]."'");
 				}
@@ -214,7 +214,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 				foreach($msgs as $msgid)
 				{
 					$result = Core::getQuery()->select("message m", array("m.sender", "m.mode", "m.message", "m.time", "u.username"), "LEFT JOIN ".PREFIX."user u ON (u.userid = m.sender)", "m.msgid = '".$msgid."' AND m.receiver = '".Core::getUser()->get("userid")."'");
-					if($row = Core::getDB()->fetch($result))
+					if($row = $result->fetchRow())
 					{
 						if(($row["sender"] > 0 || $row["mode"] == 5) && $row["sender"] != $modId)
 						{

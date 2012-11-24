@@ -96,7 +96,7 @@ class Recipe_Cache
 	{
 		if(!is_array($groups))
 		{
-			$groups = Arr::trimArray(explode(",", $groups));
+			$groups = Arr::trim(explode(",", $groups));
 		}
 		$langCache = array(); // Return array.
 		$item = array(); // Array for cached variables.
@@ -239,24 +239,23 @@ class Recipe_Cache
 	{
 		$select = array("title AS grouptitle", "phrasegroupid");
 		$result = Core::getQuery()->select("phrasesgroups", $select, "", "");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$cacheContent  = $this->setCacheFileHeader("Language [".$langcode."] Cache File");
 			$cacheContent .= "//### Variables for phrase group \"".$row["grouptitle"]."\" ###//\n";
 			$cacheContent .= "\$lifetime=".(TIME+$lifetime).";";
 			$res = Core::getQuery()->select("phrases p", array("p.title AS phrasetitle", "p.content"), "LEFT JOIN ".PREFIX."languages l ON (l.languageid = p.languageid)", "l.langcode = '".$langcode."' AND p.phrasegroupid = '".$row["phrasegroupid"]."'", "p.phrasegroupid ASC, p.title ASC");
-			while($col = Core::getDB()->fetch($res))
+			foreach($res->fetchAll() as $col)
 			{
 				$compiler = new Recipe_Language_Compiler($col["content"]);
 				$cacheContent .= "\$item[\"".$row["grouptitle"]."\"][\"".$col["phrasetitle"]."\"]=\"".$compiler->getPhrase()."\";";
 				$compiler->shutdown();
 			}
-			Core::getDB()->free_result($res);
+			$res->closeCursor();
 			$cacheContent .= $this->cacheFileClose;
 			try { $this->putCacheContent($this->getLanguageCacheDir()."lang.".$langcode.".".$row["grouptitle"].".php", $cacheContent); }
 			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
-		Core::getDB()->free_result($result);
 		return $this;
 	}
 
@@ -274,7 +273,7 @@ class Recipe_Cache
 		if(!is_array($groupname))
 		{
 			$groupname = explode(",", $groupname);
-			$groupname = Arr::trimArray($groupname);
+			$groupname = Arr::trim($groupname);
 		}
 		foreach($groupname as $group)
 		{
@@ -292,12 +291,12 @@ class Recipe_Cache
 			$joins .= "LEFT JOIN ".PREFIX."phrasesgroups pg ON (pg.phrasegroupid = p.phrasegroupid)";
 			$result = Core::getQuery()->select("phrases p", array("p.title AS phrasetitle", "p.content"), $joins, "l.langcode = '".$langcode."' AND pg.title = '".$group."'", "p.phrasegroupid ASC, p.title ASC");
 			$compiler = new Recipe_Language_Compiler("");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$compiler->setPhrase($row["content"]);
 				$cacheContent .= "\$item[\"".$group."\"][\"".$row["phrasetitle"]."\"]=\"".$compiler->getPhrase()."\";";
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$compiler->shutdown();
 			$cacheContent .= $this->cacheFileClose;
 			try { $this->putCacheContent($filename, $cacheContent); }
@@ -318,12 +317,12 @@ class Recipe_Cache
 		$cacheContent  = $this->setCacheFileHeader("Global Configuration Variables & Options");
 		$cacheContent .= "\$lifetime=".(TIME+$lifetime).";\n";
 		$cacheContent .= "\$item = array(";
-		while($row = Core::getDatabase()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$row["value"] = $this->compileContent($row["value"]);
 			$cacheContent .= "\"".$row["var"]."\"=>\"".$row["value"]."\",";
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$cacheContent .= ");\n";
 		$cacheContent .= $this->cacheFileClose;
 		try { $this->putCacheContent($this->cacheDir."options.cache.php", $cacheContent); }
@@ -346,12 +345,12 @@ class Recipe_Cache
 			{
 				$cacheContent = "\$lifetime=".(TIME+$lifetime).";";
 				$result = Core::getQuery()->select("group2permission g2p", array("g2p.value", "p.permission", "g.grouptitle"), "LEFT JOIN ".PREFIX."permissions p ON (p.permissionid = g2p.permissionid) LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = g2p.groupid)", "g2p.groupid = '".$group."'");
-				while($row = Core::getDB()->fetch($result))
+				foreach($result->fetchAll() as $row)
 				{
 					$cacheContent .= "\$item[\"".$row["permission"]."\"]=".$row["value"].";";
 					$grouptitle = $row["grouptitle"];
 				}
-				Core::getDB()->free_result($result);
+				$result->closeCursor();
 				$grouptitle = empty($grouptitle) ? $group : $grouptitle;
 				$cacheContent = $this->setCacheFileHeader("Permissions [".$grouptitle."]").$cacheContent;
 				$cacheContent .= $this->cacheFileClose;
@@ -365,12 +364,12 @@ class Recipe_Cache
 			$grouptitle = "";
 			$cacheContent = "\$lifetime=".(TIME+$lifetime).";";
 			$result = Core::getQuery()->select("group2permission g2p", array("g2p.value", "p.permission", "g.grouptitle"), "LEFT JOIN ".PREFIX."permissions p ON (p.permissionid = g2p.permissionid) LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = g2p.groupid)", "g2p.groupid = '".$groupid."'");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$cacheContent .= "\$item[\"".$row["permission"]."\"]=".$row["value"].";";
 				$grouptitle = $row["grouptitle"];
 			}
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$cacheContent = $this->setCacheFileHeader("Permissions [".$grouptitle."]").$cacheContent;
 			$cacheContent .= $this->cacheFileClose;
 			try { $this->putCacheContent($this->getPermissionCacheDir()."permission.".$groupid.".php", $cacheContent); }
@@ -378,21 +377,21 @@ class Recipe_Cache
 			return $this;
 		}
 		$result = Core::getQuery()->select("usergroup", array("usergroupid", "grouptitle"));
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$cacheContent  = $this->setCacheFileHeader("Permissions [".$row["grouptitle"]."]");
 			$cacheContent .= "\$lifetime=".(TIME+$lifetime).";";
 			$_result = Core::getQuery()->select("group2permission g2p", array("g2p.value", "p.permission"), "LEFT JOIN ".PREFIX."permissions p ON (p.permissionid = g2p.permissionid)", "g2p.groupid = '".$row["usergroupid"]."'");
-			while($_row = Core::getDB()->fetch($_result))
+			foreach($_result->fetchAll() as $_row)
 			{
 				$cacheContent .= "\$item[\"".$_row["permission"]."\"]=".$_row["value"].";";
 			}
-			Core::getDB()->free_result($_result);
+			$_result->closeCursor();
 			$cacheContent .= $this->cacheFileClose;
 			try { $this->putCacheContent($this->getPermissionCacheDir()."permission.".$row["usergroupid"].".php", $cacheContent); }
 			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 
@@ -418,15 +417,16 @@ class Recipe_Cache
 			$joins .= " ".Core::getConfig()->get("userjoins");
 		}
 		$result = Core::getQuery()->select("sessions s", $select, $joins, "s.sessionid = '".$sid."'", "", "1");
-		$row = Core::getDB()->fetch($result);
+		$row = $result->fetchRow();
+		$result->closeCursor();
 		$cacheContent = $this->setCacheFileHeader("Session Cache [".$sid."]");
 		$result = Core::getQuery()->showFields("user");
-		while($t = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $t)
 		{
-			$row[$t["Field"]] = (isset($row[$t["Field"]])) ? $this->compileContent($row[$t["Field"]]) : "";
-			$cacheContent .= "\$item[\"".$t["Field"]."\"]=\"".$row[$t["Field"]]."\";";
+			$row[$t["field"]] = (isset($row[$t["field"]])) ? $this->compileContent($row[$t["field"]]) : "";
+			$cacheContent .= "\$item[\"".$t["field"]."\"]=\"".$row[$t["field"]]."\";";
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$cacheContent .= "\$item[\"ipaddress\"]=\"".$row["ipaddress"]."\";";
 		if(Core::getConfig()->exists("userselect"))
 		{
@@ -529,7 +529,7 @@ class Recipe_Cache
 	public function cleanUserCache($userid)
 	{
 		$result = Core::getQuery()->select("sessions", "sessionid", "", "userid = '".$userid."'");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$cacheFile = $this->getSessionCacheDir()."session.".$row["sessionid"].".php";
 			if(file_exists($cacheFile))
@@ -538,7 +538,7 @@ class Recipe_Cache
 				catch(Recipe_Exception_Generic $e) { $e->printError(); }
 			}
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 
@@ -559,7 +559,7 @@ class Recipe_Cache
 	 * Builds an unkown cache object.
 	 *
 	 * @param string $name		Object name
-	 * @param resource $result	SQL-Query
+	 * @param Recipe_Database_Statement_Abstract $result	SQL-Statement
 	 * @param string $index		Index name of the table
 	 * @param string $itype		Index type (int or char)
 	 *
@@ -569,7 +569,7 @@ class Recipe_Cache
 	{
 		$cacheContent = $this->setCacheFileHeader("Cache Object [".$name."]");
 		$data = array();
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			if(is_null($index))
 			{
@@ -735,7 +735,7 @@ class Recipe_Cache
 	public function buildMetaCache($lifetime = self::DEFAULT_CACHE_LIFE_TIME)
 	{
 		$data = array();
-		$applicationDirectory = APP_ROOT_DIR."etc/applications";
+		$applicationDirectory = APP_ROOT_DIR."app/bootstrap";
 		$moduleDirectory = APP_ROOT_DIR."ext/modules/etc";
 		/* @var DirectoryIterator $fileObj */
 		foreach(new DirectoryIterator($applicationDirectory) as $fileObj)

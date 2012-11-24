@@ -33,137 +33,91 @@ class Recipe_QueryParser
 	/**
 	 * Generates an insert sql query.
 	 *
-	 * @param string	Table name to insert
-	 * @param mixed		Attributes to insert
-	 * @param mixed		Values to insert
-	 *
-	 * @return Recipe_QueryParser
-	 *
-	 * @deprecated		Use insertInto() instead
+	 * @param string $table
+	 * @param array $spec
+	 * @return \Recipe_Database_Statement_Abstract
 	 */
-	public function insert($table, $attribute, $value)
-	{
-		if(!is_array($attribute))
-			$attribute = array_map("trim", explode(",", $attribute));
-		if(!is_array($value))
-			$value = array_map("trim", explode(",", $value));
-		$spec = array_combine($attribute, $value);
-		$this->insertInto($table, $spec);
-		return $this;
-	}
-
-	/**
-	 * Generates an insert sql query.
-	 *
-	 * @param string	Table name to insert
-	 * @param array		Attributes to insert
-	 *
-	 * @return Recipe_QueryParser
-	 */
-	public function insertInto($table, array $spec)
+	public function insert($table, array $spec)
 	{
 		$attributes = array_keys($spec);
 		$attributes = $this->setBackQuotes($attributes);
-		$spec = $this->setSimpleQuotes($spec);
-		$sql = "INSERT INTO `".PREFIX.$table."` (".implode(",", $attributes).") VALUES (".implode(",", $spec).")";
-		$this->send($sql);
-		return $this;
+		$values = array_fill(0, count($spec), "?");
+		$sql = "INSERT INTO `".PREFIX.$table."` (".implode(",", $attributes).") VALUES (".implode(",", $values).")";
+		return $this->send($sql, $spec);
 	}
 
 	/**
 	 * Generates an insert sql query.
 	 *
-	 * @param string	Table name to insert
-	 * @param mixed		Attributes to insert
-	 * @param mixed		Values to insert
-	 * @param string	Where clauses
+	 * @param string $table
+	 * @param array $spec
+	 * @param string $where
 	 *
-	 * @return Recipe_QueryParser
-	 *
-	 * @deprecated		Use updateSet() instead
+	 * @return Recipe_Database_Statement_Abstract
 	 */
-	public function update($table, $attribute, $value, $where = null)
+	public function update($table, array $spec, $where = null)
 	{
-		if(!is_array($attribute))
-			$attribute = array_map("trim", explode(",", $attribute));
-		if(!is_array($value))
-			$value = array_map("trim", explode(",", $value));
-		$spec = array_combine($attribute, $value);
-		$this->updateSet($table, $spec, $where);
-		return $this;
-	}
-
-	/**
-	 * Generates an insert sql query.
-	 *
-	 * @param string	Table name to update
-	 * @param array		Attributes to update
-	 * @param string	Where clauses
-	 *
-	 * @return Recipe_QueryParser
-	 */
-	public function updateSet($table, array $spec, $where = null)
-	{
-		foreach($spec as $attr => &$value)
+		$bind = $spec;
+		foreach($spec as $attribute => &$value)
 		{
-			if($value === null)
+			if(!($value instanceof Recipe_Database_Expr))
 			{
-				$value = "NULL";
+				$value = "?";
 			}
-			else if(!($value instanceof Recipe_Database_Expr))
-			{
-				$value = "'".$value."'";
-			}
-			$value = "`".$attr."` = ".$value;
+			$value = "`".$attribute."` = ".$value;
 		}
-
 		$sql = "UPDATE `".PREFIX.$table."` SET ".implode(",", $spec);
+
 		if($where !== null)
 		{
 			$sql .= " WHERE ".$where;
 		}
 
-		$this->send($sql);
-		return $this;
+		return $this->send($sql, $bind);
 	}
 
 	/**
 	 * Sends an SQL query.
 	 *
-	 * @param string	The SQL query
-	 *
-	 * @return Recipe_QueryParser
+	 * @param string $sql
+	 * @param array $bind
+	 * @return Recipe_Database_Statement_Abstract
 	 */
-	protected function send($sql)
+	protected function send($sql, array $bind = null)
 	{
+		$statement = null;
 		$this->sql = $sql;
 		if($this->send)
 		{
 			try {
-				return Core::getDatabase()->query($this->sql);
-			} catch(Exception $e) {
+				$statement = Core::getDatabase()->query($this->sql, $bind);
+			} catch(Recipe_Exception_Sql $e) {
 				$e->printError();
 			}
 		}
 		$this->send = true;
-		return false;
+		return $statement;
 	}
 
 	/**
 	 * Generates a select query.
 	 *
-	 * @param string	Table name to select
-	 * @param mixed		Attributes to select
-	 * @param string	Tables to join
-	 * @param string	Where clauses
+	 * @param string $table
+	 * @param string|array $select
+	 * @param string $join
+	 * @param string $where
+	 * @param string $order
+	 * @param string $limit
+	 * @param string $groupby
+	 * @param string $other
 	 *
-	 * @return resource	The SQL-Statement
+	 * @return Recipe_Database_Statement_Abstract
 	 */
 	public function select($table, $select, $join = "", $where = "", $order = "", $limit = "", $groupby = "", $other = "")
 	{
 		if(!is_array($select))
 		{
-			$select = Arr::trimArray(explode(",", $select));
+			$select = Arr::trim(explode(",", $select));
 		}
 
 		if(!empty($join)) { $join = " ".$join; }
@@ -173,7 +127,6 @@ class Recipe_QueryParser
 		if(!empty($limit)) { $limit = " LIMIT ".$limit; }
 		$other = (!empty($other)) ? " ".$other : "";
 		$select = implode(", ", $select);
-
 		$sql = "SELECT ".$select." FROM ".PREFIX.$table.$join.$where.$groupby.$order.$limit.$other;
 		return $this->send($sql);
 	}
@@ -181,10 +134,12 @@ class Recipe_QueryParser
 	/**
 	 * Generates a delete query.
 	 *
-	 * @param string	Table name to delete
-	 * @param mixed		Where clauses
+	 * @param string $table
+	 * @param string $where
+	 * @param string $order
+	 * @param string $limit
 	 *
-	 * @return Recipe_QueryParser
+	 * @return Recipe_Database_Statement_Abstract
 	 */
 	public function delete($table, $where = null, $order = null, $limit = null)
 	{
@@ -206,30 +161,28 @@ class Recipe_QueryParser
 
 		$sql = "DELETE FROM ".PREFIX.$table.$whereclause.$orderclause.$limitclause;
 
-		$this->send($sql);
-		return $this;
+		return $this->send($sql);
 	}
 
 	/**
 	 * Empties a table completely.
 	 *
-	 * @param string	Table to empty
+	 * @param string $table
 	 *
-	 * @return Recipe_QueryParser
+	 * @return Recipe_Database_Statement_Abstract
 	 */
 	public function truncate($table)
 	{
 		$table = $this->setBackQuotes(PREFIX.$table);
-		$this->send("TRUNCATE TABLE ".$table);
-		return $this;
+		return $this->send("TRUNCATE TABLE ".$table);
 	}
 
 	/**
 	 * Reclaims the unused space of a database file.
 	 *
-	 * @param mixed		Tables to optimize
+	 * @param mixed $tables
 	 *
-	 * @return Recipe_QueryParser
+	 * @return Recipe_Database_Statement_Abstract
 	 */
 	public function optimize($tables)
 	{
@@ -244,16 +197,15 @@ class Recipe_QueryParser
 			$table = $this->setBackQuotes(PREFIX.$tables);
 		}
 
-		$this->send("OPTIMIZE TABLE ".$table);
-		return $this;
+		return $this->send("OPTIMIZE TABLE ".$table);
 	}
 
 	/**
 	 * Removes one or more tables.
 	 *
-	 * @param mixed		Tables
+	 * @param mixed $tables
 	 *
-	 * @return Recipe_QueryParser
+	 * @return Recipe_Database_Statement_Abstract
 	 */
 	public function drop($tables)
 	{
@@ -267,32 +219,30 @@ class Recipe_QueryParser
 		{
 			$table = $this->setBackQuotes(PREFIX.$tables);
 		}
-		$this->send("DROP TABLE IF EXISTS ".$table);
-		return $this;
+		return $this->send("DROP TABLE IF EXISTS ".$table);
 	}
 
 	/**
 	 * Renames a table.
 	 *
-	 * @param string	Table to rename
-	 * @param string	New table name
+	 * @param string $table
+	 * @param string $newname
 	 *
-	 * @return Recipe_QueryParser
+	 * @return Recipe_Database_Statement_Abstract
 	 */
 	public function rename($table, $newname)
 	{
 		$table = $this->setBackQuotes(PREFIX.$table);
 		$newname = $this->setBackQuotes(PREFIX.$newname);
-		$this->send("RENAME TABLE ".$table." TO ".$newname);
-		return $this;
+		return $this->send("RENAME TABLE ".$table." TO ".$newname);
 	}
 
 	/**
 	 * Returns information about the columns in the given table.
 	 *
-	 * @param string	Table name
+	 * @param string $table
 	 *
-	 * @return resource	The SQL-Statement
+	 * @return Recipe_Database_Statement_Abstract
 	 */
 	public function showFields($table)
 	{
@@ -303,7 +253,7 @@ class Recipe_QueryParser
 	/**
 	 * Surrounds an array with simple quotes.
 	 *
-	 * @param array
+	 * @param array $data
 	 *
 	 * @return array
 	 */
@@ -387,23 +337,6 @@ class Recipe_QueryParser
 	public function sendNextQuery($send)
 	{
 		$this->send = $send;
-		return $this;
-	}
-
-	/**
-	 * Executes the last query.
-	 *
-	 * @return Recipe_QueryParser
-	 */
-	public function executeLastQuery()
-	{
-		try {
-			Core::getDB()->query($this->sql);
-		}
-		catch(Exception $e)
-		{
-			$e->printError();
-		}
 		return $this;
 	}
 }

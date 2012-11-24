@@ -28,7 +28,7 @@ abstract class Recipe_CronjobAbstract
 	 */
 	public function execute($cronId, $execTime, $nextTime)
 	{
-		Core::getQuery()->updateSet("cronjob", array("xtime" => $nextTime, "last" => $execTime), "cronid = '{$cronId}'");
+		Core::getQuery()->update("cronjob", array("xtime" => $nextTime, "last" => $execTime), "cronid = '{$cronId}'");
 		$this->_execute();
 		return $this;
 	}

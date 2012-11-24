@@ -75,7 +75,7 @@ class Bengine_Game_EventHandler_Static
 			$types = Application::getModel("game/event_type")->getCollection();
 			foreach($types as $handler)
 			{
-				self::$handlers[$handler->getCode()] = $handler;
+				self::$handlers[$handler->get("code")] = $handler;
 				self::$handlers[$handler->getEventTypeId()] = $handler;
 			}
 		}

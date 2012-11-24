@@ -21,9 +21,9 @@ class Bengine_Game_Cronjob_Reminder extends Recipe_CronjobAbstract
 		$select->from("user")
 			->attributes(array("username", "email", "last"))
 			->where("last < ?", $time);
-		$result = $select->getResource();
+		$result = $select->getStatement();
 		Core::getLang()->load(array("Registration"));
-		while($row = Core::getDatabase()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			Core::getLang()->assign("username", $row["username"]);
 			Core::getLang()->assign("reminderLast", Date::timeToString(2, $row["last"]));

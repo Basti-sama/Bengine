@@ -1,16 +1,43 @@
 <?php
+/**
+ * Admin menu.
+ *
+ * @package Recipe PHP5 Admin Interface
+ * @author Sebastian Noll
+ * @copyright Copyright (c) 2009, Sebastian Noll
+ * @license Proprietary
+ */
+
 class Bengine_Admin_Menu
 {
+	/**
+	 * @var array
+	 */
 	protected $menu = array();
+
+	/**
+	 * @var string
+	 */
 	protected $moduleDir = "";
+
+	/**
+	 * @var array
+	 */
 	protected $modules = null;
 
+	/**
+	 * @param string $dir
+	 */
 	public function __construct($dir = null)
 	{
 		$this->setModuleDir($dir);
 		return $this;
 	}
 
+	/**
+	 * @param string $dir
+	 * @return Bengine_Admin_Menu
+	 */
 	public function setModuleDir($dir = null)
 	{
 		if(is_null($dir) || !is_dir($dir))
@@ -24,8 +51,12 @@ class Bengine_Admin_Menu
 		return $this;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function render()
 	{
+		/* @var XMLObj $module */
 		foreach($this->getModules() as $module)
 		{
 			if($module->getBoolean("enable"))
@@ -39,6 +70,9 @@ class Bengine_Admin_Menu
 		return $this->menu;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getModules()
 	{
 		if(is_null($this->modules))
@@ -49,6 +83,7 @@ class Bengine_Admin_Menu
 			}
 			$this->modules = array();
 			$dir = new DirectoryIterator($this->moduleDir);
+			/* @var DirectoryIterator $file */
 			foreach($dir as $file)
 			{
 				if(!$file->isDot() && !$file->isDir())
@@ -61,6 +96,9 @@ class Bengine_Admin_Menu
 		return $this->modules;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getMenu()
 	{
 		if(count($this->menu) <= 0)

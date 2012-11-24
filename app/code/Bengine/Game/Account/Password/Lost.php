@@ -68,12 +68,12 @@ class Bengine_Game_Account_Password_Lost extends Bengine_Game_Controller_Ajax_Ab
 		}
 
 		$result = Core::getQuery()->select("user", array("userid", "username"), "", "email = '".$this->getEmail()."'");
-		if(Core::getDB()->num_rows($result) <= 0)
+		if($result->rowCount() <= 0)
 		{
 			$this->printIt("EMAIL_NOT_FOUND");
 		}
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$row = $result->fetchRow();
+		$result->closeCursor();
 		Core::getLanguage()->assign("username", $row["username"]);
 		Core::getLanguage()->assign("ipaddress", IPADDRESS);
 		Hook::event("LostPassword", array($this, &$row));
@@ -107,7 +107,7 @@ class Bengine_Game_Account_Password_Lost extends Bengine_Game_Controller_Ajax_Ab
 	 */
 	protected function setNewPw()
 	{
-		Core::getQuery()->update("user", "activation", $this->getSecurityKey(), "username = '".$this->getUsername()."'");
+		Core::getQuery()->update("user", array("activation" => $this->getSecurityKey()), "username = '".$this->getUsername()."'");
 		return $this;
 	}
 

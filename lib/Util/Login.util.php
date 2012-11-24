@@ -143,12 +143,12 @@ class Login
 	/**
 	 * Constructor.
 	 *
-	 * @param string	Username
-	 * @param string	Password
-	 * @param string	Redirection after login
-	 * @param string	Password encryption
+	 * @param string $usr
+	 * @param string $pw
+	 * @param string $redirection
+	 * @param string $encryption
 	 *
-	 * @return void
+	 * @return Login
 	 */
 	public function __construct($usr, $pw, $redirection = "", $encryption = "md5")
 	{
@@ -164,7 +164,7 @@ class Login
 			->setPassword($pw)
 			->setRedirection($redirection);
 		Hook::event("BeginLogin", array($this));
-		return;
+		return $this;
 	}
 
 	/**
@@ -176,8 +176,8 @@ class Login
 	{
 		$select = array("COUNT(*) AS hits", "MAX(time) AS lastattempt");
 		$result = Core::getQuery()->select("loginattempts", $select, "", "ip = '".IPADDRESS."' OR username = '".$this->usr."'");
-		$loginattempts = Core::getDB()->fetch($result);
-		Core::getDatabase()->free_result($result);
+		$loginattempts = $result->fetchRow();
+		$result->closeCursor();
 		if($loginattempts["hits"] >= $this->maxLoginAttempts && $loginattempts["lastattempt"] > TIME - ($this->bannedLoginTime * 60))
 		{
 			$this->loginFailed("MAXIMUM_LOGIN_ATTEMPTS_REACHED");
@@ -196,14 +196,14 @@ class Login
 		$select = array("u.userid", "u.username", "p.password");
 		$joins  = "LEFT JOIN ".PREFIX."password p ON (u.userid = p.userid)";
 		$result = Core::getQuery()->select("user u", $select, $joins, "u.username = '".$this->usr."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDatabase()->free_result($result);
+			$result->closeCursor();
 			if(Str::compare($row["username"], $this->usr) && Str::compare($row["password"], $this->pw))
 			{
 				$this->userid = $row["userid"];
 				Core::getQuery()->delete("loginattempts", "ip = '".IPADDRESS."' OR username = '".$this->usr."'");
-				Core::getQuery()->update("sessions", "logged", "0", "userid = '".$this->userid."'");
+				Core::getQuery()->update("sessions", array("logged" => "0"), "userid = '".$this->userid."'");
 				$this->canLogin = true;
 			}
 			else
@@ -215,7 +215,7 @@ class Login
 		}
 		else
 		{
-			Core::getDatabase()->free_result($result);
+			$result->closeCursor();
 			$this->canLogin = false;
 			$this->loginFailed("USERNAME_DOES_NOT_EXIST");
 		}
@@ -236,15 +236,21 @@ class Login
 
 		// Disables old sessions.
 		if($this->cacheActive) { Core::getCache()->cleanUserCache($this->userid); }
-		Core::getQuery()->update("sessions", array("logged"), array(0), "userid = '".$this->userid."'");
+		Core::getQuery()->update("sessions", array("logged" => 0), "userid = '".$this->userid."'");
 
 		// Start new session.
 		$sessionSeed = Str::encode((string) microtime(1));
 		$this->sid = Str::substring($sessionSeed, 0, $this->getSessionLength());
 		unset($sessionSeed);
-		$att = array("sessionid", "userid", "ipaddress", "useragent", "time", "logged");
-		$value = array($this->sid, $this->userid, IPADDRESS, isset($_SERVER["HTTP_USER_AGENT"]) ? $_SERVER["HTTP_USER_AGENT"] : "", TIME, "1");
-		Core::getQuery()->insert("sessions", $att, $value);
+		$spec = array(
+			"sessionid" => $this->sid,
+			"userid" => $this->userid,
+			"ipaddress" => IPADDRESS,
+			"useragent" => isset($_SERVER["HTTP_USER_AGENT"]) ? $_SERVER["HTTP_USER_AGENT"] : "",
+			"time" => TIME,
+			"logged" => 1,
+		);
+		Core::getQuery()->insert("sessions", $spec);
 		if($this->canLogin)
 		{
 			if(COOKIE_SESSION)
@@ -277,7 +283,7 @@ class Login
 	/**
 	 * Count login attempt up and redirect to login site.
 	 *
-	 * @param string	Error message id
+	 * @param string $errorid	Error message id
 	 *
 	 * @return Login
 	 */
@@ -286,9 +292,8 @@ class Login
 		$this->errors->push($errorid);
 		if($this->countLoginAttempts)
 		{
-			$att = array("time", "ip", "username");
-			$value = array(TIME, IPADDRESS, $this->usr);
-			Core::getQuery()->insert("loginattempts", $att, $value);
+			$spec = array("time" => TIME, "ip" => IPADDRESS, "username" => $this->usr);
+			Core::getQuery()->insert("loginattempts", $spec);
 		}
 		if($this->redirectOnFailure) { forwardToLogin($errorid); }
 		return $this;

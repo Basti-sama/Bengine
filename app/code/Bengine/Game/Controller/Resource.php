@@ -102,7 +102,7 @@ class Bengine_Game_Controller_Resource extends Bengine_Game_Controller_Abstract
 	{
 		$where = "c.prod_metal != '' OR c.prod_silicon != '' OR c.prod_hydrogen != '' OR c.prod_energy != '' OR c.cons_metal != '' OR c.cons_silicon != '' OR c.cons_hydrogen != '' OR c.cons_energy != ''";
 		$result = Core::getQuery()->select("construction c", array("c.buildingid", "c.name"), "", $where, "c.display_order ASC, c.buildingid ASC");
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$id = $row["buildingid"];
 			$this->data[$id]["id"] = $id;

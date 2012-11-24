@@ -13,13 +13,12 @@ class Plugin_GoogleAnalytics extends Recipe_PluginAbstract
 	/**
 	 * Sets standard plug-in information.
 	 *
-	 * @return void
+	 * @return \Plugin_GoogleAnalytics
 	 */
 	public function __construct()
 	{
 		$this->pluginName = "Google Analytics Integration";
 		$this->pluginVersion = "1.0";
-		return;
 	}
 
 	/**

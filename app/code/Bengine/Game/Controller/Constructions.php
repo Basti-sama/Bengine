@@ -169,14 +169,14 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 			$this->redirect("game/".SID."/Constructions");
 		}
 		$result = Core::getQuery()->select("construction", array("buildingid"), "", "buildingid = '".$id."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			Hook::event("AbortBuilding", array($this));
 			Game::getEH()->removeEvent($this->event->get("eventid"));
 			$this->redirect("game/".SID."/Constructions");
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$this->setNoDisplay();
 		return $this;
 	}
@@ -195,12 +195,12 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 			Recipe_Header::redirect("game/".SID."/Constructions", false);
 		}
 		$result = Core::getQuery()->select("building2planet b2p", array("c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.charge_metal", "c.charge_silicon", "c.charge_hydrogen", "c.name", "c.demolish"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = b2p.buildingid)", "b2p.buildingid = '".$id."'");
-		if(!$row = Core::getDB()->fetch($result))
+		if(!($row = $result->fetchRow()))
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			throw new Recipe_Exception_Generic("Unkown building :(");
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$level = Game::getPlanet()->getBuilding($id);
 		if($level < 1) { throw new Recipe_Exception_Generic("Wut?"); }
 		Hook::event("DemolishBuldingFirst", array(&$row, $level));
@@ -264,9 +264,9 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 			"charge_metal", "charge_silicon", "charge_hydrogen", "charge_energy"
 		);
 		$result = Core::getQuery()->select("construction", $select, "", "buildingid = '".$id."' AND (mode = '1' OR mode = '2' OR mode = '5')");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			Core::getLanguage()->load("info,Resource");
 			Hook::event("BuildingInfoBefore", array(&$row));
 
@@ -426,7 +426,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 		}
 		else
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			throw new Recipe_Exception_Generic("Unkown building. You'd better don't manipulate the URL. We see everything ;)");
 		}
 		return $this;

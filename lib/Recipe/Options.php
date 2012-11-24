@@ -35,7 +35,7 @@ class Recipe_Options extends Recipe_Collection
 	/**
 	 * Constructor.
 	 *
-	 * @return void
+	 * @return \Recipe_Options
 	 */
 	public function __construct()
 	{
@@ -58,11 +58,10 @@ class Recipe_Options extends Recipe_Collection
 		else
 		{
 			$result = Core::getQuery()->select("config", array("var", "value", "type"));
-			while($row = Core::getDatabase()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$this->item[$row["var"]] = $this->parseItemByType($row["value"], $row["type"]);
 			}
-			Core::getDatabase()->free_result($result);
 		}
 		Hook::event("SetOptionVariables", array($this));
 		return $this;
@@ -71,9 +70,9 @@ class Recipe_Options extends Recipe_Collection
 	/**
 	 * Changes a configuration parameter.
 	 *
-	 * @param string	Variable name
-	 * @param string	New value of the variable
-	 * @param boolean	Turn off auto-caching
+	 * @param string $var			Variable name
+	 * @param string $value			New value of the variable
+	 * @param boolean $renewcache	Turn off auto-caching
 	 *
 	 * @return Recipe_Options
 	 */
@@ -97,8 +96,8 @@ class Recipe_Options extends Recipe_Collection
 	/**
 	 * Checks if variable exists.
 	 *
-	 * @param string	Variable name
-	 * @param boolean	Turn off auto-caching
+	 * @param string $var
+	 * @param boolean $renewcache
 	 *
 	 * @return boolean	True, if variable exists, flase, if not
 	 */
@@ -118,7 +117,7 @@ class Recipe_Options extends Recipe_Collection
 	/**
 	 * Returns a configuration parameter.
 	 *
-	 * @param string	Variable name
+	 * @param string $var
 	 *
 	 * @return mixed	Parameter content
 	 */
@@ -132,10 +131,10 @@ class Recipe_Options extends Recipe_Collection
 	/**
 	 * Changes a configuration parameter.
 	 *
-	 * @param string	Variable name
-	 * @param string	New value of the variable
+	 * @param string $var
+	 * @param string $value
 	 *
-	 * @return Options
+	 * @return Recipe_Options
 	 */
 	public function set($var, $value)
 	{
@@ -165,13 +164,14 @@ class Recipe_Options extends Recipe_Collection
 	/**
 	 * Parses XML data.
 	 *
-	 * @param SimpleXMLElement	XML to parse
+	 * @param SimpleXMLElement $xml
 	 *
-	 * @return array			parsed XML
+	 * @return array
 	 */
 	protected function getFromXML(SimpleXMLElement $xml)
 	{
 		$item = array();
+		/* @var XMLObj $child */
 		foreach($xml as $index => $child)
 		{
 			$item[$index] = $this->parseItemByType($child, $child->getAttribute("type"));
@@ -182,8 +182,8 @@ class Recipe_Options extends Recipe_Collection
 	/**
 	 * Parses an item by the given type.
 	 *
-	 * @param XMLObj	Item
-	 * @param string	Type
+	 * @param XMLObj $item	Item
+	 * @param string $type	Type
 	 *
 	 * @return mixed	Parsed item
 	 */
@@ -210,7 +210,6 @@ class Recipe_Options extends Recipe_Collection
 			case "bool":
 			case "boolean":
 				return $item->getBooleanObj();
-				$item = (bool) $item;
 			break;
 			case "dbquery":
 				return Str::replace("PREFIX", PREFIX, $item->getString());
@@ -219,7 +218,6 @@ class Recipe_Options extends Recipe_Collection
 				return $item->getMap();
 			break;
 		}
-		return $item;
 	}
 }
 ?>

@@ -33,17 +33,15 @@ class Bengine_Comm_Uni
 	/**
 	 * Creates a new Universe object.
 	 *
-	 * @param string	Name
-	 * @param string	Subdomain
-	 *
-	 * @return void
+	 * @param string $name
+	 * @param string $domain
+	 * @param boolean $external
 	 */
 	public function __construct($name, $domain, $external = false)
 	{
 		$this->name = $name;
 		$this->domain = $domain;
 		$this->external = (bool) $external;
-		return;
 	}
 
 	/**
@@ -90,7 +88,7 @@ class Bengine_Comm_Uni
 	 *
 	 * @param string
 	 *
-	 * @return Bengine_Uni
+	 * @return Bengine_Comm_Uni
 	 */
 	public function setName($name)
 	{
@@ -103,7 +101,7 @@ class Bengine_Comm_Uni
 	 *
 	 * @param string
 	 *
-	 * @return Bengine_Uni
+	 * @return Bengine_Comm_Uni
 	 */
 	public function setDomain($domain)
 	{
@@ -116,7 +114,7 @@ class Bengine_Comm_Uni
 	 *
 	 * @param boolean
 	 *
-	 * @return Bengine_Uni
+	 * @return Bengine_Comm_Uni
 	 */
 	public function setExternal($external)
 	{

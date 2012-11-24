@@ -29,16 +29,16 @@ class Bengine_Game_Account_Password_Changer extends Bengine_Game_Controller_Ajax
 		}
 
 		$result = Core::getQuery()->select("user", "userid", "", "userid = '".$userid."' AND activation = '".$key."'");
-		if(Core::getDB()->num_rows($result) > 0)
+		if($result->rowCount())
 		{
-			Core::getDB()->free_result($result);
+			$result->closeCursor();
 			$encryption = Core::getOptions("USE_PASSWORD_SALT") ? "md5_salt" : "md5";
 			$newpw = Str::encode($newpw, $encryption);
-			Core::getQuery()->update("password", array("password", "time"), array($newpw, TIME), "userid = '".$userid."'");
-			Core::getQuery()->update("user", "activation", "", "userid = '".$userid."'");
+			Core::getQuery()->update("password", array("password" => $newpw, "time" => TIME), "userid = '".$userid."'");
+			Core::getQuery()->update("user", array("activation" => ""), "userid = '".$userid."'");
 			$this->printIt("PASSWORD_CHANGED", false);
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		$this->printIt("ERROR_PASSWORD_CHANGED");
 		return;
 	}

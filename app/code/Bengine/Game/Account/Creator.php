@@ -108,7 +108,7 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Controller_Ajax_Abstract
 	protected function loadTotalUser()
 	{
 		$result = Core::getQuery()->select("user", array("userid"));
-		$this->totalUser = Core::getDB()->num_rows($result);
+		$this->totalUser = $result->rowCount();
 		return $this;
 	}
 
@@ -131,13 +131,13 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Controller_Ajax_Abstract
 		}
 		$checkTime = TIME - Core::getOptions()->get("WATING_TIME_REGISTRATION") * 60;
 		$result = Core::getQuery()->select("registration", array("time"), "", "ipaddress = '".IPADDRESS."' AND time >= '".$checkTime."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			$minutes = ceil(($row["time"] - $checkTime) / 60);
 			Core::getLang()->assign("minutes", $minutes);
 			$error[] = "REGISTRATION_BANNED_FOR_IP";
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 		if(!checkCharacters($this->getUsername()))
 		{
 			$error[] = "USERNAME_INVALID";
@@ -151,19 +151,19 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Controller_Ajax_Abstract
 			$error[] = "PASSWORD_INVALID";
 		}
 		$result = Core::getQuery()->select("user", array("username", "email"), "", "username = '".$this->getUsername()."' OR email = '".$this->getEmail()."'");
-		if($row = Core::getDB()->fetch($result))
+		if($row = $result->fetchRow())
 		{
 			if(Str::compare($this->getUsername(), $row["username"])) { $error[] = "USERNAME_EXISTS"; }
 			if(Str::compare($this->getEmail(), $row["email"])) { $error[] = "EMAIL_EXISTS"; }
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 
 		$result = Core::getQuery()->select("languages", array("languageid"), "", "languageid = '".$this->getLanguage()."'");
-		if(Core::getDB()->num_rows($result) <= 0)
+		if($result->rowCount() <= 0)
 		{
 			$error[] = "UNKOWN_LANGUAGE";
 		}
-		Core::getDB()->free_result($result);
+		$result->closeCursor();
 
 		if(count($error) > 0)
 		{
@@ -201,23 +201,23 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Controller_Ajax_Abstract
 	{
 		$this->checkIt()
 			->sendMail();
-		Core::getQuery()->insert("registration", array("time", "ipaddress", "useragent"), array(TIME, IPADDRESS, (isset($_SERVER["HTTP_USER_AGENT"])) ? $_SERVER["HTTP_USER_AGENT"] : ""));
-		Core::getQuery()->insert("user", array("username", "email", "temp_email", "languageid", "activation", "regtime", "last"), array($this->getUsername(), $this->getEmail(), $this->getEmail(), $this->getLanguage(), $this->getActivation(), TIME, TIME));
-		$userid = Core::getDB()->insert_id();
+		Core::getQuery()->insert("registration", array("time" => TIME, "ipaddress" => IPADDRESS, "useragent" => (isset($_SERVER["HTTP_USER_AGENT"])) ? $_SERVER["HTTP_USER_AGENT"] : ""));
+		Core::getQuery()->insert("user", array("username" => $this->getUsername(), "email" => $this->getEmail(), "temp_email" => $this->getEmail(), "languageid" => $this->getLanguage(), "activation" => $this->getActivation(), "regtime" => TIME, "last" => TIME));
+		$userid = Core::getDB()->lastInsertId();
 		$this->userId = $userid;
-		Core::getQuery()->insert("password", array("userid", "password", "time"), array($userid, $this->getPassword(true), TIME));
+		Core::getQuery()->insert("password", array("userid" => $userid, "password" => $this->getPassword(true), "time" => TIME));
 		$planet = $this->getPlanetCreator($userid);
 		$planetid = $planet->getPlanetId();
-		Core::getQuery()->update("user", array("curplanet", "hp"), array($planetid, $planetid), "userid = '".$userid."'");
+		Core::getQuery()->update("user", array("curplanet" => $planetid, "hp" => $planetid), "userid = '".$userid."'");
 
 		// First user obtains admin permissions
 		if($this->getTotalUser() <= 0)
 		{
-			Core::getQuery()->insert("user2group", array("userid", "usergroupid"), array($userid, self::ADMIN_USER_GROUP_ID));
+			Core::getQuery()->insert("user2group", array("userid" => $userid, "usergroupid" => self::ADMIN_USER_GROUP_ID));
 		}
 
 		// Send start-up message
-		Core::getQuery()->insertInto("message", array("mode" => 1, "time" => TIME, "sender" => null, "receiver" => $userid, "message" => Core::getLang()->getItem("START_UP_MESSAGE"), "subject" => Core::getLang()->getItem("START_UP_MESSAGE_SUBJECT"), "read" => 0));
+		Core::getQuery()->insert("message", array("mode" => 1, "time" => TIME, "sender" => null, "receiver" => $userid, "message" => Core::getLang()->getItem("START_UP_MESSAGE"), "subject" => Core::getLang()->getItem("START_UP_MESSAGE_SUBJECT"), "read" => 0));
 		Hook::event("UserRegistrationSuccess", array($this, $planet));
 		// Delete Registrations older than 7 days
 		Core::getQuery()->delete("registration", "time < '".(TIME - 604800)."'");
