@@ -1,0 +1,28 @@
+<?php echo $this->render("admin/html_header"); ?>
+<div id="top">
+	<div id="topheader">
+		<div class="link_a"><a href="javascript:location.reload(true);">{lang}Refresh{/lang}</a> | <a href="javascript:back();">{lang}Back{/lang}</a> | <?php echo Link::get("auth/logout", Core::getLanguage()->get("Logout")); ?> | <a href="{const=BASE_URL}">{lang}Page{/lang}</a></div>
+	</div>
+</div>
+<div id="left">
+	<div id="menu">
+		<div class="mbg">
+			<div class="menu_title">{lang}Main_Menu{/lang}</div>
+			<ul>
+			<?php $count = count($this->getLoop("menu")); foreach($this->getLoop("menu") as $key => $row): ?> 
+				<li>{loop}link{/loop}</li>
+			 <?php endforeach; ?>
+			</ul>
+			<?php if($this->get("pluginCount", false)): ?><div class="menu_title">{lang}Plug_In_Management{/lang}</div>
+			<ul>
+			<?php $count = count($this->getLoop("plugins")); foreach($this->getLoop("plugins") as $key => $row): ?> 
+				<li>{loop}link{/loop}</li>
+			 <?php endforeach; ?>
+			</ul><?php endif; ?>
+		</div>
+	</div>
+</div>
+<div id="content">
+<?php echo $this->render($template); ?>
+</div>
+<?php echo $this->render("admin/html_footer"); ?>

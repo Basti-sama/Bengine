@@ -1,0 +1,55 @@
+<form method="post" action="{@formaction}">
+<table class="ntable">
+	<tr>
+		<th colspan="2">{lang}ALLIANCE{/lang}</th>
+	</tr>
+	<?php if($this->get("logo", false) != ""): ?><tr>
+		<td colspan="2" class="center">{@logo}</td>
+	</tr><?php endif; ?>
+	<tr>
+		<td style="width: 30%;">{lang}TAG{/lang}</td>
+		<td>{@tag}</td>
+	</tr>
+	<tr>
+		<td>{lang}NAME{/lang}</td>
+		<td>{@name}</td>
+	</tr>
+	<tr>
+		<td>{lang}MEMBER{/lang}</td>
+		<td>{@memberNumber} <?php if($this->get("showMember", false) || $this->get("CAN_SEE_MEMBERLIST", false) || $this->get("founder", false) == Core::getUser()->get("userid")): ?>({@memberList})<?php endif; ?></td>
+	</tr>
+	<?php if(($this->get("CAN_SEE_APPLICATIONS", false) || $this->get("founder", false) == Core::getUser()->get("userid")) && $this->get("appnumber", false) > 0): ?><tr>
+		<td>{lang}APPLICATIONS{/lang}</td>
+		<td>{@applications}</td>
+	</tr><?php endif; ?>
+	<?php if($this->get("aid", false) == Core::getUser()->get("aid")): ?><tr>
+		<td>{lang}RANK{/lang}</td>
+		<td>{@rank} {@manage}</td>
+	</tr><?php endif; ?>
+	<?php if($this->get("CAN_WRITE_GLOBAL_MAILS", false) || $this->get("founder", false) == Core::getUser()->get("userid")): ?><tr>
+		<td colspan="2" class="center"><?php echo Link::get("game/".SID."/Alliance/GlobalMail", Core::getLanguage()->get("WRITE_GLOBAL_MAIL")); ?></td>
+	</tr><?php endif; ?>
+	<tr>
+		<td colspan="2">{@textextern}</td>
+	</tr>
+	<?php if($this->get("homepage", false) != "" && ($this->get("showHomepage", false) || $this->get("aid", false) == Core::getUser()->get("aid"))): ?><tr>
+		<td>{lang}HOMEPAGE{/lang}</td>
+		<td>{@homepage}</td>
+	</tr><?php endif; ?>
+	<?php if($this->get("textintern", false) != "" && $this->get("aid", false) == Core::getUser()->get("aid")): ?><tr>
+		<th colspan="2">{lang}INTERN{/lang}</th>
+	</tr>
+	<tr>
+		<td colspan="2">{@textintern}</td>
+	</tr><?php endif; ?>
+	<?php if($this->get("aid", false) == Core::getUser()->get("aid") && $this->get("founder", false) != Core::getUser()->get("userid")): ?><tr>
+		<td colspan="2" class="center"><input name="leave" type="submit" value="{lang}LEAVE{/lang}" class="button"/></td>
+	</tr><?php endif; ?>
+	<?php if(!Core::getUser()->get("aid") && !$this->get("appInProgress", false)): ?><tr>
+		<td colspan="2" class="center"><input name="enter" type="button" value="{lang}JOIN{/lang}" class="button" onclick="javascript:location.href='{const=BASE_URL}game/{const=SID}/Alliance/Apply/{@aid}'"/></td>
+	</tr><?php endif; ?>
+	<?php if($this->get("appInProgress", false)): ?><tr>
+		<td colspan="2" class="center">{lang}APPLICATION_IN_PROGRESS{/lang}</td>
+	</tr><?php endif; ?>
+</table>
+</form>

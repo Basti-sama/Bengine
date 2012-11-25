@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{lang}ALLIANCE_PAGE{/lang}: {@tag}{config=TITLE_GLUE}{@pageTitle}</title>
+<meta http-equiv="content-type" content="text/html; charset={@charset}" />
+<link rel="shortcut icon" href="{const}BASE_URL{/const}favicon.ico" type="image/x-icon"/>
+<?php if($this->get("CSS_FILES", false) != ""): ?><link rel="stylesheet" type="text/css" href="{const}BASE_URL{/const}css/?f={@CSS_FILES}"/><?php endif; ?>
+<?php if($this->get("JS_FILES", false) != ""): ?><script type="text/javascript" src="{const}BASE_URL{/const}js/?f={@JS_FILES}"></script><?php endif; ?>
+</head>
+<body>
+	{hook}FrontHtmlBegin{/hook}
+	<table class="ntable center-table">
+		<colgroup>
+			<col width="30%"/>
+			<col width="70%"/>
+		</colgroup>
+		<tr>
+			<th colspan="2">{lang}ALLIANCE{/lang}</th>
+		</tr>
+		<?php if($this->get("logo", false) != ""): ?><tr>
+			<td colspan="2" class="center">{@logo}</td>
+		</tr><?php endif; ?>
+		<tr>
+			<td>{lang}TAG{/lang}</td>
+			<td>{@tag}</td>
+		</tr>
+		<tr>
+			<td>{lang}NAME{/lang}</td>
+			<td>{@name}</td>
+		</tr>
+		<tr>
+			<td>{lang}MEMBER{/lang}</td>
+			<td>{@member}</td>
+		</tr>
+		<tr>
+			<td colspan="2">{@textextern}</td>
+		</tr>
+		<?php if($this->get("homepage", false) != "" && $this->get("showHomepage", false)): ?>
+		<tr>
+			<td>{lang}HOMEPAGE{/lang}</td>
+			<td>{@homepage}</td>
+		</tr>
+		<?php endif; ?>
+	</table>
+	{hook}FrontHtmlEnd{/hook}
+</body>
+</html>

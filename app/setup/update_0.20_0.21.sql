@@ -6,3 +6,5 @@ UPDATE `bengine_phrases` SET `content` = 'Dieses Konto wurde gesperrt. Der Moder
 
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 (1, 8, 'NO_BAN_REASON', 'Kein Grund angegeben.');
+
+UPDATE `bengine_cronjob` SET `minute` = 0 WHERE `minute` IS NULL;

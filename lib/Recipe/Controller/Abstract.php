@@ -265,7 +265,7 @@ abstract class Recipe_Controller_Abstract
 		{
 			return $default;
 		}
-		if($value = Core::getRequest()->getPOST($param))
+		if(($value = Core::getRequest()->getPOST($param, null)) !== null)
 		{
 			return $value;
 		}

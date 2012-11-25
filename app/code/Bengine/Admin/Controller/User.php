@@ -265,7 +265,7 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 	protected function deletefromgroupAction($userid, $groupid)
 	{
 		Core::getQuery()->delete("user2group", "userid = '".$userid."' AND usergroupid = '".$groupid."'");
-		$this->redirect("user/edit/".$userid);
+		$this->redirect("admin/user/edit/".$userid);
 		return $this;
 	}
 }

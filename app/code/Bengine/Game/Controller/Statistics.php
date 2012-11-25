@@ -88,7 +88,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	protected function fetchTotalMetal()
 	{
 		$result = Core::getQuery()->select("planet", array("SUM(metal) AS totalMetal"));
-		return Core::getDB()->fetch_field($result, "totalMetal");
+		return $result->fetchColumn();
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	protected function fetchTotalSilicon()
 	{
 		$result = Core::getQuery()->select("planet", array("SUM(silicon) AS totalSilicon"));
-		return Core::getDB()->fetch_field($result, "totalSilicon");
+		return $result->fetchColumn();
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	protected function fetchTotalHydrogen()
 	{
 		$result = Core::getQuery()->select("planet", array("SUM(hydrogen) AS totalHydrogen"));
-		return Core::getDB()->fetch_field($result, "totalHydrogen");
+		return $result->fetchColumn();
 	}
 
 	/**
@@ -121,7 +121,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	protected function fetchTotalPlayers()
 	{
 		$result = Core::getQuery()->select("user", array("COUNT(userid) AS numPlayers"));
-		return Core::getDB()->fetch_field($result, "numPlayers");
+		return $result->fetchColumn();
 	}
 
 	/**
@@ -133,7 +133,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	protected function fetchTotalPlanets($isMoon = 0)
 	{
 		$result = Core::getQuery()->select("planet", array("COUNT(planetid) AS numPlanets"), "", "ismoon = '{$isMoon}'");
-		return Core::getDB()->fetch_field($result, "numPlanets");
+		return $result->fetchColumn();
 	}
 
 	/**
@@ -155,12 +155,12 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 			->where(array("c" => "mode"), 4, "OR")
 			->order(array("c" => "display_order"), "ASC")
 			->order(array("c" => "buildingid"), "ASC");
-		$result = $select->getResource();
+		$result = $select->getStatement();
 		foreach($result->fetchAll() as $row)
 		{
 			$this->unitCount[$row["name"]] = $row["total"];
 		}
-		Core::getDatabase()->free_result($result);
+		$result->closeCursor();
 		return $this;
 	}
 
@@ -172,7 +172,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	protected function fetchOnlinePlayers()
 	{
 		$result = Core::getQuery()->select("user", array("COUNT(userid) AS numPlayers"), "", "last >= ".(TIME - self::RECENT_ONLINE_TIME)." AND last <= ".TIME);
-		return Core::getDB()->fetch_field($result, "numPlayers");
+		return $result->fetchColumn();
 	}
 
 	/**
@@ -183,7 +183,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	protected function fetchRecentAssaults()
 	{
 		$result = Core::getQuery()->select("assault", array("COUNT(assaultid) AS numAssaults"), "", "time >= ".(TIME - self::RECENT_ASSAULT_TIME)." AND time <= ".TIME);
-		return Core::getDB()->fetch_field($result, "numAssaults");
+		return $result->fetchColumn();
 	}
 
 	/**
@@ -194,7 +194,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	protected function fetchDebrisFields()
 	{
 		$result = Core::getQuery()->select("galaxy", array("COUNT(planetid) AS numDebrisFields"), "", "metal > 0 OR silicon > 0");
-		return Core::getDB()->fetch_field($result, "numDebrisFields");
+		return $result->fetchColumn();
 	}
 }
 ?>

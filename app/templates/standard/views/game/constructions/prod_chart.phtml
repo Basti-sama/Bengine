@@ -1,0 +1,12 @@
+<table class="ntable" style="width: 100%;">
+<thead><tr>
+	<th>{lang}LEVEL{/lang}</th>
+	<th>{lang}PRODUCTION{/lang}</th>
+	<th>{lang}DIFFERENCE{/lang}</th>
+</tr></thead>
+<tbody><?php $count = count($this->getLoop("chart")); foreach($this->getLoop("chart") as $key => $row): ?> <tr>
+	<td><span class="<?php if($row["level"] == $this->get("buildingLevel")): ?>true<?php endif; ?>">{loop}level{/loop}</span></td>
+	<td>{loop}prod{/loop}</td>
+	<td><span class="<?php if($row["s_diffProd"] > 0): ?>true<?php elseif($row["s_diffProd"] < 0): ?>false<?php endif; ?>">{loop}diffProd{/loop}</span></td>
+</tr> <?php endforeach; ?></tbody>
+</table>

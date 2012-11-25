@@ -2284,7 +2284,7 @@ ALTER TABLE `bengine_building2planet` ADD FOREIGN KEY ( `buildingid` ) REFERENCE
 ALTER TABLE `bengine_config` ADD FOREIGN KEY ( `groupid` ) REFERENCES `bengine_configgroups` (`groupid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_events` ADD FOREIGN KEY ( `planetid` ) REFERENCES `bengine_planet` (`planetid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_events` ADD FOREIGN KEY ( `user` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE `bengine_events` ADD FOREIGN KEY ( `destination` ) REFERENCES `bengine_planet` (`planetid`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_events` ADD FOREIGN KEY ( `destination` ) REFERENCES `bengine_planet` (`planetid`) ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE `bengine_events` ADD FOREIGN KEY ( `mode` ) REFERENCES `bengine_event_type` (`event_type_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_feed_keys` ADD FOREIGN KEY ( `user_id` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_fleet2assault` ADD FOREIGN KEY ( `assaultid` ) REFERENCES `bengine_assault` (`assaultid`) ON DELETE CASCADE ON UPDATE CASCADE;

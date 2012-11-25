@@ -1,0 +1,23 @@
+<h1>{lang}Template_Editor{/lang}</h1>
+	<div class="draggable">
+		<table class="ntable" cellpadding="4" cellspacing="0">
+			<thead>
+				<tr>
+					<th>{lang}Available_Templates{/lang}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<strong>{lang}Package{/lang} "{@package}":</strong><br />
+						<?php $count = count($this->getLoop("templates")); foreach($this->getLoop("templates") as $key => $row): ?> 
+						{loop}template{/loop}<br />
+						 <?php endforeach; ?>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+<div id="right">
+	<div class="link_b"><?php echo Link::get("admin/tpleditor", Core::getLanguage()->get("Back")); ?></div>
+</div>

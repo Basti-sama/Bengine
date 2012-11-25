@@ -39,11 +39,15 @@ class Bengine_Game_Controller_Resource extends Bengine_Game_Controller_Abstract
 		Core::getTPL()->addLoop("data", $this->data);
 
 		$productFactor = (double) Core::getConfig()->get("PRODUCTION_FACTOR");
+		$isMoon = (bool) Game::getPlanet()->getData("ismoon");
 
 		// Basic prod
-		Core::getTPL()->assign("basicMetal", fNumber(Core::getOptions()->get("METAL_BASIC_PROD") * $productFactor));
-		Core::getTPL()->assign("basicSilicon", fNumber(Core::getOptions()->get("SILICON_BASIC_PROD") * $productFactor));
-		Core::getTPL()->assign("basicHydrogen", fNumber(Core::getOptions()->get("HYDROGEN_BASIC_PROD") * $productFactor));
+		$basicMetal = $isMoon ? 0 : Core::getOptions()->get("METAL_BASIC_PROD");
+		Core::getTPL()->assign("basicMetal", fNumber($basicMetal * $productFactor));
+		$basicSilicon = $isMoon ? 0 : Core::getOptions()->get("SILICON_BASIC_PROD");
+		Core::getTPL()->assign("basicSilicon", fNumber($basicSilicon * $productFactor));
+		$basicHydrogen = $isMoon ? 0 : Core::getOptions()->get("HYDROGEN_BASIC_PROD");
+		Core::getTPL()->assign("basicHydrogen", fNumber($basicHydrogen * $productFactor));
 
 		Core::getTPL()->assign("sats", Game::getPlanet()->getBuilding(Bengine_Game_Planet::SOLAR_SAT_ID));
 		if(Game::getPlanet()->getBuilding(Bengine_Game_Planet::SOLAR_SAT_ID) > 0)
@@ -138,7 +142,7 @@ class Bengine_Game_Controller_Resource extends Bengine_Game_Controller_Abstract
 				{
 					$factor = abs((isset($post[$key])) ? $post[$key] : 100);
 					$factor = ($factor > 100) ? 100 : $factor;
-					Core::getQuery()->updateSet("building2planet", array("prod_factor" => $factor), "buildingid = '".$key."' AND planetid = '".Core::getUser()->get("curplanet")."'");
+					Core::getQuery()->update("building2planet", array("prod_factor" => $factor), "buildingid = '".$key."' AND planetid = '".Core::getUser()->get("curplanet")."'");
 				}
 			}
 
@@ -146,7 +150,7 @@ class Bengine_Game_Controller_Resource extends Bengine_Game_Controller_Abstract
 			{
 				$satelliteProd = abs($post[39]);
 				$satelliteProd = ($satelliteProd > 100) ? 100 : $satelliteProd;
-				Core::getQuery()->updateSet("planet", array("solar_satellite_prod" => $satelliteProd), "planetid = '".Core::getUser()->get("curplanet")."'");
+				Core::getQuery()->update("planet", array("solar_satellite_prod" => $satelliteProd), "planetid = '".Core::getUser()->get("curplanet")."'");
 			}
 		}
 		$this->redirect("game/".SID."/Resource");

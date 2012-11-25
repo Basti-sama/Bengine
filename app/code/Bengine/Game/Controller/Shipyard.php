@@ -67,10 +67,10 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		if(Game::getPlanet()->getBuilding("ROCKET_STATION") > 0 && $this->mode == self::DEFENSE_CONSTRUCTION_TYPE)
 		{
 			$_result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '51' AND planetid = '".Core::getUser()->get("curplanet")."'");
-			$_row = Core::getDB()->fetch($_result);
+			$_row = $_result->fetchRow();
 			$this->existingRockets = $_row["quantity"];
 			$_result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '52' AND planetid = '".Core::getUser()->get("curplanet")."'");
-			$_row = Core::getDB()->fetch($_result);
+			$_row = $_result->fetchRow();
 			$this->existingRockets += $_row["quantity"] * 2;
 			$this->existingRockets += Game::getEH()->getWorkingRockets();
 
@@ -122,8 +122,8 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 			$x = TIME - $row["time"];
 			$lefttime = $row["one"] - ($x - floor($x / $row["one"]) * $row["one"]);
 			Core::getTPL()->assign("remainingTime", getTimeTerm($lefttime));
-
-			Core::getDB()->reset_resource($result);
+			$result->closeCursor();
+			$result->execute();
 			foreach($result->fetchAll() as $row)
 			{
 				$quantity = ($row["time"] < TIME) ? ceil(($row["finished"] - TIME) / $row["one"]) : $row["quantity"];
@@ -151,6 +151,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 	/**
 	 * Starts an event for building units.
 	 *
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_Controller_Shipyard
 	 */
 	protected function orderAction()
@@ -185,11 +186,11 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 				if($id == 49 || $id == 50)
 				{
 					$_result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '".$id."' AND planetid = '".Core::getUser()->get("curplanet")."'");
-					if(Core::getDB()->num_rows($_result) > 0)
+					if($_result->rowCount() > 0)
 					{
 						throw new Recipe_Exception_Generic("You cannot build this.");
 					}
-					Core::getDB()->free_result($_result);
+					$_result->closeCursor();
 					if(Game::getEH()->hasSShieldDome() && $id == 49)
 					{
 						throw new Recipe_Exception_Generic("You cannot build this.");
@@ -227,8 +228,8 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 				{
 					$latest = TIME;
 					$_result = Core::getQuery()->select("events", array("MAX(time) as latest"), "", "planetid = '".Core::getUser()->get("curplanet")."' AND (mode = '4' OR mode = '5') LIMIT 1");
-					$_row = Core::getDB()->fetch($_result);
-					Core::getDB()->free_result($_result);
+					$_row = $_result->fetchRow();
+					$_result->closeCursor();
 					if($_row["latest"] >= TIME)
 					{
 						$latest = $_row["latest"];
@@ -238,7 +239,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 					$time = getBuildTime($construction->get("basic_metal"), $construction->get("basic_silicon"), $this->mode);
 
 					// This is just for the output below the shipyard, it does not represent the actual event!
-					Core::getQuery()->insert("shipyard", array("planetid", "unitid", "quantity", "one", "time", "finished"), array(Core::getUser()->get("curplanet"), $id, $quantity, $time, $latest, $time * $quantity + $latest));
+					Core::getQuery()->insert("shipyard", array("planetid" => Core::getUser()->get("curplanet"), "unitid" => $id, "quantity" => $quantity, "one" => $time, "time" => $latest, "finished" => $time * $quantity + $latest));
 
 					$data["time"] = $time;
 					$data["quantity"] = $quantity;
@@ -259,7 +260,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 						Game::getEH()->addEvent($mode, $time * $i + $latest, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), null, $data);
 					}
 					$planet = Game::getPlanet();
-					Core::getQuery()->updateSet("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = '".Core::getUser()->get("curplanet")."'");
+					Core::getQuery()->update("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = '".Core::getUser()->get("curplanet")."'");
 				}
 			}
 		}

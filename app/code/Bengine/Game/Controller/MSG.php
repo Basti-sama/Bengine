@@ -130,9 +130,9 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 				{
 					$subject = preg_replace("#((RE|FW):\s)+#is", "\\1", $subject); // Remove excessive reply or forward notes
 					Hook::event("SendPrivateMessage", array(&$row, $receiver, &$subject, &$message));
-					Core::getQuery()->insert("message", array("mode", "time", "sender", "receiver", "subject", "message", "read"), array(1, TIME, Core::getUser()->get("userid"), $row["userid"], Str::validateXHTML($subject), $message, 0));
-					Core::getQuery()->insert("message", array("mode", "time", "sender", "receiver", "subject", "message", "read"), array(2, TIME, $row["userid"], Core::getUser()->get("userid"), Str::validateXHTML($subject), $message, 1));
-					$msgid = Core::getDB()->insert_id();
+					Core::getQuery()->insert("message", array("mode" => 1, "time" => TIME, "sender" => Core::getUser()->get("userid"), "receiver" => $row["userid"], "subject" => Str::validateXHTML($subject), "message" => $message, "read" => 0));
+					Core::getQuery()->insert("message", array("mode" => 2, "time" => TIME, "sender" => $row["userid"], "receiver" => Core::getUser()->get("userid"), "subject" => Str::validateXHTML($subject), "message" => $message, "read" => 1));
+					$msgid = Core::getDB()->lastInsertId();
 					if($msgid > 10000000)
 					{
 						$TableCleaner = new Recipe_Maintenance_TableCleaner("message", "msgid");
@@ -237,7 +237,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 							$gentime = $assault->get("gentime") / 1000;
 							$label = Core::getLanguage()->getItem("ASSAULT_REPORT")." (A: ".fNumber($assault->get("lostunits_attacker")).", D: ".fNumber($assault->get("lostunits_defender")).") ".$gentime."s";
 							Core::getLang()->assign("reportLink", "<span class=\"assault-report\" onclick=\"window.open('".$url."')\">".$label."</span>");
-							$message = Core::getDB()->real_escape_string(Core::getLang()->get("MODERATOR_REPORT_COMBAT"));
+							$message = Core::getDB()->escape(Core::getLang()->get("MODERATOR_REPORT_COMBAT"));
 						}
 						else
 						{
@@ -253,7 +253,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 							"time" => TIME,
 							"read" => 0,
 						);
-						Core::getQuery()->insertInto("message", $spec);
+						Core::getQuery()->insert("message", $spec);
 					}
 					Logger::addMessage("MESSAGES_REPORTED", "success");
 				}
@@ -331,7 +331,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 		}
 		if(count($readMessages) > 0)
 		{
-			Core::getQuery()->update("message", "read", 1, "msgid = ".implode(" OR msgid = ", $readMessages));
+			Core::getQuery()->update("message", array("read" => 1), "msgid = ".implode(" OR msgid = ", $readMessages));
 		}
 		Core::getTPL()->addLoop("messages", $messages);
 		Core::getTPL()->assign("mode", $id);
@@ -349,7 +349,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 	protected function markAsReadAction($folderId)
 	{
 		Hook::event("MarkFolderAsRead", array($folderId));
-		Core::getQuery()->update("message", array("read"), array(1), "mode = '".$folderId."' AND receiver = '".Core::getUser()->get("userid")."'");
+		Core::getQuery()->update("message", array("read" => 1), "mode = '".$folderId."' AND receiver = '".Core::getUser()->get("userid")."'");
 		$this->redirect("game/".SID."/MSG");
 		return $this;
 	}

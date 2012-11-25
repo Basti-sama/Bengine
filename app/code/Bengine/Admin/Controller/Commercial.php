@@ -75,7 +75,7 @@ class Bengine_Admin_Controller_Commercial extends Bengine_Admin_Controller_Abstr
 	protected function resetAction()
 	{
 		Core::getQuery()->update("ad", array("views" => 0), "ad_id = '".$this->getParam("1")."'");
-		return $this->redirect("commercial");
+		return $this->redirect("admin/commercial");
 	}
 
 	/**

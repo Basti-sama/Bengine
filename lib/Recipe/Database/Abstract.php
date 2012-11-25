@@ -120,6 +120,21 @@ abstract class Recipe_Database_Abstract
 	abstract public function query($sql, array $bind = null);
 
 	/**
+	 * @return Recipe_Database_Abstract
+	 */
+	abstract public function beginTransaction();
+
+	/**
+	 * @return Recipe_Database_Abstract
+	 */
+	abstract public function commit();
+
+	/**
+	 * @return Recipe_Database_Abstract
+	 */
+	abstract public function rollBack();
+
+	/**
 	 * @param string $name
 	 * @return integer
 	 */

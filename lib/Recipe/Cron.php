@@ -126,11 +126,11 @@ class Recipe_Cron
 	 */
 	protected function validate($row)
 	{
-		$row["minute"] = Arr::trimArray(explode(",", $row["minute"]));
-		$row["hour"] = Arr::trimArray(explode(",", $row["hour"]));
-		$row["day"] = Arr::trimArray(explode(",", $row["day"]));
-		$row["weekday"] = Arr::trimArray(explode(",", $row["weekday"]));
-		$row["month"] = Arr::trimArray(explode(",", $row["month"]));
+		$row["minute"] = Arr::trim(explode(",", $row["minute"]));
+		$row["hour"] = Arr::trim(explode(",", $row["hour"]));
+		$row["day"] = Arr::trim(explode(",", $row["day"]));
+		$row["weekday"] = Arr::trim(explode(",", $row["weekday"]));
+		$row["month"] = Arr::trim(explode(",", $row["month"]));
 		if(empty($row["xtime"]))
 			$row["xtime"] = TIME;
 		return $row;

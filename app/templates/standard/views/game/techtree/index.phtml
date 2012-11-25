@@ -1,0 +1,42 @@
+<table class="ntable">
+	<tr>
+		<th>{lang}CONSTRUCTION{/lang}</th>
+		<th>{lang}REQUIREMENTS{/lang}</th>
+	</tr>
+	<?php $count = count($this->getLoop("construction")); foreach($this->getLoop("construction") as $key => $row): ?> <tr>
+		<td>{loop}name{/loop}</td>
+		<td>{loop}requirements{/loop}</td>
+	</tr> <?php endforeach; ?>
+	<tr>
+		<th>{lang}MENU_RESEARCH{/lang}</th>
+		<th>{lang}REQUIREMENTS{/lang}</th>
+	</tr>
+	<?php $count = count($this->getLoop("research")); foreach($this->getLoop("research") as $key => $row): ?> <tr>
+		<td>{loop}name{/loop}</td>
+		<td>{loop}requirements{/loop}</td>
+	</tr> <?php endforeach; ?>
+	<tr>
+		<th>{lang}SHIPYARD{/lang}</th>
+		<th>{lang}REQUIREMENTS{/lang}</th>
+	</tr>
+	<?php $count = count($this->getLoop("shipyard")); foreach($this->getLoop("shipyard") as $key => $row): ?> <tr>
+		<td>{loop}name{/loop}</td>
+		<td>{loop}requirements{/loop}</td>
+	</tr> <?php endforeach; ?>
+	<tr>
+		<th>{lang}DEFENSE{/lang}</th>
+		<th>{lang}REQUIREMENTS{/lang}</th>
+	</tr>
+	<?php $count = count($this->getLoop("defense")); foreach($this->getLoop("defense") as $key => $row): ?> <tr>
+		<td>{loop}name{/loop}</td>
+		<td>{loop}requirements{/loop}</td>
+	</tr> <?php endforeach; ?>
+	<tr>
+		<th>{lang}MOON_BUILDING{/lang}</th>
+		<th>{lang}REQUIREMENTS{/lang}</th>
+	</tr>
+	<?php $count = count($this->getLoop("moon")); foreach($this->getLoop("moon") as $key => $row): ?> <tr>
+		<td>{loop}name{/loop}</td>
+		<td>{loop}requirements{/loop}</td>
+	</tr> <?php endforeach; ?>
+</table>

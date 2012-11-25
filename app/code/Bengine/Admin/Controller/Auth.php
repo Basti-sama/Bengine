@@ -43,7 +43,7 @@ class Bengine_Admin_Controller_Auth extends Bengine_Admin_Controller_Abstract
 			Core::getCache()->cleanUserCache(Core::getUser()->get("userid"));
 			Core::getRequest()->setCookie("sid", "", TIME - 1);
 		}
-		$this->redirect("auth");
+		$this->redirect("admin/auth");
 		return $this;
 	}
 }

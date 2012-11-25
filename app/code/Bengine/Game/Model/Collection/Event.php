@@ -19,13 +19,13 @@ class Bengine_Game_Model_Collection_Event extends Recipe_Model_Collection_Abstra
 	/**
 	 * Prepares expired events.
 	 *
-	 * @param integer	Race condition key
+	 * @param string $raceConditionKey	Race condition key
 	 *
 	 * @return Bengine_Game_Model_Collection_Event
 	 */
 	public function addRaceConditionFilter($raceConditionKey)
 	{
-		Core::getQuery()->update("events", array("prev_rc"), array($raceConditionKey), "prev_rc IS NULL AND time <= '".TIME."' ORDER BY eventid ASC LIMIT ".self::MAX_EVENT_EXECUTION);
+		Core::getQuery()->update("events", array("prev_rc" => $raceConditionKey), "prev_rc IS NULL AND time <= '".TIME."' ORDER BY eventid ASC LIMIT ".self::MAX_EVENT_EXECUTION);
 		$this->getSelect()->where(array("e" => "prev_rc"), $raceConditionKey);
 		$this->addTimeOrder();
 		return $this;
@@ -45,6 +45,7 @@ class Bengine_Game_Model_Collection_Event extends Recipe_Model_Collection_Abstra
 	/**
 	 * Orders the result by time.
 	 *
+	 * @param string $order
 	 * @return Bengine_Game_Model_Collection_Event
 	 */
 	public function addTimeOrder($order = "ASC")
@@ -62,6 +63,7 @@ class Bengine_Game_Model_Collection_Event extends Recipe_Model_Collection_Abstra
 	public function executeAll()
 	{
 		$this->load();
+		/* @var Bengine_Game_Model_Event $event */
 		foreach($this->getItems() as $event)
 		{
 			$event->execute();
@@ -89,6 +91,7 @@ class Bengine_Game_Model_Collection_Event extends Recipe_Model_Collection_Abstra
 	/**
 	 * Selects all not expired events.
 	 *
+	 * @param int $time
 	 * @return Bengine_Game_Model_Collection_Event
 	 */
 	public function addTimeFilter($time = TIME)
@@ -117,7 +120,7 @@ class Bengine_Game_Model_Collection_Event extends Recipe_Model_Collection_Abstra
 	/**
 	 * Adds a base type filter.
 	 *
-	 * @param string	fleet or construct
+	 * @param string $typeName	fleet or construct
 	 *
 	 * @return Bengine_Game_Model_Collection_Event
 	 */

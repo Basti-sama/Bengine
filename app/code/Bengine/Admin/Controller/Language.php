@@ -280,7 +280,7 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 	protected function deletephraseAction($langid, $phraseid, $id)
 	{
 		Core::getQuery()->delete("phrases", "phraseid = '".$id."'");
-		$this->redirect("language/showfromgroup/".$langid."/".$phraseid."/".$id);
+		$this->redirect("admin/language/showfromgroup/".$langid."/".$phraseid."/".$id);
 		return $this;
 	}
 

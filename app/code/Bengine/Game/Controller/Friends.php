@@ -111,10 +111,10 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 			Logger::dieMessage("SELF_REQUEST");
 		}
 		$result = Core::getQuery()->select("buddylist", array("friend1", "friend2"), "", "friend1 = '".$userid."' AND friend2 = '".Core::getUser()->get("userid")."' OR friend1 = '".Core::getUser()->get("userid")."' AND friend2 = '".$userid."'");
-		if(Core::getDB()->num_rows($result) == 0)
+		if($result->rowCount() == 0)
 		{
 			Hook::event("AddToBuddyList", array($userid));
-			Core::getQuery()->insertInto("buddylist", array("friend1" => Core::getUser()->get("userid"), "friend2" => $userid));
+			Core::getQuery()->insert("buddylist", array("friend1" => Core::getUser()->get("userid"), "friend2" => $userid));
 
 			/* @var Bengine_Game_Model_Message $pm */
 			$pm = Game::getModel("game/message");
@@ -139,7 +139,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 		foreach($remove as $relid)
 		{
 			$result = Core::getQuery()->select("buddylist", array("friend1", "friend2", "accepted"), "", "relid = '".$relid."' AND (friend1 = '".Core::getUser()->get("userid")."' OR friend2 = '".Core::getUser()->get("userid")."')");
-			if($row = Core::getDatabase()->fetch($result))
+			if($row = $result->fetchRow())
 			{
 				Hook::event("RemoveFromBuddyList", array($relid));
 				Core::getQuery()->delete("buddylist", "relid = '".$relid."'");
@@ -177,9 +177,9 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 		{
 			Hook::event("AcceptBuddyListRequest", array($relid));
 			$where = "relid = '".$relid."' AND friend2 = '".Core::getUser()->get("userid")."'";
-			Core::getQuery()->updateSet("buddylist", array("accepted" => 1), $where);
+			Core::getQuery()->update("buddylist", array("accepted" => 1), $where);
 			$result = Core::getQuery()->select("buddylist", array("friend1"), "", $where);
-			if($friend = Core::getDatabase()->fetch_field($result, "friend1"))
+			if($friend = $result->fetchColumn())
 			{
 				/* @var Bengine_Game_Model_Message $pm */
 				$pm = Game::getModel("game/message");

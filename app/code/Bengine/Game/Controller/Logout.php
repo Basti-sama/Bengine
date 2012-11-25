@@ -25,7 +25,7 @@ class Bengine_Game_Controller_Logout extends Bengine_Game_Controller_Abstract
 	{
 		Hook::event("DoLogout");
 		Core::getCache()->cleanUserCache(Core::getUser()->get("userid"));
-		Core::getQuery()->update("sessions", array("logged"), array(0), "userid = '".Core::getUser()->get("userid")."'");
+		Core::getQuery()->update("sessions", array("logged" => 0), "userid = '".Core::getUser()->get("userid")."'");
 		if(Core::getConfig()->exists("SESSION_SAVING_DAYS"))
 		{
 			$days = (int) Core::getConfig()->get("SESSION_SAVING_DAYS");

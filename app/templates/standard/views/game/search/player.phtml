@@ -1,0 +1,22 @@
+<?php echo $this->render("game/search/index"); ?>
+<table class="ntable">
+	<thead><tr>
+		<th>{lang}USERNAME{/lang}</th>
+		<th></th>
+		<th>{lang}POINTS{/lang}</th>
+		<th>{lang}ALLIANCE{/lang}</th>
+		<th>{lang}PLANET{/lang}</th>
+		<th>{lang}POSITION{/lang}</th>
+	</tr></thead>
+	<tbody><?php $count = count($this->getLoop("result")); foreach($this->getLoop("result") as $key => $row): ?> <tr>
+		<td>{loop}username{/loop}<?php if($row["user_status_long"] != ""): ?> ({loop}user_status_long{/loop})<?php endif; ?></td>
+		<td class="center"><?php if($row["userid"] != Core::getUser()->get("userid")): ?>{perm[CAN_MODERATE_USER]}{loop}moderator{/loop} {/perm}{loop}message{/loop} {loop}buddyrequest{/loop}<?php endif; ?></td>
+		<td>{loop}points{/loop}</td>
+		<td>{loop}alliance{/loop}</td>
+		<td>{loop}planetname{/loop}</td>
+		<td>{loop}position{/loop}</td>
+	</tr> <?php endforeach; ?>
+	<?php if($count <= 0): ?><tr>
+		<td colspan="6" class="center">{lang}NO_MATCHES_FOUND{/lang}</td>
+	</tr><?php endif; ?></tbody>
+</table>

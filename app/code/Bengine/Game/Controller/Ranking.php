@@ -93,13 +93,13 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 	protected function playerRanking($type, $pos)
 	{
 		$result = Core::getQuery()->select("user", "userid", "", $type." >= FLOOR('".Core::getUser()->get($type)."')");
-		$oPos = Core::getDB()->num_rows($result);
+		$oPos = $result->rowCount();
 		$oPos = ($oPos <= 0) ? 1 : $oPos;
 		$oPos = ceil($oPos / Core::getOptions()->get("USER_PER_PAGE"));
 		$result->closeCursor();
 
 		$result = Core::getQuery()->select("user u", "userid", "", "u.userid > '0'");
-		$pages = ceil(Core::getDB()->num_rows($result) / Core::getOptions()->get("USER_PER_PAGE"));
+		$pages = ceil($result->rowCount() / Core::getOptions()->get("USER_PER_PAGE"));
 		$result->closeCursor();
 		if(!is_numeric($pos))
 		{
@@ -155,12 +155,12 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		$joins  = "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.aid = a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid)";
 		$result = Core::getQuery()->select("alliance a", "SUM(u.".$type.") AS points", $joins, "a.aid > '0'", "", "", "a.aid", "HAVING points >= (points)");
-		$oPos = Core::getDB()->num_rows($result);
+		$oPos = $result->rowCount();
 		$oPos = ($oPos <= 0) ? 1 : $oPos;
 		$oPos = ceil($oPos / Core::getOptions()->get("USER_PER_PAGE"));
 		$result->closeCursor();
 		$result = Core::getQuery()->select("alliance", "aid", "", "aid > '0'");
-		$pages = ceil(Core::getDB()->num_rows($result) / Core::getOptions()->get("USER_PER_PAGE"));
+		$pages = ceil($result->rowCount() / Core::getOptions()->get("USER_PER_PAGE"));
 		$result->closeCursor();
 		if(!is_numeric($pos))
 		{

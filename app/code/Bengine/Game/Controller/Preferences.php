@@ -94,9 +94,9 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		Core::getTPL()->addLoop("langs", $result);
 
 		$result = Core::getQuery()->select("feed_keys", array("feed_key"), "", "user_id = ".Core::getUser()->get("userid"));
-		if(Core::getDB()->num_rows($result) > 0)
+		if($result->rowCount() > 0)
 		{
-			$feed_key = Core::getDatabase()->fetch_field($result, "feed_key");
+			$feed_key = $result->fetchColumn();
 			$link = BASE_URL.Core::getLang()->getOpt("langcode")."/feed/{type}/".Core::getUser()->get("userid")."/".$feed_key;
 			$rss = Str::replace("{type}", "rss", $link);
 			$atom = Str::replace("{type}", "atom", $link);
@@ -129,7 +129,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 			$delete = TIME + self::DELETE_PROTECTION_TIME;
 		}
 		Hook::event("UpdateUserDeletion", array(&$delete));
-		Core::getQuery()->update("user", "delete", $delete, "userid = '".Core::getUser()->get("userid")."'");
+		Core::getQuery()->update("user", array("delete" => $delete), "userid = '".Core::getUser()->get("userid")."'");
 		Core::getUser()->rebuild();
 		$this->redirect("game/".SID."/Preferences");
 		return $this;
@@ -138,6 +138,20 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 	/**
 	 * Saves the entered preferences.
 	 *
+	 * @param string $username
+	 * @param string $usertitle
+	 * @param string $email
+	 * @param string $pw
+	 * @param string $theme
+	 * @param integer $language
+	 * @param string $templatepackage
+	 * @param integer $umode
+	 * @param integer $delete
+	 * @param integer $ipcheck
+	 * @param integer $esps
+	 * @param integer $generate_key
+	 * @param string $js_interface
+	 * @throws Recipe_Exception_Generic
 	 * @return Bengine_Game_Controller_Preferences
 	 */
 	protected function updateUserData($username, $usertitle, $email, $pw, $theme, $language, $templatepackage, $umode, $delete, $ipcheck, $esps, $generate_key, $js_interface)
@@ -164,7 +178,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		if(Core::getUser()->get("languageid") != $language)
 		{
 			$result = Core::getQuery()->select("languages", "languageid", "", "languageid = '".$language."'");
-			if(Core::getDB()->num_rows($result) <= 0)
+			if($result->rowCount() <= 0)
 			{
 				$language = Core::getUser()->get("languageid");
 			}
@@ -175,7 +189,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		if(!Str::compare($username, Core::getUser()->get("username")))
 		{
 			$result = Core::getQuery()->select("user", "userid", "", "username = '$username'");
-			if(Core::getDB()->num_rows($result) == 0)
+			if($result->rowCount() == 0)
 			{
 				$result->closeCursor();
 				if(!checkCharacters($username))
@@ -210,7 +224,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		if(!Str::compare($email, Core::getUser()->get("email")))
 		{
 			$result = Core::getQuery()->select("user", "userid", "", "email = '$email'");
-			if(Core::getDB()->num_rows($result) == 0)
+			if($result->rowCount() == 0)
 			{
 				$result->closeCursor();
 				if(!checkEmail($email))
@@ -264,7 +278,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 				}
 				$encryption = Core::getOptions("USE_PASSWORD_SALT") ? "md5_salt" : "md5";
 				$pw = Str::encode($pw, $encryption);
-				Core::getQuery()->updateSet("password", array("password" => $pw, "time" => TIME), "userid = '".Core::getUser()->get("userid")."'");
+				Core::getQuery()->update("password", array("password" => $pw, "time" => TIME), "userid = '".Core::getUser()->get("userid")."'");
 				Logger::addMessage($successMsg, "success");
 			}
 			else
@@ -314,26 +328,40 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		Hook::event("SaveUserDataLast", array(&$username, &$usertitle, &$email, &$templatepackage, &$theme, &$umode, &$umodemin, &$delete, $ipcheck, $esps, &$js_interface));
 
 		// Save it
-		$atts = array("username", "usertitle", "email", "temp_email", "activation", "languageid", "templatepackage", "theme", "ipcheck", "umode", "umodemin", "delete", "esps", "js_interface");
-		$vals = array($username, $usertitle, $email, $email, $activation, $language, $templatepackage, $theme, $ipcheck, $umode, $umodemin, $delete, $esps, $js_interface);
+		$spec = array(
+			"username" => $username,
+			"usertitle" => $usertitle,
+			"email" => $email,
+			"temp_email" => $email,
+			"activation" => $activation,
+			"languageid" => $language,
+			"templatepackage" => $templatepackage,
+			"theme" => $theme,
+			"ipcheck" => $ipcheck,
+			"umode" => $umode,
+			"umodemin" => $umodemin,
+			"delete" => $delete,
+			"esps" => $esps,
+			"js_interface" => $js_interface
+		);
 
 		// Feeds
 		if($generate_key)
 		{
 			$new_key = randString(16);
 			$result = Core::getQuery()->select("feed_keys", array("feed_key"), "", "user_id = '".Core::getUser()->get("userid")."'");
-			if(Core::getDB()->num_rows($result) > 0)
+			if($result->rowCount() > 0)
 			{
 				// User has a feed key
-				Core::getQuery()->updateSet("feed_keys", array("feed_key" => $new_key), "user_id = '".Core::getUser()->get("userid")."'");
+				Core::getQuery()->update("feed_keys", array("feed_key" => $new_key), "user_id = '".Core::getUser()->get("userid")."'");
 			}
 			else
 			{
-				Core::getQuery()->insertInto("feed_keys", array("user_id" => Core::getUser()->get("userid"), "feed_key" => $new_key));
+				Core::getQuery()->insert("feed_keys", array("user_id" => Core::getUser()->get("userid"), "feed_key" => $new_key));
 			}
 		}
 
-		Core::getQuery()->update("user", $atts, $vals, "userid = '".Core::getUser()->get("userid")."'");
+		Core::getQuery()->update("user", $spec, "userid = '".Core::getUser()->get("userid")."'");
 		Core::getUser()->rebuild();
 		return $this;
 	}
@@ -349,7 +377,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		{
 			foreach($this->getParam("planets") as $i => $planetId)
 			{
-				Core::getQuery()->updateSet("planet", array("sort_index" => $i), "planetid = '".$planetId."' AND userid = '".Core::getUser()->get("userid")."'");
+				Core::getQuery()->update("planet", array("sort_index" => $i), "planetid = '".$planetId."' AND userid = '".Core::getUser()->get("userid")."'");
 			}
 		}
 		$this->setNoDisplay();
@@ -364,8 +392,8 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 	protected function disableUmode()
 	{
 		setProdOfUser(Core::getUser()->get("userid"), 100);
-		Core::getQuery()->updateSet("user", array("umode" => 0), "userid = '".Core::getUser()->get("userid")."'");
-		Core::getQuery()->updateSet("planet", array("last" => TIME), "userid = '".Core::getUser()->get("userid")."' AND planetid != '".Core::getUser()->get("curplanet")."'");
+		Core::getQuery()->update("user", array("umode" => 0), "userid = '".Core::getUser()->get("userid")."'");
+		Core::getQuery()->update("planet", array("last" => TIME), "userid = '".Core::getUser()->get("userid")."' AND planetid != '".Core::getUser()->get("curplanet")."'");
 		Core::getUser()->rebuild();
 		Hook::event("DisableVacationMode");
 		Logger::dieMessage("UMODE_DISABLED", "info");

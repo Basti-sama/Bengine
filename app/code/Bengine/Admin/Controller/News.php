@@ -133,7 +133,7 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 		}
 		else
 		{
-			$this->redirect("news");
+			$this->redirect("admin/news");
 		}
 		return $this;
 	}
@@ -145,7 +145,7 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 	protected function deleteAction($newsId)
 	{
 		Core::getQuery()->delete("news", "news_id = '".$newsId."'");
-		$this->redirect("news");
+		$this->redirect("admin/news");
 		return $this;
 	}
 
@@ -156,7 +156,7 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 	protected function enableAction($newsId)
 	{
 		Core::getQuery()->update("news", array("enabled" => 1), "news_id = '".$newsId."'");
-		$this->redirect("news");
+		$this->redirect("admin/news");
 		return $this;
 	}
 
@@ -167,7 +167,7 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 	protected function disableAction($newsId)
 	{
 		Core::getQuery()->update("news", array("enabled" => 0), "news_id = '".$newsId."'");
-		$this->redirect("news");
+		$this->redirect("admin/news");
 		return $this;
 	}
 
@@ -183,7 +183,7 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 		$maxSortIndex = (int) $_result->fetchColumn();
 		$maxSortIndex = ($maxSortIndex-1<0) ? 0 : $maxSortIndex-1;
 		Core::getQuery()->update("news", array("sort_index" => $maxSortIndex), "news_id = '{$newsId}'");
-		$this->redirect("news");
+		$this->redirect("admin/news");
 		return $this;
 	}
 
@@ -199,7 +199,7 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 		$minSortIndex = (int) $_result->fetchColumn();
 		$minSortIndex++;
 		Core::getQuery()->update("news", array("sort_index" => $minSortIndex), "news_id = '{$newsId}'");
-		$this->redirect("news");
+		$this->redirect("admin/news");
 		return $this;
 	}
 

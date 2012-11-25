@@ -58,7 +58,7 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 		$select = array("p.planetname", "g.galaxy", "g.system", "g.position", "g.position", "u.points", "u.last", "u.umode", "b.to");
 		$where = "p.planetid = '".$this->target."'";
 		$result = Core::getQuery()->select("planet p", $select, $joins, $where);
-		if($this->t = Core::getDB()->fetch($result))
+		if($this->t = $result->fetchRow())
 		{
 			$result->closeCursor();
 			$ignoreNP = false;
@@ -94,7 +94,7 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 			}
 
 			$result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '52' AND planetid = '".Core::getUser()->get("curplanet")."'");
-			$qty = Core::getDB()->fetch_field($result, "quantity");
+			$qty = $result->fetchColumn();
 			$result->closeCursor();
 			$this->rockets = ($qty) ? $qty : 0;
 		}
@@ -116,7 +116,7 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 			}
 			$d = array();
 			$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", "b.mode = '4' AND u2s.planetid = '".$this->target."'");
-			while($dest = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $dest)
 			{
 				if($dest["unitid"] == 51 || $dest["unitid"] == 52) { continue; }
 				$d[] = array(
@@ -162,7 +162,7 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 
 			// Load attacking value for interplanetary rocket
 			$result = Core::getQuery()->select("ship_datasheet sds", array("sds.attack", "basic_metal", "basic_silicon", "basic_hydrogen"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = sds.unitid)", "sds.unitid = '52'");
-			$data = Core::getDB()->fetch($result);
+			$data = $result->fetchRow();
 			$result->closeCursor();
 
 			$data["rockets"] = $this->rockets;

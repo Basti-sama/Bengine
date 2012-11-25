@@ -191,18 +191,17 @@ class Recipe_Database_Table
 	 */
 	public function insert(array $data)
 	{
-		$values = array(); $attrs = array();
+		$bind = array();
 		$fields = $this->getFields();
 		foreach($data as $key => $value)
 		{
 			if(isset($fields[$key]))
 			{
-				$attrs[] = $key;
-				$values[] = $value;
+				$bind[$key] = $value;
 			}
 		}
 		$this->_beforeInsert();
-		Core::getQuery()->insert($this->getName(), $attrs, $values);
+		Core::getQuery()->insert($this->getName(), $bind);
 		$this->insertId = $this->getDb()->lastInsertId();
 		$this->_afterInsert();
 		return $this;
@@ -218,18 +217,17 @@ class Recipe_Database_Table
 	 */
 	public function update(array $data, $where)
 	{
-		$values = array(); $attrs = array();
+		$bind = array();
 		$fields = $this->getFields();
 		foreach($data as $key => $value)
 		{
 			if(isset($fields[$key]))
 			{
-				$attrs[] = $key;
-				$values[] = $value;
+				$bind[$key] = $value;
 			}
 		}
 		$this->_beforeUpdate();
-		Core::getQuery()->update($this->getName(), $attrs, $values, $where);
+		Core::getQuery()->update($this->getName(), $bind, $where);
 		$this->affectedRows = Core::getDB()->affectedRows();
 		$this->_afterUpdate();
 		return $this;
@@ -248,9 +246,9 @@ class Recipe_Database_Table
 		{
 			foreach($this->getSchema() as $field)
 			{
-				if($field["Key"] == "PRI")
+				if($field["key"] == "PRI")
 				{
-					$this->setPrimaryKey($field["Field"]);
+					$this->setPrimaryKey($field["field"]);
 					return $this->getPrimaryKey();
 				}
 			}
@@ -283,7 +281,7 @@ class Recipe_Database_Table
 		$schema = $this->getSchema();
 		foreach($schema as $field)
 		{
-			$fields[$field["Field"]] = $field["Field"];
+			$fields[$field["field"]] = $field["field"];
 		}
 		return $fields;
 	}

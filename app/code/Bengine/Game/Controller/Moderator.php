@@ -128,15 +128,14 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 		$to = TIME + $ban * $timeEnd;
 		if($to > 9999999999) { $to = 9999999999; }
 		Hook::event("BanUser", array(&$to, $reason, $forceUmode));
-		$atts = array("userid", "from", "to", "reason", "modid");
-		$vals = array($this->userid, TIME, $to, $reason, Core::getUser()->get("userid"));
-		Core::getQuery()->insert("ban_u", $atts, $vals);
+		$spec = array("userid" => $this->userid, "from" => TIME, "to" => $to, "reason" => $reason, "modid" => Core::getUser()->get("userid"));
+		Core::getQuery()->insert("ban_u", $spec);
 		if($forceUmode)
 		{
-			Core::getQuery()->update("user", array("umode"), array(1), "userid = '".$this->userid."'");
+			Core::getQuery()->update("user", array("umode" => 1), "userid = '".$this->userid."'");
 			setProdOfUser($this->userid, 0);
 		}
-		Core::getQuery()->update("sessions", array("logged"), array(0), "userid = '".$this->userid."'");
+		Core::getQuery()->update("sessions", array("logged" => 0), "userid = '".$this->userid."'");
 		return $this;
 	}
 
@@ -150,7 +149,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	protected function annulBan($banid)
 	{
 		Hook::event("UnbanUser", array($banid));
-		Core::getQuery()->update("ban_u", array("to", "reason"), array(TIME, Core::getLanguage()->getItem("ANNULED")), "banid = '".$banid."'");
+		Core::getQuery()->update("ban_u", array("to" => TIME, "reason" => Core::getLanguage()->getItem("ANNULED")), "banid = '".$banid."'");
 		$result = Core::getQuery()->select("ban_u", "userid", "", "banid = '".$banid."'");
 		$row = $result->fetchRow();
 		$result->closeCursor();
@@ -198,8 +197,8 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 			if(Core::getUser()->ifPermissions("CAN_EDIT_USER"))
 			{
 				Core::getQuery()->delete("user2group", "userid = '".$this->userid."'");
-				Core::getQuery()->insert("user2group", array("usergroupid", "userid"), array($usergroupid, $this->userid));
-				Core::getQuery()->update("user", array("points", "fpoints", "rpoints"), array(floatval($points), (int) $fpoints, (int) $rpoints), "userid = '".$this->userid."'");
+				Core::getQuery()->insert("user2group", array("usergroupid" => $usergroupid, "userid" => $this->userid));
+				Core::getQuery()->update("user", array("points" => floatval($points), "fpoints" => (int) $fpoints, "rpoints" => (int) $rpoints), "userid = '".$this->userid."'");
 			}
 
 			if($umode)
@@ -209,7 +208,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 
 			if(!Str::compare($username, $row["username"]))
 			{
-				$num = Core::getDB()->num_rows(Core::getQuery()->select("user", "userid", "", "username = '".$username."'"));
+				$num = Core::getQuery()->select("user", "userid", "", "username = '".$username."'")->rowCount();
 				if($num > 0)
 				{
 					$username = $row["username"];
@@ -218,7 +217,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 
 			if(!Str::compare($email, $row["email"]))
 			{
-				$num = Core::getDB()->num_rows(Core::getQuery()->select("user", "userid", "", "email = '".$email."'"));
+				$num = Core::getQuery()->select("user", "userid", "", "email = '".$email."'")->rowCount();
 				if($num > 0)
 				{
 					$email = $row["email"];
@@ -229,12 +228,23 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 			{
 				$encryption = Core::getOptions("USE_PASSWORD_SALT") ? "md5_salt" : "md5";
 				$password = Str::encode($password, $encryption);
-				Core::getQuery()->updateSet("password", array("password" => $password, "time" => TIME), "userid = '".$this->userid."'");
+				Core::getQuery()->update("password", array("password" => $password, "time" => TIME), "userid = '".$this->userid."'");
 			}
 
-			$atts = array("username", "usertitle", "email", "delete", "umode", "activation", "languageid", "ipcheck", "templatepackage", "theme", "js_interface");
-			$vals = array($username, $usertitle, $email, $delete, $umode, $activation, $languageid, $ipcheck, $templatepackage, $theme, $js_interface);
-			Core::getQuery()->update("user", $atts, $vals, "userid = '".$this->userid."'");
+			$spec = array(
+				"username" => $username,
+				"usertitle" => $usertitle,
+				"email" => $email,
+				"delete" => $delete,
+				"umode" => $umode,
+				"activation" => $activation,
+				"languageid" => $languageid,
+				"ipcheck" => $ipcheck,
+				"templatepackage" => $templatepackage,
+				"theme" => $theme,
+				"js_interface" => $js_interface,
+			);
+			Core::getQuery()->update("user", $spec, "userid = '".$this->userid."'");
 		}
 		return $this;
 	}

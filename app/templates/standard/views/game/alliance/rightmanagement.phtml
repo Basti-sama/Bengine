@@ -1,0 +1,73 @@
+<form method="post" action="{@formaction}">
+<table class="ntable">
+	<thead><tr>
+		<th colspan="8">{lang}SET_RANK_RIGHTS{/lang}</th>
+	</tr>
+	<tr>
+		<td>{lang}RANK_NAME{/lang}</td>
+		<td class="center"><?php echo Image::getImage("CAN_MANAGE.png", Core::getLanguage()->getItem("CAN_MANAGE")); ?></td>
+		<td class="center"><?php echo Image::getImage("CAN_SEE_APPLICATIONS.png", Core::getLanguage()->getItem("CAN_SEE_APPLICATIONS")); ?></td>
+		<td class="center"><?php echo Image::getImage("CAN_SEE_MEMBERLIST.png", Core::getLanguage()->getItem("CAN_SEE_MEMBERLIST")); ?></td>
+		<td class="center"><?php echo Image::getImage("CAN_SEE_ONLINE_STATE.png", Core::getLanguage()->getItem("CAN_SEE_ONLINE_STATE")); ?></td>
+		<td class="center"><?php echo Image::getImage("CAN_BAN_MEMBER.png", Core::getLanguage()->getItem("CAN_BAN_MEMBER")); ?></td>
+		<td class="center"><?php echo Image::getImage("CAN_WRITE_GLOBAL_MAILS.png", Core::getLanguage()->getItem("CAN_WRITE_GLOBAL_MAILS")); ?></td>
+		<td></td>
+	</tr></thead>
+	<?php if($this->templateVars["num"] > 0): ?>
+	<tfoot><tr>
+		<td class="center" colspan="8"><input type="submit" name="changerights" value="{lang}PROCEED{/lang}" class="button" /></td>
+	</tr></tfoot>
+	<tbody><?php $count = count($this->getLoop("ranks")); foreach($this->getLoop("ranks") as $key => $row): ?> <tr>
+		<td>{loop}name{/loop}</td>
+		<td class="center"><input type="checkbox" name="CAN_MANAGE_{loop}rankid{/loop}" value="1"<?php if($row["CAN_MANAGE"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_SEE_APPLICATIONS_{loop}rankid{/loop}" value="1"<?php if($row["CAN_SEE_APPLICATIONS"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_SEE_MEMBERLIST_{loop}rankid{/loop}" value="1"<?php if($row["CAN_SEE_MEMBERLIST"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_SEE_ONLINE_STATE_{loop}rankid{/loop}" value="1"<?php if($row["CAN_SEE_ONLINE_STATE"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_BAN_MEMBER_{loop}rankid{/loop}" value="1"<?php if($row["CAN_BAN_MEMBER"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_WRITE_GLOBAL_MAILS_{loop}rankid{/loop}" value="1"<?php if($row["CAN_WRITE_GLOBAL_MAILS"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="image" src="{@themePath}img/error2.gif" name="delete_{loop}rankid{/loop}" title="{lang}REMOVE{/lang}" alt="{lang}REMOVE{/lang}" /></td>
+	</tr> <?php endforeach; ?></tbody>
+	<?php else: ?><tr>
+		<td class="center" colspan="8">{lang}NO_MATCHES_FOUND{/lang}</td>
+	</tr><?php endif; ?>
+</table>
+</form>
+<form method="post" action="{@formaction}">
+<table class="ntable">
+	<tr>
+		<th>{lang}CREATE_NEW_RANK{/lang}</th>
+	</tr>
+	<tr>
+		<td><label for="name">{lang}RANK_NAME{/lang}:</label> <input type="text" name="name" id="name" maxlength="30" /> <input type="submit" name="createrank" value="{lang}PROCEED{/lang}" class="button" /></td>
+	</tr>
+</table>
+</form>
+<table class="ntable">
+	<tr>
+		<th colspan="2">{lang}CREATE_NEW_RANK{/lang}</th>
+	</tr>
+	<tr>
+		<td class="center"><?php echo Image::getImage("CAN_MANAGE.png", Core::getLanguage()->getItem("CAN_MANAGE")); ?></td>
+		<td>{lang}CAN_MANAGE{/lang}</td>
+	</tr>
+	<tr>
+		<td class="center"><?php echo Image::getImage("CAN_SEE_APPLICATIONS.png", Core::getLanguage()->getItem("CAN_SEE_APPLICATIONS")); ?></td>
+		<td>{lang}CAN_SEE_APPLICATIONS{/lang}</td>
+	</tr>
+	<tr>
+		<td class="center"><?php echo Image::getImage("CAN_SEE_MEMBERLIST.png", Core::getLanguage()->getItem("CAN_SEE_MEMBERLIST")); ?></td>
+		<td>{lang}CAN_SEE_MEMBERLIST{/lang}</td>
+	</tr>
+	<tr>
+		<td class="center"><?php echo Image::getImage("CAN_SEE_ONLINE_STATE.png", Core::getLanguage()->getItem("CAN_SEE_ONLINE_STATE")); ?></td>
+		<td>{lang}CAN_SEE_ONLINE_STATE{/lang}</td>
+	</tr>
+	<tr>
+		<td class="center"><?php echo Image::getImage("CAN_BAN_MEMBER.png", Core::getLanguage()->getItem("CAN_BAN_MEMBER")); ?></td>
+		<td>{lang}CAN_BAN_MEMBER{/lang}</td>
+	</tr>
+	<tr>
+		<td class="center"><?php echo Image::getImage("CAN_WRITE_GLOBAL_MAILS.png", Core::getLanguage()->getItem("CAN_WRITE_GLOBAL_MAILS")); ?></td>
+		<td>{lang}CAN_WRITE_GLOBAL_MAILS{/lang}</td>
+	</tr>
+</table>

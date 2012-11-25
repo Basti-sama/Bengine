@@ -1,0 +1,22 @@
+<?php echo '<?xml version="1.0" encoding="'.$this->get("charset").'"?>'; ?>
+<?php header('content-type: application/rss+xml'); ?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<title><![CDATA[{@title}{config=TITLE_GLUE}{@pageTitle}]]></title>
+		<link>{const}BASE_URL{/const}</link>
+		<description><![CDATA[]]></description>
+		<language>{@langcode}-{@langcode}</language>
+		<pubDate>{time}D, d M Y H:i:s O{/time}</pubDate>
+		<copyright>{time}Y{/time} - {config}pagetitle{/config}</copyright>
+		<?php $count = count($this->getLoop("feed")); foreach($this->getLoop("feed") as $key => $row): ?> 
+		<item>
+			<title><![CDATA[{loop}title{/loop}]]></title>
+			<description><![CDATA[{loop}text{/loop}]]></description>
+			<author>noreply@gmail.com ({loop}author{/loop})</author>
+			<link>{loop=link}</link>
+			<pubDate>{loop}date{/loop}</pubDate>
+			<guid isPermaLink="false">{loop}guid{/loop}</guid>
+		</item>
+		 <?php endforeach; ?>
+	</channel>
+</rss>

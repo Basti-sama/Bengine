@@ -1,0 +1,8 @@
+<table class="itable">
+<?php $count = count($this->getLoop("planetSelection")); foreach($this->getLoop("planetSelection") as $key => $row): ?> 
+	<?php if($row["counter"] % 2 != 0): ?><tr><?php endif; ?>
+		<td>{loop}planetname{/loop}<br />{loop}planetimage{/loop}<br />{loop}activity{/loop}</td>
+	<?php if($row["total"] == $row["counter"] && $row["counter"] % 2 != 0): ?><td></td><?php endif; ?>
+	<?php if($row["counter"] % 2 == 0 || $row["total"] == $row["counter"]): ?></tr><?php endif; ?>
+ <?php endforeach; ?>
+</table>

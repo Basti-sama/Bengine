@@ -59,6 +59,35 @@ class Recipe_Database_MySQLi extends Recipe_Database_Abstract
 	}
 
 	/**
+	 * @return Recipe_Database_MySQLi
+	 */
+	public function beginTransaction()
+	{
+		$this->mysqli->autocommit(false);
+		return $this;
+	}
+
+	/**
+	 * @return Recipe_Database_MySQLi
+	 */
+	public function commit()
+	{
+		$this->mysqli->commit();
+		$this->mysqli->autocommit(true);
+		return $this;
+	}
+
+	/**
+	 * @return Recipe_Database_MySQLi
+	 */
+	public function rollBack()
+	{
+		$this->mysqli->rollback();
+		$this->mysqli->autocommit(true);
+		return $this;
+	}
+
+	/**
 	 * Returns the number of affected rows by the last query.
 	 *
 	 * @return integer

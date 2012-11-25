@@ -47,7 +47,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 
 		// Messages
 		$result = Core::getQuery()->select("message", "msgid", "", "`receiver` = '".Core::getUser()->get("userid")."' AND `read` = '0'");
-		$msgs = Core::getDB()->num_rows($result);
+		$msgs = $result->rowCount();
 		$result->closeCursor();
 		Core::getTPL()->assign("unreadmsg", $msgs);
 		if($msgs == 1) { Core::getTPL()->assign("newMessages", Link::get("game/".SID."/MSG", Core::getLanguage()->getItem("F_NEW_MESSAGE"))); }
@@ -102,10 +102,10 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 
 		// Points
 		$result = Core::getQuery()->select("user", "userid");
-		Core::getLang()->assign("totalUsers", fNumber(Core::getDB()->num_rows($result)));
+		Core::getLang()->assign("totalUsers", fNumber($result->rowCount()));
 		$result->closeCursor();
 		$result = Core::getQuery()->select("user", array("COUNT(`userid`)+1 AS rank"), "", "(`username` < '".Core::getUser()->get("username")."' AND `points` >= ".Core::getUser()->get("points").") OR `points` > ".Core::getUser()->get("points"), "", 1);
-		Core::getLang()->assign("rank", fNumber(Core::getDB()->fetch_field($result, "rank")));
+		Core::getLang()->assign("rank", fNumber($result->fetchColumn()));
 		$result->closeCursor();
 
 		if(Game::getPlanet()->getData("moonid") > 0)
@@ -218,14 +218,14 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 			if($ok)
 			{
 				deletePlanet(Game::getPlanet()->getPlanetId(), Core::getUser()->get("userid"), Game::getPlanet()->getData("ismoon"));
-				Core::getQuery()->update("user", "curplanet", Core::getUser()->get("hp"), "userid = '".Core::getUser()->get("userid")."'");
+				Core::getQuery()->update("user", array("curplanet" => Core::getUser()->get("hp")), "userid = '".Core::getUser()->get("userid")."'");
 				Core::getUser()->rebuild();
 				$this->redirect("game/".SID."/Index");
 			}
 		}
 		else if(checkCharacters($planetname))
 		{
-			Core::getQuery()->update("planet", "planetname", $planetname, "planetid = '".Core::getUser()->get("curplanet")."'");
+			Core::getQuery()->update("planet", array("planetname" => $planetname), "planetid = '".Core::getUser()->get("curplanet")."'");
 			$this->redirect("game/".SID."/Index");
 		}
 		else

@@ -79,7 +79,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 			$tabs[$id]["delete"] = Link::get("admin/cronjob/delete/".$id, Core::getLanguage()->getItem("Delete"));
 			$tabs[$id]["exec"] = Link::get("admin/cronjob/execute/".$id, Core::getLanguage()->getItem("Execute"));
 			$tabs[$id]["edit"] = Link::get("admin/cronjob/edit/".$id, Core::getLanguage()->getItem("Edit"));
-			$tabs[$id]["active"] = ($row["active"]) ? Link::get("cadmin/ronjob/disable/".$id, "<span class=\"green\">On</span>", Core::getLanguage()->getItem("Disable")) : Link::get("admin/cronjob/enable/".$id, "<span class=\"red\">Off</span>", Core::getLanguage()->getItem("Enable"));
+			$tabs[$id]["active"] = ($row["active"]) ? Link::get("admin/cronjob/disable/".$id, "<span class=\"green\">On</span>", Core::getLanguage()->getItem("Disable")) : Link::get("admin/cronjob/enable/".$id, "<span class=\"red\">Off</span>", Core::getLanguage()->getItem("Enable"));
 		}
 		Core::getTPL()->addLoop("crontabs", $tabs);
 		return $this;
@@ -207,7 +207,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 			$next = Core::getCron()->calcNextExeTime($row);
 			Core::getQuery()->update("cronjob", array("xtime" => $next, "active" => 1), "cronid = '".$cronid."'");
 		}
-		$this->redirect("cronjob");
+		$this->redirect("admin/cronjob");
 		return $this;
 	}
 
@@ -218,7 +218,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 	protected function disableAction($cronid)
 	{
 		Core::getQuery()->update("cronjob", array("active" => 0), "cronid = '".$cronid."'");
-		$this->redirect("cronjob");
+		$this->redirect("admin/cronjob");
 		return $this;
 	}
 
@@ -229,7 +229,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 	protected function deleteAction($cronid)
 	{
 		Core::getQuery()->delete("cronjob", "cronid = '".$cronid."'");
-		$this->redirect("cronjob");
+		$this->redirect("admin/cronjob");
 		return $this;
 	}
 
@@ -248,7 +248,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 			$cronObj = new $row["class"]();
 			$cronObj->execute($row["cronid"], TIME, $next);
 		}
-		$this->redirect("cronjob");
+		$this->redirect("admin/cronjob");
 		return $this;
 	}
 }

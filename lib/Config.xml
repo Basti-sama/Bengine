@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 	This file defines some basic configurations.
 	All variables can be mangaged by the database.
 -->
@@ -13,7 +13,7 @@
 	<timezone>Europe/London</timezone>
 	<defaultlanguage type="int">1</defaultlanguage>
 	<templatepackage>standard/</templatepackage>
-	<templateextension>.tpl</templateextension>
+	<templateextension>.phtml</templateextension>
 	<maintemplate>layout</maintemplate>
 	<guestgroupid>1</guestgroupid>
 	<userselect type="level">
