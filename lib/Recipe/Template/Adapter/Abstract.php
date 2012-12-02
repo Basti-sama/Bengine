@@ -220,7 +220,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	abstract public function deallocateAssignment($variable);
 
 	/**
-	 * Return full path of a template.
+	 * Returns relative path of a template.
 	 *
 	 * @param string $template
 	 * @param string $type
@@ -229,13 +229,24 @@ abstract class Recipe_Template_Adapter_Abstract
 	 */
 	public function getTemplatePath($template, $type)
 	{
-		$path = $this->templatePath.$this->getTemplatePackage().$type."/".$template.$this->templateExtension;
-		// If the template does not exist, try the standard package
-		if(!file_exists($path))
+		$path = $this->getTemplatePackage().$type."/".$template.$this->templateExtension;
+		// If the template does not exist, try the default package
+		if(!file_exists($this->templatePath.$path))
 		{
-			$path = $this->templatePath."standard/".$type."/".$template.$this->templateExtension;
+			return "default/".$type."/".$template.$this->templateExtension;
 		}
-		return $path;
+	}
+
+	/**
+	 * Returns full path of a template.
+	 *
+	 * @param string $template
+	 * @param string $type
+	 * @return string	Path to template
+	 */
+	public function getAbsoluteTemplatePath($template, $type)
+	{
+		return $this->templatePath.$this->getTemplatePath($template, $type);
 	}
 
 	/**
@@ -336,7 +347,7 @@ abstract class Recipe_Template_Adapter_Abstract
 		{
 			return $this->templatePackage;
 		}
-		return "standard/";
+		return "local/";
 	}
 
 	/**

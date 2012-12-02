@@ -51,7 +51,7 @@ class Recipe_Template_Default_Compiler extends Recipe_Cache
 	public function __construct($template, $type)
 	{
 		$this->template = $template;
-		$filePath = Core::getTemplate()->getTemplatePath($template, $type);
+		$filePath = Core::getTemplate()->getAbsoluteTemplatePath($template, $type);
 		$this->sourceTemplate = file_get_contents($filePath);
 		$this->buildPatterns()->compile();
 		try {

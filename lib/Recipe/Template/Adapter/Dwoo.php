@@ -188,7 +188,7 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 	 */
 	public function render($template, $type = Recipe_Template_Adapter_Abstract::TEMPLATE_TYPE_VIEWS)
 	{
-		$template = $this->getTemplatePath($template, $type);
+		$template = $this->getAbsoluteTemplatePath($template, $type);
 		$outStream = $this->getDwoo()->get($template, $this->getData(), $this->getCompiler());
 		return $outStream;
 	}

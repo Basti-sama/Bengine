@@ -71,7 +71,6 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 		if($this->newbieProtection && Core::getUser()->userid != $row["userid"])
 		{
 			$isProtected = isNewbieProtected($this->points, $row["points"]);
-			//var_dump($isProtected);
 			if($isProtected == 1)
 			{
 				$status = " <span class=\"weak-player\">n</span> ";

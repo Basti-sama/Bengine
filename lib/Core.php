@@ -110,13 +110,6 @@ class Core
 	protected static $application = null;
 
 	/**
-	 * Meta data.
-	 *
-	 * @var stdClass
-	 */
-	protected static $meta = null;
-
-	/**
 	 * Constructor. Initializes classes.
 	 *
 	 * @return \Core

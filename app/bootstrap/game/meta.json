@@ -13,60 +13,70 @@
 	"config": {
 		"menu": {
 			"production": {
+				"sort": 100,
 				"attributes": {
 					"class": "menu-prod"
 				},
 				"items": {
 					"main": {
 						"label": "MENU_MAIN",
+						"sort": 100,
 						"link": {
 							"controller": "Index"
 						}
 					},
 					"constructions": {
 						"label": "MENU_CONSTRUCTIONS",
+						"sort": 200,
 						"link": {
 							"controller": "Constructions"
 						}
 					},
 					"resource": {
 						"label": "MENU_RESOURCE",
+						"sort": 300,
 						"link": {
 							"controller": "Resource"
 						}
 					},
 					"research": {
 						"label": "MENU_RESEARCH",
+						"sort": 400,
 						"link": {
 							"controller": "Research"
 						}
 					},
 					"shipyard": {
 						"label": "MENU_SHIPYARD",
+						"sort": 500,
 						"link": {
 							"controller": "Shipyard"
 						}
 					},
 					"fleet": {
 						"label": "MENU_FLEET",
+						"sort": 600,
 						"link": {
 							"controller": "Mission"
 						}
 					},
 					"techtree": {
 						"label": "MENU_TECHTREE",
+						"sort": 700,
 						"link": {
 							"controller": "Techtree"
 						}
 					},
 					"galaxy": {
 						"label": "MENU_GALAXY",
+						"sort": 800,
 						"link": {
 							"controller": "Galaxy"
 						}
 					},
 					"defense": {
 						"label": "MENU_DEFENSE",
+						"sort": 900,
 						"link": {
 							"controller": "Defense"
 						}
@@ -74,30 +84,35 @@
 				}
 			},
 			"user": {
+				"sort": 200,
 				"attributes": {
 					"class": "menu-user"
 				},
 				"items": {
 					"alliance": {
 						"label": "MENU_ALLIANCE",
+						"sort": 100,
 						"link": {
 							"controller": "Alliance"
 						}
 					},
 					"ranking": {
 						"label": "MENU_RANKING",
+						"sort": 200,
 						"link": {
 							"controller": "Ranking"
 						}
 					},
 					"statistics": {
 						"label": "MENU_STATISTICS",
+						"sort": 300,
 						"link": {
 							"controller": "Statistics"
 						}
 					},
 					"search": {
 						"label": "MENU_SEARCH",
+						"sort": 400,
 						"link": {
 							"controller": "Search"
 						}
@@ -105,30 +120,35 @@
 				}
 			},
 			"other": {
+				"sort": 300,
 				"attributes": {
 					"class": "menu-other"
 				},
 				"items": {
 					"messages": {
 						"label": "MENU_MESSAGES",
+						"sort": 100,
 						"link": {
 							"controller": "MSG"
 						}
 					},
 					"friends": {
 						"label": "MENU_FRIENDS",
+						"sort": 200,
 						"link": {
 							"controller": "Friends"
 						}
 					},
 					"preferences": {
 						"label": "MENU_PREFERENCES",
+						"sort": 300,
 						"link": {
 							"controller": "Preferences"
 						}
 					},
 					"logout": {
 						"label": "MENU_LOGOUT",
+						"sort": 400,
 						"link": {
 							"controller": "Logout"
 						}
@@ -139,8 +159,300 @@
 								"function": "version"
 							}
 						},
+						"sort": 500,
 						"link": {
 							"controller": "Changelog"
+						}
+					}
+				}
+			}
+		},
+		"planet": {
+			"type": {
+				"toterplanet": {
+					"from": 1,
+					"to": 2,
+					"number": 2
+				},
+				"ruinenplanet": {
+					"from": 6,
+					"to": 8,
+					"number": 2
+				},
+				"trockenplanet": {
+					"from": 1,
+					"to": 4,
+					"number": 10
+				},
+				"wuestenplanet": {
+					"from": 1,
+					"to": 3,
+					"number": 4
+				},
+				"dschjungelplanet": {
+					"from": 3,
+					"to": 7,
+					"number": 10
+				},
+				"normaltempplanet": {
+					"from": 6,
+					"to": 10,
+					"number": 13
+				},
+				"wasserplanet": {
+					"from": 9,
+					"to": 13,
+					"number": 9
+				},
+				"eisplanet": {
+					"from": 12,
+					"to": 15,
+					"number": 10
+				},
+				"gasplanet": {
+					"from": 13,
+					"to": 15,
+					"number": 8
+				}
+			},
+			"position": {
+				"1": {
+					"temperature": {
+						"min": 81,
+						"max": 127
+					},
+					"size": {
+						"normal": {
+							"min": 5745,
+							"max": 8945
+						},
+						"offrange": {
+							"min": 4583,
+							"max": 18548
+						}
+					}
+				},
+				"2": {
+					"temperature": {
+						"min": 82,
+						"max": 185
+					},
+					"size": {
+						"normal": {
+							"min": 7280,
+							"max": 9111
+						},
+						"offrange": {
+							"min": 5477,
+							"max": 18945
+						}
+					}
+				},
+				"3": {
+					"temperature": {
+						"min": 77,
+						"max": 123
+					},
+					"size": {
+						"normal": {
+							"min": 7349,
+							"max": 9056
+						},
+						"offrange": {
+							"min": 5831,
+							"max": 18574
+						}
+					}
+				},
+				"4": {
+					"temperature": {
+						"min": 22,
+						"max": 71
+					},
+					"size": {
+						"normal": {
+							"min": 10392,
+							"max": 15427
+						},
+						"offrange": {
+							"min": 4472,
+							"max": 18574
+						}
+					}
+				},
+				"5": {
+					"temperature": {
+						"min": 20,
+						"max": 71
+					},
+					"size": {
+						"normal": {
+							"min": 9747,
+							"max": 15460
+						},
+						"offrange": {
+							"min": 5000,
+							"max": 18439
+						}
+					}
+				},
+				"6": {
+					"temperature": {
+						"min": 18,
+						"max": 67
+					},
+					"size": {
+						"normal": {
+							"min": 8247,
+							"max": 15100
+						},
+						"offrange": {
+							"min": 5916,
+							"max": 18439
+						}
+					}
+				},
+				"7": {
+					"temperature": {
+						"min": -4,
+						"max": 45
+					},
+					"size": {
+						"normal": {
+							"min": 10770,
+							"max": 13153
+						},
+						"offrange": {
+							"min": 7417,
+							"max": 17888
+						}
+					}
+				},
+				"8": {
+					"temperature": {
+						"min": -6,
+						"max": 43
+					},
+					"size": {
+						"normal": {
+							"min": 11091,
+							"max": 13305
+						},
+						"offrange": {
+							"min": 5916,
+							"max": 17861
+						}
+					}
+				},
+				"9": {
+					"temperature": {
+						"min": -8,
+						"max": 40
+					},
+					"size": {
+						"normal": {
+							"min": 11358,
+							"max": 13712
+						},
+						"offrange": {
+							"min": 4583,
+							"max": 18575
+						}
+					}
+				},
+				"10": {
+					"temperature": {
+						"min": -30,
+						"max": 19
+					},
+					"size": {
+						"normal": {
+							"min": 8889,
+							"max": 11046
+						},
+						"offrange": {
+							"min": 4796,
+							"max": 15330
+						}
+					}
+				},
+				"11": {
+					"temperature": {
+						"min": -31,
+						"max": 15
+					},
+					"size": {
+						"normal": {
+							"min": 9000,
+							"max": 10770
+						},
+						"offrange": {
+							"min": 7616,
+							"max": 14107
+						}
+					}
+				},
+				"12": {
+					"temperature": {
+						"min": -34,
+						"max": 15
+					},
+					"size": {
+						"normal": {
+							"min": 6558,
+							"max": 13965
+						},
+						"offrange": {
+							"min": 9220,
+							"max": 11358
+						}
+					}
+				},
+				"13": {
+					"temperature": {
+						"min": -86,
+						"max": -39
+					},
+					"size": {
+						"normal": {
+							"min": 7746,
+							"max": 12650
+						},
+						"offrange": {
+							"min": 4796,
+							"max": 15034
+						}
+					}
+				},
+				"14": {
+					"temperature": {
+						"min": -88,
+						"max": -39
+					},
+					"size": {
+						"normal": {
+							"min": 6481,
+							"max": 11225
+						},
+						"offrange": {
+							"min": 4796,
+							"max": 15034
+						}
+					}
+				},
+				"15": {
+					"temperature": {
+						"min": -89,
+						"max": -41
+					},
+					"size": {
+						"normal": {
+							"min": 7349,
+							"max": 12207
+						},
+						"offrange": {
+							"min": 4796,
+							"max": 16371
 						}
 					}
 				}

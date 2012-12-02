@@ -41,21 +41,43 @@ class Bengine_Game_Menu implements IteratorAggregate
 	protected function generateMenu()
 	{
 		$this->menu = array();
+		uasort($this->data, array($this, "sort"));
 		foreach($this->data as $first)
 		{
-			$this->menu[] = array(
-				"attributes" => isset($first["attributes"]) ? $this->getHtmlAttributesFromArray($first["attributes"]) : "",
-				"link" => isset($first["label"]) ? $this->getLabel($first["label"]) : ""
-			);
+			uasort($first["items"], array($this, "sort"));
+			$subMenu = array();
 			foreach($first["items"] as $second)
 			{
-				$this->menu[] = array(
+				$subMenu[] = array(
 					"attributes" => isset($second["attributes"]) ? $this->getHtmlAttributesFromArray($second["attributes"]) : "",
 					"link" => $this->getLink($second)
 				);
 			}
+			$this->menu[] = array(
+				"attributes" => isset($first["attributes"]) ? $this->getHtmlAttributesFromArray($first["attributes"]) : "",
+				"link" => isset($first["label"]) ? $this->getLabel($first["label"]) : "",
+				"children" => $subMenu
+			);
 		}
 		return $this;
+	}
+
+	/**
+	 * @param array $x
+	 * @param array $y
+	 * @return bool
+	 */
+	protected function sort(array $x, array $y)
+	{
+		if(!isset($x["sort"]))
+		{
+			return -1;
+		}
+		if(!isset($y["sort"]))
+		{
+			return 1;
+		}
+		return $x["sort"] < $y["sort"] ? -1 : 1;
 	}
 
 	/**
@@ -177,6 +199,9 @@ class Bengine_Game_Menu implements IteratorAggregate
 			break;
 			case "image":
 				return Image::getImage($param, "");
+			break;
+			case "callback":
+				return call_user_func_array($param["function"], $param["arguments"]);
 			break;
 		}
 		return "";

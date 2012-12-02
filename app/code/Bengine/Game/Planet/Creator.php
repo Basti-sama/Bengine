@@ -166,9 +166,9 @@ class Bengine_Game_Planet_Creator
 	 */
 	protected function setRandTemperature()
 	{
-		$config = $this->getXMLConfig("PlanetTemperature");
-		$min = $config->getChildren("pos_".$this->position)->getInteger("min");
-		$max = $config->getChildren("pos_".$this->position)->getInteger("max");
+		$meta = Game::getMeta();
+		$min = $meta["config"]["planet"]["position"][$this->position]["temperature"]["min"];
+		$max = $meta["config"]["planet"]["position"][$this->position]["temperature"]["max"];
 		$first = mt_rand($min, $max);
 		$this->temperature = mt_rand($first, $max);
 		return $this;
@@ -183,10 +183,9 @@ class Bengine_Game_Planet_Creator
 	{
 		$offrange = mt_rand(0, 100);
 		$sizeType = ($offrange > 60) ? "offrange" : "normal";
-		$config = $this->getXMLConfig("PlanetSize");
-		$config = $config->getChildren("pos_".$this->position)->getChildren($sizeType);
-		$min = $config->getInteger("min");
-		$max = $config->getInteger("max");
+		$meta = Game::getMeta();
+		$min = $meta["config"]["planet"]["position"][$this->position]["size"][$sizeType]["min"];
+		$max = $meta["config"]["planet"]["position"][$this->position]["size"][$sizeType]["max"];
 		$this->size = mt_rand($min, $max);
 		return $this;
 	}
@@ -198,21 +197,19 @@ class Bengine_Game_Planet_Creator
 	 */
 	protected function setPicture()
 	{
-		$planetenArt = new Map();
-		$config = $this->getXMLConfig("PlanetPictures");
-		foreach($config as $planetType)
+		$planetTypes = new Map();
+		$meta = Game::getMeta();
+		foreach($meta["config"]["planet"]["type"] as $name => $planetType)
 		{
-			$from = (int) $planetType->getAttribute("from");
-			$to = (int) $planetType->getAttribute("to");
-			if($this->position >= $from && $this->position <= $to)
+			if($this->position >= $planetType["from"] && $this->position <= $planetType["to"])
 			{
-				$planetenArt->push(array(
-					"name" => $planetType->getName(),
-					"number" => $planetType->getInteger()
+				$planetTypes->push(array(
+					"name" => $name,
+					"number" => $planetType["number"]
 				));
 			}
 		}
-		$randomPlanet = $planetenArt->getRandomElement();
+		$randomPlanet = $planetTypes->getRandomElement();
 		$this->picture = sprintf("%s%02d", $randomPlanet["name"], mt_rand(1, $randomPlanet["number"]));
 		return $this;
 	}
@@ -296,19 +293,6 @@ class Bengine_Game_Planet_Creator
 			"system" => $this->system,
 			"position" => $this->position
 		);
-	}
-
-	/**
-	 * Returns the XML config data.
-	 *
-	 * @param string $name
-	 *
-	 * @return XMLObj
-	 */
-	protected function getXMLConfig($name)
-	{
-		$config = new XML(APP_ROOT_DIR."etc/".$name.".xml");
-		return $config->get();
 	}
 }
 ?>

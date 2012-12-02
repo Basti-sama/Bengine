@@ -154,7 +154,7 @@ function checkEmail($mail)
 	$banned = Core::getConfig()->get("BANNED_EMAILS");
 	if(!empty($banned))
 	{
-		$banned = Arr::trimArray(explode(",", $banned));
+		$banned = Arr::trim(explode(",", $banned));
 		foreach($banned as $expr)
 		{
 			if(Str::inString($expr, $mail))
@@ -315,7 +315,7 @@ function richText($str)
 	}
 	$str = Str::replace("\\r", "", $str);
 	$str = Str::replace("\\n", "", $str);
-	return Core::getDB()->real_escape_string($purifier->purify(stripslashes($str)));
+	return Core::getDB()->escape($purifier->purify(stripslashes($str)));
 }
 
 /**

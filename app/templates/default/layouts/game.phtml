@@ -59,7 +59,12 @@
 <br class="clear" /><br class="clear" />
 <div id="leftMenu">
 	<ul>
-		<?php $count = count($this->getLoop("navigation")); foreach($this->getLoop("navigation") as $key => $row): ?> <li{loop}attributes{/loop}>{loop}link{/loop}</li> <?php endforeach; ?>
+		<?php foreach($this->getLoop("navigation") as $key => $row): ?>
+		<li{loop}attributes{/loop}>{loop}link{/loop}</li>
+		<?php foreach($row["children"] as $child): ?>
+		<li <?php echo $child["attributes"] ?>><?php echo $child["link"] ?></li>
+		<?php endforeach; ?>
+		<?php endforeach; ?>
 		{hook}ListMenu{/hook}
 	</ul>
 </div>
@@ -74,7 +79,7 @@
 </div>
 <div id="planets">
 	<ul>
-		<?php $count = count($this->getLoop("planetHeaderList")); foreach($this->getLoop("planetHeaderList") as $key => $row): ?> 
+		<?php $count = count($this->getLoop("planetHeaderList")); foreach($this->getLoop("planetHeaderList") as $key => $row): ?>
 		<li>
 			<a href="{loop}planetid{/loop}" class="goto<?php if($row["planetid"] == Game::getPlanet()->getPlanetId()): ?> cur-planet<?php endif; ?>">
 				{loop}picture{/loop}<br />{loop}planetname{/loop}

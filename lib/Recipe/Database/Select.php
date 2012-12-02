@@ -109,7 +109,7 @@ class Recipe_Database_Select
 		}
 		if(empty($this->table))
 		{
-			throw new Recipe_Exception_Generic("The select statement has no attributes or table to fetch.", __FILE__, __LINE__);
+			throw new Recipe_Exception_Generic("The select statement has no attributes or table to fetch.");
 		}
 		if(empty($this->attrs))
 		{

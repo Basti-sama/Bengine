@@ -125,12 +125,12 @@ class Recipe_Request
 		{
 			Hook::event("SplitUrlStart", array($this, &$path));
 			$path = explode("/", $path);
-			foreach($path as $key => $value)
+			foreach($path as $value)
 			{
 				if(strpos($value, ":") > 0)
 				{
 					$value = explode(":", Str::replace(" ", "_", $value));
-					$this->args[] = Arr::trimArray($value);
+					$this->args[] = Arr::trim($value);
 				}
 				else if($value != "")
 				{

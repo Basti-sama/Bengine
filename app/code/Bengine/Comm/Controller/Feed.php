@@ -133,7 +133,7 @@ class Bengine_Comm_Controller_Feed extends Bengine_Comm_Controller_Abstract
 		$folderClassCache = array();
 		$items = array();
 		/* @var Bengine_Game_Model_Collection_Message $messages */
-		$messages = Game::getCollection("game/message");
+		$messages = Comm::getCollection("game/message");
 		$messages->addTimeOrder()
 			->addReceiverFilter($this->user_id)
 			->addFolderJoin();

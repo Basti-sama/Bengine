@@ -1,0 +1,19 @@
+{
+	"pagetitle": "Page Title",
+	"maxloginattempts": 5,
+	"bannedlogintime": 5,
+	"mailaddress": "noreply@host.de",
+	"template_engine": "Default",
+	"standardlanggroups": ["global"],
+	"timezone": "Europe/London",
+	"defaultlanguage": 1,
+	"templatepackage": "local",
+	"templateextension": ".phtml",
+	"maintemplate": "layout",
+	"guestgroupid": 1,
+	"userselect": {
+		"fieldsnames": ["u2a.aid"],
+		"indexnames": ["aid"]
+	},
+	"userjoins": "LEFT JOIN PREFIXuser2ally u2a ON (u2a.userid = u.userid)"
+}

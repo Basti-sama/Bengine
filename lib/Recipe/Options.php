@@ -26,13 +26,6 @@ class Recipe_Options extends Recipe_Collection
 	protected $uncached = true;
 
 	/**
-	 * Configuration file.
-	 *
-	 * @var string
-	 */
-	protected $configFile = "Config.xml";
-
-	/**
 	 * Constructor.
 	 *
 	 * @return \Recipe_Options
@@ -150,72 +143,43 @@ class Recipe_Options extends Recipe_Collection
 	 */
 	protected function loadConfigFile()
 	{
-		$file = RECIPE_ROOT_DIR.$this->configFile;
+		$file = APP_ROOT_DIR."app/bootstrap/options.json";
 		if(file_exists($file))
 		{
-			$xml = new XML($file);
-			$config = $xml->get()->getChildren();
-			$xml->kill();
-			$this->item = $this->getFromXML($config);
+			$options = json_decode(file_get_contents($file), true);
+			$this->item = $options;
 		}
 		return $this;
 	}
 
 	/**
-	 * Parses XML data.
-	 *
-	 * @param SimpleXMLElement $xml
-	 *
-	 * @return array
-	 */
-	protected function getFromXML(SimpleXMLElement $xml)
-	{
-		$item = array();
-		/* @var XMLObj $child */
-		foreach($xml as $index => $child)
-		{
-			$item[$index] = $this->parseItemByType($child, $child->getAttribute("type"));
-		}
-		return $item;
-	}
-
-	/**
 	 * Parses an item by the given type.
 	 *
-	 * @param XMLObj $item	Item
+	 * @param mixed $item	Item
 	 * @param string $type	Type
 	 *
-	 * @return mixed	Parsed item
+	 * @return mixed		Parsed item
 	 */
-	protected function parseItemByType(XMLObj $item, $type = null)
+	protected function parseItemByType($item, $type = null)
 	{
 		switch($type)
 		{
-			case "level":
-				return $this->getFromXML($item);
-			break;
 			case "array":
-				return $item->getArray();
+				return explode(",", $item);
 			break;
 			case "integer":
 			case "int":
-				return $item->getInteger();
+				return (int) $item;
 			break;
 			case "string":
 			case "char":
 			case "text":
 			default:
-				return $item->getString();
+				return (string) $item;
 			break;
 			case "bool":
 			case "boolean":
-				return $item->getBooleanObj();
-			break;
-			case "dbquery":
-				return Str::replace("PREFIX", PREFIX, $item->getString());
-			break;
-			case "map":
-				return $item->getMap();
+				return (bool) $item;
 			break;
 		}
 	}

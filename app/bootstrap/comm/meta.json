@@ -17,6 +17,88 @@
 				"domain": "",
 				"external": false
 			}
-		]
+		],
+		"signature": {
+			"cache": {
+				"path": "var/signatures",
+				"expires": 28800,
+				"enabled": true
+			},
+			"image": {
+				"background": "template.png",
+				"fontPath": "var/fonts/",
+				"quality": 8,
+				"gameName": {
+					"font": "arialbd.ttf",
+					"size": 17,
+					"show": 0,
+					"shadow": 0,
+					"color": "61aacd",
+					"shadowColor": "dddddd",
+					"x": 4,
+					"y": 50
+				},
+				"username": {
+					"font": "arialbd.ttf",
+					"size": 12,
+					"show": 1,
+					"shadow": 0,
+					"color": "61aacd",
+					"shadowColor": "dddddd",
+					"x": 20,
+					"y": 20
+				},
+				"alliance": {
+					"font": "arial.ttf",
+					"size": 9,
+					"show": 1,
+					"shadow": 0,
+					"color": "61aacd",
+					"shadowColor": "dddddd",
+					"x": 20,
+					"y": 39
+				},
+				"planet": {
+					"font": "arial.ttf",
+					"size": 9,
+					"show": 1,
+					"shadow": 0,
+					"color": "61aacd",
+					"shadowColor": "dddddd",
+					"x": 20,
+					"y": 56
+				},
+				"points": {
+					"font": "arial.ttf",
+					"size": 9,
+					"show": 1,
+					"shadow": 0,
+					"color": "61aacd",
+					"shadowColor": "dddddd",
+					"x": 198,
+					"y": 39
+				},
+				"stats": {
+					"font": "arial.ttf",
+					"size": 9,
+					"show": 1,
+					"shadow": 0,
+					"color": "61aacd",
+					"shadowColor": "dddddd",
+					"x": 198,
+					"y": 56
+				},
+				"planets": {
+					"font": "arial.ttf",
+					"size": 9,
+					"show": 0,
+					"shadow": 0,
+					"color": "61aacd",
+					"shadowColor": "dddddd",
+					"x": 20,
+					"y": 57
+				}
+			}
+		}
 	}
 }

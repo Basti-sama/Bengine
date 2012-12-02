@@ -309,15 +309,15 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 	/**
 	 * Checks if template needs to be compiled.
 	 *
-	 * @param string $template	Template name
+	 * @param string $template    Template name
 	 * @param string $type
-	 *
+	 * @throws Recipe_Exception_Generic
 	 * @return boolean
 	 */
 	protected function cachedTemplateAvailable($template, $type)
 	{
 		$cached = Core::getCache()->getTemplatePath($template, $type);
-		$template = $this->getTemplatePath($template, $type);
+		$template = $this->getAbsoluteTemplatePath($template, $type);
 		if(!file_exists($template))
 		{
 			throw new Recipe_Exception_Generic($template." does not exist.");

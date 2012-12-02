@@ -19,12 +19,12 @@
 	</tr></tfoot>
 	<tbody><?php $count = count($this->getLoop("ranks")); foreach($this->getLoop("ranks") as $key => $row): ?> <tr>
 		<td>{loop}name{/loop}</td>
-		<td class="center"><input type="checkbox" name="CAN_MANAGE_{loop}rankid{/loop}" value="1"<?php if($row["CAN_MANAGE"]): ?> checked="checked"<?php endif; ?> /></td>
-		<td class="center"><input type="checkbox" name="CAN_SEE_APPLICATIONS_{loop}rankid{/loop}" value="1"<?php if($row["CAN_SEE_APPLICATIONS"]): ?> checked="checked"<?php endif; ?> /></td>
-		<td class="center"><input type="checkbox" name="CAN_SEE_MEMBERLIST_{loop}rankid{/loop}" value="1"<?php if($row["CAN_SEE_MEMBERLIST"]): ?> checked="checked"<?php endif; ?> /></td>
-		<td class="center"><input type="checkbox" name="CAN_SEE_ONLINE_STATE_{loop}rankid{/loop}" value="1"<?php if($row["CAN_SEE_ONLINE_STATE"]): ?> checked="checked"<?php endif; ?> /></td>
-		<td class="center"><input type="checkbox" name="CAN_BAN_MEMBER_{loop}rankid{/loop}" value="1"<?php if($row["CAN_BAN_MEMBER"]): ?> checked="checked"<?php endif; ?> /></td>
-		<td class="center"><input type="checkbox" name="CAN_WRITE_GLOBAL_MAILS_{loop}rankid{/loop}" value="1"<?php if($row["CAN_WRITE_GLOBAL_MAILS"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_MANAGE_{loop}rankid{/loop}" value="1"<?php if($row["can_manage"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_SEE_APPLICATIONS_{loop}rankid{/loop}" value="1"<?php if($row["can_see_applications"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_SEE_MEMBERLIST_{loop}rankid{/loop}" value="1"<?php if($row["can_see_memberlist"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_SEE_ONLINE_STATE_{loop}rankid{/loop}" value="1"<?php if($row["can_see_online_state"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_BAN_MEMBER_{loop}rankid{/loop}" value="1"<?php if($row["can_ban_member"]): ?> checked="checked"<?php endif; ?> /></td>
+		<td class="center"><input type="checkbox" name="CAN_WRITE_GLOBAL_MAILS_{loop}rankid{/loop}" value="1"<?php if($row["can_write_global_mails"]): ?> checked="checked"<?php endif; ?> /></td>
 		<td class="center"><input type="image" src="{@themePath}img/error2.gif" name="delete_{loop}rankid{/loop}" title="{lang}REMOVE{/lang}" alt="{lang}REMOVE{/lang}" /></td>
 	</tr> <?php endforeach; ?></tbody>
 	<?php else: ?><tr>

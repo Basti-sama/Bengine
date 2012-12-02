@@ -57,7 +57,13 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 		Hook::event("ResearchLoaded", array($collection));
 		Core::getTPL()->addLoop("constructions", $collection);
 		Core::getTPL()->assign("event", $this->event);
-		Core::getTPL()->assign("canResearch", Game::getEH()->canReasearch());
+		$canResearch = true;
+		if(!Game::getEH()->canReasearch())
+		{
+			Logger::addMessage("RESEARCH_LAB_UPGRADING", "info");
+			$canResearch = false;
+		}
+		Core::getTPL()->assign("canResearch", $canResearch);
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.countdown.js", "js");
 		return $this;
 	}

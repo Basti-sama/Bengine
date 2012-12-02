@@ -111,6 +111,11 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		else
 			Core::getTPL()->assign("shipyard", Core::getLanguage()->getItem("DEFENSE"));
 
+		if(!$this->canBuildUnits)
+		{
+			Logger::addMessage("SHIPYARD_UPGRADING", "info");
+		}
+
 		// Output shipyard missions
 		Core::getQuery()->delete("shipyard", "finished <= '".TIME."'");
 		$missions = array();
@@ -271,7 +276,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 	/**
 	 * Checks the resource against the given quantity and reduce it if needed.
 	 *
-	 * @param integer $qty							Quantity
+	 * @param integer $qty								Quantity
 	 * @param Bengine_Game_Model_Unit $construction		Ship data row
 	 *
 	 * @return integer

@@ -113,7 +113,6 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 		$data["oldmode"] = $event->getMode();
 		if(count($data["ships"]) == 0)
 		{
-			//var_dump($data);
 			return $this;
 		}
 

@@ -3,7 +3,7 @@
 //<![CDATA[
 var buildings = new Array();
 <?php $count = count($this->getLoop("data")); foreach($this->getLoop("data") as $key => $row): ?> <?php if($row["level"] > 0): ?>
-buildings.push({loop}id{/loop});
+buildings.push(<?php echo $row["id"] ?>);
 <?php endif; ?> <?php endforeach; ?>
 <?php if($this->get("sats") > 0): ?>
 buildings.push(39);

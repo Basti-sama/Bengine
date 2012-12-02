@@ -313,14 +313,31 @@ class Recipe_Cache
 	 */
 	public function buildConfigCache($lifetime = self::DEFAULT_CACHE_LIFE_TIME)
 	{
-		$result = Core::getQuery()->select("config", array("var", "value"));
+		$result = Core::getQuery()->select("config", array("var", "value", "type"));
 		$cacheContent  = $this->setCacheFileHeader("Global Configuration Variables & Options");
 		$cacheContent .= "\$lifetime=".(TIME+$lifetime).";\n";
 		$cacheContent .= "\$item = array(";
 		foreach($result->fetchAll() as $row)
 		{
-			$row["value"] = $this->compileContent($row["value"]);
-			$cacheContent .= "\"".$row["var"]."\"=>\"".$row["value"]."\",";
+			switch($row["type"])
+			{
+				case "bool":
+				case "boolean":
+					$value = $row["value"] ? "true" : "false";
+				break;
+				case "int":
+				case "integer":
+					$value = (int) $row["value"];
+				break;
+				case "double":
+				case "float":
+					$value = (float) $row["value"];
+				break;
+				default:
+					$value = "\"".$this->compileContent($row["value"])."\"";
+				break;
+			}
+			$cacheContent .= "\"".$row["var"]."\"=>".$value.",";
 		}
 		$result->closeCursor();
 		$cacheContent .= ");\n";
@@ -414,7 +431,7 @@ class Recipe_Cache
 		}
 		if(Core::getConfig()->exists("userjoins"))
 		{
-			$joins .= " ".Core::getConfig()->get("userjoins");
+			$joins .= " ".str_replace("PREFIX", PREFIX, Core::getConfig()->get("userjoins"));
 		}
 		$result = Core::getQuery()->select("sessions s", $select, $joins, "s.sessionid = '".$sid."'", "", "1");
 		$row = $result->fetchRow();
@@ -510,7 +527,8 @@ class Recipe_Cache
 	 */
 	public function getTemplatePath($template, $type)
 	{
-		$dir = $this->getTemplateCacheDir().Core::getTemplate()->getTemplatePackage().$type."/";
+		$template = Core::getTemplate()->getTemplatePath($template, $type);
+		$dir = $this->getTemplateCacheDir();
 		if(!is_dir($dir))
 		{
 			@mkdir($dir, 0777, true);
@@ -760,6 +778,9 @@ class Recipe_Cache
 		} catch(UnexpectedValueException $e) {
 
 		}
+
+		$data = array_merge_recursive($data, json_decode(file_get_contents(APP_ROOT_DIR.'etc/local.json'), true));
+
 		$cacheContent  = $this->setCacheFileHeader("Meta data");
 		$cacheContent .= "\$lifetime=".(TIME+$lifetime).";\n";
 		$cacheContent .= "\$data = \"".$this->compileContent(serialize($data))."\";\n";

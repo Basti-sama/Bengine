@@ -129,7 +129,7 @@ class Recipe_Template_Adapter_Standard extends Recipe_Template_Adapter_Abstract
 	public function render($template, $type = Recipe_Template_Adapter_Abstract::TEMPLATE_TYPE_VIEWS)
 	{
 		Hook::event("TemplateRenderBegin", array($this, $template));
-		$templatePath = $this->getTemplatePath($template, $type);
+		$templatePath = $this->getAbsoluteTemplatePath($template, $type);
 		$view = $this->getView();
 		if($this->templateBuffer !== null)
 		{

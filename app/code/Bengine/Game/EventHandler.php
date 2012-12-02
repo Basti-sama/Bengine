@@ -293,7 +293,7 @@ class Bengine_Game_EventHandler
 		if($this->shipyardEvents === null)
 		{
 			$collection = $this->getEventCollectionTemplate();
-			$collection->addTypeFilter("shipyard")
+			$collection->addTypeFilter("game/shipyard")
 				->addPlanetFilter(Core::getUser()->get("curplanet"));
 			$this->shipyardEvents = $collection;
 		}
@@ -421,7 +421,7 @@ class Bengine_Game_EventHandler
 	 */
 	public function canBuildUnits()
 	{
-		if(is_null($this->canBuildUnits))
+		if($this->canBuildUnits === null)
 		{
 			$this->canBuildUnits = true;
 			/* @var Bengine_Game_Model_Event $event */
