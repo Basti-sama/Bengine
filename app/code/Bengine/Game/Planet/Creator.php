@@ -166,7 +166,7 @@ class Bengine_Game_Planet_Creator
 	 */
 	protected function setRandTemperature()
 	{
-		$meta = Game::getMeta();
+		$meta = Application::getMeta();
 		$min = $meta["config"]["planet"]["position"][$this->position]["temperature"]["min"];
 		$max = $meta["config"]["planet"]["position"][$this->position]["temperature"]["max"];
 		$first = mt_rand($min, $max);
@@ -183,7 +183,7 @@ class Bengine_Game_Planet_Creator
 	{
 		$offrange = mt_rand(0, 100);
 		$sizeType = ($offrange > 60) ? "offrange" : "normal";
-		$meta = Game::getMeta();
+		$meta = Application::getMeta();
 		$min = $meta["config"]["planet"]["position"][$this->position]["size"][$sizeType]["min"];
 		$max = $meta["config"]["planet"]["position"][$this->position]["size"][$sizeType]["max"];
 		$this->size = mt_rand($min, $max);
@@ -198,7 +198,7 @@ class Bengine_Game_Planet_Creator
 	protected function setPicture()
 	{
 		$planetTypes = new Map();
-		$meta = Game::getMeta();
+		$meta = Application::getMeta();
 		foreach($meta["config"]["planet"]["type"] as $name => $planetType)
 		{
 			if($this->position >= $planetType["from"] && $this->position <= $planetType["to"])

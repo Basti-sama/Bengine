@@ -11,16 +11,27 @@
 class Recipe_Database_Statement_MySQLi extends Recipe_Database_Statement_Abstract
 {
 	/**
+	 * @var mysqli_result
+	 */
+	protected $result;
+
+	/**
 	 * @var integer
 	 */
 	const DEFAULT_FETCH_TYPE = MYSQLI_ASSOC;
 
 	/**
+	 * @throws Recipe_Exception_Sql
 	 * @return Recipe_Database_Statement_MySQLi
 	 */
 	protected function prepare()
 	{
-		$this->statement = $this->getConnection()->prepare($this->getSql());
+		$connection = $this->getConnection();
+		$this->statement = $connection->stmt_init();
+		if(!$this->statement->prepare($this->getSql()))
+		{
+			throw new Recipe_Exception_Sql($connection->error, $connection->errno, $this->getSql());
+		}
 		return $this;
 	}
 
@@ -32,7 +43,6 @@ class Recipe_Database_Statement_MySQLi extends Recipe_Database_Statement_Abstrac
 	public function execute(array $bind = null)
 	{
 		$statement = $this->statement;
-		$connection = $this->getConnection();
 		if($bind !== null)
 		{
 			$params = array_values($bind);
@@ -46,13 +56,16 @@ class Recipe_Database_Statement_MySQLi extends Recipe_Database_Statement_Abstrac
 		}
 		if(!$statement->execute())
 		{
+			$connection = $this->getConnection();
 			throw new Recipe_Exception_Sql($connection->error, $connection->errno, $this->getSql());
 		}
+		$this->result = $statement->get_result();
 		return $this;
 	}
 
 	/**
 	 * @param integer $fetchType
+	 * @throws Recipe_Exception_Sql
 	 * @return array|mixed
 	 */
 	public function fetchAll($fetchType = null)
@@ -61,13 +74,12 @@ class Recipe_Database_Statement_MySQLi extends Recipe_Database_Statement_Abstrac
 		{
 			$fetchType = self::DEFAULT_FETCH_TYPE;
 		}
-		/* @var mysqli_result $result */
-		$result = $this->statement->get_result();
-		return $result->fetch_all($fetchType);
+		return $this->result->fetch_all($fetchType);
 	}
 
 	/**
 	 * @param integer $fetchType
+	 * @throws Recipe_Exception_Sql
 	 * @return array|mixed
 	 */
 	public function fetchRow($fetchType = null)
@@ -76,20 +88,17 @@ class Recipe_Database_Statement_MySQLi extends Recipe_Database_Statement_Abstrac
 		{
 			$fetchType = self::DEFAULT_FETCH_TYPE;
 		}
-		/* @var mysqli_result $result */
-		$result = $this->statement->get_result();
-		return $result->fetch_array($fetchType);
+		return $this->result->fetch_array($fetchType);
 	}
 
 	/**
 	 * @param integer $column
+	 * @throws Recipe_Exception_Sql
 	 * @return mixed
 	 */
 	public function fetchColumn($column = 0)
 	{
-		/* @var mysqli_result $result */
-		$result = $this->statement->get_result();
-		$data = $result->fetch_array(MYSQLI_NUM);
+		$data = $this->result->fetch_array(MYSQLI_NUM);
 		return $data[$column];
 	}
 
@@ -98,7 +107,7 @@ class Recipe_Database_Statement_MySQLi extends Recipe_Database_Statement_Abstrac
 	 */
 	public function rowCount()
 	{
-		return $this->statement->num_rows;
+		return $this->result->num_rows;
 	}
 
 	/**

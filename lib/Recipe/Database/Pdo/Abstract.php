@@ -46,8 +46,7 @@ abstract class Recipe_Database_Pdo_Abstract extends Recipe_Database_Abstract
 		}
 		try {
 			$this->pdo = new PDO($dsn, $this->user, $this->password, array(
-				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-				PDO::ATTR_CASE => PDO::CASE_LOWER,
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 			));
 		} catch(PDOException $e) {
 			die($e->getMessage());

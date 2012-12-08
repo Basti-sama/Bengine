@@ -37,7 +37,7 @@ class Bengine_Game_Controller_Logout extends Bengine_Game_Controller_Abstract
 		$deleteTime = TIME - 86400 * $days;
 		Core::getQuery()->delete("sessions", "time < '".$deleteTime."'");
 		Game::unlock();
-		$this->redirect(LOGIN_URL);
+		$this->redirect(BASE_URL);
 		return $this;
 	}
 }

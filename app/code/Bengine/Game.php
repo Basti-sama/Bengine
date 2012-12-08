@@ -204,6 +204,7 @@ class Game extends Application
 			self::$planetStack[] = $row["planetid"];
 			$i++;
 		}
+		$result->closeCursor();
 		Hook::event("YuPlanetList", array(&$planets));
 		Core::getTPL()->addLoop("planetHeaderList", $planets);
 
@@ -308,6 +309,7 @@ class Game extends Application
 		{
 			self::$research[$row["buildingid"]] = $row["level"];
 		}
+		$result->closeCursor();
 		Hook::event("YuResearchLoaded", array(&self::$research));
 		return;
 	}
@@ -344,6 +346,7 @@ class Game extends Application
 			$multiplier = $level * (int) $row["factor"];
 			if($multiplier > 0) { return $speed / 100 * $multiplier + $speed; }
 		}
+		$result->closeCursor();
 		Hook::event("YuGetFlySpeedLast", array($id, &$speed));
 		return $speed;
 	}
@@ -523,6 +526,7 @@ class Game extends Application
 		{
 			self::$researchLabs[] = $row["level"];
 		}
+		$result->closeCursor();
 		self::$labsLoaded = true;
 		Hook::event("YuLoadResearchLabs", array(&self::$researchLabs));
 		return;
@@ -544,6 +548,7 @@ class Game extends Application
 				$mods[] = $row["userid"];
 			}
 		}
+		$result->closeCursor();
 		$i = mt_rand(0, count($mods) - 1);
 		return isset($mods[$i]) ? $mods[$i] : 1;
 	}

@@ -9,7 +9,7 @@
 
 require_once(APP_ROOT_DIR."app/code/Functions.inc.php");
 
-class Bengine_Game_Account_Password_Lost extends Bengine_Game_Controller_Ajax_Abstract
+class Bengine_Game_Account_Password_Lost extends Bengine_Game_Account_Ajax
 {
 	/**
 	 * @var string

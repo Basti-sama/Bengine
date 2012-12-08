@@ -60,7 +60,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 				{
 					$status = Image::getImage("off.gif", getTimeTerm(TIME - $row["lastlogin2"]));
 				}
-				$username = Link::get("game/".SID."/MSG/Write/".rawurlencode($row["user2"]), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE")))." ".Link::get("game/".SID."/MSG/Write/".rawurlencode($row["user2"]), $row["user2"]);
+				$username = Link::get("game/".SID."/MSG/Write/".rawurlencode($row["user2"]), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE")))." ".Link::get("game/".SID."/Profile/Page/".$row["friend2"], $row["user2"]);
 				$points = $row["points2"];
 				$position = getCoordLink($row["gala2"], $row["sys2"], $row["pos2"]);
 				$ally = Link::get("game/".SID."/Alliance/Page/".$row["allyid2"], $row["ally2"]);
@@ -75,7 +75,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 				{
 					$status = Image::getImage("off.gif", getTimeTerm(TIME - $row["lastlogin1"]));
 				}
-				$username = Link::get("game/".SID."/MSG/Write/".rawurlencode($row["user1"]), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE")))." ".Link::get("game/".SID."/MSG/Write/".rawurlencode($row["user1"]), $row["user1"]);
+				$username = Link::get("game/".SID."/MSG/Write/".rawurlencode($row["user1"]), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE")))." ".Link::get("game/".SID."/Profile/Page/".$row["friend1"], $row["user1"]);
 				$points = $row["points1"];
 				$position = getCoordLink($row["gala1"], $row["sys1"], $row["pos1"]);
 				$ally = Link::get("game/".SID."/Alliance/Page/".$row["allyid1"], $row["ally1"]);

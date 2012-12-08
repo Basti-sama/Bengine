@@ -1,4 +1,4 @@
-<?php $numLanguages = Core::getDatabase()->num_rows($this->getLoop("langs")) ?>
+<?php $numLanguages = $this->getLoop("langs")->rowCount() ?>
 <form method="post" action="{@formaction}">
 <table class="ntable">
 	<tr>

@@ -440,8 +440,9 @@ class Recipe_Cache
 		$result = Core::getQuery()->showFields("user");
 		foreach($result->fetchAll() as $t)
 		{
-			$row[$t["field"]] = (isset($row[$t["field"]])) ? $this->compileContent($row[$t["field"]]) : "";
-			$cacheContent .= "\$item[\"".$t["field"]."\"]=\"".$row[$t["field"]]."\";";
+			$fieldName = $t["Field"];
+			$row[$fieldName] = (isset($row[$fieldName])) ? $this->compileContent($row[$fieldName]) : "";
+			$cacheContent .= "\$item[\"".$fieldName."\"]=\"".$row[$fieldName]."\";";
 		}
 		$result->closeCursor();
 		$cacheContent .= "\$item[\"ipaddress\"]=\"".$row["ipaddress"]."\";";

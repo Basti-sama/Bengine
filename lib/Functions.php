@@ -35,11 +35,7 @@ function forwardToLogin($errorid)
 {
 	if(LOGIN_REQUIRED)
 	{
-		if(strpos(LOGIN_URL, '?') === false)
-		{
-			$login = LOGIN_URL."?error=".$errorid;
-		}
-		else { $login = LOGIN_URL; }
+		$login = BASE_URL."?error=".$errorid;
 		Hook::event("ForwardToLoginPage", array(&$login, $errorid));
 		doHeaderRedirection($login, false);
 	}
@@ -79,9 +75,9 @@ function isMail($mail)
 /**
  * Generates a random text.
  *
- * @param integer	The length of the random text
+ * @param integer $length	The length of the random text
  *
- * @return string	The random text
+ * @return string			The random text
  */
 function randString($length)
 {
@@ -100,9 +96,9 @@ function randString($length)
 /**
  * Parses an URL and return its components.
  *
- * @param string	The URL to parse
+ * @param string $url	The URL to parse
  *
- * @return array	The URL components
+ * @return array		The URL components
  */
 function parseUrl($url)
 {
@@ -143,9 +139,9 @@ function file_exists_inc($file)
 {
 	if(is_array($file))
 	{
-		foreach($file as $file)
+		foreach($file as $_file)
 		{
-			if($fullpath = file_exists_inc($file))
+			if($fullpath = file_exists_inc($_file))
 			{
 				return $fullpath;
 			}

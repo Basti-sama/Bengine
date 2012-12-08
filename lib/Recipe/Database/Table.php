@@ -246,9 +246,9 @@ class Recipe_Database_Table
 		{
 			foreach($this->getSchema() as $field)
 			{
-				if($field["key"] == "PRI")
+				if($field["Key"] == "PRI")
 				{
-					$this->setPrimaryKey($field["field"]);
+					$this->setPrimaryKey($field["Field"]);
 					return $this->getPrimaryKey();
 				}
 			}
@@ -281,7 +281,7 @@ class Recipe_Database_Table
 		$schema = $this->getSchema();
 		foreach($schema as $field)
 		{
-			$fields[$field["field"]] = $field["field"];
+			$fields[$field["Field"]] = $field["Field"];
 		}
 		return $fields;
 	}
