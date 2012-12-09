@@ -358,7 +358,7 @@ class Recipe_User extends Recipe_Collection
 		{
 			throw new Recipe_Exception_Generic("The primary key of a data record cannot be changed.");
 		}
-		Core::getQuery()->update("user", array($var => $value), "userid = '".$this->get("userid")."'");
+		Core::getQuery()->update("user", array($var => $value), "userid = ?", array($this->get("userid")));
 		$this->rebuild();
 		$this->item[$var] = $value;
 		return $this;

@@ -122,7 +122,7 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 	{
 		foreach($delete as $id)
 		{
-			Core::getQuery()->delete("page", "pageid = '".$id."'");
+			Core::getQuery()->delete("page", "pageid = ?", null, null, array($id));
 		}
 		foreach($pages as $id)
 		{
@@ -131,7 +131,7 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 				"title" => Core::getRequest()->getPOST("title_".$id),
 				"position" => Core::getRequest()->getPOST("position_".$id),
 			);
-			Core::getQuery()->update("page", $spec, "pageid = '".$id."'");
+			Core::getQuery()->update("page", $spec, "pageid = ?", array($id));
 		}
 		return $this;
 	}
@@ -159,7 +159,7 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 		$this->label = $spec["label"];
 		$this->link = $spec["link"];
 		$this->checkLink();
-		Core::getQuery()->update("page", $spec, "pageid = '".$pageid."'");
+		Core::getQuery()->update("page", $spec, "pageid = ?", array($pageid));
 		return $this;
 	}
 

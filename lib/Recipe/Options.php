@@ -74,7 +74,7 @@ class Recipe_Options extends Recipe_Collection
 		Hook::event("SetOptionVariable", array($this, &$var, &$value));
 		if($this->hasVariable($var, false))
 		{
-			Core::getQuery()->update("config", "value", $value, "var = '".$var."'");
+			Core::getQuery()->update("config", "value", $value, "var = ?", array($var));
 		}
 		else
 		{

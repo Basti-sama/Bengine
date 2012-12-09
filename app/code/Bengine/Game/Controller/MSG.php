@@ -72,7 +72,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 	 */
 	protected function deleteAllAction()
 	{
-		Core::getQuery()->delete("message", "receiver = '".Core::getUser()->get("userid")."'");
+		Core::getQuery()->delete("message", "receiver = ?", null, null, array(Core::getUser()->get("userid")));
 		return $this->redirect("game/".SID."/MSG");
 	}
 
@@ -178,13 +178,13 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 			$deltime = ((int) Core::getOptions()->get("DEL_MESSAGE_DAYS")) * 86400;
 		}
 		$deltime = TIME - $deltime;
-		Core::getQuery()->delete("message", "time <= '".$deltime."'");
+		Core::getQuery()->delete("message", "time <= ?", null, null, array($deltime));
 		switch($option)
 		{
 			case 1:
 				foreach($msgs as $msgid)
 				{
-					Core::getQuery()->delete("message", "msgid = '".$msgid."' AND receiver = '".Core::getUser()->get("userid")."'");
+					Core::getQuery()->delete("message", "msgid = ? AND receiver = ?", null, null, array($msgid, Core::getUser()->get("userid")));
 				}
 			break;
 			case 2:
@@ -193,7 +193,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 				{
 					if(!in_array($row["msgid"], $msgs))
 					{
-						Core::getQuery()->delete("message", "msgid = '".$row["msgid"]."'");
+						Core::getQuery()->delete("message", "msgid = ?", null, null, array($row["msgid"]));
 					}
 				}
 				$result->closeCursor();
@@ -202,11 +202,11 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 				$result = Core::getQuery()->select("message", array("msgid"), "", "receiver = '".Core::getUser()->get("userid")."' AND mode = '".$folder."'", "time DESC", $pagination->getStart().", ".Core::getOptions()->get("MAX_PMS"));
 				foreach($result->fetchAll() as $row)
 				{
-					Core::getQuery()->delete("message", "msgid = '".$row["msgid"]."'");
+					Core::getQuery()->delete("message", "msgid = ?", null, null, array($row["msgid"]));
 				}
 			break;
 			case 4:
-				Core::getQuery()->delete("message", "receiver = '".Core::getUser()->get("userid")."' AND mode = '".$folder."'");
+				Core::getQuery()->delete("message", "receiver = ? AND mode = ?", null, null, array(Core::getUser()->get("userid"), $folder));
 			break;
 			case 5:
 				$reports = array();
@@ -325,7 +325,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 			$folderObj->formatMessage($message);
 			if(!$message->get("read"))
 			{
-				$readMessages[] = $message->get("msgid");
+				$readMessages[] = (int) $message->get("msgid");
 			}
 			Hook::event("ReadMessageLast", array($message));
 		}
@@ -349,7 +349,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 	protected function markAsReadAction($folderId)
 	{
 		Hook::event("MarkFolderAsRead", array($folderId));
-		Core::getQuery()->update("message", array("read" => 1), "mode = '".$folderId."' AND receiver = '".Core::getUser()->get("userid")."'");
+		Core::getQuery()->update("message", array("read" => 1), "mode = ? AND receiver = ?", array($folderId, Core::getUser()->get("userid")));
 		$this->redirect("game/".SID."/MSG");
 		return $this;
 	}

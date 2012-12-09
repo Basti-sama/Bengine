@@ -238,7 +238,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 	protected function deleteRequirementAction($unitid, $delete)
 	{
 		Core::getUser()->checkPermissions("CAN_EDIT_CONSTRUCTIONS");
-		Core::getQuery()->delete("requirements", "requirementid = '".$delete."'");
+		Core::getQuery()->delete("requirements", "requirementid = ?", null, null, array($delete));
 		Core::getCache()->flushObject("requirements");
 		$this->redirect("game/".SID."/Unit/Edit/".$unitid);
 		return $this;
@@ -289,7 +289,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			"basic_hydrogen" => $basicHydrogen,
 			"basic_energy" => $basicEnergy
 		);
-		Core::getQuery()->update("construction", $spec, "name = '".$nameId."'");
+		Core::getQuery()->update("construction", $spec, "name = ?", array($nameId));
 		$spec = array(
 			"capicity" => $capacity,
 			"speed" => $speed,
@@ -297,9 +297,9 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			"attack" => $attack,
 			"shield" => $shield
 		);
-		Core::getQuery()->update("ship_datasheet", $spec, "unitid = '".$unitid."'");
-		Core::getQuery()->update("ship2engine", array("engineid" => $baseEngine), "unitid = '".$unitid."' AND base = '1'");
-		Core::getQuery()->delete("ship2engine", "unitid = '".$unitid."' AND base = '0'");
+		Core::getQuery()->update("ship_datasheet", $spec, "unitid = ?", array($unitid));
+		Core::getQuery()->update("ship2engine", array("engineid" => $baseEngine), "unitid = ? AND base = ?", array($unitid, 1));
+		Core::getQuery()->delete("ship2engine", "unitid = ? AND base = ?", null, null, array($unitid, 0));
 		if($extentedEngineLevel > 0)
 		{
 			Core::getQuery()->insert("ship2engine", array("engineid" => $extentedEngine, "unitid" => $unitid, "level" => $extentedEngineLevel, "base_speed" => $extentedEngineSpeed, "base" => 0));
@@ -310,7 +310,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."'");
 			if($result->rowCount() > 0)
 			{
-				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($name)), "title = '".$nameId."'");
+				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($name)), "title = ?", array($nameId));
 			}
 			else
 			{
@@ -323,7 +323,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."_DESC'");
 			if($result->rowCount() > 0)
 			{
-				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($desc)), "title = '".$nameId."_DESC'");
+				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($desc)), "title = ?", array($nameId."_DESC"));
 			}
 			else
 			{
@@ -336,7 +336,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."_FULL_DESC'");
 			if($result->rowCount() > 0)
 			{
-				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($fullDesc)), "title = '".$nameId."_FULL_DESC'");
+				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($fullDesc)), "title = ?", array($nameId."_FULL_DESC"));
 			}
 			else
 			{
@@ -352,16 +352,16 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 		{
 			if(is_array($rfDelete) && in_array($row["target"], $rfDelete))
 			{
-				Core::getQuery()->delete("rapidfire", "unitid = '".$this->id."' AND target = '".$row["target"]."'");
+				Core::getQuery()->delete("rapidfire", "unitid = ? AND target = ?", null, null, array($this->id, $row["target"]));
 			}
 			else if(Core::getRequest()->getPOST("rf_".$row["target"]) != $row["value"])
 			{
-				Core::getQuery()->update("rapidfire", array("value" => Core::getRequest()->getPOST("rf_".$row["target"])), "unitid = '".$this->id."' AND target = '".$row["target"]."'");
+				Core::getQuery()->update("rapidfire", array("value" => Core::getRequest()->getPOST("rf_".$row["target"])), "unitid = ? AND target = ?", array($this->id, $row["target"]));
 			}
 		}
 		if($rfNew > 0 && $rfNewValue > 0)
 		{
-			Core::getQuery()->delete("rapidfire", "unitid = '".$this->id."' AND target = '".$rfNew."'");
+			Core::getQuery()->delete("rapidfire", "unitid = ? AND target = ?", null, null, array($this->id, $rfNew));
 			Core::getQuery()->insert("rapidfire", array("unitid" => $this->id, "target" => $rfNew, "value" => $rfNewValue));
 		}
 

@@ -108,8 +108,8 @@ class Bengine_Admin_Controller_Usergroups extends Bengine_Admin_Controller_Abstr
 	{
 		foreach($delete as $groupid)
 		{
-			Core::getQuery()->delete("usergroup", "usergroupid = '".$groupid."'");
-			Core::getQuery()->delete("group2permission", "groupid = '".$groupid."'");
+			Core::getQuery()->delete("usergroup", "usergroupid = ?", null, null, array($groupid));
+			Core::getQuery()->delete("group2permission", "groupid = ?", null, null, array($groupid));
 		}
 		return $this;
 	}
@@ -122,8 +122,8 @@ class Bengine_Admin_Controller_Usergroups extends Bengine_Admin_Controller_Abstr
 	 */
 	protected function save($groupid, $grouptitle, array $perms)
 	{
-		Core::getQuery()->update("usergroup", array("grouptitle" => $grouptitle), "usergroupid = '".$groupid."'");
-		Core::getQuery()->delete("group2permission", "groupid = '".$groupid."'");
+		Core::getQuery()->update("usergroup", array("grouptitle" => $grouptitle), "usergroupid = ?", array($groupid));
+		Core::getQuery()->delete("group2permission", "groupid = ?", null, null, array($groupid));
 		if(count($perms) > 0)
 		{
 			foreach($perms as $permid)

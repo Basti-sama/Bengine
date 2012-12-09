@@ -132,10 +132,10 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 		Core::getQuery()->insert("ban_u", $spec);
 		if($forceUmode)
 		{
-			Core::getQuery()->update("user", array("umode" => 1), "userid = '".$this->userid."'");
+			Core::getQuery()->update("user", array("umode" => 1), "userid = ?", array($this->userid));
 			setProdOfUser($this->userid, 0);
 		}
-		Core::getQuery()->update("sessions", array("logged" => 0), "userid = '".$this->userid."'");
+		Core::getQuery()->update("sessions", array("logged" => 0), "userid = ?", array($this->userid));
 		return $this;
 	}
 
@@ -149,7 +149,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	protected function annulBan($banid)
 	{
 		Hook::event("UnbanUser", array($banid));
-		Core::getQuery()->update("ban_u", array("to" => TIME, "reason" => Core::getLanguage()->getItem("ANNULED")), "banid = '".$banid."'");
+		Core::getQuery()->update("ban_u", array("to" => TIME, "reason" => Core::getLanguage()->getItem("ANNULED")), "banid = ?", array($banid));
 		$result = Core::getQuery()->select("ban_u", "userid", "", "banid = '".$banid."'");
 		$row = $result->fetchRow();
 		$result->closeCursor();
@@ -196,9 +196,9 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 
 			if(Core::getUser()->ifPermissions("CAN_EDIT_USER"))
 			{
-				Core::getQuery()->delete("user2group", "userid = '".$this->userid."'");
+				Core::getQuery()->delete("user2group", "userid = ?", null, null, array($this->userid));
 				Core::getQuery()->insert("user2group", array("usergroupid" => $usergroupid, "userid" => $this->userid));
-				Core::getQuery()->update("user", array("points" => floatval($points), "fpoints" => (int) $fpoints, "rpoints" => (int) $rpoints), "userid = '".$this->userid."'");
+				Core::getQuery()->update("user", array("points" => floatval($points), "fpoints" => (int) $fpoints, "rpoints" => (int) $rpoints), "userid = ?", array($this->userid));
 			}
 
 			if($umode)
@@ -228,7 +228,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 			{
 				$encryption = Core::getOptions("USE_PASSWORD_SALT") ? "md5_salt" : "md5";
 				$password = Str::encode($password, $encryption);
-				Core::getQuery()->update("password", array("password" => $password, "time" => TIME), "userid = '".$this->userid."'");
+				Core::getQuery()->update("password", array("password" => $password, "time" => TIME), "userid = ?", array($this->userid));
 			}
 
 			$spec = array(
@@ -244,7 +244,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 				"theme" => $theme,
 				"js_interface" => $js_interface,
 			);
-			Core::getQuery()->update("user", $spec, "userid = '".$this->userid."'");
+			Core::getQuery()->update("user", $spec, "userid = ?", array($this->userid));
 		}
 		return $this;
 	}

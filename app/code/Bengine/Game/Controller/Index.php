@@ -218,14 +218,14 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 			if($ok)
 			{
 				deletePlanet(Game::getPlanet()->getPlanetId(), Core::getUser()->get("userid"), Game::getPlanet()->getData("ismoon"));
-				Core::getQuery()->update("user", array("curplanet" => Core::getUser()->get("hp")), "userid = '".Core::getUser()->get("userid")."'");
+				Core::getQuery()->update("user", array("curplanet" => Core::getUser()->get("hp")), "userid = ?", array(Core::getUser()->get("userid")));
 				Core::getUser()->rebuild();
 				$this->redirect("game/".SID."/Index");
 			}
 		}
 		else if(checkCharacters($planetname))
 		{
-			Core::getQuery()->update("planet", array("planetname" => $planetname), "planetid = '".Core::getUser()->get("curplanet")."'");
+			Core::getQuery()->update("planet", array("planetname" => $planetname), "planetid = ?", array(Core::getUser()->get("curplanet")));
 			$this->redirect("game/".SID."/Index");
 		}
 		else

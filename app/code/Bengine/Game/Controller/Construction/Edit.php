@@ -184,7 +184,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 	 */
 	protected function deleteRequirementAction($delete, $returnId)
 	{
-		Core::getQuery()->delete("requirements", "requirementid = '".$delete."'");
+		Core::getQuery()->delete("requirements", "requirementid = ?", null, null, array($delete));
 		Core::getCache()->flushObject("requirements");
 		$this->redirect("game/".SID."/Construction_Edit/Index/".$returnId);
 		return $this;
@@ -268,7 +268,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 			"cons_metal" => $consMetal, "cons_silicon" => $consSilicon, "cons_hydrogen" => $consHydrogen, "cons_energy" => $consEnergy,
 			"charge_metal" => $chargeMetal, "charge_silicon" => $chargeSilicon, "charge_hydrogen" => $chargeHydrogen, "charge_energy" => $chargeEnergy,
 		);
-		Core::getQuery()->update("construction", $spec, "name = '".$nameId."'");
+		Core::getQuery()->update("construction", $spec, "name = ?", array($nameId));
 
 		// Save the name and description
 		$languageId = Core::getLang()->getOpt("languageid");
@@ -277,7 +277,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."'");
 			if($result->rowCount() > 0)
 			{
-				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($name)), "title = '".$nameId."'");
+				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($name)), "title = ?", array($nameId));
 			}
 			else
 			{
@@ -290,7 +290,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."_DESC'");
 			if($result->rowCount() > 0)
 			{
-				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($desc)), "title = '".$nameId."_DESC'");
+				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($desc)), "title = ?", array($nameId."_DESC"));
 			}
 			else
 			{
@@ -303,7 +303,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."_FULL_DESC'");
 			if($result->rowCount() > 0)
 			{
-				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($fullDesc)), "title = '".$nameId."_FULL_DESC'");
+				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($fullDesc)), "title = ?", array($nameId."_FULL_DESC"));
 			}
 			else
 			{

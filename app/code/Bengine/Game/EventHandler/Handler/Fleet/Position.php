@@ -22,7 +22,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Position extends Bengine_Game_Even
 			$result = Core::getQuery()->select("unit2shipyard", "unitid", "", "unitid = '".$ship["id"]."' AND planetid = '".$event["destination"]."'");
 			if($result->rowCount() > 0)
 			{
-				Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity + '".$ship["quantity"]."' WHERE unitid = '".$ship["id"]."' AND planetid = '".$event["destination"]."'");
+				Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity + ? WHERE unitid = ? AND planetid = ?", array($ship["quantity"], $ship["id"], $event["destination"]));
 			}
 			else
 			{
@@ -32,7 +32,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Position extends Bengine_Game_Even
 		}
 		$data["destination"] = $event["destination"];
 		new Bengine_Game_AutoMsg($event["mode"], $event["userid"], $event["time"], $data);
-		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + '".$data["metal"]."', silicon = silicon + '".$data["silicon"]."', hydrogen = hydrogen + '".$data["hydrogen"]."' WHERE planetid = '".$event["destination"]."'");
+		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + ?, silicon = silicon + ?, hydrogen = hydrogen + ? WHERE planetid = ?", array($data["metal"], $data["silicon"], $data["hydrogen"], $event["destination"]));
 		return $this;
 	}
 

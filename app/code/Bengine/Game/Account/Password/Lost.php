@@ -107,7 +107,7 @@ class Bengine_Game_Account_Password_Lost extends Bengine_Game_Account_Ajax
 	 */
 	protected function setNewPw()
 	{
-		Core::getQuery()->update("user", array("activation" => $this->getSecurityKey()), "username = '".$this->getUsername()."'");
+		Core::getQuery()->update("user", array("activation" => $this->getSecurityKey()), "username = ?", array($this->getUsername()));
 		return $this;
 	}
 

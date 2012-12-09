@@ -26,8 +26,8 @@ class Bengine_Game_EventHandler_Handler_Fleet_AllianceAttack extends Bengine_Gam
 		}
 		$assault->startAssault($event->getGalaxy2(), $event->getSystem2(), $event->getPosition2())
 			->finish();
-		Core::getQuery()->delete("formation_invitation", "eventid = '".$event->getEventid()."'");
-		Core::getQuery()->delete("attack_formation", "eventid = '".$event->getEventid()."'");
+		Core::getQuery()->delete("formation_invitation", "eventid = ?", null, null, array($event->getEventid()));
+		Core::getQuery()->delete("attack_formation", "eventid = ?", null, null, array($event->getEventid()));
 		return $this;
 	}
 
@@ -50,7 +50,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_AllianceAttack extends Bengine_Gam
 		$result = Core::getQuery()->select("events", array("eventid", "planetid", "destination", "start"), "", "parent_id = '".$event->get("eventid")."'");
 		foreach($result->fetchAll() as $row)
 		{
-			Core::getQuery()->update("events", array("mode" => 20, "planetid" => $row["destination"], "destination" => $row["planetid"], "time" => TIME + (TIME - $row["start"])), "eventid = '".$row["eventid"]."'");
+			Core::getQuery()->update("events", array("mode" => 20, "planetid" => $row["destination"], "destination" => $row["planetid"], "time" => TIME + (TIME - $row["start"])), "eventid = ?", array($row["eventid"]));
 		}
 		$this->sendBack($data);
 		return $this;

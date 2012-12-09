@@ -71,9 +71,9 @@ class Bengine_Game_EventHandler_Handler_Fleet_MoonDestruction extends Bengine_Ga
 			if($rand <= $md)
 			{
 				$message = Core::getLang()->get("MD_MOON_DESTROYED");
-				Core::getQuery()->update("events", array("planetid" => null), "planetid = '".$moon->getId()."'");
-				$sql = "UPDATE `".PREFIX."events` e, `".PREFIX."galaxy` g SET e.`destination` = g.`planetid` WHERE g.`moonid` = '".$moon->getId()."' AND e.`destination` = '".$moon->getId()."'";
-				Core::getDB()->query($sql);
+				Core::getQuery()->update("events", array("planetid" => null), "planetid = ?", array($moon->getId()));
+				$sql = "UPDATE `".PREFIX."events` e, `".PREFIX."galaxy` g SET e.`destination` = g.`planetid` WHERE g.`moonid` = ? AND e.`destination` = ?";
+				Core::getDB()->query($sql, array($moon->getId(), $moon->getId()));
 				deletePlanet($moon->getId(), $moon->getUserid(), 1);
 			}
 			else
@@ -91,7 +91,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_MoonDestruction extends Bengine_Ga
 				{
 					$points += $ship["quantity"] * ($ship["basic_metal"] + $ship["basic_silicon"] + $ship["basic_hydrogen"]);
 				}
-				Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - '".($points/1000)."' WHERE userid = '".$event->getUserid()."'");
+				Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ? WHERE userid = ?", array($points/1000, $event->getUserid()));
 				$message .= "<br/><br/>".Core::getLang()->get("MD_FLEET_DESTROYED");
 			}
 			else

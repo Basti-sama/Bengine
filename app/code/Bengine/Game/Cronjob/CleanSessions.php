@@ -29,7 +29,7 @@ class Bengine_Game_Cronjob_CleanSessions extends Recipe_CronjobAbstract
 
 		// Delete old sessions
 		$deleteTime = TIME - $deletionDays * 86400;
-		Core::getQuery()->delete("sessions", "time < '".$deleteTime."'");
+		Core::getQuery()->delete("sessions", "time < ?", null, null, array($deleteTime));
 
 		// Log user count
 		$sql = "INSERT INTO `".PREFIX."user_counter`

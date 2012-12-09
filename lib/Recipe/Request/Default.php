@@ -23,11 +23,11 @@ class Recipe_Request_Default extends Recipe_Request_Adapter
 	{
 		if(is_null($var))
 		{
-			return Core::getDB()->escape($_GET);
+			return $_GET;
 		}
 		if(isset($_GET[$var]))
 		{
-			return Core::getDB()->escape($_GET[$var]);
+			return $_GET[$var];
 		}
 		return $default;
 	}
@@ -44,11 +44,11 @@ class Recipe_Request_Default extends Recipe_Request_Adapter
 	{
 		if($var === null)
 		{
-			return Core::getDB()->escape($_POST);
+			return $_POST;
 		}
 		if(isset($_POST[$var]))
 		{
-			return Core::getDB()->escape($_POST[$var]);
+			return $_POST[$var];
 		}
 		return $default;
 	}
@@ -65,11 +65,11 @@ class Recipe_Request_Default extends Recipe_Request_Adapter
 	{
 		if($var === null)
 		{
-			return Core::getDB()->escape($_COOKIE);
+			return $_COOKIE;
 		}
 		if(isset($_COOKIE[$var]))
 		{
-			return Core::getDB()->escape($_COOKIE[$var]);
+			return $_COOKIE[$var];
 		}
 		return $default;
 	}

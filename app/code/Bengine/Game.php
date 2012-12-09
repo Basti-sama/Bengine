@@ -67,7 +67,7 @@ class Game extends Application
 		parent::run();
 
 		// Update last activity
-		Core::getQuery()->update("user", array("last" => TIME, "db_lock" => 1), "userid = '".Core::getUser()->userid."'");
+		Core::getQuery()->update("user", array("last" => TIME, "db_lock" => 1), "userid = ?", array(Core::getUser()->userid));
 
 		if($planetid = Core::getRequest()->getPOST("planetid"))
 		{
@@ -93,9 +93,9 @@ class Game extends Application
 			$data["position"] = self::getPlanet()->getData("position");
 			$data["planet"] = self::getPlanet()->getData("planetname");
 			Hook::event("YuAsteroidEvent", array(&$data));
-			Core::getQuery()->update("user", array("asteroid" => TIME), "userid = '".Core::getUser()->get("userid")."'");
+			Core::getQuery()->update("user", array("asteroid" => TIME), "userid = ?", array(Core::getUser()->get("userid")));
 			$what = (self::getPlanet()->getData("ismoon")) ? "moonid" : "planetid";
-			Core::getDB()->query("UPDATE ".PREFIX."galaxy SET metal = metal + '".$data["metal"]."', silicon = silicon + '".$data["silicon"]."' WHERE ".$what." = '".self::getPlanet()->getPlanetId()."'");
+			Core::getDB()->query("UPDATE ".PREFIX."galaxy SET metal = metal + ?, silicon = silicon + ? WHERE ".$what." = ?", array($data["metal"], $data["silicon"], self::getPlanet()->getPlanetId()));
 			new Bengine_Game_AutoMsg(22, Core::getUser()->get("userid"), TIME, $data);
 			Core::getUser()->rebuild();
 		}
@@ -112,7 +112,7 @@ class Game extends Application
 	 */
 	public static function unlock()
 	{
-		Core::getQuery()->update("user", array("db_lock" => 0), "userid = '".Core::getUser()->userid."'");
+		Core::getQuery()->update("user", array("db_lock" => 0), "userid = ?", array(Core::getUser()->userid));
 		return;
 	}
 

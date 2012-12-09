@@ -39,7 +39,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Colonize extends Bengine_Game_Even
 				$_result->closeCursor();
 				$points = ($shipData["basic_metal"] + $shipData["basic_silicon"] + $shipData["basic_hydrogen"]) * $colonyShip["quantity"] / 1000;
 				$fpoints = $colonyShip["quantity"];
-				Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - '".$points."', fpoints = fpoints - '".$fpoints."' WHERE userid = '".$event["userid"]."'");
+				Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ?, fpoints = fpoints - ? WHERE userid = ?", array($points, $fpoints, $event["userid"]));
 				if($data["ships"][$id]["quantity"] > 1)
 				{
 					$data["ships"][$id]["quantity"]--;

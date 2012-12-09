@@ -238,11 +238,11 @@ class Bengine_Game_Assault
 			{
 				if($row["quantity"] > 0)
 				{
-					Core::getQuery()->update("unit2shipyard", "quantity", $row["quantity"], "unitid = '".$row["unitid"]."' AND planetid = '".$this->location."'");
+					Core::getQuery()->update("unit2shipyard", "quantity", $row["quantity"], "unitid = ? AND planetid = ?", array($row["unitid"], $this->location));
 				}
 				else
 				{
-					Core::getQuery()->delete("unit2shipyard", "unitid = '".$row["unitid"]."' AND planetid = '".$this->location."'");
+					Core::getQuery()->delete("unit2shipyard", "unitid = ? AND planetid = ?", null, null, array($row["unitid"], $this->location));
 				}
 			}
 			$result->closeCursor();

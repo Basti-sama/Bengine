@@ -59,8 +59,8 @@ class Bengine_Admin_Controller_Globalmail extends Bengine_Admin_Controller_Abstr
 			return $this;
 		}
 
-		$sql = "INSERT INTO `".PREFIX."message` (`mode`, `time`, `sender`, `receiver`, `subject`, `message`, `read`) SELECT '1', '".TIME."', NULL, ".PREFIX."user.userid, '".$subject."', '".$message."', '0' FROM ".PREFIX."user";
-		Core::getDB()->query($sql);
+		$sql = "INSERT INTO `".PREFIX."message` (`mode`, `time`, `sender`, `receiver`, `subject`, `message`, `read`) SELECT ?, ?, NULL, ".PREFIX."user.userid, ?, ?, ? FROM ".PREFIX."user";
+		Core::getDB()->query($sql, array(1, TIME, $subject, $message, 0));
 		return $this;
 	}
 }

@@ -171,6 +171,19 @@ abstract class Recipe_Database_Abstract
 	abstract public function getDatabaseType();
 
 	/**
+	 * @param mixed $value
+	 * @return string
+	 */
+	abstract public function quote($value);
+
+	/**
+	 * @param string $text
+	 * @param mixed $value
+	 * @return string
+	 */
+	abstract public function quoteInto($text, $value);
+
+	/**
 	 * @param array|string|mixed $value
 	 * @return mixed
 	 */

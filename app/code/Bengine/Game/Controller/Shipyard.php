@@ -117,7 +117,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		}
 
 		// Output shipyard missions
-		Core::getQuery()->delete("shipyard", "finished <= '".TIME."'");
+		Core::getQuery()->delete("shipyard", "finished <= ?", null, null, array(TIME));
 		$missions = array();
 		$result = Core::getQuery()->select("shipyard s", array("s.quantity", "s.one", "s.time", "s.finished", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = s.unitid)", "s.planetid = '".Core::getUser()->get("curplanet")."' ORDER BY s.time ASC");
 		if($row = $result->fetchRow())
@@ -265,7 +265,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 						Game::getEH()->addEvent($mode, $time * $i + $latest, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), null, $data);
 					}
 					$planet = Game::getPlanet();
-					Core::getQuery()->update("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = '".Core::getUser()->get("curplanet")."'");
+					Core::getQuery()->update("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = ?", array(Core::getUser()->get("curplanet")));
 				}
 			}
 		}
@@ -390,19 +390,19 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 					$qty = $realUnits[$unitId];
 					if($unit->getQty() <= $qty)
 					{
-						Core::getQuery()->delete("unit2shipyard", "`unitid` = '{$unitId}' AND `planetid` = '".Core::getUser()->get("curplanet")."'");
+						Core::getQuery()->delete("unit2shipyard", "`unitid` = ? AND `planetid` = ?", null, null, array($unitId, Core::getUser()->get("curplanet")));
 					}
 					else
 					{
-						$sql = "UPDATE `".PREFIX."unit2shipyard` SET `quantity` = `quantity` - '{$qty}' WHERE `unitid` = '{$unitId}' AND `planetid` = '".Core::getUser()->get("curplanet")."'";
-						Core::getDatabase()->query($sql);
+						$sql = "UPDATE `".PREFIX."unit2shipyard` SET `quantity` = `quantity` - ? WHERE `unitid` = ? AND `planetid` = ?";
+						Core::getDatabase()->query($sql, array($qty, $unitId, Core::getUser()->get("curplanet")));
 					}
 				}
 			}
-			$sql = "UPDATE `".PREFIX."planet` SET `metal` = `metal` + '{$metalCredit}', `silicon` = `silicon` + '{$siliconCredit}', `hydrogen` = `hydrogen` + '{$hydrogenCredit}' WHERE `planetid` = '".Core::getUser()->get("curplanet")."'";
-			Core::getDatabase()->query($sql);
-			$sql = "UPDATE `".PREFIX."user` SET `points` = `points` - '{$points}' WHERE `userid` = '".Core::getUser()->get("userid")."'";
-			Core::getDatabase()->query($sql);
+			$sql = "UPDATE `".PREFIX."planet` SET `metal` = `metal` + ?, `silicon` = `silicon` + ?, `hydrogen` = `hydrogen` + ? WHERE `planetid` = ?";
+			Core::getDatabase()->query($sql, array($metalCredit, $siliconCredit, $hydrogenCredit, Core::getUser()->get("curplanet")));
+			$sql = "UPDATE `".PREFIX."user` SET `points` = `points` - ? WHERE `userid` = ?";
+			Core::getDatabase()->query($sql, array($points, Core::getUser()->get("userid")));
 			$this->redirect("game/".SID."/Shipyard");
 		}
 		$this->setTemplate("shipyard/change");

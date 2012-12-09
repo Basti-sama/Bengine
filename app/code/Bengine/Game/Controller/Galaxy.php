@@ -132,7 +132,7 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 				Logger::dieMessage("DEFICIENT_CONSUMPTION");
 			}
 			Game::getPlanet()->setData("hydrogen", Game::getPlanet()->getData("hydrogen") - 10);
-			Core::getDB()->query("UPDATE ".PREFIX."planet SET hydrogen = hydrogen - '10' WHERE planetid = '".Core::getUser()->get("curplanet")."'");
+			Core::getDB()->query("UPDATE ".PREFIX."planet SET hydrogen = hydrogen - ? WHERE planetid = ?", array(10, Core::getUser()->get("curplanet")));
 		}
 		return $this;
 	}

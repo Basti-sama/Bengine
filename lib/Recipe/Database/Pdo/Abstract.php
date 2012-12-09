@@ -166,6 +166,25 @@ abstract class Recipe_Database_Pdo_Abstract extends Recipe_Database_Abstract
 
 	/**
 	 * @param mixed $value
+	 * @return string
+	 */
+	public function quote($value)
+	{
+		return $this->pdo->quote($value);
+	}
+
+	/**
+	 * @param string $text
+	 * @param mixed $value
+	 * @return string
+	 */
+	public function quoteInto($text, $value)
+	{
+		return str_replace("?", $this->pdo->quote($value), $text);
+	}
+
+	/**
+	 * @param mixed $value
 	 * @return mixed
 	 */
 	public function escape($value)

@@ -92,7 +92,7 @@ class Bengine_Game_Model_Profile extends Recipe_Model_Abstract
 			}
 			else
 			{
-				Core::getQuery()->update("profile2user", array("data" => $this->getData()), "profile_id = '".$this->getProfileId()."' AND user_id = '".$this->getUserId()."'");
+				Core::getQuery()->update("profile2user", array("data" => $this->getData()), "profile_id = ? AND user_id = ?", array($this->getProfileId(), $this->getUserId()));
 			}
 		}
 		return parent::_afterSave();

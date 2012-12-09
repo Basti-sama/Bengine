@@ -63,11 +63,11 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 				$pointsLost += $destroyed[51] * $def[51]["basic_hydrogen"];
 				if($def[51]["quantity"] - $destroyed[51] <= 0)
 				{
-					Core::getQuery()->delete("unit2shipyard", "unitid = '51' AND planetid = '".$event["destination"]."'");
+					Core::getQuery()->delete("unit2shipyard", "unitid = ? AND planetid = ?", null, null, array(51, $event["destination"]));
 				}
 				else
 				{
-					Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - '".$destroyed[51]."' WHERE unitid = '51' AND planetid = '".$event["destination"]."'");
+					Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - ? WHERE unitid = ? AND planetid = ?", array($destroyed[51], 51, $event["destination"]));
 				}
 			}
 
@@ -93,11 +93,11 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 
 					if($def[$primaryTarget]["quantity"] - $destroyed[$primaryTarget] <= 0)
 					{
-						Core::getQuery()->delete("unit2shipyard", "unitid = '".$primaryTarget."' AND planetid = '".$event["destination"]."'");
+						Core::getQuery()->delete("unit2shipyard", "unitid = ? AND planetid = ?", null, null, array($primaryTarget, $event["destination"]));
 					}
 					else
 					{
-						Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - '".$destroyed[$primaryTarget]."' WHERE unitid = '".$primaryTarget."' AND planetid = '".$event["destination"]."'");
+						Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - ? WHERE unitid = ? AND planetid = ?", array($destroyed[$primaryTarget], $primaryTarget, $event["destination"]));
 					}
 
 					$pointsLost += $destroyed[$primaryTarget] * $def[$primaryTarget]["basic_metal"];
@@ -125,11 +125,11 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 
 					if($value["quantity"] - $destroyed[$key] <= 0)
 					{
-						Core::getQuery()->delete("unit2shipyard", "unitid = '".$key."' AND planetid = '".$event["destination"]."'");
+						Core::getQuery()->delete("unit2shipyard", "unitid = ? AND planetid = ?", null, null, array($key, $event["destination"]));
 					}
 					else
 					{
-						Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - '".$destroyed[$key]."' WHERE unitid = '".$key."' AND planetid = '".$event["destination"]."'");
+						Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - ? WHERE unitid = ? AND planetid = ?", array($destroyed[$key], $key, $event["destination"]));
 					}
 
 					$pointsLost += $destroyed[$key] * $value["basic_metal"];
@@ -180,12 +180,12 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 
 		// Update points for defender
 		$pointsLost /= 1000;
-		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - '".$pointsLost."' WHERE userid = '".$event["destination_user_id"]."'");
+		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ? WHERE userid = ?", array($pointsLost, $event["destination_user_id"]));
 
 		// Update points for attacker
 		$points = $data["rockets"] * $data["basic_metal"] + $data["rockets"] * $data["basic_silicon"] + $data["rockets"] * $data["basic_hydrogen"];
 		$points /= 1000;
-		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - '".$points."' WHERE userid = '".$event["userid"]."'");
+		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ? WHERE userid = ?", array($points, $event["userid"]));
 		return $this;
 	}
 
@@ -195,7 +195,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 	 */
 	protected function _add(Bengine_Game_Model_Event $event, array $data)
 	{
-		Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - '".$data["rockets"]."' WHERE unitid = '52' AND planetid = '".$event->getPlanetid()."'");
+		Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - ? WHERE unitid = ? AND planetid = ?", array($data["rockets"], 52, $event->getPlanetid()));
 		Core::getQuery()->delete("unit2shipyard", "quantity = '0'");
 		return $this;
 	}

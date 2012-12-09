@@ -77,7 +77,7 @@ class Bengine_Game_Controller_MonitorPlanet extends Bengine_Game_Controller_Abst
 	 */
 	protected function subtractHydrogen()
 	{
-		Core::getDB()->query("UPDATE ".PREFIX."planet SET hydrogen = hydrogen - '".Core::getOptions()->get("STAR_SURVEILLANCE_CONSUMPTION")."' WHERE planetid = '".Core::getUser()->get("curplanet")."'");
+		Core::getDB()->query("UPDATE ".PREFIX."planet SET hydrogen = hydrogen - ? WHERE planetid = ?", array(Core::getOptions()->get("STAR_SURVEILLANCE_CONSUMPTION"), Core::getUser()->get("curplanet")));
 		return $this;
 	}
 

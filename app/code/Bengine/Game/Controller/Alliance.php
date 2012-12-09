@@ -125,7 +125,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 	{
 		foreach($alliance as $aid)
 		{
-			Core::getQuery()->delete("allyapplication", "userid = '".Core::getUser()->get("userid")."' AND aid = '".$aid."'");
+			Core::getQuery()->delete("allyapplication", "userid = ? AND aid = ?", null, null, array(Core::getUser()->get("userid"), $aid));
 		}
 		return $this;
 	}
@@ -437,7 +437,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 				$_result = Core::getQuery()->select("ally_relationship_type", array("type_id"), "", "confirm_end = '".$row["type_id"]."'");
 				if($_row = $_result->fetchRow())
 				{
-					Core::getQuery()->delete("ally_relationships", "((rel1 = '".$this->aid."' AND rel2 = '".$candidateAlly."') OR (rel1 = '".$candidateAlly."' AND rel2 = '".$this->aid."')) AND mode = '".$_row["type_id"]."'");
+					Core::getQuery()->delete("ally_relationships", "((rel1 = ? AND rel2 = ?) OR (rel1 = ? AND rel2 = ?)) AND mode = ?", null, null, array($this->aid, $candidateAlly, $candidateAlly, $this->aid, $row["type_id"]));
 				}
 				$this->deleteAllyRelationApplication($this->aid, $candidateAlly);
 			}
@@ -487,7 +487,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 	protected function deleteAllyRelationApplication($aid1, $aid2)
 	{
 		Hook::event("DeleteAllianceRelation", array($aid1, $aid2));
-		Core::getQuery()->delete("ally_relationships_application", "(request_ally = '".$aid1."' AND candidate_ally = '".$aid2."') OR (request_ally = '".$aid2."' AND candidate_ally = '".$aid1."')");
+		Core::getQuery()->delete("ally_relationships_application", "(request_ally = ? AND candidate_ally = ?) OR (request_ally = ? AND candidate_ally = ?)", null, null, array($aid1, $aid2, $aid2, $aid1));
 		return $this;
 	}
 
@@ -564,7 +564,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			$this->aid = Core::getUser()->get("aid");
 			Hook::event("DetermineAllianceRelation");
 			// TODO: Improve check
-			Core::getQuery()->delete("ally_relationships", "relid = '".$relid."' AND mode != '3' AND (rel1 = '".$this->aid."' OR rel2 = '".$this->aid."')");
+			Core::getQuery()->delete("ally_relationships", "relid = ? AND mode != ? AND (rel1 = ? OR rel2 = ?)", null, null, array($relid, 3, $this->aid, $this->aid));
 			$this->redirect("game/".SID."/Alliance/Diplomacy");
 		}
 		Logger::addMessage("CANNOT_DELETE_RELATIONSHIP");
@@ -730,7 +730,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 					{
 						if($rankid = Core::getRequest()->getPOST("rank_".$row["userid"]))
 						{
-							Core::getQuery()->update("user2ally", array("rank" => $rankid), "userid = '".$row["userid"]."' AND aid = '".$this->aid."'");
+							Core::getQuery()->update("user2ally", array("rank" => $rankid), "userid = ? AND aid = ?", array($row["userid"], $this->aid));
 						}
 					}
 					$result->closeCursor();
@@ -743,8 +743,8 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 						{
 							$kickuserid = Str::replace("kick_", "", $key);
 							Hook::event("KickMember", array($kickuserid));
-							Core::getQuery()->delete("user2ally", "userid = '".$kickuserid."' AND aid = '".$this->aid."'");
-							$_result = Core::getQuery()->select("user2ally", "userid", "", "aid = '".$this->aid."'");
+							Core::getQuery()->delete("user2ally", "userid = ? AND aid = ?", null, null, array($kickuserid, $this->aid));
+							$_result = Core::getQuery()->select("user2ally", "userid", "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 							foreach($_result->fetchAll() as $_row)
 							{
 								new Bengine_Game_AutoMsg(102, $_row["userid"], TIME, array());
@@ -876,7 +876,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			}
 		}
 		Hook::event("UpdateAllianceTag", array(&$tag, $otag));
-		Core::getQuery()->update("alliance", array("tag" => $tag), "aid = '".$this->aid."'");
+		Core::getQuery()->update("alliance", array("tag" => $tag), "aid = ?", array($this->aid));
 		return $tag;
 	}
 
@@ -909,7 +909,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			}
 		}
 		Hook::event("UpdateAllianceName", array(&$name, $oname));
-		Core::getQuery()->update("alliance", array("name" => $name), "aid = '".$this->aid."'");
+		Core::getQuery()->update("alliance", array("name" => $name), "aid = ?", array($this->aid));
 		return $name;
 	}
 
@@ -956,13 +956,13 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 				"textintern" => richText($textintern),
 				"applicationtext" => Str::validateXHTML($applicationtext),
 				"homepage" => $homepage,
-				"showmember" => $showhomepage,
+				"showmember" => $showmember,
 				"showhomepage" => $showhomepage,
 				"memberlistsort" => $memberlistsort,
 				"open" => $open,
 				"foundername" => Str::validateXHTML($foundername),
 			);
-			Core::getQuery()->update("alliance", $spec, "aid = '".$this->aid."'");
+			Core::getQuery()->update("alliance", $spec, "aid = ?", array($this->aid));
 			$this->redirect("game/".SID."/Alliance/Manage");
 		}
 		else
@@ -1034,7 +1034,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 						"CAN_SEE_ONLINE_STATE" => $can_see_onlie_state,
 						"CAN_WRITE_GLOBAL_MAILS" => $can_write_global_mails
 					);
-					Core::getQuery()->update("allyrank", $spec, "rankid = '".$row["rankid"]."' AND aid = '".$this->aid."'");
+					Core::getQuery()->update("allyrank", $spec, "rankid = ? AND aid = ?", array($row["rankid"], $this->aid));
 				}
 				$result->closeCursor();
 			}
@@ -1042,7 +1042,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			{
 				foreach($post as $key => $value)
 				{
-					if(preg_match("#^delete\_#i", $key)) { Core::getQuery()->delete("allyrank", "rankid = '".Str::replace("delete_", "", $key)."' AND aid = '".$this->aid."'"); break; }
+					if(preg_match("#^delete\_#i", $key)) { Core::getQuery()->delete("allyrank", "rankid = ? AND aid = ?", null, null, array(Str::replace("delete_", "", $key), $this->aid)); break; }
 				}
 			}
 
@@ -1170,13 +1170,13 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 							new Bengine_Game_AutoMsg(100, $_row["userid"], TIME, $row);
 						}
 						$_result->closeCursor();
-						Core::getQuery()->delete("allyapplication", "userid = '".$userid."'");
+						Core::getQuery()->delete("allyapplication", "userid = ?", null, null, array($userid));
 					}
 					else
 					{
 						Hook::event("RejectAllianceCandidate", array($userid, $row));
 						new Bengine_Game_AutoMsg(25, $userid, TIME, $row);
-						Core::getQuery()->delete("allyapplication", "userid = '".$userid."' AND aid = '".$this->aid."'");
+						Core::getQuery()->delete("allyapplication", "userid = ? AND aid = ?", null, null, array($userid, $this->aid));
 					}
 				}
 				$result->closeCursor();
@@ -1230,7 +1230,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		{
 			if($row["founder"] != Core::getUser()->get("userid"))
 			{
-				Core::getQuery()->delete("user2ally", "userid = '".Core::getUser()->get("userid")."'");
+				Core::getQuery()->delete("user2ally", "userid = ?", null, null, array(Core::getUser()->get("userid")));
 				Core::getUser()->rebuild();
 				Hook::event("LeaveAlliance", array($row));
 				$_result = Core::getQuery()->select("user2ally", "userid", "", "aid = '".$this->aid."'");
@@ -1269,8 +1269,8 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 				{
 					$result->closeCursor();
 					Hook::event("PassFounderStatus", array($row));
-					Core::getQuery()->update("alliance", array("founder" => $userid), "aid = '".Core::getUser()->get("aid")."'");
-					Core::getQuery()->update("user2ally", array("rank" => $row["rank"]), "aid = '".Core::getUser()->get("aid")."' AND userid = '".Core::getUser()->get("userid")."'");
+					Core::getQuery()->update("alliance", array("founder" => $userid), "aid = ?", array(Core::getUser()->get("aid")));
+					Core::getQuery()->update("user2ally", array("rank" => $row["rank"]), "aid = ? AND userid = ?", array(Core::getUser()->get("aid"), Core::getUser()->get("userid")));
 				}
 			}
 		}

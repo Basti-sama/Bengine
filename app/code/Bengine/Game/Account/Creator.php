@@ -208,7 +208,7 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Account_Ajax
 		Core::getQuery()->insert("password", array("userid" => $userid, "password" => $this->getPassword(true), "time" => TIME));
 		$planet = $this->getPlanetCreator($userid);
 		$planetid = $planet->getPlanetId();
-		Core::getQuery()->update("user", array("curplanet" => $planetid, "hp" => $planetid), "userid = '".$userid."'");
+		Core::getQuery()->update("user", array("curplanet" => $planetid, "hp" => $planetid), "userid = ?", array($userid));
 
 		// First user obtains admin permissions
 		if($this->getTotalUser() <= 0)
@@ -220,7 +220,7 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Account_Ajax
 		Core::getQuery()->insert("message", array("mode" => 1, "time" => TIME, "sender" => null, "receiver" => $userid, "message" => Core::getLang()->getItem("START_UP_MESSAGE"), "subject" => Core::getLang()->getItem("START_UP_MESSAGE_SUBJECT"), "read" => 0));
 		Hook::event("UserRegistrationSuccess", array($this, $planet));
 		// Delete Registrations older than 7 days
-		Core::getQuery()->delete("registration", "time < '".(TIME - 604800)."'");
+		Core::getQuery()->delete("registration", "time < ?", null, null, array(TIME - 604800));
 		if(!Core::getConfig()->get("EMAIL_ACTIVATION_DISABLED"))
 		{
 			$this->printIt("SUCCESS_REGISTRATION");

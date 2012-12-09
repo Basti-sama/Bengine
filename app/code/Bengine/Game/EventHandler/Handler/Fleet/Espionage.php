@@ -47,8 +47,8 @@ class Bengine_Game_EventHandler_Handler_Fleet_Espionage extends Bengine_Game_Eve
 				$tfSilicon = $shipData["basic_silicon"] * $ship["quantity"] * $intoTF;
 			}
 			$what = $event->get("destination_ismoon") ? "moonid" : "planetid";
-			Core::getDB()->query("UPDATE ".PREFIX."galaxy SET metal = metal + '".$tfMetal."', silicon = silicon + '".$tfSilicon."' WHERE ".$what." = '".$event["destination"]."'");
-			Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - '".$points."', fpoints = fpoints - '".$fpoints."' WHERE userid = '".$event["userid"]."'");
+			Core::getDB()->query("UPDATE ".PREFIX."galaxy SET metal = metal + ?, silicon = silicon + ? WHERE ".$what." = ?", array($tfMetal, $tfSilicon, $event["destination"]));
+			Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ?, fpoints = fpoints - ? WHERE userid = ?", array($points, $fpoints, $event["userid"]));
 		}
 		else
 		{

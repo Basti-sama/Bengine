@@ -40,7 +40,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Recycling extends Bengine_Game_Eve
 
 			if($_row["silicon"] != 0 || $_row["metal"] != 0)
 			{
-				Core::getQuery()->update("galaxy", array("metal" => $restMetal, "silicon" => $restSilicon), "galaxy = '".$data["galaxy"]."' AND system = '".$data["system"]."' AND position = '".$data["position"]."'");
+				Core::getQuery()->update("galaxy", array("metal" => $restMetal, "silicon" => $restSilicon), "galaxy = ? AND system = ? AND position = ?", array($data["galaxy"], $data["system"], $data["position"]));
 			}
 		}
 		new Bengine_Game_AutoMsg($event["mode"], $event["userid"], $event["time"], $data);

@@ -233,11 +233,11 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 	protected function saveUser($userid, $username, $email, $languageid, $templatepackage, $ipcheck, $password)
 	{
 		$spec = array("username" => $username, "email" => $email, "languageid" => $languageid, "templatepackage" => $templatepackage, "ipcheck" => $ipcheck);
-		Core::getQuery()->update("user", $spec, "userid = '".$userid."'");
+		Core::getQuery()->update("user", $spec, "userid = ?", array($userid));
 		if($password != "")
 		{
 			$password = Str::encode($password, Core::getConfig()->get("USE_PASSWORD_SALT") ? "md5_salt" : "md5");
-			Core::getQuery()->update("password", array("password" => $password, "time" => TIME), "userid = '".$userid."'");
+			Core::getQuery()->update("password", array("password" => $password, "time" => TIME), "userid = ?", array($userid));
 		}
 		return $this;
 	}
@@ -250,9 +250,9 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 	{
 		foreach($users as $userid)
 		{
-			Core::getQuery()->delete("user2group", "userid = '".$userid."'");
-			Core::getQuery()->delete("password", "userid = '".$userid."'");
-			Core::getQuery()->delete("user", "userid = '".$userid."'");
+			Core::getQuery()->delete("user2group", "userid = ?", null, null, array($userid));
+			Core::getQuery()->delete("password", "userid = ?", null, null, array($userid));
+			Core::getQuery()->delete("user", "userid = ?", null, null, array($userid));
 		}
 		return $this;
 	}
@@ -264,7 +264,7 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function deletefromgroupAction($userid, $groupid)
 	{
-		Core::getQuery()->delete("user2group", "userid = '".$userid."' AND usergroupid = '".$groupid."'");
+		Core::getQuery()->delete("user2group", "userid = ? AND usergroupid = ?", null, null, array($userid, $groupid));
 		$this->redirect("admin/user/edit/".$userid);
 		return $this;
 	}

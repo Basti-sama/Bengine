@@ -142,7 +142,7 @@ class Bengine_Game_Controller_Resource extends Bengine_Game_Controller_Abstract
 				{
 					$factor = abs((isset($post[$key])) ? $post[$key] : 100);
 					$factor = ($factor > 100) ? 100 : $factor;
-					Core::getQuery()->update("building2planet", array("prod_factor" => $factor), "buildingid = '".$key."' AND planetid = '".Core::getUser()->get("curplanet")."'");
+					Core::getQuery()->update("building2planet", array("prod_factor" => $factor), "buildingid = ? AND planetid = ?", array($key, Core::getUser()->get("curplanet")));
 				}
 			}
 
@@ -150,7 +150,7 @@ class Bengine_Game_Controller_Resource extends Bengine_Game_Controller_Abstract
 			{
 				$satelliteProd = abs($post[39]);
 				$satelliteProd = ($satelliteProd > 100) ? 100 : $satelliteProd;
-				Core::getQuery()->update("planet", array("solar_satellite_prod" => $satelliteProd), "planetid = '".Core::getUser()->get("curplanet")."'");
+				Core::getQuery()->update("planet", array("solar_satellite_prod" => $satelliteProd), "planetid = ?", array(Core::getUser()->get("curplanet")));
 			}
 		}
 		$this->redirect("game/".SID."/Resource");

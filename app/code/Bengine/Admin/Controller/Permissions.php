@@ -56,11 +56,11 @@ class Bengine_Admin_Controller_Permissions extends Bengine_Admin_Controller_Abst
 	{
 		foreach($delete as $pid)
 		{
-			Core::getQuery()->delete("permissions", "permissionid = '".$pid."'");
+			Core::getQuery()->delete("permissions", "permissionid = ?", null, null, array($pid));
 		}
 		foreach($perms as $pid)
 		{
-			Core::getQuery()->update("permissions", array("permission" => Core::getRequest()->getPOST("perm_".$pid)), "permissionid = '".$pid."'");
+			Core::getQuery()->update("permissions", array("permission" => Core::getRequest()->getPOST("perm_".$pid)), "permissionid = ?", array($pid));
 		}
 		return $this;
 	}

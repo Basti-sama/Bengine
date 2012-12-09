@@ -142,7 +142,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 			if($row = $result->fetchRow())
 			{
 				Hook::event("RemoveFromBuddyList", array($relid));
-				Core::getQuery()->delete("buddylist", "relid = '".$relid."'");
+				Core::getQuery()->delete("buddylist", "relid = ?", null, null, array($relid));
 
 				/* @var Bengine_Game_Model_Message $pm */
 				$pm = Game::getModel("game/message");
@@ -176,8 +176,8 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 		if(!empty($relid) && is_numeric($relid))
 		{
 			Hook::event("AcceptBuddyListRequest", array($relid));
-			$where = "relid = '".$relid."' AND friend2 = '".Core::getUser()->get("userid")."'";
-			Core::getQuery()->update("buddylist", array("accepted" => 1), $where);
+			$where = "relid = ? AND friend2 = ?";
+			Core::getQuery()->update("buddylist", array("accepted" => 1), $where, array($relid, Core::getUser()->get("userid")));
 			$result = Core::getQuery()->select("buddylist", array("friend1"), "", $where);
 			if($friend = $result->fetchColumn())
 			{

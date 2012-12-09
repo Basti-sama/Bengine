@@ -77,7 +77,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			$fleetEvents = (!is_array($fleetEvents)) ? array() : $fleetEvents;
 			Hook::event("ShowAllMissions", array(&$fleetEvents));
 			Core::getTPL()->addLoop("missions", $fleetEvents);
-			Core::getQuery()->delete("temp_fleet", "planetid = '".Core::getUser()->get("curplanet")."'");
+			Core::getQuery()->delete("temp_fleet", "planetid = ?", null, null, array(Core::getUser()->get("curplanet")));
 
 			/* @var Bengine_Game_Model_Collection_Fleet $fleet */
 			$fleet = Game::getModel("game/fleet")->getCollection();
@@ -119,7 +119,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 		$data = array(
 			"ships" => array()
 		);
-		Core::getQuery()->delete("temp_fleet", "planetid = '".Core::getUser()->get("curplanet")."'");
+		Core::getQuery()->delete("temp_fleet", "planetid = ?", null, null, array(Core::getUser()->get("curplanet")));
 		$select = array("u2s.unitid", "u2s.quantity", "d.capicity", "d.speed", "d.consume", "b.name");
 		$joins  = "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)";
 		$joins .= "LEFT JOIN ".PREFIX."ship_datasheet d ON (d.unitid = u2s.unitid)";
@@ -350,7 +350,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 				$data["amissions"][] = $key;
 			}
 
-			Core::getQuery()->update("temp_fleet", array("data" => serialize($data)), "planetid = '".Core::getUser()->get("curplanet")."'");
+			Core::getQuery()->update("temp_fleet", array("data" => serialize($data)), "planetid = ?", array(Core::getUser()->get("curplanet")));
 
 			$distance = Game::getDistance($galaxy, $system, $position);
 			$consumption = Game::getFlyConsumption($data["consumption"], $distance, $speed);
@@ -524,7 +524,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			}
 
 			Hook::event("SendFleet", array(&$data, &$time, &$temp, $distance));
-			Core::getQuery()->delete("temp_fleet", "planetid = '".Core::getUser()->get("curplanet")."'");
+			Core::getQuery()->delete("temp_fleet", "planetid = ?", null, null, array(Core::getUser()->get("curplanet")));
 			Game::getEH()->addEvent($mode, $time + TIME, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), (isset($temp["destination"])) ? $temp["destination"] : null, $data);
 
 			Core::getTPL()->assign("mission", Game::getMissionName($mode));
@@ -592,7 +592,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			if(count($invitation) <= 0)
 			{
 				Core::getQuery()->insert("attack_formation", array("eventid" => $eventid, "time" => $row["time"]));
-				Core::getQuery()->update("events", array("mode" => 12), "eventid = '".$eventid."'");
+				Core::getQuery()->update("events", array("mode" => 12), "eventid = ?", array($eventid));
 				$name = $eventid;
 				Core::getQuery()->insert("formation_invitation", array("eventid" => $eventid, "userid" => Core::getUser()->get("userid")));
 				$invitation[0]["userid"] = Core::getUser()->get("userid");
@@ -637,7 +637,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			if(Str::length($name) > 0 && Str::length($name) <= 128)
 			{
 				$name = Str::validateXHTML($name);
-				Core::getQuery()->update("attack_formation", array("name" => $name), "eventid = '".$eventid."'");
+				Core::getQuery()->update("attack_formation", array("name" => $name), "eventid = ?", array($eventid));
 			}
 			else
 			{
@@ -690,14 +690,14 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 				{
 					throw new Recipe_Exception_Generic("Sorry, you have been attacked. Process stopped.");
 				}
-				Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - '".$value["quantity"]."' WHERE unitid = '".$key."' AND planetid = '".Core::getUser()->get("curplanet")."'");
+				Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - ? WHERE unitid = ? AND planetid = ?", array($value["quantity"], $key, Core::getUser()->get("curplanet")));
 				/* @var Bengine_Game_Model_Collection_Fleet $shipyard */
 				$shipyard = Game::getCollection("game/fleet");
 				$shipyard->addPlanetFilter($moonid);
 				$shipyard->getSelect()->where("u2s.unitid = ?", $key);
 				if($shipyard->count() > 0)
 				{
-					Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity + '{$value["quantity"]}' WHERE planetid = '{$moonid}' AND unitid = '{$key}'");
+					Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity + ? WHERE planetid = ? AND unitid = ?", array($value["quantity"], $moonid, $key));
 				}
 				else
 				{
@@ -705,9 +705,9 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 				}
 			}
 
-			Core::getQuery()->delete("unit2shipyard", "quantity = '0'");
+			Core::getQuery()->delete("unit2shipyard", "quantity = ?", null, null, array(0));
 			Core::getQuery()->insert("stargate_jump", array("planetid" => Core::getUser()->get("curplanet"), "time" => TIME, "data" => serialize($temp)));
-			Core::getQuery()->delete("temp_fleet", "planetid = '".Core::getUser()->get("curplanet")."'");
+			Core::getQuery()->delete("temp_fleet", "planetid = ?", null, null, array(Core::getUser()->get("curplanet")));
 			Logger::addMessage("JUMP_SUCCESSFUL", "success");
 		}
 		return $this;
@@ -724,7 +724,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	{
 		$this->noAction = true;
 		$data = array();
-		Core::getQuery()->delete("temp_fleet", "planetid = '".Core::getUser()->get("curplanet")."'");
+		Core::getQuery()->delete("temp_fleet", "planetid = ?", null, null, array(Core::getUser()->get("curplanet")));
 		$select = array("u2s.unitid", "u2s.quantity", "d.capicity", "d.speed", "d.consume", "b.name");
 		$joins  = "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)";
 		$joins .= "LEFT JOIN ".PREFIX."ship_datasheet d ON (d.unitid = u2s.unitid)";

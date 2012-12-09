@@ -409,7 +409,7 @@ class Bengine_Game_Planet
 			"hydrogen" => $this->data["hydrogen"],
 			"last" => TIME
 		);
-		Core::getQuery()->update("planet", $spec, "planetid = '".$this->planetid."'");
+		Core::getQuery()->update("planet", $spec, "planetid = ?", array($this->planetid));
 
 		// Truncate resources.
 		$this->data["metal"] = floor($this->data["metal"]);

@@ -25,7 +25,7 @@ class Bengine_Game_Controller_Logout extends Bengine_Game_Controller_Abstract
 	{
 		Hook::event("DoLogout");
 		Core::getCache()->cleanUserCache(Core::getUser()->get("userid"));
-		Core::getQuery()->update("sessions", array("logged" => 0), "userid = '".Core::getUser()->get("userid")."'");
+		Core::getQuery()->update("sessions", array("logged" => 0), "userid = ?", array(Core::getUser()->get("userid")));
 		if(Core::getConfig()->exists("SESSION_SAVING_DAYS"))
 		{
 			$days = (int) Core::getConfig()->get("SESSION_SAVING_DAYS");
@@ -35,7 +35,7 @@ class Bengine_Game_Controller_Logout extends Bengine_Game_Controller_Abstract
 			$days = self::SESSION_SAVING_DAYS;
 		}
 		$deleteTime = TIME - 86400 * $days;
-		Core::getQuery()->delete("sessions", "time < '".$deleteTime."'");
+		Core::getQuery()->delete("sessions", "time < ?", null, null, array($deleteTime));
 		Game::unlock();
 		$this->redirect(BASE_URL);
 		return $this;

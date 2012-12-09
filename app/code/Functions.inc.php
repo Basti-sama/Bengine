@@ -370,7 +370,7 @@ function deleteAlliance($aid)
 	{
 		new Bengine_Game_AutoMsg(23, $row["userid"], TIME, $row);
 	}
-	Core::getQuery()->delete("alliance", "aid = '".$aid."'");
+	Core::getQuery()->delete("alliance", "aid = ?", null, null, array($aid));
 	Hook::event("DeleteAlliance", array($aid));
 	return;
 }
@@ -391,19 +391,19 @@ function deletePlanet($id, $userid, $ismoon)
 	$fpoints = Bengine_Game_PointRenewer::getFleetPoints_Fleet($id);
 	if(!$ismoon)
 	{
-		$result = Core::getQuery()->select("galaxy", "moonid", "", "planetid = '".$id."'");
+		$result = Core::getQuery()->select("galaxy", "moonid", "", Core::getDB()->quoteInto("planetid = ?", $id));
 		$row = $result->fetchRow();
 		if($row["moonid"]) { deletePlanet($row["moonid"], $userid, 1); }
 	}
-	Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - '".$points."', fpoints = fpoints - '".$fpoints."' WHERE userid = '".$userid."'");
-	Core::getQuery()->update("planet", array("userid"), array(null), "planetid = '".$id."'");
+	Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ?, fpoints = fpoints - ? WHERE userid = ?", array($points, $fpoints, $userid));
+	Core::getQuery()->update("planet", array("userid"), array(null), "planetid = ?", array($id));
 	if($ismoon)
 	{
-		Core::getQuery()->update("galaxy", array("moonid"), array(null), "moonid = '".$id."'");
+		Core::getQuery()->update("galaxy", array("moonid"), array(null), "moonid = ?", array($id));
 	}
 	else
 	{
-		Core::getQuery()->update("galaxy", array("destroyed"), array(1), "planetid = '".$id."'");
+		Core::getQuery()->update("galaxy", array("destroyed"), array(1), "planetid = ?", array($id));
 	}
 	Hook::event("DeletePlanet", array($id, $userid, $ismoon));
 	return;
@@ -542,13 +542,14 @@ function isValidImageURL($string)
  */
 function setProdOfUser($userid, $prod)
 {
-	$sql = "UPDATE `".PREFIX."building2planet` b2p, `".PREFIX."planet` p SET b2p.`prod_factor` = '".$prod."' WHERE b2p.`planetid` = p.`planetid` AND p.`userid` = '".$userid."'";
-	try { Core::getDB()->query($sql); }
-	catch(Recipe_Exception_Generic $e)
-	{
+	$sql = "UPDATE `".PREFIX."building2planet` b2p, `".PREFIX."planet` p SET b2p.`prod_factor` = ? WHERE b2p.`planetid` = p.`planetid` AND p.`userid` = ?";
+	try {
+		Core::getDB()->query($sql, array($prod, $userid));
+	}
+	catch(Recipe_Exception_Generic $e) {
 		$e->printError();
 	}
-	Core::getQuery()->update("planet", array("solar_satellite_prod"), array($prod), "userid = '".$userid."'");
+	Core::getQuery()->update("planet", array("solar_satellite_prod" => $prod), "userid = ?", array($userid));
 	return;
 }
 

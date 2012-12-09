@@ -34,7 +34,7 @@ class Bengine_Game_Cronjob_PointClean extends Recipe_CronjobAbstract
 			$points += Bengine_Game_PointRenewer::getFleetEventPoints($_row["userid"]);
 			$fpoints += Bengine_Game_PointRenewer::getFleetEvent_Fleet($_row["userid"]);
 			$rpoints = Bengine_Game_PointRenewer::getResearchPoints_r($_row["userid"]);
-			Core::getQuery()->update("user", array("points" => $points, "fpoints" => $fpoints, "rpoints" => $rpoints), "userid = '".$_row["userid"]."'");
+			Core::getQuery()->update("user", array("points" => $points, "fpoints" => $fpoints, "rpoints" => $rpoints), "userid = ?", array($_row["userid"]));
 		}
 		$_result->closeCursor();
 		return $this;

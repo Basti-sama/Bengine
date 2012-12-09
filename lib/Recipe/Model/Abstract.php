@@ -235,7 +235,7 @@ abstract class Recipe_Model_Abstract extends Object
 		$this->_beforeSave();
 		if($this->getId())
 		{
-			$this->getResource()->update($this->get(), $this->getPrimaryKey()." = '".$this->getId()."'");
+			$this->getResource()->update($this->get(), $this->getPrimaryKey()." = ?", array($this->getId()));
 		}
 		else
 		{

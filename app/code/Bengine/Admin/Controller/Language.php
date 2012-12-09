@@ -87,11 +87,11 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 	{
 		foreach($delete as $id)
 		{
-			Core::getQuery()->delete("phrasesgroups", "phrasegroupid = '".$id."'");
+			Core::getQuery()->delete("phrasesgroups", "phrasegroupid = ?", null, null, array($id));
 		}
 		foreach($groups as $id)
 		{
-			Core::getQuery()->update("groupid", array("title" => Core::getRequest()->getPOST("title_".$id)), "phrasegroupid = '".$id."'");
+			Core::getQuery()->update("groupid", array("title" => Core::getRequest()->getPOST("title_".$id)), "phrasegroupid = ?", array($id));
 		}
 		return $this;
 	}
@@ -132,12 +132,12 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 	{
 		foreach($delete as $id)
 		{
-			Core::getQuery()->delete("languages", "languageid = '".$id."'");
+			Core::getQuery()->delete("languages", "languageid = ?", null, null, array($id));
 		}
 		foreach($langs as $id)
 		{
 			$spec = array("title" => Core::getRequest()->getPOST("title_".$id), "charset" => Core::getRequest()->getPOST("charset_".$id));
-			Core::getQuery()->update("languages", $spec, "languageid = '".$id."'");
+			Core::getQuery()->update("languages", $spec, "languageid = ?", array($id));
 		}
 		return $this;
 	}
@@ -279,7 +279,7 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 	 */
 	protected function deletephraseAction($langid, $phraseid, $id)
 	{
-		Core::getQuery()->delete("phrases", "phraseid = '".$id."'");
+		Core::getQuery()->delete("phrases", "phraseid = ?", null, null, array($id));
 		$this->redirect("admin/language/showfromgroup/".$langid."/".$phraseid."/".$id);
 		return $this;
 	}
@@ -293,7 +293,7 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 		foreach($phraseids as $id)
 		{
 			$spec = array("languageid" => Core::getRequest()->getPOST("language_".$id), "phrasegroupid" => Core::getRequest()->getPOST("phrasegroup_".$id), "title" => Core::getRequest()->getPOST("title_".$id), "content" => Core::getRequest()->getPOST("content_".$id));
-			Core::getQuery()->update("phrases", $spec, "phraseid = '".$id."'");
+			Core::getQuery()->update("phrases", $spec, "phraseid = ?", array($id));
 		}
 		Admin::rebuildCache("lang", array(
 			"language" => Core::getRequest()->getGET("1")

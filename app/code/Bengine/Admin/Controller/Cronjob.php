@@ -159,7 +159,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 			$day = implode(",", $day);
 			$weekday = implode(",", $weekday);
 			$spec = array("class" => $class, "month" => $month, "day" => $day, "weekday" => $weekday, "hour" => $hour, "minute" => $minute, "active" => 0);
-			Core::getQuery()->update("cronjob", $spec, "cronid = '".$cronid."'");
+			Core::getQuery()->update("cronjob", $spec, "cronid = ?", array($cronid));
 		}
 		else
 		{
@@ -205,7 +205,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 		{
 			$row["xtime"] = TIME;
 			$next = Core::getCron()->calcNextExeTime($row);
-			Core::getQuery()->update("cronjob", array("xtime" => $next, "active" => 1), "cronid = '".$cronid."'");
+			Core::getQuery()->update("cronjob", array("xtime" => $next, "active" => 1), "cronid = ?", array($cronid));
 		}
 		$this->redirect("admin/cronjob");
 		return $this;
@@ -217,7 +217,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function disableAction($cronid)
 	{
-		Core::getQuery()->update("cronjob", array("active" => 0), "cronid = '".$cronid."'");
+		Core::getQuery()->update("cronjob", array("active" => 0), "cronid = ?", array($cronid));
 		$this->redirect("admin/cronjob");
 		return $this;
 	}
@@ -228,7 +228,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function deleteAction($cronid)
 	{
-		Core::getQuery()->delete("cronjob", "cronid = '".$cronid."'");
+		Core::getQuery()->delete("cronjob", "cronid = ?", null, null, array($cronid));
 		$this->redirect("admin/cronjob");
 		return $this;
 	}

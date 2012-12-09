@@ -202,8 +202,8 @@ class Login
 			if(Str::compare($row["username"], $this->usr) && Str::compare($row["password"], $this->pw))
 			{
 				$this->userid = $row["userid"];
-				Core::getQuery()->delete("loginattempts", "ip = '".IPADDRESS."' OR username = '".$this->usr."'");
-				Core::getQuery()->update("sessions", array("logged" => "0"), "userid = '".$this->userid."'");
+				Core::getQuery()->delete("loginattempts", "ip = ? OR username = ?", null, null, array(IPADDRESS, $this->usr));
+				Core::getQuery()->update("sessions", array("logged" => "0"), "userid = ?", array($this->userid));
 				$this->canLogin = true;
 			}
 			else
@@ -236,7 +236,7 @@ class Login
 
 		// Disables old sessions.
 		if($this->cacheActive) { Core::getCache()->cleanUserCache($this->userid); }
-		Core::getQuery()->update("sessions", array("logged" => 0), "userid = '".$this->userid."'");
+		Core::getQuery()->update("sessions", array("logged" => 0), "userid = ?", array($this->userid));
 
 		// Start new session.
 		$sessionSeed = Str::encode((string) microtime(1));

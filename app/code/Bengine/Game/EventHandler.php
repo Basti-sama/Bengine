@@ -90,7 +90,7 @@ class Bengine_Game_EventHandler
 		$collection->executeAll();
 		if($collection->count() > 0)
 		{
-			Core::getQuery()->delete("events", "prev_rc = '".$this->raceConditionKey."'");
+			Core::getQuery()->delete("events", "prev_rc = ?", null, null, array($this->raceConditionKey));
 		}
 		return $this;
 	}

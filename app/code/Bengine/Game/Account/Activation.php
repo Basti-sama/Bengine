@@ -55,7 +55,7 @@ class Bengine_Game_Account_Activation
 			{
 				$result->closeCursor();
 				Hook::event("ActivateAccount", array($this));
-				Core::getQuery()->update("user", array("activation" => "", "email" => $row["temp_email"]), "userid = '".$row["userid"]."'");
+				Core::getQuery()->update("user", array("activation" => "", "email" => $row["temp_email"]), "userid = ?", array($row["userid"]));
 				$login = new Bengine_Game_Login($row["username"], $row["password"], "game", "trim");
 				$login->setCountLoginAttempts(false);
 				$login->checkData();

@@ -71,12 +71,12 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 	{
 		foreach($groups as $groupid)
 		{
-			Core::getQuery()->update("configgroups", array("groupname" => Core::getRequest()->getPOST("title_".$groupid)), "groupid = '".$groupid."'");
+			Core::getQuery()->update("configgroups", array("groupname" => Core::getRequest()->getPOST("title_".$groupid)), "groupid = ?", array($groupid));
 		}
 		foreach($delete as $del)
 		{
-			Core::getQuery()->delete("configgroups", "groupid = '".$del."'");
-			Core::getQuery()->delete("config", "groupid = '".$del."'");
+			Core::getQuery()->delete("configgroups", "groupid = ?", null, null, array($del));
+			Core::getQuery()->delete("config", "groupid = ?", null, null, array($del));
 		}
 		return $this;
 	}
@@ -88,7 +88,7 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function deleteVariableAction($groupid, $var)
 	{
-		Core::getQuery()->delete("config", "var = '".$var."'");
+		Core::getQuery()->delete("config", "var = ?", null, null, array($var));
 		$this->setTemplate("config/showvariables");
 		$this->showVariablesAction($groupid);
 		return $this;
@@ -126,8 +126,7 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 	{
 		$options = $this->serialize($options);
 		$spec = array("type" => $type, "options" => $options, "description" => Str::validateXHTML($description), "groupid" => $groupid);
-		$where = "var = '".$var."'";
-		Core::getQuery()->update("config", $spec, $where);
+		Core::getQuery()->update("config", $spec, "var = ?", array($var));
 		Logger::addMessage("Saving_Successful", "success");
 		return $this;
 	}
@@ -283,7 +282,7 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		$result = Core::getQuery()->select("config", array("var"), "", "groupid = '".Core::getRequest()->getGET("1")."' AND islisted = '1'", "sort_index ASC");
 		foreach($result->fetchAll() as $row)
 		{
-			Core::getQuery()->update("config", array("value" => Core::getRequest()->getPOST($row["var"])), "var = '".$row["var"]."'");
+			Core::getQuery()->update("config", array("value" => Core::getRequest()->getPOST($row["var"])), "var = ?", array($row["var"]));
 		}
 		Admin::rebuildCache("config");
 		return $this;

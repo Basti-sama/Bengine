@@ -75,7 +75,7 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 		$planet->setData("hydrogen", $planet->getData("hydrogen") - $data["hydrogen"]);
 		if(!isset($data["dont_save_resources"]) || !$data["dont_save_resources"])
 		{
-			Core::getQuery()->update("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = '".Core::getUser()->get("curplanet")."'");
+			Core::getQuery()->update("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = ?", array(Core::getUser()->get("curplanet")));
 		}
 		return $this;
 	}
@@ -89,7 +89,7 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 	 */
 	protected function addResourceToPlanet(array $data)
 	{
-		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + '".$data["metal"]."', silicon = silicon + '".$data["silicon"]."', hydrogen = hydrogen + '".$data["hydrogen"]."' WHERE planetid = '".$this->getEvent()->getPlanetid()."'");
+		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + ?, silicon = silicon + ?, hydrogen = hydrogen + ? WHERE planetid = ?", array($data["metal"], $data["silicon"], $data["hydrogen"], $this->getEvent()->getPlanetid()));
 		return $this;
 	}
 
@@ -149,7 +149,7 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 			{
 				throw new Recipe_Exception_Generic("Sorry, you have been attacked. Process stopped.");
 			}
-			Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - '".$ships["quantity"]."' WHERE unitid = '".$unit_id."' AND planetid = '".Game::getPlanet()->getPlanetId()."'");
+			Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - ? WHERE unitid = ? AND planetid = ?", array($ships["quantity"], $unit_id, Game::getPlanet()->getPlanetId()));
 		}
 		$this->removeResourceFromPlanet($data);
 		Core::getQuery()->delete("unit2shipyard", "quantity = '0'");

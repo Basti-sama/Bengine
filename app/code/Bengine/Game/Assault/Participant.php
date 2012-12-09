@@ -241,11 +241,11 @@ class Bengine_Game_Assault_Participant
 			{
 				if(count($this->data["ships"]) > 0)
 				{
-					Core::getQuery()->update("events", array("data" => serialize($this->data)), "eventid = '".$this->eventid."'");
+					Core::getQuery()->update("events", array("data" => serialize($this->data)), "eventid = ?", array($this->eventid));
 				}
 				else
 				{
-					Core::getQuery()->delete("events", "eventid = '".$this->eventid."'");
+					Core::getQuery()->delete("events", "eventid = ?", null, null, array($this->eventid));
 				}
 			}
 		}

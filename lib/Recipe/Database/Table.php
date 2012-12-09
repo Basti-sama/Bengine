@@ -171,12 +171,14 @@ class Recipe_Database_Table
 	 */
 	public function delete($where)
 	{
+		$bind = null;
 		if(is_numeric($where))
 		{
-			$where = "`".$this->getPrimaryKey()."` = '".intval($where)."'";
+			$bind = array((int) $where);
+			$where = "`".$this->getPrimaryKey()."` = ?";
 		}
 		$this->_beforeDelete();
-		Core::getQuery()->delete($this->getName(), $where);
+		Core::getQuery()->delete($this->getName(), $where, null, null, $bind);
 		$this->affectedRows = $this->getDb()->affectedRows();
 		$this->_afterDelete();
 		return $this;
@@ -210,24 +212,24 @@ class Recipe_Database_Table
 	/**
 	 * Update existing rows.
 	 *
-	 * @param array $data	Column-value pairs
-	 * @param string $where	Where clause
-	 *
+	 * @param array $data    Column-value pairs
+	 * @param string $where    Where clause
+	 * @param array $bind
 	 * @return Recipe_Database_Table
 	 */
-	public function update(array $data, $where)
+	public function update(array $data, $where, array $bind = null)
 	{
-		$bind = array();
+		$spec = array();
 		$fields = $this->getFields();
 		foreach($data as $key => $value)
 		{
 			if(isset($fields[$key]))
 			{
-				$bind[$key] = $value;
+				$spec[$key] = $value;
 			}
 		}
 		$this->_beforeUpdate();
-		Core::getQuery()->update($this->getName(), $bind, $where);
+		Core::getQuery()->update($this->getName(), $spec, $where, $bind);
 		$this->affectedRows = Core::getDB()->affectedRows();
 		$this->_afterUpdate();
 		return $this;

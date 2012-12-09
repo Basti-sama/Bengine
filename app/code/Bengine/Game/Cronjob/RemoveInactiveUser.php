@@ -37,7 +37,7 @@ class Bengine_Game_Cronjob_RemoveInactiveUser extends Recipe_CronjobAbstract
 				deleteAlliance($_row["aid"]);
 			}
 			$_result->closeCursor();
-			Core::getQuery()->delete("user", "userid = '".$userid."'");
+			Core::getQuery()->delete("user", "userid = ?", null, null, array($userid));
 		}
 		$result->closeCursor();
 		return $this;

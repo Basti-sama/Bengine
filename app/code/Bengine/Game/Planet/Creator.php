@@ -256,7 +256,7 @@ class Bengine_Game_Planet_Creator
 			);
 			Core::getQuery()->insert("planet", $spec);
 			$this->planetid = Core::getDB()->lastInsertId();
-			Core::getQuery()->update("galaxy", array("moonid" => $this->planetid), "galaxy = '".$this->galaxy."' AND system = '".$this->system."' AND position = '".$this->position."'");
+			Core::getQuery()->update("galaxy", array("moonid" => $this->planetid), "galaxy = ? AND system = ? AND position = ?", array($this->galaxy, $this->system, $this->position));
 		}
 		return $this;
 	}

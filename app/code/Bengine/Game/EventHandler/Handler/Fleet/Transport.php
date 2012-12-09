@@ -17,7 +17,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Transport extends Bengine_Game_Eve
 	{
 		Hook::event("EhTransport", array($event, &$data, $this));
 		$this->_production($event);
-		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + '".$data["metal"]."', silicon = silicon + '".$data["silicon"]."', hydrogen = hydrogen + '".$data["hydrogen"]."' WHERE planetid = '".$event["destination"]."'");
+		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + ?, silicon = silicon + ?, hydrogen = hydrogen + ? WHERE planetid = ?", array($data["metal"], $data["silicon"], $data["hydrogen"], $event["destination"]));
 
 		$data["targetplanet"] = $event["destination_planetname"];
 		$data["targetuser"] = $event["destination_user_id"];

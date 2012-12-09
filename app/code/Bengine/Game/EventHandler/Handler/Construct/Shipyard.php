@@ -24,7 +24,7 @@ class Bengine_Game_EventHandler_Handler_Construct_Shipyard extends Bengine_Game_
 		$result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '".$data["buildingid"]."' AND planetid = '".$event->getPlanetid()."'");
 		if($result->rowCount() > 0)
 		{
-			Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity + '1' WHERE planetid = '".$event->getPlanetid()."' AND unitid = '".$data["buildingid"]."'");
+			Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity + ? WHERE planetid = ? AND unitid = ?", array(1, $event->getPlanetid(), $data["buildingid"]));
 		}
 		else
 		{
@@ -32,7 +32,7 @@ class Bengine_Game_EventHandler_Handler_Construct_Shipyard extends Bengine_Game_
 		}
 		$result->closeCursor();
 		if($event["mode"] == 4) { $fpoints = 1; } else { $fpoints = 0; }
-		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + '".$points."', fpoints = fpoints + '".$fpoints."' WHERE userid = '".$event->getUserid()."'");
+		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + ?, fpoints = fpoints + ? WHERE userid = ?", array($points, $fpoints, $event->getUserid()));
 		return $this;
 	}
 
@@ -55,7 +55,7 @@ class Bengine_Game_EventHandler_Handler_Construct_Shipyard extends Bengine_Game_
 		$data["metal"] = $data["metal"] / 100 * Core::getOptions()->get("SHIPYARD_ORDER_ABORT_PERCENT");
 		$data["silicon"] = $data["silicon"] / 100 * Core::getOptions()->get("SHIPYARD_ORDER_ABORT_PERCENT");
 		$data["hydrogen"] = $data["hydrogen"] / 100 * Core::getOptions()->get("SHIPYARD_ORDER_ABORT_PERCENT");
-		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + '".$data["metal"]."', silicon = silicon + '".$data["silicon"]."', hydrogen = hydrogen + '".$data["hydrogen"]."' WHERE planetid = '".$event->getPlanetid()."'");
+		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + ?, silicon = silicon + ?, hydrogen = hydrogen + ? WHERE planetid = ?", array($data["metal"], $data["silicon"], $data["hydrogen"], $event->getPlanetid()));
 		return $this;
 	}
 }

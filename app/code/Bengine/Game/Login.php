@@ -27,11 +27,11 @@ class Bengine_Game_Login extends Login
 			if(Str::compare($row["username"], $this->usr) && Str::compare($row["password"], $this->pw) && Str::length($row["activation"]) == 0 && !$row["banid"])
 			{
 				$this->userid = $row["userid"];
-				Core::getQuery()->delete("loginattempts", "ip = '".IPADDRESS."' OR username = '".$this->usr."'");
-				Core::getQuery()->update("sessions", array("logged" => "0"), "userid = '".$this->userid."'");
+				Core::getQuery()->delete("loginattempts", "ip = ? OR username = ?", null, null, array(IPADDRESS, $this->usr));
+				Core::getQuery()->update("sessions", array("logged" => "0"), "userid = ?", array($this->userid));
 				if($row["umode"])
 				{
-					Core::getQuery()->update("planet", array("last" => TIME), "userid = '".$row["userid"]."'");
+					Core::getQuery()->update("planet", array("last" => TIME), "userid = ?", array($row["userid"]));
 				}
 				$this->canLogin = true;
 			}
@@ -74,7 +74,7 @@ class Bengine_Game_Login extends Login
 	{
 		if($this->canLogin)
 		{
-			Core::getDB()->query("UPDATE ".PREFIX."user SET curplanet = hp WHERE userid = '".$this->userid."'");
+			Core::getDB()->query("UPDATE ".PREFIX."user SET curplanet = hp WHERE userid = ?", array($this->userid));
 		}
 		return parent::startSession();
 	}

@@ -28,13 +28,13 @@ class Bengine_Game_EventHandler_Handler_Construct_Build extends Bengine_Game_Eve
 			->where("planetid = ?", $event->getPlanetid());
 		if($row = $select->getStatement()->fetchRow())
 		{
-			Core::getQuery()->update("building2planet", array("level" => $data["level"]), "buildingid = '".$data["buildingid"]."' AND planetid = '".$event->getPlanetid()."'");
-			Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + '".$points."' WHERE userid = '".$event->getUserid()."'");
+			Core::getQuery()->update("building2planet", array("level" => $data["level"]), "buildingid = ? AND planetid = ?", array($data["buildingid"], $event->getPlanetid()));
+			Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + ? WHERE userid = ?", array($points, $event->getUserid()));
 		}
 		else if($data["level"] == 1)
 		{
 			Core::getQuery()->insert("building2planet", array("planetid" => $event->getPlanetid(), "buildingid" => $data["buildingid"], "level" => 1));
-			Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + '".$points."' WHERE userid = '".$event->getUserid()."'");
+			Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + ? WHERE userid = ?", array($points, $event->getUserid()));
 		}
 		return $this;
 	}

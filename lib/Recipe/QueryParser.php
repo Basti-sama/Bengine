@@ -52,12 +52,19 @@ class Recipe_QueryParser
 	 * @param string $table
 	 * @param array $spec
 	 * @param string $where
-	 *
+	 * @param array $bind
 	 * @return Recipe_Database_Statement_Abstract
 	 */
-	public function update($table, array $spec, $where = null)
+	public function update($table, array $spec, $where = null, array $bind = null)
 	{
-		$bind = $spec;
+		if($bind !== null)
+		{
+			$bind = $spec + $bind;
+		}
+		else
+		{
+			$bind = $spec;
+		}
 		foreach($spec as $attribute => &$value)
 		{
 			if(!($value instanceof Recipe_Database_Expr))
@@ -138,10 +145,10 @@ class Recipe_QueryParser
 	 * @param string $where
 	 * @param string $order
 	 * @param string $limit
-	 *
+	 * @param array $bind
 	 * @return Recipe_Database_Statement_Abstract
 	 */
-	public function delete($table, $where = null, $order = null, $limit = null)
+	public function delete($table, $where = null, $order = null, $limit = null, array $bind = null)
 	{
 		$whereclause = "";
 		$orderclause = "";
@@ -161,7 +168,7 @@ class Recipe_QueryParser
 
 		$sql = "DELETE FROM ".PREFIX.$table.$whereclause.$orderclause.$limitclause;
 
-		return $this->send($sql);
+		return $this->send($sql, $bind);
 	}
 
 	/**

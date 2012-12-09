@@ -147,6 +147,25 @@ class Recipe_Database_MySQLi extends Recipe_Database_Abstract
 	}
 
 	/**
+	 * @param string $text
+	 * @param mixed $value
+	 * @return string
+	 */
+	public function quoteInto($text, $value)
+	{
+		return str_replace("?", $this->quote($value), $text);
+	}
+
+	/**
+	 * @param mixed $value
+	 * @return string
+	 */
+	public function quote($value)
+	{
+		return "'".$this->escape($value)."'";
+	}
+
+	/**
 	 * @param mixed $value
 	 * @return mixed
 	 */

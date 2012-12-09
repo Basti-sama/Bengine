@@ -48,6 +48,10 @@ class Bengine_Admin_Controller_Commercial extends Bengine_Admin_Controller_Abstr
 	 */
 	protected function addAd($name, $position, $maxViews, $enabled, $html)
 	{
+		if(!$maxViews)
+		{
+			$maxViews = null;
+		}
 		$spec = array("name" => $name, "position" => $position, "max_views" => $maxViews, "enabled" => $enabled, "html_code" => $html);
 		Core::getQuery()->insert("ad", $spec);
 		return $this;
@@ -63,31 +67,33 @@ class Bengine_Admin_Controller_Commercial extends Bengine_Admin_Controller_Abstr
 		{
 			foreach($ads as $adId)
 			{
-				Core::getQuery()->delete("ad", "ad_id = '".$adId."'");
+				Core::getQuery()->delete("ad", "ad_id = ?", null, null, array($adId));
 			}
 		}
 		return $this;
 	}
 
 	/**
+	 * @param integer $adId
 	 * @return Bengine_Game_Controller_Abstract
 	 */
-	protected function resetAction()
+	protected function resetAction($adId)
 	{
-		Core::getQuery()->update("ad", array("views" => 0), "ad_id = '".$this->getParam("1")."'");
+		Core::getQuery()->update("ad", array("views" => 0), "ad_id = ?", array($adId));
 		return $this->redirect("admin/commercial");
 	}
 
 	/**
+	 * @param integer $adId
 	 * @return Bengine_Admin_Controller_Commercial
 	 */
-	protected function editAction()
+	protected function editAction($adId)
 	{
 		if($this->isPost())
 		{
 			$this->save($this->getParam("ad_id"), $this->getParam("name"), $this->getParam("position"), $this->getParam("max_views"), $this->getParam("enabled"), $this->getParam("html_code"));
 		}
-		$result = Core::getQuery()->select("ad", array("*"), "", "ad_id = '".$this->getParam("1")."'");
+		$result = Core::getQuery()->select("ad", array("*"), "", Core::getDB()->quoteInto("ad_id = ?", $adId));
 		$row = $result->fetchRow();
 		$row["html_code"] = htmlspecialchars($row["html_code"]);
 		Core::getTPL()->assign($row);
@@ -105,8 +111,12 @@ class Bengine_Admin_Controller_Commercial extends Bengine_Admin_Controller_Abstr
 	 */
 	protected function save($adId, $name, $position, $maxViews, $enabled, $html)
 	{
+		if(!$maxViews)
+		{
+			$maxViews = null;
+		}
 		$spec = array("name" => $name, "position" => $position, "max_views" => $maxViews, "enabled" => $enabled, "html_code" => $html);
-		Core::getQuery()->update("ad", $spec, "ad_id = '".$adId."'");
+		Core::getQuery()->update("ad", $spec, "ad_id = ?", array($adId));
 		return $this;
 	}
 }

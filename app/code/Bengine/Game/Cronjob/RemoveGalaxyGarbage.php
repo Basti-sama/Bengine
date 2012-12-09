@@ -22,7 +22,7 @@ class Bengine_Game_Cronjob_RemoveGalaxyGarbage extends Recipe_CronjobAbstract
 			if(!$row["eventid"])
 			{
 				$id = $row["planetid"];
-				Core::getQuery()->delete("planet", "planetid = '".$id."'");
+				Core::getQuery()->delete("planet", "planetid = ?", null, null, array($id));
 			}
 		}
 		$result->closeCursor();

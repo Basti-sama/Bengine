@@ -82,7 +82,7 @@ class Plugin_Commercials extends Recipe_PluginAbstract
 				$ad = $this->ads[$event][$index];
 				if(Core::getConfig()->get("COUNT_AD_VIEWS"))
 				{
-					Core::getQuery()->update("ad", array("views"), array($ad["views"]+1), "ad_id = '".$ad["ad_id"]."'");
+					Core::getQuery()->update("ad", array("views"), array($ad["views"]+1), "ad_id = ?", array($ad["ad_id"]));
 				}
 				return htmlspecialchars_decode($ad["html_code"]);
 			}

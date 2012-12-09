@@ -37,8 +37,8 @@ class Bengine_Game_EventHandler_Handler_Fleet_AlliedFleet extends Bengine_Game_E
 		$time = $event->getTime();
 		if($time > $data["alliance_attack"]["time"])
 		{
-			Core::getQuery()->update("events", array("time" => $time), "eventid = '".$data["alliance_attack"]["eventid"]."' OR parent_id = '".$data["alliance_attack"]["eventid"]."'");
-			Core::getQuery()->update("attack_formation", array("time" => $time), "eventid = '".$data["alliance_attack"]["eventid"]."'");
+			Core::getQuery()->update("events", array("time" => $time), "eventid = ? OR parent_id = ?", array($data["alliance_attack"]["eventid"], $data["alliance_attack"]["eventid"]));
+			Core::getQuery()->update("attack_formation", array("time" => $time), "eventid = ?", array($data["alliance_attack"]["eventid"]));
 		}
 		else
 		{
