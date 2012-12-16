@@ -59,11 +59,11 @@ class Admin extends Application
 			case "lang":
 				if($options !== null && !empty($options["language"]))
 				{
-					$result = Core::getQuery()->select("languages", array("langcode"), "", "languageid = '{$options["language"]}'");
+					$result = Core::getQuery()->select("languages", array("langcode"), "", Core::getDB()->quoteInto("languageid = ?", $options["language"]));
 					$langcode = $result->fetchColumn();
 					if(!empty($options["group"]))
 					{
-						$result = Core::getQuery()->select("phrasesgroups", array("title"), "", "phrasegroupid = '{$options["group"]}'");
+						$result = Core::getQuery()->select("phrasesgroups", array("title"), "", Core::getDB()->quoteInto("phrasegroupid = ?", $options["group"]));
 						$groupname = $result->fetchColumn();
 						Core::getCache()->cachePhraseGroup($groupname, $langcode);
 					}

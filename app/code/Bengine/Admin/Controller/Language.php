@@ -91,7 +91,7 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 		}
 		foreach($groups as $id)
 		{
-			Core::getQuery()->update("groupid", array("title" => Core::getRequest()->getPOST("title_".$id)), "phrasegroupid = ?", array($id));
+			Core::getQuery()->update("phrasesgroups", array("title" => Core::getRequest()->getPOST("title_".$id)), "phrasegroupid = ?", array($id));
 		}
 		return $this;
 	}
@@ -248,7 +248,8 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 		}
 
 		$phrases = array();
-		$result = Core::getQuery()->select("phrases p", array("p.phraseid", "p.languageid", "p.phrasegroupid", "p.title", "p.content"), "", "p.languageid = '".$langid."' AND p.phrasegroupid = '".$groupid."'");
+		$where = Core::getDB()->quoteInto("p.languageid = ? AND p.phrasegroupid = ?", array($langid, $groupid));
+		$result = Core::getQuery()->select("phrases p", array("p.phraseid", "p.languageid", "p.phrasegroupid", "p.title", "p.content"), "", $where);
 		foreach($result->fetchAll() as $row)
 		{
 			$id = $row["phraseid"];

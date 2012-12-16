@@ -132,7 +132,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	 */
 	protected function fetchTotalPlanets($isMoon = 0)
 	{
-		$result = Core::getQuery()->select("planet", array("COUNT(planetid) AS numPlanets"), "", "ismoon = '{$isMoon}'");
+		$result = Core::getQuery()->select("planet", array("COUNT(planetid) AS numPlanets"), "", Core::getDB()->quoteInto("ismoon = ?", $isMoon));
 		return $result->fetchColumn();
 	}
 

@@ -59,7 +59,7 @@ class Bengine_Admin_Controller_Usergroups extends Bengine_Admin_Controller_Abstr
 			$this->save($this->getParam("groupid"), $this->getParam("grouptitle"), $this->getParam("permissions", array()));
 		}
 		$permissions = array();
-		$result = Core::getQuery()->select("group2permission g2p", array("g2p.permissionid", "g2p.value", "g.grouptitle"), "LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = g2p.groupid)", "g2p.groupid = '".$groupid."'");
+		$result = Core::getQuery()->select("group2permission g2p", array("g2p.permissionid", "g2p.value", "g.grouptitle"), "LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = g2p.groupid)", Core::getDB()->quoteInto("g2p.groupid = ?", $groupid));
 		foreach($result->fetchAll() as $row)
 		{
 			$grouptitle = $row["grouptitle"];
@@ -68,7 +68,7 @@ class Bengine_Admin_Controller_Usergroups extends Bengine_Admin_Controller_Abstr
 		if(empty($grouptitle))
 		{
 			$grouptitle = "";
-			$result = Core::getQuery()->select("usergroup", "grouptitle", "", "usergroupid = '".$groupid."'");
+			$result = Core::getQuery()->select("usergroup", "grouptitle", "", Core::getDB()->quoteInto("usergroupid = ?", $groupid));
 			if($row = $result->fetchRow())
 			{
 				$grouptitle = $row["grouptitle"];

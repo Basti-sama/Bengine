@@ -7,12 +7,6 @@
  * @version $Id: refdir.php 8 2010-10-17 20:55:04Z secretchampion $
  */
 
-define("INGAME", false);
-define("EXEC_CRON", false);
-define("LOGIN_REQUIRED", false);
-define("MOD_REWRITE", false);
-define("REQUEST_LEVEL_NAMES", "");
-
 require_once("./global.inc.php");
 new Core();
 

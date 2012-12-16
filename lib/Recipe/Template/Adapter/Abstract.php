@@ -235,6 +235,7 @@ abstract class Recipe_Template_Adapter_Abstract
 		{
 			return "default/".$type."/".$template.$this->templateExtension;
 		}
+		return $path;
 	}
 
 	/**
@@ -323,7 +324,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	 */
 	public function setTemplatePackage($package = null)
 	{
-		if($package === null)
+		if(empty($package))
 		{
 			$package = Core::getConfig()->templatepackage;
 		}

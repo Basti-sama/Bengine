@@ -141,7 +141,7 @@ class Bengine_Game_User_Relation
 
 		$select = array("ar.rel1", "ar.rel2", "ar.mode", "rt.acs", "rt.name", "rt.css");
 		$joins  = "LEFT JOIN ".PREFIX."ally_relationship_type rt ON (rt.type_id = ar.mode)";
-		$where  = "(ar.rel1 = '".$this->aid."' OR ar.rel2 = '".$this->aid."')";
+		$where  = Core::getDB()->quoteInto("(ar.rel1 = ? OR ar.rel2 = ?)", $this->aid);
 		$result = Core::getQuery()->select("ally_relationships ar", $select, $joins, $where);
 		foreach($result->fetchAll() as $row)
 		{
@@ -192,7 +192,9 @@ class Bengine_Game_User_Relation
 			return $this;
 		}
 
-		$result = Core::getQuery()->select("buddylist", array("friend1", "friend2"), "", "accepted = '1' AND (friend1 = '".$this->userid."' OR friend2 = '".$this->userid."')");
+		$where  = Core::getDB()->quoteInto("accepted = ? AND ", 1);
+		$where .= Core::getDB()->quoteInto("(friend1 = ? OR friend2 = ?)", $this->userid);
+		$result = Core::getQuery()->select("buddylist", array("friend1", "friend2"), "", $where);
 		foreach($result->fetchAll() as $row)
 		{
 			$rel = ($row["friend1"] == $this->userid) ? $row["friend2"] : $row["friend1"];

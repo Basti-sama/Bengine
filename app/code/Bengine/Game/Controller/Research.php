@@ -155,7 +155,7 @@ class Bengine_Game_Controller_Research extends Bengine_Game_Controller_Construct
 		{
 			$this->redirect("game/".SID."/Research");
 		}
-		$result = Core::getQuery()->select("construction", array("buildingid"), "", "buildingid = '".$id."' AND mode = '2'");
+		$result = Core::getQuery()->select("construction", array("buildingid"), "", Core::getDB()->quoteInto("buildingid = ? AND mode = '2'", $id));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();

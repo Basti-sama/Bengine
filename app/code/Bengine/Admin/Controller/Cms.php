@@ -84,7 +84,7 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 
 		$pageid = Core::getRequest()->getGET("1");
 
-		$page = Core::getQuery()->select("page", array("pageid", "position", "languageid", "displayorder", "title", "label", "link", "content"), "", "pageid = ".$pageid, "")->fetchRow();
+		$page = Core::getQuery()->select("page", array("pageid", "position", "languageid", "displayorder", "title", "label", "link", "content"), "", Core::getDB()->quoteInto("pageid = ?", $pageid), "")->fetchRow();
 		Core::getTPL()->assign($page);
 
 		$result = Core::getQuery()->select("languages", array("languageid", "title"), "", "", "title ASC");
@@ -195,7 +195,7 @@ class Bengine_Admin_Controller_Cms extends Bengine_Admin_Controller_Abstract
 			$content = "";
 		}
 
-		$result = Core::getQuery()->select("page", array("pageid"), "", "label = '".$this->label."' && link = ''");
+		$result = Core::getQuery()->select("page", array("pageid"), "", Core::getDB()->quoteInto("label = ? && link = ''", $this->label));
 		if($result->fetchRow())
 		{
 			throw new Recipe_Exception_Generic("Label already in use");

@@ -142,7 +142,7 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 	{
 		foreach($data["ships"] as $unit_id => $ships)
 		{
-			$result = Core::getQuery()->select("unit2shipyard", array("quantity"), "", "unitid = '".$unit_id."' AND planetid = '".Game::getPlanet()->getPlanetId()."'");
+			$result = Core::getQuery()->select("unit2shipyard", array("quantity"), "", Core::getDB()->quoteInto("unitid = ? AND planetid = ?", array($unit_id, Game::getPlanet()->getPlanetId())));
 			$availQty = $result->fetchColumn();
 			$result->closeCursor();
 			if($availQty < $ships["quantity"])

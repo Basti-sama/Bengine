@@ -86,6 +86,8 @@ class Bengine_Comm_Controller_Pillory extends Bengine_Comm_Controller_Abstract
 	 */
 	protected function getBans($offset, $count)
 	{
+		$offset = (int) $offset;
+		$count = (int) $count;
 		$bans = array();
 		$attr = array("b.`banid`", "b.`from`", "b.`to`", "b.`reason`", "u.`username`", "m.`username` AS moderator");
 		$joins  = "LEFT JOIN `".PREFIX."user` u ON (u.`userid` = b.`userid`) ";

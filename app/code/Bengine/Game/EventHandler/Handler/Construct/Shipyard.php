@@ -21,7 +21,7 @@ class Bengine_Game_EventHandler_Handler_Construct_Shipyard extends Bengine_Game_
 			return $this;
 		}
 		$points = $data["points"];
-		$result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '".$data["buildingid"]."' AND planetid = '".$event->getPlanetid()."'");
+		$result = Core::getQuery()->select("unit2shipyard", "quantity", "", Core::getDB()->quoteInto("unitid = ? AND planetid = ?", array($data["buildingid"], $event->getPlanetid())));
 		if($result->rowCount() > 0)
 		{
 			Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity + ? WHERE planetid = ? AND unitid = ?", array(1, $event->getPlanetid(), $data["buildingid"]));

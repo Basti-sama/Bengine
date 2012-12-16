@@ -29,7 +29,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 	{
 		$select = array("f.folder_id", "f.label", "f.is_standard", "COUNT(m.msgid) AS messages", "SUM(m.read) AS `read`", "SUM(LENGTH(m.message)) AS `storage`");
 		$joins = "LEFT JOIN ".PREFIX."message m ON (m.mode = f.folder_id AND m.receiver = '".Core::getUser()->get("userid")."')";
-		$where = "f.userid = '".Core::getUser()->get("userid")."' OR f.is_standard = '1'";
+		$where = Core::getDB()->quoteInto("f.userid = ? OR f.is_standard = '1'", Core::getUser()->get("userid"));
 		$result = Core::getQuery()->select("folder f", $select, $joins, $where, "", "", "f.folder_id");
 		$folders = array();
 		foreach($result->fetchAll() as $row)
@@ -122,7 +122,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 		$messageLength = Str::length(strip_tags($message));
 		if($messageLength >= 3 && $messageLength <= Core::getOptions()->get("MAX_PM_LENGTH") && Str::length($subject) > 0 && Str::length($subject) < 101)
 		{
-			$result = Core::getQuery()->select("user", "userid", "", "username = '".$receiver."'");
+			$result = Core::getQuery()->select("user", "userid", "", Core::getDB()->quoteInto("username = ?", $receiver));
 			if($row = $result->fetchRow())
 			{
 				$result->closeCursor();
@@ -188,7 +188,8 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 				}
 			break;
 			case 2:
-				$result = Core::getQuery()->select("message", "msgid", "", "receiver = '".Core::getUser()->get("userid")."' AND mode = '".$folder."'", "time DESC", $pagination->getStart().", ".Core::getOptions()->get("MAX_PMS"));
+				$where = Core::getDB()->quoteInto("receiver = ? AND mode = ?", array(Core::getUser()->get("userid"), $folder));
+				$result = Core::getQuery()->select("message", "msgid", "", $where, "time DESC", $pagination->getStart().", ".Core::getOptions()->get("MAX_PMS"));
 				foreach($result->fetchAll() as $row)
 				{
 					if(!in_array($row["msgid"], $msgs))
@@ -199,7 +200,8 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 				$result->closeCursor();
 			break;
 			case 3:
-				$result = Core::getQuery()->select("message", array("msgid"), "", "receiver = '".Core::getUser()->get("userid")."' AND mode = '".$folder."'", "time DESC", $pagination->getStart().", ".Core::getOptions()->get("MAX_PMS"));
+				$where = Core::getDB()->quoteInto("receiver = ? AND mode = ?", array(Core::getUser()->get("userid"), $folder));
+				$result = Core::getQuery()->select("message", array("msgid"), "", $where, "time DESC", $pagination->getStart().", ".Core::getOptions()->get("MAX_PMS"));
 				foreach($result->fetchAll() as $row)
 				{
 					Core::getQuery()->delete("message", "msgid = ?", null, null, array($row["msgid"]));
@@ -213,7 +215,10 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 				$modId = Game::getRandomModerator();
 				foreach($msgs as $msgid)
 				{
-					$result = Core::getQuery()->select("message m", array("m.sender", "m.mode", "m.message", "m.time", "u.username"), "LEFT JOIN ".PREFIX."user u ON (u.userid = m.sender)", "m.msgid = '".$msgid."' AND m.receiver = '".Core::getUser()->get("userid")."'");
+					$where = Core::getDB()->quoteInto("m.msgid = ? AND m.receiver = ?", array(
+						$msgid, Core::getUser()->get("userid")
+					));
+					$result = Core::getQuery()->select("message m", array("m.sender", "m.mode", "m.message", "m.time", "u.username"), "LEFT JOIN ".PREFIX."user u ON (u.userid = m.sender)", $where);
 					if($row = $result->fetchRow())
 					{
 						if(($row["sender"] > 0 || $row["mode"] == 5) && $row["sender"] != $modId)

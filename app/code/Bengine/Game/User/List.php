@@ -163,7 +163,11 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 	 */
 	protected function getUserRank($points, $pointType)
 	{
-		$result = Core::getQuery()->select("user", "userid", "", $pointType." >= FLOOR('".$points."')");
+		if($pointType != "points" && $pointType != "fpoints" && $pointType != "rpoints")
+		{
+			throw new Recipe_Exception_Generic("Unknown point type supplied.");
+		}
+		$result = Core::getQuery()->select("user", "userid", "", Core::getDB()->quoteInto("$pointType >= FLOOR(?)", $points));
 		$rank = fNumber($result->rowCount());
 		$result->closeCursor();
 		return $rank;

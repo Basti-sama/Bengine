@@ -22,7 +22,7 @@ class Bengine_Game_Cronjob_PointClean extends Recipe_CronjobAbstract
 		{
 			$points = 0;
 			$fpoints = 0;
-			$result = Core::getQuery()->select("planet", "planetid", "", "userid = '".$_row["userid"]."'");
+			$result = Core::getQuery()->select("planet", "planetid", "", Core::getDB()->quoteInto("userid = ?", $_row["userid"]));
 			foreach($result->fetchAll() as $row)
 			{
 				$points += Bengine_Game_PointRenewer::getBuildingPoints($row["planetid"]);

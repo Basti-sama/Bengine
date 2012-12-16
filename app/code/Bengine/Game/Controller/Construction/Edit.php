@@ -66,7 +66,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 			"c.charge_metal", "c.charge_silicon", "c.charge_hydrogen", "c.charge_energy"
 		);
 		$joins  = "LEFT JOIN ".PREFIX."phrases p ON (p.title = c.name)";
-		$result = Core::getQuery()->select("construction c", $select, $joins, "c.buildingid = '".$id."' AND p.languageid = '".Core::getLanguage()->getOpt("languageid")."'");
+		$result = Core::getQuery()->select("construction c", $select, $joins, Core::getDB()->quoteInto("c.buildingid = ? AND p.languageid = ?", array($id, Core::getLanguage()->getOpt("languageid"))));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
@@ -123,17 +123,17 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 
 			Core::getTPL()->assign($row);
 
-			$result = Core::getQuery()->select("phrases", "content", "", "languageid = '".Core::getLanguage()->getOpt("languageid")."' AND title = '".$row["name_id"]."_DESC'");
+			$result = Core::getQuery()->select("phrases", "content", "", Core::getDB()->quoteInto("languageid = ? AND title = ?", array(Core::getLanguage()->getOpt("languageid"), $row["name_id"]."_DESC")));
 			$_row = $result->fetchRow();
 			$result->closeCursor();
 			Core::getTPL()->assign("description", Str::replace("<br />", "", $_row["content"]));
-			$result = Core::getQuery()->select("phrases", "content", "", "languageid = '".Core::getLanguage()->getOpt("languageid")."' AND title = '".$row["name_id"]."_FULL_DESC'");
+			$result = Core::getQuery()->select("phrases", "content", "", Core::getDB()->quoteInto("languageid = ? AND title = ?", array(Core::getLanguage()->getOpt("languageid"), $row["name_id"]."_FULL_DESC")));
 			$_row = $result->fetchRow();
 			$result->closeCursor();
 			Core::getTPL()->assign("full_description", Str::replace("<br />", "", $_row["content"]));
 
 			$req = array(); $i = 0;
-			$result = Core::getQuery()->select("requirements r", array("r.requirementid", "r.needs", "r.level", "p.content"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs) LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "r.buildingid = '".$id."' AND p.languageid = '".Core::getLanguage()->getOpt("languageid")."'");
+			$result = Core::getQuery()->select("requirements r", array("r.requirementid", "r.needs", "r.level", "p.content"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs) LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", Core::getDB()->quoteInto("r.buildingid = ? AND p.languageid = ?", array($id, Core::getLanguage()->getOpt("languageid"))));
 			foreach($result->fetchAll() as $row)
 			{
 				$req[$i]["delete"] = Link::get("game/sid:".SID."/Construction_Edit/DeleteRequirement/".$row["requirementid"]."/".$id, "[".Core::getLanguage()->getItem("DELETE")."]");
@@ -144,7 +144,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 			Core::getTPL()->addLoop("requirements", $req);
 
 			$const = array(); $i = 0;
-			$result = Core::getQuery()->select("construction b", array("b.buildingid", "p.content"), "LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "(b.mode = '1' OR b.mode = '2' OR b.mode = '5') AND p.languageid = '".Core::getLanguage()->getOpt("languageid")."'", "p.content ASC");
+			$result = Core::getQuery()->select("construction b", array("b.buildingid", "p.content"), "LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "(b.mode = '1' OR b.mode = '2' OR b.mode = '5') AND p.languageid = ".Core::getDB()->quote(Core::getLanguage()->getOpt("languageid")), "p.content ASC");
 			foreach($result->fetchAll() as $row)
 			{
 				$const[$i]["name"] = $row["content"];
@@ -274,7 +274,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 		$languageId = Core::getLang()->getOpt("languageid");
 		if(Str::length($name) > 0)
 		{
-			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."'");
+			$result = Core::getQuery()->select("phrases", "phraseid", "", Core::getDB()->quoteInto("title = ?", $nameId));
 			if($result->rowCount() > 0)
 			{
 				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($name)), "title = ?", array($nameId));
@@ -287,7 +287,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 		}
 		if(Str::length($desc) > 0)
 		{
-			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."_DESC'");
+			$result = Core::getQuery()->select("phrases", "phraseid", "", Core::getDB()->quoteInto("title = ?", $nameId."_DESC"));
 			if($result->rowCount() > 0)
 			{
 				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($desc)), "title = ?", array($nameId."_DESC"));
@@ -300,7 +300,7 @@ class Bengine_Game_Controller_Construction_Edit extends Bengine_Game_Controller_
 		}
 		if(Str::length($fullDesc) > 0)
 		{
-			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."_FULL_DESC'");
+			$result = Core::getQuery()->select("phrases", "phraseid", "", Core::getDB()->quoteInto("title = ?", $nameId."_FULL_DESC"));
 			if($result->rowCount() > 0)
 			{
 				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($fullDesc)), "title = ?", array($nameId."_FULL_DESC"));

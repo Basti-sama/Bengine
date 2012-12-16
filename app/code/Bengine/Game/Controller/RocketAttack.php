@@ -56,7 +56,7 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 			$joins .= "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = p.planetid)";
 		}
 		$select = array("p.planetname", "g.galaxy", "g.system", "g.position", "g.position", "u.points", "u.last", "u.umode", "b.to");
-		$where = "p.planetid = '".$this->target."'";
+		$where = Core::getDB()->quoteInto("p.planetid = ?", $this->target);
 		$result = Core::getQuery()->select("planet p", $select, $joins, $where);
 		if($this->t = $result->fetchRow())
 		{
@@ -93,7 +93,7 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 				Logger::dieMessage("TARGET_IN_UMODE");
 			}
 
-			$result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '52' AND planetid = '".Core::getUser()->get("curplanet")."'");
+			$result = Core::getQuery()->select("unit2shipyard", "quantity", "", Core::getDB()->quoteInto("unitid = '52' AND planetid = ?", Core::getUser()->get("curplanet")));
 			$qty = $result->fetchColumn();
 			$result->closeCursor();
 			$this->rockets = ($qty) ? $qty : 0;
@@ -115,7 +115,7 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 				$this->sendRockets($this->getParam("quantity"), $this->getParam("target"));
 			}
 			$d = array();
-			$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", "b.mode = '4' AND u2s.planetid = '".$this->target."'");
+			$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", Core::getDB()->quoteInto("b.mode = '4' AND u2s.planetid = ?", $this->target));
 			foreach($result->fetchAll() as $dest)
 			{
 				if($dest["unitid"] == 51 || $dest["unitid"] == 52) { continue; }

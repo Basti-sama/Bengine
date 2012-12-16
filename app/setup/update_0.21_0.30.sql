@@ -28,3 +28,10 @@ UPDATE bengine_folder SET class = 'game/alliance' WHERE folder_id = 6;
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 ('1', '4', 'RESEARCH_LAB_UPGRADING', 'Das Forschungslabor wird gerade ausgebaut. Forschung ist derzeit nicht m&ouml;glich.'),
 ('1', '4', 'SHIPYARD_UPGRADING', 'Die Schiffswerft oder Nanitenfabrik wird gerade ausgebaut. Der Bau von Schiffen ist derzeit nicht m&ouml;glich.');
+
+UPDATE bengine_cronjob SET `class` = 'game/pointClean' WHERE `cronid` = 1;
+UPDATE bengine_cronjob SET `class` = 'game/removeInactiveUser' WHERE `cronid` = 2;
+UPDATE bengine_cronjob SET `class` = 'game/removeGalaxyGarbage' WHERE `cronid` = 3;
+UPDATE bengine_cronjob SET `class` = 'game/cleanSessions' WHERE `cronid` = 4;
+UPDATE bengine_cronjob SET `class` = 'game/reminder' WHERE `cronid` = 5;
+UPDATE bengine_cronjob SET `class` = 'game/cleanCombats' WHERE `cronid` = 6;

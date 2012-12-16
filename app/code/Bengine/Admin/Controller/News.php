@@ -48,14 +48,14 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 
 			if(!$first)
 			{
-				$up = Image::getImage("up.gif", "", 16, 16);
+				$up = Image::getImage("admin/up.gif", "", 16, 16);
 				$up = Link::get("admin/news/moveup/".$row["news_id"], $up);
 			}
 			$first = false;
 
 			if($i < $total)
 			{
-				$down = Image::getImage("down.gif", "", 16, 16);
+				$down = Image::getImage("admin/down.gif", "", 16, 16);
 				$down = Link::get("admin/news/movedown/".$row["news_id"], $down);
 			}
 			$i++;
@@ -116,7 +116,7 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 			Core::getQuery()->update("news", array("language_id" => $this->getParam("language_id"), "title" => $this->getParam("title"), "text" => $this->getParam("text")), "news_id = ?", array($newsId));
 		}
 
-		$result = Core::getQuery()->select("news", array("news_id", "language_id", "title", "text"), "", "news_id = '".$newsId."'");
+		$result = Core::getQuery()->select("news", array("news_id", "language_id", "title", "text"), "", Core::getDB()->quoteInto("news_id = ?", $newsId));
 		if($row = $result->fetchRow())
 		{
 			Core::getTPL()->assign($row);
@@ -177,9 +177,9 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function moveupAction($newsId)
 	{
-		$result = Core::getQuery()->select("news", array("sort_index"), "", "news_id = '{$newsId}'", "", "1");
+		$result = Core::getQuery()->select("news", array("sort_index"), "", Core::getDB()->quoteInto("news_id = ?", $newsId), "", "1");
 		$sortIndex = $result->fetchColumn();
-		$_result = Core::getQuery()->select("news", array("MAX(sort_index) as max_sort_index"), "", "sort_index < '{$sortIndex}'", "", "1");
+		$_result = Core::getQuery()->select("news", array("MAX(sort_index) as max_sort_index"), "", Core::getDB()->quoteInto("sort_index < ?", $sortIndex), "", "1");
 		$maxSortIndex = (int) $_result->fetchColumn();
 		$maxSortIndex = ($maxSortIndex-1<0) ? 0 : $maxSortIndex-1;
 		Core::getQuery()->update("news", array("sort_index" => $maxSortIndex), "news_id = ?", array($newsId));
@@ -193,9 +193,9 @@ class Bengine_Admin_Controller_News extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function movedownAction($newsId)
 	{
-		$result = Core::getQuery()->select("news", array("sort_index"), "", "news_id = '{$newsId}'", "", "1");
+		$result = Core::getQuery()->select("news", array("sort_index"), "", Core::getDB()->quoteInto("news_id = ?", $newsId), "", "1");
 		$sortIndex = $result->fetchColumn();
-		$_result = Core::getQuery()->select("news", array("MIN(sort_index) as min_sort_index"), "", "sort_index > '{$sortIndex}'", "", "1");
+		$_result = Core::getQuery()->select("news", array("MIN(sort_index) as min_sort_index"), "", Core::getDB()->quoteInto("sort_index > ?", $sortIndex), "", "1");
 		$minSortIndex = (int) $_result->fetchColumn();
 		$minSortIndex++;
 		Core::getQuery()->update("news", array("sort_index" => $minSortIndex), "news_id = ?", array($newsId));

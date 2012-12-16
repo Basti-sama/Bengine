@@ -177,7 +177,7 @@ class Bengine_Game_AutoMsg
 		$silicon = fNumber($this->data["silicon"]);
 		$hydrogen = fNumber($this->data["hydrogen"]);
 		$rShips = $this->getShipsString();
-		$result = Core::getQuery()->select("planet", array("planetname"), "", "planetid = '".$this->data["destination"]."'");
+		$result = Core::getQuery()->select("planet", array("planetname"), "", Core::getDB()->quoteInto("planetid = ?", $this->data["destination"]));
 		$row = $result->fetchRow();
 		$result->closeCursor();
 		$planet = $row["planetname"];
@@ -281,7 +281,7 @@ class Bengine_Game_AutoMsg
 		$hydrogen = fNumber($this->data["hydrogen"]);
 		$rShips = $this->getShipsString();
 		$coordinates = getCoordLink($this->data["galaxy"], $this->data["system"], $this->data["position"], true);
-		$result = Core::getQuery()->select("planet", array("planetname"), "", "planetid = '".$this->data["destination"]."'");
+		$result = Core::getQuery()->select("planet", array("planetname"), "", Core::getDB()->quoteInto("planetid = ?", $this->data["destination"]));
 		$row = $result->fetchRow();
 		$result->closeCursor();
 		$planet = $row["planetname"];

@@ -141,7 +141,7 @@ class Bengine_Game_Planet_Creator
 			$this->galaxy = mt_rand(1, Core::getOptions()->get("GALAXYS"));
 			$this->system = mt_rand(1, Core::getOptions()->get("SYSTEMS"));
 			$this->position = mt_rand(4, 12);
-			$result = Core::getQuery()->select("galaxy", "planetid", "", "galaxy = '".$this->galaxy."' AND system = '".$this->system."' AND position = '".$this->position."'");
+			$result = Core::getQuery()->select("galaxy", "planetid", "", "galaxy = ? AND system = ? AND position = ?", "", "", "", "", array($this->galaxy, $this->system, $this->position));
 		} while($result->rowCount() > 0);
 		$result->closeCursor();
 		return $this;

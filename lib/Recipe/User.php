@@ -146,7 +146,7 @@ class Recipe_User extends Recipe_Collection
 			{
 				$joins .= " ".Str::replace("PREFIX", PREFIX, Core::getConfig()->get("userjoins"));
 			}
-			$result = Core::getQuery()->select("sessions s", $select, $joins, "s.sessionid = '".$this->sid."' AND s.logged = '1'");
+			$result = Core::getQuery()->select("sessions s", $select, $joins, Core::getDB()->quoteInto("s.sessionid = ? AND s.logged = '1'", $this->sid));
 			$this->item = $result->fetchRow();
 			$result->closeCursor();
 		}
@@ -176,7 +176,7 @@ class Recipe_User extends Recipe_Collection
 	protected function setGroups()
 	{
 		$select = array("usergroupid", "data");
-		$result = Core::getQuery()->select("user2group", $select, "", "userid = '".$this->get("userid")."'");
+		$result = Core::getQuery()->select("user2group", $select, "", Core::getDB()->quoteInto("userid = ?", $this->get("userid")));
 		foreach($result->fetchAll() as $row)
 		{
 			array_push($this->groups, $row["usergroupid"]);
@@ -209,7 +209,7 @@ class Recipe_User extends Recipe_Collection
 				else
 				{
 					$select = array("p.permission", "p2g.value");
-					$result = Core::getQuery()->select("group2permission p2g", $select, "LEFT JOIN ".PREFIX."permissions AS p ON (p2g.permissionid = p.permissionid)", "p2g.groupid = '".$group."'");
+					$result = Core::getQuery()->select("group2permission p2g", $select, "LEFT JOIN ".PREFIX."permissions AS p ON (p2g.permissionid = p.permissionid)", Core::getDB()->quoteInto("p2g.groupid = ?", $group));
 					foreach($result->fetchAll() as $row)
 					{
 						if(!isset($this->permissions[$row["permission"]]) || $this->permissions[$row["permission"]] == 0) { $this->permissions[$row["permission"]] = $row["value"]; }
@@ -227,7 +227,7 @@ class Recipe_User extends Recipe_Collection
 			else
 			{
 				$select = array("p.permission", "p2g.value");
-				$result = Core::getQuery()->select("group2permission p2g", $select, "LEFT JOIN ".PREFIX."permissions AS p ON (p2g.permissionid = p.permissionid)", "p2g.groupid = '".$this->groups[0]."'");
+				$result = Core::getQuery()->select("group2permission p2g", $select, "LEFT JOIN ".PREFIX."permissions AS p ON (p2g.permissionid = p.permissionid)", Core::getDB()->quoteInto("p2g.groupid = ?", $this->groups[0]));
 				foreach($result->fetchAll() as $row)
 				{
 					$this->permissions[$row["permission"]] = $row["value"];

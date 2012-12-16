@@ -91,7 +91,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function editAction($cronid)
 	{
-		$result = Core::getQuery()->select("cronjob", array("class", "month", "day", "weekday", "hour", "minute"), "", "cronid = '".$cronid."'");
+		$result = Core::getQuery()->select("cronjob", array("class", "month", "day", "weekday", "hour", "minute"), "", Core::getDB()->quoteInto("cronid = ?", $cronid));
 		if($row = $result->fetchRow())
 		{
 			if($this->getParam("edit_cronjob"))
@@ -200,7 +200,7 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function enableAction($cronid)
 	{
-		$result = Core::getQuery()->select("cronjob", array("month", "day", "weekday", "hour", "minute"), "", "cronid = '".$cronid."'");
+		$result = Core::getQuery()->select("cronjob", array("month", "day", "weekday", "hour", "minute"), "", Core::getDB()->quoteInto("cronid = ?", $cronid));
 		if($row = $result->fetchRow())
 		{
 			$row["xtime"] = TIME;
@@ -239,13 +239,15 @@ class Bengine_Admin_Controller_Cronjob extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function executeAction($cronid)
 	{
-		$result = Core::getQuery()->select("cronjob", array("cronid", "class", "month", "day", "weekday", "hour", "minute", "last"), "", "cronid = '".$cronid."'");
+		$result = Core::getQuery()->select("cronjob", array("cronid", "class", "month", "day", "weekday", "hour", "minute", "last"), "", Core::getDB()->quoteInto("cronid = ?", $cronid));
 		if($row = $result->fetchRow())
 		{
 			$row["xtime"] = TIME;
 			$next = Core::getCron()->calcNextExeTime($row);
 			/* @var Recipe_CronjobAbstract $cronObj */
-			$cronObj = new $row["class"]();
+			$class = explode("/", $row["class"]);
+			$class = $class[0]."/cronjob_".$class[1];
+			$cronObj = Admin::factory($class);
 			$cronObj->execute($row["cronid"], TIME, $next);
 		}
 		$this->redirect("admin/cronjob");

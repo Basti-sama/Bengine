@@ -16,7 +16,8 @@ class Bengine_Game_EventHandler_Handler_Fleet_Recycling extends Bengine_Game_Eve
 	protected function _execute(Bengine_Game_Model_Event $event, array $data)
 	{
 		Hook::event("EhRecycling", array($event, &$data, $this));
-		$result = Core::getQuery()->select("galaxy", array("metal", "silicon"), "", "galaxy = '".$data["galaxy"]."' AND system = '".$data["system"]."' AND position = '".$data["position"]."'");
+		$where = Core::getDB()->quoteInto("galaxy = ? AND system = ? AND position = ?", array($data["galaxy"], $data["system"], $data["position"]));
+		$result = Core::getQuery()->select("galaxy", array("metal", "silicon"), "", $where);
 		if($_row = $result->fetchRow())
 		{
 			$result->closeCursor();

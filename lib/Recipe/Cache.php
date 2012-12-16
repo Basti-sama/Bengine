@@ -238,13 +238,15 @@ class Recipe_Cache
 	public function cacheLanguage($langcode, $lifetime = self::DEFAULT_CACHE_LIFE_TIME)
 	{
 		$select = array("title AS grouptitle", "phrasegroupid");
-		$result = Core::getQuery()->select("phrasesgroups", $select, "", "");
+		$result = Core::getQuery()->select("phrasesgroups", $select);
 		foreach($result->fetchAll() as $row)
 		{
 			$cacheContent  = $this->setCacheFileHeader("Language [".$langcode."] Cache File");
 			$cacheContent .= "//### Variables for phrase group \"".$row["grouptitle"]."\" ###//\n";
 			$cacheContent .= "\$lifetime=".(TIME+$lifetime).";";
-			$res = Core::getQuery()->select("phrases p", array("p.title AS phrasetitle", "p.content"), "LEFT JOIN ".PREFIX."languages l ON (l.languageid = p.languageid)", "l.langcode = '".$langcode."' AND p.phrasegroupid = '".$row["phrasegroupid"]."'", "p.phrasegroupid ASC, p.title ASC");
+			$where  = Core::getDB()->quoteInto("l.langcode = ? AND ", $langcode);
+			$where .= Core::getDB()->quoteInto("p.phrasegroupid = ?", $row["phrasegroupid"]);
+			$res = Core::getQuery()->select("phrases p", array("p.title AS phrasetitle", "p.content"), "LEFT JOIN ".PREFIX."languages l ON (l.languageid = p.languageid)", $where, "p.phrasegroupid ASC, p.title ASC");
 			foreach($res->fetchAll() as $col)
 			{
 				$compiler = new Recipe_Language_Compiler($col["content"]);
@@ -289,7 +291,9 @@ class Recipe_Cache
 			$cacheContent .= "\$lifetime=".(TIME+$lifetime).";";
 			$joins  = "LEFT JOIN ".PREFIX."languages l ON (l.languageid = p.languageid) ";
 			$joins .= "LEFT JOIN ".PREFIX."phrasesgroups pg ON (pg.phrasegroupid = p.phrasegroupid)";
-			$result = Core::getQuery()->select("phrases p", array("p.title AS phrasetitle", "p.content"), $joins, "l.langcode = '".$langcode."' AND pg.title = '".$group."'", "p.phrasegroupid ASC, p.title ASC");
+			$where  = Core::getDB()->quoteInto("l.langcode = ?", $langcode);
+			$where .= Core::getDB()->quoteInto(" AND pg.title = ?", $group);
+			$result = Core::getQuery()->select("phrases p", array("p.title AS phrasetitle", "p.content"), $joins, $where, "p.phrasegroupid ASC, p.title ASC");
 			$compiler = new Recipe_Language_Compiler("");
 			foreach($result->fetchAll() as $row)
 			{
@@ -361,7 +365,7 @@ class Recipe_Cache
 			foreach($groupid as $group)
 			{
 				$cacheContent = "\$lifetime=".(TIME+$lifetime).";";
-				$result = Core::getQuery()->select("group2permission g2p", array("g2p.value", "p.permission", "g.grouptitle"), "LEFT JOIN ".PREFIX."permissions p ON (p.permissionid = g2p.permissionid) LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = g2p.groupid)", "g2p.groupid = '".$group."'");
+				$result = Core::getQuery()->select("group2permission g2p", array("g2p.value", "p.permission", "g.grouptitle"), "LEFT JOIN ".PREFIX."permissions p ON (p.permissionid = g2p.permissionid) LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = g2p.groupid)", Core::getDB()->quoteInto("g2p.groupid = ?", $group));
 				foreach($result->fetchAll() as $row)
 				{
 					$cacheContent .= "\$item[\"".$row["permission"]."\"]=".$row["value"].";";
@@ -380,7 +384,7 @@ class Recipe_Cache
 		{
 			$grouptitle = "";
 			$cacheContent = "\$lifetime=".(TIME+$lifetime).";";
-			$result = Core::getQuery()->select("group2permission g2p", array("g2p.value", "p.permission", "g.grouptitle"), "LEFT JOIN ".PREFIX."permissions p ON (p.permissionid = g2p.permissionid) LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = g2p.groupid)", "g2p.groupid = '".$groupid."'");
+			$result = Core::getQuery()->select("group2permission g2p", array("g2p.value", "p.permission", "g.grouptitle"), "LEFT JOIN ".PREFIX."permissions p ON (p.permissionid = g2p.permissionid) LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = g2p.groupid)", Core::getDB()->quoteInto("g2p.groupid = ?", $groupid));
 			foreach($result->fetchAll() as $row)
 			{
 				$cacheContent .= "\$item[\"".$row["permission"]."\"]=".$row["value"].";";
@@ -398,7 +402,7 @@ class Recipe_Cache
 		{
 			$cacheContent  = $this->setCacheFileHeader("Permissions [".$row["grouptitle"]."]");
 			$cacheContent .= "\$lifetime=".(TIME+$lifetime).";";
-			$_result = Core::getQuery()->select("group2permission g2p", array("g2p.value", "p.permission"), "LEFT JOIN ".PREFIX."permissions p ON (p.permissionid = g2p.permissionid)", "g2p.groupid = '".$row["usergroupid"]."'");
+			$_result = Core::getQuery()->select("group2permission g2p", array("g2p.value", "p.permission"), "LEFT JOIN ".PREFIX."permissions p ON (p.permissionid = g2p.permissionid)", Core::getDB()->quoteInto("g2p.groupid = ?", $row["usergroupid"]));
 			foreach($_result->fetchAll() as $_row)
 			{
 				$cacheContent .= "\$item[\"".$_row["permission"]."\"]=".$_row["value"].";";
@@ -433,7 +437,7 @@ class Recipe_Cache
 		{
 			$joins .= " ".str_replace("PREFIX", PREFIX, Core::getConfig()->get("userjoins"));
 		}
-		$result = Core::getQuery()->select("sessions s", $select, $joins, "s.sessionid = '".$sid."'", "", "1");
+		$result = Core::getQuery()->select("sessions s", $select, $joins, Core::getDB()->quoteInto("s.sessionid = ?", $sid), "", "1");
 		$row = $result->fetchRow();
 		$result->closeCursor();
 		$cacheContent = $this->setCacheFileHeader("Session Cache [".$sid."]");
@@ -547,7 +551,7 @@ class Recipe_Cache
 	 */
 	public function cleanUserCache($userid)
 	{
-		$result = Core::getQuery()->select("sessions", "sessionid", "", "userid = '".$userid."'");
+		$result = Core::getQuery()->select("sessions", "sessionid", "", Core::getDB()->quoteInto("userid = ?", $userid));
 		foreach($result->fetchAll() as $row)
 		{
 			$cacheFile = $this->getSessionCacheDir()."session.".$row["sessionid"].".php";

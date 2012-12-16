@@ -67,7 +67,7 @@ class Bengine_Game_Account_Password_Lost extends Bengine_Game_Account_Ajax
 			$this->printIt("EMAIL_INVALID");
 		}
 
-		$result = Core::getQuery()->select("user", array("userid", "username"), "", "email = '".$this->getEmail()."'");
+		$result = Core::getQuery()->select("user", array("userid", "username"), "", Core::getDB()->quoteInto("email = ?", $this->getEmail()));
 		if($result->rowCount() <= 0)
 		{
 			$this->printIt("EMAIL_NOT_FOUND");

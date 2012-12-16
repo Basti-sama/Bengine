@@ -24,13 +24,14 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 		$destroyed = array();
 
 		// Load shelltech for defender
-		$_result = Core::getQuery()->select("research2user", "level", "", "userid = '".$event["destination_user_id"]."' AND buildingid = '17'");
+		$_result = Core::getQuery()->select("research2user", "level", "", Core::getDB()->quoteInto("userid = ? AND buildingid = '17'", $event["destination_user_id"]));
 		$_row = $_result->fetchRow();
 		$_result->closeCursor();
 		$shell = (int) $_row["level"];
 
 		// Load defending units
-		$_result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity", "b.name", "basic_metal", "basic_silicon", "basic_hydrogen"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", "b.mode = '4' AND u2s.planetid = '".$event["destination"]."'", "b.display_order ASC, b.buildingid ASC");
+		$where = Core::getDB()->quoteInto("b.mode = '4' AND u2s.planetid = ?", $event["destination"]);
+		$_result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity", "b.name", "basic_metal", "basic_silicon", "basic_hydrogen"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", $where, "b.display_order ASC, b.buildingid ASC");
 		foreach($_result->fetchAll() as $_row)
 		{
 			$def[$_row["unitid"]] = $_row;
@@ -41,7 +42,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 		$_result->closeCursor();
 
 		// Load guntech for attacker
-		$_result = Core::getQuery()->select("research2user", "level", "", "userid = '".$event["userid"]."' AND buildingid = '15'");
+		$_result = Core::getQuery()->select("research2user", "level", "", Core::getDB()->quoteInto("userid = ? AND buildingid = '15'", $event["userid"]));
 		$_row = $_result->fetchRow();
 		$_result->closeCursor();
 		$gun = (int) $_row["level"];

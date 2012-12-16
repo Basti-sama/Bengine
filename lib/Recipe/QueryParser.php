@@ -117,10 +117,11 @@ class Recipe_QueryParser
 	 * @param string $limit
 	 * @param string $groupby
 	 * @param string $other
+	 * @param array $bind
 	 *
 	 * @return Recipe_Database_Statement_Abstract
 	 */
-	public function select($table, $select, $join = "", $where = "", $order = "", $limit = "", $groupby = "", $other = "")
+	public function select($table, $select, $join = "", $where = "", $order = "", $limit = "", $groupby = "", $other = "", array $bind = null)
 	{
 		if(!is_array($select))
 		{
@@ -135,7 +136,7 @@ class Recipe_QueryParser
 		$other = (!empty($other)) ? " ".$other : "";
 		$select = implode(", ", $select);
 		$sql = "SELECT ".$select." FROM ".PREFIX.$table.$join.$where.$groupby.$order.$limit.$other;
-		return $this->send($sql);
+		return $this->send($sql, $bind);
 	}
 
 	/**

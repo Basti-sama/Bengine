@@ -25,16 +25,17 @@ class Bengine_Game_EventHandler_Handler_Fleet_Colonize extends Bengine_Game_Even
 	{
 		$id = self::COLONY_SHIP_ID;
 		Hook::event("EhColonize", array($event, &$data, $this));
-		$_result = Core::getQuery()->select("galaxy", "planetid", "", "galaxy = '".$data["galaxy"]."' AND system = '".$data["system"]."' AND position = '".$data["position"]."' AND planetid != '0'");
+		$where = Core::getDB()->quoteInto("galaxy = ? AND system = ? AND position = ? AND planetid != ?", array($data["galaxy"], $data["system"], $data["position"], 0));
+		$_result = Core::getQuery()->select("galaxy", "planetid", "", $where);
 		if($_result->rowCount() == 0)
 		{
-			$_result = Core::getQuery()->select("planet", "planetid", "", "userid = '".$event["userid"]."' AND ismoon = 0");
+			$_result = Core::getQuery()->select("planet", "planetid", "", Core::getDB()->quoteInto("userid = ? AND ismoon = 0", $event["userid"]));
 			if($_result->rowCount() < Core::getOptions()->get("MAX_PLANETS"))
 			{
 				$colony = new Bengine_Game_Planet_Creator($event["userid"], $data["galaxy"], $data["system"], $data["position"]);
 
 				$colonyShip = $data["ships"][$id];
-				$_result = Core::getQuery()->select("construction", array("basic_metal", "basic_silicon", "basic_hydrogen"), "", "buildingid = '".$colonyShip["id"]."'");
+				$_result = Core::getQuery()->select("construction", array("basic_metal", "basic_silicon", "basic_hydrogen"), "", Core::getDB()->quoteInto("buildingid = ?", $colonyShip["id"]));
 				$shipData = $_result->fetchRow();
 				$_result->closeCursor();
 				$points = ($shipData["basic_metal"] + $shipData["basic_silicon"] + $shipData["basic_hydrogen"]) * $colonyShip["quantity"] / 1000;

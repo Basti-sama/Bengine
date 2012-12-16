@@ -175,7 +175,7 @@ class Login
 	public function checkLoginAttempts()
 	{
 		$select = array("COUNT(*) AS hits", "MAX(time) AS lastattempt");
-		$result = Core::getQuery()->select("loginattempts", $select, "", "ip = '".IPADDRESS."' OR username = '".$this->usr."'");
+		$result = Core::getQuery()->select("loginattempts", $select, "", Core::getDB()->quoteInto("ip = '".IPADDRESS."' OR username = ?", $this->usr));
 		$loginattempts = $result->fetchRow();
 		$result->closeCursor();
 		if($loginattempts["hits"] >= $this->maxLoginAttempts && $loginattempts["lastattempt"] > TIME - ($this->bannedLoginTime * 60))
@@ -195,7 +195,7 @@ class Login
 		$this->dataChecked = true;
 		$select = array("u.userid", "u.username", "p.password");
 		$joins  = "LEFT JOIN ".PREFIX."password p ON (u.userid = p.userid)";
-		$result = Core::getQuery()->select("user u", $select, $joins, "u.username = '".$this->usr."'");
+		$result = Core::getQuery()->select("user u", $select, $joins, Core::getDB()->quoteInto("u.username = ?", $this->usr));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();

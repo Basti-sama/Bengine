@@ -130,7 +130,7 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Account_Ajax
 			$error[] = "MAX_USER_REACHED";
 		}
 		$checkTime = TIME - Core::getOptions()->get("WATING_TIME_REGISTRATION") * 60;
-		$result = Core::getQuery()->select("registration", array("time"), "", "ipaddress = '".IPADDRESS."' AND time >= '".$checkTime."'");
+		$result = Core::getQuery()->select("registration", array("time"), "", Core::getDB()->quoteInto("ipaddress = '".IPADDRESS."' AND time >= ?", $checkTime));
 		if($row = $result->fetchRow())
 		{
 			$minutes = ceil(($row["time"] - $checkTime) / 60);
@@ -150,7 +150,9 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Account_Ajax
 		{
 			$error[] = "PASSWORD_INVALID";
 		}
-		$result = Core::getQuery()->select("user", array("username", "email"), "", "username = '".$this->getUsername()."' OR email = '".$this->getEmail()."'");
+		$where  = Core::getDB()->quoteInto("username = ?", $this->getUsername());
+		$where .= Core::getDB()->quoteInto(" OR email = ?", $this->getEmail());
+		$result = Core::getQuery()->select("user", array("username", "email"), "", $where);
 		if($row = $result->fetchRow())
 		{
 			if(Str::compare($this->getUsername(), $row["username"])) { $error[] = "USERNAME_EXISTS"; }
@@ -158,7 +160,7 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Account_Ajax
 		}
 		$result->closeCursor();
 
-		$result = Core::getQuery()->select("languages", array("languageid"), "", "languageid = '".$this->getLanguage()."'");
+		$result = Core::getQuery()->select("languages", array("languageid"), "", Core::getDB()->quoteInto("languageid = ?", $this->getLanguage()));
 		if($result->rowCount() <= 0)
 		{
 			$error[] = "UNKOWN_LANGUAGE";

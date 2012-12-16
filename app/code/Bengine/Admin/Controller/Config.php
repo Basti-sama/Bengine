@@ -105,7 +105,7 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		{
 			$this->saveVariable($this->getParam("var"), $this->getParam("type"), $this->getParam("options"), $this->getParam("description"), $this->getParam("groupid"));
 		}
-		$result = Core::getQuery()->select("config", array("var", "type", "description", "options", "groupid"), "", "var = '".$var."' AND islisted = '1'");
+		$result = Core::getQuery()->select("config", array("var", "type", "description", "options", "groupid"), "", Core::getDB()->quoteInto("var = ? AND islisted = '1'", $var));
 		$row = $result->fetchRow();
 		$row["groups"] = $this->getGroupSelect($row["groupid"]);
 		$row["type"] = $this->getInputTypeSelect($row["type"]);
@@ -200,10 +200,10 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 	{
 		if($this->isPost() && $this->getParam("save_vars"))
 		{
-			$this->saveVars();
+			$this->saveVars($id);
 		}
 		$vars = array();
-		$result = Core::getQuery()->select("config", array("var", "value", "type", "description", "options"), "", "groupid = '".$id."' AND islisted = '1'", "sort_index ASC");
+		$result = Core::getQuery()->select("config", array("var", "value", "type", "description", "options"), "", Core::getDB()->quoteInto("groupid = ? AND islisted = '1'", $id), "sort_index ASC");
 		foreach($result->fetchAll() as $row)
 		{
 			$vars[] = array(
@@ -275,11 +275,12 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 	}
 
 	/**
+	 * @param integer $id
 	 * @return Bengine_Admin_Controller_Config
 	 */
-	protected function saveVars()
+	protected function saveVars($id)
 	{
-		$result = Core::getQuery()->select("config", array("var"), "", "groupid = '".Core::getRequest()->getGET("1")."' AND islisted = '1'", "sort_index ASC");
+		$result = Core::getQuery()->select("config", array("var"), "", Core::getDB()->quoteInto("groupid = ? AND islisted = '1'", $id), "sort_index ASC");
 		foreach($result->fetchAll() as $row)
 		{
 			Core::getQuery()->update("config", array("value" => Core::getRequest()->getPOST($row["var"])), "var = ?", array($row["var"]));

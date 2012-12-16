@@ -188,7 +188,9 @@ class Game extends Application
 		$joins  = "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = p.planetid)";
 		$joins .= "LEFT JOIN ".PREFIX."planet m ON (g.moonid = m.planetid)";
 		$atts = array("p.planetid", "p.ismoon", "p.planetname", "p.picture", "g.galaxy", "g.system", "g.position", "m.planetid AS moonid", "m.planetname AS moon", "m.picture AS mpicture");
-		$result = Core::getQuery()->select("planet p", $atts, $joins, "p.userid = '".Core::getUser()->get("userid")."' AND p.ismoon = '0'", $order);
+		$where  = Core::getDB()->quoteInto("p.userid = ?", Core::getUser()->get("userid"));
+		$where .= Core::getDB()->quoteInto(" AND p.ismoon = ?", 0);
+		$result = Core::getQuery()->select("planet p", $atts, $joins, $where, $order);
 		unset($order);
 		foreach($result->fetchAll() as $row)
 		{
@@ -304,7 +306,7 @@ class Game extends Application
 	 */
 	protected static function loadResearch()
 	{
-		$result = Core::getQuery()->select("research2user", array("buildingid", "level"), "", "userid = '".Core::getUser()->get("userid")."'");
+		$result = Core::getQuery()->select("research2user", array("buildingid", "level"), "", Core::getDB()->quoteInto("userid = ?", Core::getUser()->get("userid")));
 		foreach($result->fetchAll() as $row)
 		{
 			self::$research[$row["buildingid"]] = $row["level"];
@@ -332,7 +334,8 @@ class Game extends Application
 		);
 		$joins  = "LEFT JOIN ".PREFIX."engine e ON (e.engineid = s2e.engineid) ";
 		$joins .= "LEFT JOIN ".PREFIX."research2user r2u ON (r2u.buildingid = s2e.engineid) ";
-		$where  = "s2e.unitid = '".$id."' AND r2u.level >= s2e.level AND r2u.userid = '".Core::getUser()->get("userid")."'";
+		$where  = Core::getDB()->quoteInto("s2e.unitid = ? AND r2u.level >= s2e.level", $id);
+		$where .= Core::getDB()->quoteInto(" AND r2u.userid = ?", Core::getUser()->get("userid"));
 		$order  = "s2e.level DESC";
 		$result = Core::getQuery()->select("ship2engine s2e", $select, $joins, $where, $order, "1");
 		if($row = $result->fetchRow())
@@ -521,7 +524,10 @@ class Game extends Application
 	public static function loadReasearchLabs()
 	{
 		if(self::$labsLoaded) { return; }
-		$result = Core::getQuery()->select("building2planet b2p", array("b2p.level", "b2p.planetid"), "LEFT JOIN ".PREFIX."planet p ON (p.planetid = b2p.planetid)", "p.userid = '".Core::getUser()->get("userid")."' AND b2p.buildingid = '12' AND b2p.planetid != '".Core::getUser()->get("curplanet")."'", "b2p.level DESC");
+		$where  = Core::getDB()->quoteInto("p.userid = ?", Core::getUser()->get("userid"));
+		$where .= Core::getDB()->quoteInto(" AND b2p.buildingid = ? AND ", 12);
+		$where .= Core::getDB()->quoteInto("b2p.planetid != ?", Core::getUser()->get("curplanet"));
+		$result = Core::getQuery()->select("building2planet b2p", array("b2p.level", "b2p.planetid"), "LEFT JOIN ".PREFIX."planet p ON (p.planetid = b2p.planetid)", $where, "b2p.level DESC");
 		foreach($result->fetchAll() as $row)
 		{
 			self::$researchLabs[] = $row["level"];

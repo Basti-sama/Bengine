@@ -48,7 +48,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 		// Bengine_Game_Common unit data
 		$select = array("c.name", "c.mode", "c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "ds.capicity", "ds.speed", "ds.consume", "ds.attack", "ds.shield");
 		$join = "LEFT JOIN ".PREFIX."ship_datasheet ds ON (ds.unitid = c.buildingid)";
-		$result = Core::getQuery()->select("construction c", $select, $join, "c.buildingid = '".$id."'");
+		$result = Core::getQuery()->select("construction c", $select, $join, Core::getDB()->quoteInto("c.buildingid = ?", $id));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
@@ -69,7 +69,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 
 			// Rapidfire
 			$i = 0; $rf = array();
-			$_result = Core::getQuery()->select("rapidfire rf", array("rf.target", "rf.value", "c.name"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = rf.target)", "rf.unitid = '".$id."'");
+			$_result = Core::getQuery()->select("rapidfire rf", array("rf.target", "rf.value", "c.name"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = rf.target)", Core::getDB()->quoteInto("rf.unitid = ?", $id));
 			foreach($_result->fetchAll() as $_row)
 			{
 				Hook::event("ShowUnitRapidfire", array($row, &$_row));
@@ -79,7 +79,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 				$i++;
 			}
 			$_result->closeCursor();
-			$_result = Core::getQuery()->select("rapidfire rf", array("rf.unitid", "rf.value", "c.name"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = rf.unitid)", "rf.target = '".$id."'");
+			$_result = Core::getQuery()->select("rapidfire rf", array("rf.unitid", "rf.value", "c.name"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = rf.unitid)", Core::getDB()->quoteInto("rf.target = ?", $id));
 			foreach($_result->fetchAll() as $_row)
 			{
 				Hook::event("ShowUnitRapidfire", array($row, &$_row));
@@ -97,7 +97,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 				array("s2e.base_speed", "s2e.base", "s2e.level", "e.engineid", "factor", "c.name"),
 				"LEFT JOIN ".PREFIX."engine e ON (e.engineid = s2e.engineid) ".
 				"LEFT JOIN ".PREFIX."construction c ON (c.buildingid = e.engineid)",
-				"s2e.unitid = '{$id}'",
+				Core::getDB()->quoteInto("s2e.unitid = ?", $id),
 				"s2e.level ASC"
 			);
 			foreach($_result->fetchAll() as $_row)
@@ -163,18 +163,27 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 		$select = array("c.name AS name_id", "c.allow_on_moon", "p.content AS name", "c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.basic_energy", "sds.unitid", "sds.capicity AS capacity", "sds.speed", "sds.consume", "sds.attack", "sds.shield");
 		$joins  = "LEFT JOIN ".PREFIX."phrases p ON (p.title = c.name)";
 		$joins .= "LEFT JOIN ".PREFIX."ship_datasheet sds ON (sds.unitid = c.buildingid)";
-		$result = Core::getQuery()->select("construction c", $select, $joins, "c.buildingid = '".$this->id."' AND p.languageid = '".$languageid."'");
+		$where = Core::getDB()->quoteInto("c.buildingid = ? AND p.languageid = ?", array(
+			$this->id, $languageid
+		));
+		$result = Core::getQuery()->select("construction c", $select, $joins, $where);
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
 			Hook::event("EditUnitDataLoaded", array(&$row));
 			Core::getTPL()->assign($row);
 			Core::getTPL()->assign("shell", fNumber(($row["basic_metal"] + $row["basic_silicon"]) / 10));
-			$result = Core::getQuery()->select("phrases", "content", "", "languageid = '".$languageid."' AND title = '".$row["name_id"]."_DESC'");
+			$where = Core::getDB()->quoteInto("languageid = ? AND title = ?", array(
+				$languageid, $row["name_id"]."_DESC"
+			));
+			$result = Core::getQuery()->select("phrases", "content", "", $where);
 			$_row = $result->fetchRow();
 			$result->closeCursor();
 			Core::getTPL()->assign("description", Str::replace("<br />", "", $_row["content"]));
-			$result = Core::getQuery()->select("phrases", "content", "", "languageid = '".$languageid."' AND title = '".$row["name_id"]."_FULL_DESC'");
+			$where = Core::getDB()->quoteInto("languageid = ? AND title = ?", array(
+				$languageid, $row["name_id"]."_FULL_DESC"
+			));
+			$result = Core::getQuery()->select("phrases", "content", "", $where);
 			$_row = $result->fetchRow();
 			$result->closeCursor();
 			Core::getTPL()->assign("full_description", Str::replace("<br />", "", $_row["content"]));
@@ -184,7 +193,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			Core::getTPL()->assign("extentedEngineLevel", 0);
 			Core::getTPL()->assign("extentedEngineSpeed", "");
 			$engines = array();
-			$result = Core::getQuery()->select("ship2engine s2e", array("s2e.engineid", "s2e.level", "s2e.base_speed", "s2e.base"), "", "s2e.unitid = '".$this->id."'");
+			$result = Core::getQuery()->select("ship2engine s2e", array("s2e.engineid", "s2e.level", "s2e.base_speed", "s2e.base"), "", Core::getDB()->quoteInto("s2e.unitid = ?", $this->id));
 			foreach($result->fetchAll() as $_row)
 			{
 				if($_row["base"] == 1)
@@ -200,7 +209,10 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			}
 
 			$req = array(); $i = 0;
-			$result = Core::getQuery()->select("requirements r", array("r.requirementid", "r.needs", "r.level", "p.content"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs) LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "r.buildingid = '".$this->id."' AND p.languageid = '".$languageid."'");
+			$where = Core::getDB()->quoteInto("r.buildingid = ? AND p.languageid = ?", array(
+				$this->id, $languageid
+			));
+			$result = Core::getQuery()->select("requirements r", array("r.requirementid", "r.needs", "r.level", "p.content"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.needs) LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", $where);
 			foreach($result->fetchAll() as $row)
 			{
 				$req[$i]["delete"] = Link::get("game/".SID."/Unit/DeleteRequirement/".$this->id."/".$row["requirementid"], "[".Core::getLanguage()->getItem("DELETE")."]");
@@ -212,7 +224,8 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 			Core::getTPL()->addLoop("requirements", $req);
 
 			$const = array(); $i = 0;
-			$result = Core::getQuery()->select("construction b", array("b.buildingid", "p.content"), "LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", "(b.mode = '1' OR b.mode = '2' OR b.mode = '5') AND p.languageid = '".$languageid."'", "p.content ASC");
+			$where = Core::getDB()->quoteInto("(b.mode = '1' OR b.mode = '2' OR b.mode = '5') AND p.languageid = ?", $languageid);
+			$result = Core::getQuery()->select("construction b", array("b.buildingid", "p.content"), "LEFT JOIN ".PREFIX."phrases p ON (p.title = b.name)", $where, "p.content ASC");
 			foreach($result->fetchAll() as $row)
 			{
 				$const[$i]["name"] = $row["content"];
@@ -307,7 +320,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 
 		if(Str::length($name) > 0)
 		{
-			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."'");
+			$result = Core::getQuery()->select("phrases", "phraseid", "", Core::getDB()->quoteInto("title = ?", $nameId));
 			if($result->rowCount() > 0)
 			{
 				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($name)), "title = ?", array($nameId));
@@ -320,7 +333,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 		}
 		if(Str::length($desc) > 0)
 		{
-			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."_DESC'");
+			$result = Core::getQuery()->select("phrases", "phraseid", "", Core::getDB()->quoteInto("title = ?", $nameId."_DESC"));
 			if($result->rowCount() > 0)
 			{
 				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($desc)), "title = ?", array($nameId."_DESC"));
@@ -333,7 +346,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 		}
 		if(Str::length($fullDesc) > 0)
 		{
-			$result = Core::getQuery()->select("phrases", "phraseid", "", "title = '".$nameId."_FULL_DESC'");
+			$result = Core::getQuery()->select("phrases", "phraseid", "", Core::getDB()->quoteInto("title = ?", $nameId."_FULL_DESC"));
 			if($result->rowCount() > 0)
 			{
 				Core::getQuery()->update("phrases", array("content" => convertSpecialChars($fullDesc)), "title = ?", array($nameId."_FULL_DESC"));
@@ -347,7 +360,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 		Core::getLang()->rebuild("info");
 
 		// Rapidfire
-		$result = Core::getQuery()->select("rapidfire", array("target", "value"), "", "unitid = '".$this->id."'");
+		$result = Core::getQuery()->select("rapidfire", array("target", "value"), "", Core::getDB()->quoteInto("unitid = ?", $this->id));
 		foreach($result->fetchAll() as $row)
 		{
 			if(is_array($rfDelete) && in_array($row["target"], $rfDelete))
@@ -381,7 +394,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 		{
 			$joins  = "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = e.engineid)";
 			$joins .= "LEFT JOIN ".PREFIX."phrases p ON (p.title = c.name)";
-			$result = Core::getQuery()->select("engine e", array("e.engineid", "p.content AS name"), $joins, "p.languageid = '".Core::getLang()->getOpt("languageid")."'", "c.display_order ASC, c.buildingid ASC");
+			$result = Core::getQuery()->select("engine e", array("e.engineid", "p.content AS name"), $joins, Core::getDB()->quoteInto("p.languageid = ?", Core::getLang()->getOpt("languageid")), "c.display_order ASC, c.buildingid ASC");
 			foreach($result->fetchAll() as $row)
 			{
 				$this->engines[] = $row;
@@ -408,7 +421,10 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 		$sel = array("r.target", "r.value", "p.content AS name");
 		$joins  = "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r.target) ";
 		$joins .= "LEFT JOIN ".PREFIX."phrases p ON (b.name = p.title)";
-		$result = Core::getQuery()->select("rapidfire r", $sel, $joins, "r.unitid = '".$this->id."' AND p.languageid = '".Core::getUser()->get("languageid")."'");
+		$where  = Core::getDB()->quoteInto("r.unitid = ? AND p.languageid = ?", array(
+			$this->id, Core::getUser()->get("languageid")
+		));
+		$result = Core::getQuery()->select("rapidfire r", $sel, $joins, $where);
 		foreach($result->fetchAll() as $row)
 		{
 			$rf[] = $row;
@@ -428,7 +444,7 @@ class Bengine_Game_Controller_Unit extends Bengine_Game_Controller_Abstract
 		$ret = "";
 		$sel = array("b.buildingid", "p.content AS name");
 		$join = "LEFT JOIN ".PREFIX."phrases p ON (b.name = p.title)";
-		$result = Core::getQuery()->select("construction b", $sel, $join, "(b.mode = '3' OR b.mode = '4') AND p.languageid = '".Core::getUser()->get("languageid")."'");
+		$result = Core::getQuery()->select("construction b", $sel, $join, Core::getDB()->quoteInto("(b.mode = '3' OR b.mode = '4') AND p.languageid = ?", Core::getUser()->get("languageid")));
 		foreach($result->fetchAll() as $row)
 		{
 			$ret .= createOption($row["buildingid"], $row["name"], ($row["buildingid"] == $unit) ? 1 : 0);

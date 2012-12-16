@@ -35,8 +35,10 @@ class Recipe_Language_Importer
 	/**
 	 * Constructor.
 	 *
-	 * @param mixed File name / File content / Array
-	 * @param mixed Language code or id.
+	 * @param mixed $data File name / File content / Array
+	 * @param mixed $lang Language code or id.
+	 * @param mixed $group
+	 * @throws Recipe_Exception_Generic
 	 */
 	public function __construct($data, $lang, $group)
 	{
@@ -44,24 +46,24 @@ class Recipe_Language_Importer
 		if(is_numeric($lang))
 		{
 			try { $this->getFromLangFromId($lang); }
-			catch(Exception $e) { $e->printError(); }
+			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
 		else
 		{
 			try { $this->getFromLangCode($lang); }
-			catch(Exception $e) { $e->printError(); }
+			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
 
 		// Find out which phrase group we got
 		if(is_numeric($group))
 		{
 			try { $this->getGroupFromId($group); }
-			catch(Exception $e) { $e->printError(); }
+			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
 		else
 		{
 			try { $this->getFromGroupName($group); }
-			catch(Exception $e) { $e->printError(); }
+			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
 
 		// Check which type the import data is
@@ -72,7 +74,7 @@ class Recipe_Language_Importer
 		else if(file_exists($data))
 		{
 			try { $this->getDataFromFile($data); }
-			catch(Exception $e) { $e->printError(); }
+			catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		}
 		else
 		{
@@ -81,13 +83,14 @@ class Recipe_Language_Importer
 
 		// Start import
 		try { $this->import(); }
-		catch(Exception $e) { $e->printError(); }
+		catch(Recipe_Exception_Generic $e) { $e->printError(); }
 		return;
 	}
 
 	/**
 	 * Actual import function.
 	 *
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Language_Importer
 	 */
 	protected function import()
@@ -101,7 +104,7 @@ class Recipe_Language_Importer
 		// Importing ...
 		foreach($this->importData as $key => $value)
 		{
-			Core::getQuery()->insert("phrases", array("languageid", "phrasegroupid", "title", "content"), array($this->langId, $this->groupId, $key, $value));
+			Core::getQuery()->insert("phrases", array("languageid" => $this->langId, "phrasegroupid" => $this->groupId, "title" => $key, "content" => $value));
 		}
 		return $this;
 	}
@@ -109,8 +112,8 @@ class Recipe_Language_Importer
 	/**
 	 * Loads import data from a file.
 	 *
-	 * @param string	Path to file
-	 *
+	 * @param string $file    Path to file
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Language_Importer
 	 */
 	protected function getDataFromFile($file)
@@ -126,7 +129,7 @@ class Recipe_Language_Importer
 			$item = array();
 			require_once($file);
 			$this->importData = $item;
-			return;
+			return $this;
 		}
 
 		// Get the file's contents
@@ -138,7 +141,7 @@ class Recipe_Language_Importer
 	/**
 	 * Extract the contents of an import file into an array.
 	 *
-	 * @param string	Text content
+	 * @param string $text	Text content
 	 *
 	 * @return Recipe_Language_Importer
 	 */
@@ -160,14 +163,14 @@ class Recipe_Language_Importer
 	/**
 	 * Checks the given language id for validation.
 	 *
-	 * @param integer	Language id
-	 *
+	 * @param integer $lang    Language id
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Language_Importer
 	 */
 	protected function getFromLangFromId($lang)
 	{
-		$result = Core::getQuery()->select("languages", array("languageid"), "", "languageid = '".$lang."'");
-		if(Core::getDB()->num_rows($result) > 0)
+		$result = Core::getQuery()->select("languages", array("languageid"), "", Core::getDB()->quoteInto("languageid = ?", $lang));
+		if($result->rowCount())
 		{
 			$this->langId = $lang;
 			return $this;
@@ -178,21 +181,23 @@ class Recipe_Language_Importer
 	/**
 	 * Gets the language id for given language code.
 	 *
-	 * @param string	Language code
-	 *
+	 * @param string $lang    Language code
+	 * @param mixed $createData
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Language_Importer
 	 */
 	protected function getFromLangCode($lang, $createData = null)
 	{
-		$result = Core::getQuery()->select("languages", array("languageid"), "", "langcode = '".$lang."'");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$result = Core::getQuery()->select("languages", array("languageid"), "", Core::getDB()->quoteInto("langcode = ?", $lang));
+		$row = $result->fetchRow();
+		$result->closeCursor();
 		if(!$row)
 		{
 			if(is_array($createData))
 			{
-				Core::getQuery()->insert("languages", array("langcode", "title", "charset"), $createData);
-				$this->langId = Core::getDB()->insert_id();
+				$spec = array_combine(array("langcode", "title", "charset"), $createData);
+				Core::getQuery()->insert("languages", $spec);
+				$this->langId = Core::getDB()->lastInsertId();
 				return $this;
 			}
 			else
@@ -207,14 +212,14 @@ class Recipe_Language_Importer
 	/**
 	 * Checks the given phrase group id for validation.
 	 *
-	 * @param string	Group id
-	 *
+	 * @param string $group    Group id
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Language_Importer
 	 */
 	protected function getGroupFromId($group)
 	{
-		$result = Core::getQuery()->select("phrasesgroups", array("phrasegroupid"), "", "phrasegroupid = '".$group."'");
-		if(Core::getDB()->num_rows($result) > 0)
+		$result = Core::getQuery()->select("phrasesgroups", array("phrasegroupid"), "", Core::getDB()->quoteInto("phrasegroupid = ?", $group));
+		if($result->rowCount() > 0)
 		{
 			$this->groupId = $group;
 			return $this;
@@ -225,20 +230,20 @@ class Recipe_Language_Importer
 	/**
 	 * Gets the phrase group id for given group name.
 	 *
-	 * @param string	Group name
+	 * @param string $group	Group name
 	 *
 	 * @return Recipe_Language_Importer
 	 */
 	protected function getFromGroupName($group)
 	{
-		$result = Core::getQuery()->select("phrasesgroups", array("phrasegroupid"), "", "title = '".$group."'");
-		$row = Core::getDB()->fetch($result);
-		Core::getDB()->free_result($result);
+		$result = Core::getQuery()->select("phrasesgroups", array("phrasegroupid"), "", Core::getDB()->quoteInto("title = ?", $group));
+		$row = $result->fetchRow();
+		$result->closeCursor();
 		if(!$row)
 		{
 			// Create unkown group
-			Core::getQuery()->insert("phrasesgroups", array("title"), array($group));
-			$this->groupId = Core::getDB()->insert_id();
+			Core::getQuery()->insert("phrasesgroups", array("title" => $group));
+			$this->groupId = Core::getDB()->lastInsertId();
 			return $this;
 		}
 		$this->groupId = $row["phrasegroupid"];
@@ -248,7 +253,7 @@ class Recipe_Language_Importer
 	/**
 	 * Sets the default language.
 	 *
-	 * @param mixed		Language code or id
+	 * @param mixed $langId	Language code or id
 	 *
 	 * @return Recipe_Language_Importer
 	 */
@@ -256,8 +261,8 @@ class Recipe_Language_Importer
 	{
 		if(!is_numeric($langId))
 		{
-			$result = Core::getQuery()->select("languages", array("languageid"), "", "langcode = '".$langId."'", "", "1");
-			if($row = Core::getDB()->fetch($result))
+			$result = Core::getQuery()->select("languages", array("languageid"), "", Core::getDB()->quoteInto("langcode = ?", $langId), "", "1");
+			if($row = $result->fetchRow())
 			{
 				$langId = $row["languageid"];
 			}

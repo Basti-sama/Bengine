@@ -148,7 +148,8 @@ class Recipe_Language extends Recipe_Collection
 		$whereclause = "";
 		for($i = 0; $i < count($this->grouplist); $i++)
 		{
-			$whereclause .= "pg.title = '".$this->grouplist[$i]."' AND p.languageid = '".$this->langid."'";
+			$whereclause .= Core::getDB()->quoteInto("(pg.title = ? AND ", $this->grouplist[$i]);
+			$whereclause .= Core::getDB()->quoteInto("p.languageid = ?)", $this->langid);
 			if($i < count($this->grouplist) - 1) { $whereclause .= " OR "; }
 		}
 		$select = array("p.title", "p.content");
@@ -216,7 +217,9 @@ class Recipe_Language extends Recipe_Collection
 			$this->langcode = $this->langid;
 			$this->langid = 0;
 		}
-		$result = Core::getQuery()->select("languages", array("languageid"), "", "languageid = '".$this->langid."' OR langcode = '".$this->langcode."'", "", "1");
+		$where  = Core::getDB()->quoteInto("languageid = ? OR ", $this->langid);
+		$where .= Core::getDB()->quoteInto("langcode = ?", $this->langcode);
+		$result = Core::getQuery()->select("languages", array("languageid"), "", $where, "", "1");
 		if($row = $result->fetchRow()) { $this->langid = $row["languageid"]; }
 		else { $this->langid = Core::getOptions()->defaultlanguage; }
 		return $this;

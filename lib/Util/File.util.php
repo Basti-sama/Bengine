@@ -14,8 +14,7 @@ class File
 	/**
 	 * Fetch the extension of a file name.
 	 *
-	 * @param string	The file name.
-	 *
+	 * @param string $filename	The file name.
 	 * @return string 	The file extension.
 	 */
 	public static function getFileExtension($filename)
@@ -26,9 +25,9 @@ class File
 	/**
 	 * Deletes a file.
 	 *
-	 * @param string	Path + file name
-	 *
-	 * @return boolean	True on success or false on failure
+	 * @param string $file    Path + file name
+	 * @throws Recipe_Exception_Generic
+	 * @return boolean    True on success or false on failure
 	 */
 	public static function rmFile($file)
 	{
@@ -45,13 +44,11 @@ class File
 			if(!@unlink($file))
 			{
 				throw new Recipe_Exception_Generic("Cannot delete file \"".$file."\".");
-				return false;
 			}
 		}
 		else
 		{
 			throw new Recipe_Exception_Generic("Cannot delete a non-existing file (\"".$file."\").");
-			return false;
 		}
 		return true;
 	}
@@ -59,8 +56,7 @@ class File
 	/**
 	 * Deletes a complete direcotory including its contents.
 	 *
-	 * @param string	Path
-	 *
+	 * @param string $dir
 	 * @return boolean	True on success or false on failure
 	 */
 	public static function rmDirectory($dir)
@@ -79,18 +75,18 @@ class File
 	/**
 	 * Deletes the complete directory content.
 	 *
-	 * @param string	Directory path
-	 *
-	 * @return boolean	True on success or false on failure
+	 * @param string $dir	Directory path
+	 * @return boolean		True on success or false on failure
 	 */
 	public static function rmDirectoryContent($dir)
 	{
 		if(is_dir($dir))
 		{
 			$openDir = self::getRecursiveDirectoryIterator($dir);
+			/* @var SplFileInfo $file */
 			foreach($openDir as $file)
 			{
-				if($file->isWritable() && !$file->isDot())
+				if($file->isWritable())
 				{
 					if($file->isDir())
 					{
@@ -110,8 +106,8 @@ class File
 	/**
 	 * Moves the complete direcotory content into another directory.
 	 *
-	 * @param string	Folder to move
-	 * @param string	Destination folder
+	 * @param string $from	Folder to move
+	 * @param string $to	Destination folder
 	 *
 	 * @return boolean	True on success or false on failure
 	 */
@@ -124,6 +120,7 @@ class File
 			$to = (substr($to, -1) != "/") ? $to."/" : $to;
 
 			$openDir = new DirectoryIterator($from);
+			/* @var DirectoryIterator $file */
 			foreach($openDir as $file)
 			{
 				if(!$file->isDot() && $file->isWritable())
@@ -145,10 +142,10 @@ class File
 	}
 
 	/**
-	 * Copies the complete direcotory content into another directory.
+	 * Copies the complete directory content into another directory.
 	 *
-	 * @param string	Folder to copy
-	 * @param string	Destination folder
+	 * @param string $from	Folder to copy
+	 * @param string $to	Destination folder
 	 *
 	 * @return boolean	True on success or false on failure
 	 */
@@ -161,6 +158,7 @@ class File
 			$to = (substr($to, -1) != "/") ? $to."/" : $to;
 
 			$openDir = new DirectoryIterator($from);
+			/* @var DirectoryIterator $file */
 			foreach($openDir as $file)
 			{
 				if(!$file->isDot() && $file->isReadable())
@@ -183,10 +181,10 @@ class File
 	/**
 	 * Makes a copy of the file source to destination.
 	 *
-	 * @param string	File to copy
-	 * @param string	Destination path
-	 *
-	 * @return boolean	True on success or false on failure
+	 * @param string $file    File to copy
+	 * @param string $dest    Destination path
+	 * @throws Recipe_Exception_Generic
+	 * @return boolean    True on success or false on failure
 	 */
 	public static function cpFile($file, $dest)
 	{
@@ -197,17 +195,14 @@ class File
 		if(!file_exists($file))
 		{
 			throw new Recipe_Exception_Generic("Cannot copy a non-existing file (\"".$file."\").");
-			return false;
 		}
 		if(!is_dir(dirname($dest)))
 		{
 			throw new Recipe_Exception_Generic("Copy destination is not writable (\"".$file."\").");
-			return false;
 		}
 		if(!copy($file, $dest))
 		{
 			throw new Recipe_Exception_Generic("Unable to copy \"".$file."\" to \"".$dest."\".");
-			return false;
 		}
 		return true;
 	}
@@ -215,8 +210,8 @@ class File
 	/**
 	 * Returns file size.
 	 *
-	 * @param string	Path to file
-	 * @param boolean	Format size or return raw byte value?
+	 * @param string $file		Path to file
+	 * @param boolean $format	Format size or return raw byte value?
 	 *
 	 * @return mixed	File size
 	 */
@@ -229,16 +224,17 @@ class File
 	/**
 	 * Returns directory size.
 	 *
-	 * @param string	Path to directory
-	 * @param boolean	Format size or return raw byte value?
+	 * @param string $dir		Path to directory
+	 * @param boolean $format	Format size or return raw byte value?
 	 *
-	 * @return mixed	Directory size
+	 * @return mixed			Directory size
 	 */
 	public static function getDirectorySize($dir, $format = true)
 	{
 		$size = 0;
 		$dir = (substr($dir, -1) != "/") ? $dir."/" : $dir;
 		$handle = new DirectoryIterator($dir);
+		/* @var DirectoryIterator $file */
 		foreach($handle as $file)
 		{
 			if(!$file->isDot())
@@ -252,7 +248,7 @@ class File
 	/**
 	 * Converts byte number into readable string.
 	 *
-	 * @param integer	Bytes to convert
+	 * @param integer $bytes	Bytes to convert
 	 *
 	 * @return string
 	 */
@@ -260,22 +256,22 @@ class File
 	{
 		if($bytes == 0) { return number_format($bytes, 2)." Byte"; }
 		$s = array("Byte", "Kb", "MB", "GB", "TB", "PB");
-		$e = floor(log($bytes)/log(1024));
+		$e = (int) floor(log($bytes)/log(1024));
 		return sprintf("%.2f ".$s[$e], ($bytes/pow(1024, floor($e))));
 	}
 
 	/**
 	 * Returns a complete recursive directory iterator.
 	 *
-	 * @param string	Path to direcotry
-	 * @param integer	Access Mode (default: child first) [optional]
+	 * @param string $dir	Path to direcotry
+	 * @param integer $mode	Access Mode (default: child first) [optional]
 	 *
 	 * @return RecursiveIteratorIterator
 	 */
 	public static function getRecursiveDirectoryIterator($dir, $mode = RecursiveIteratorIterator::CHILD_FIRST)
 	{
 		$dir = (substr($dir, -1) != "/") ? $dir."/" : $dir;
-		return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::CURRENT_AS_FILEINFO), $mode);
+		return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::SKIP_DOTS), $mode);
 	}
 
 	/**
@@ -294,8 +290,8 @@ class File
 	/**
 	 * Recursive change group funciton.
 	 *
-	 * @param string	File or directory path
-	 * @param string	Group name
+	 * @param string $path	File or directory path
+	 * @param string $group	Group name
 	 *
 	 * @return boolean
 	 */
@@ -307,8 +303,8 @@ class File
 	/**
 	 * Recursive change owner funciton.
 	 *
-	 * @param string	File or directory path
-	 * @param string	User name
+	 * @param string $path	File or directory path
+	 * @param string $user	User name
 	 *
 	 * @return boolean
 	 */
@@ -320,9 +316,9 @@ class File
 	/**
 	 * Executes a recursive callback function to a direcotry.
 	 *
-	 * @param string		The callback function
-	 * @param string		File or directory path
-	 * @param mixed			Callback data
+	 * @param callback $callback	The callback function
+	 * @param string $path			File or directory path
+	 * @param mixed $data			Callback data
 	 *
 	 * @return boolean
 	 */
@@ -330,6 +326,7 @@ class File
 	{
 		if(is_dir($path))
 		{
+			/* @var SplFileInfo $file */
 			foreach(self::getRecursiveDirectoryIterator($path) as $file)
 			{
 				$callback($file->getPathname(), $data);

@@ -66,10 +66,10 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 
 		if(Game::getPlanet()->getBuilding("ROCKET_STATION") > 0 && $this->mode == self::DEFENSE_CONSTRUCTION_TYPE)
 		{
-			$_result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '51' AND planetid = '".Core::getUser()->get("curplanet")."'");
+			$_result = Core::getQuery()->select("unit2shipyard", "quantity", "", Core::getDB()->quoteInto("unitid = '51' AND planetid = ?", Core::getUser()->get("curplanet")));
 			$_row = $_result->fetchRow();
 			$this->existingRockets = $_row["quantity"];
-			$_result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '52' AND planetid = '".Core::getUser()->get("curplanet")."'");
+			$_result = Core::getQuery()->select("unit2shipyard", "quantity", "", Core::getDB()->quoteInto("unitid = '52' AND planetid = ?", Core::getUser()->get("curplanet")));
 			$_row = $_result->fetchRow();
 			$this->existingRockets += $_row["quantity"] * 2;
 			$this->existingRockets += Game::getEH()->getWorkingRockets();
@@ -119,7 +119,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		// Output shipyard missions
 		Core::getQuery()->delete("shipyard", "finished <= ?", null, null, array(TIME));
 		$missions = array();
-		$result = Core::getQuery()->select("shipyard s", array("s.quantity", "s.one", "s.time", "s.finished", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = s.unitid)", "s.planetid = '".Core::getUser()->get("curplanet")."' ORDER BY s.time ASC");
+		$result = Core::getQuery()->select("shipyard s", array("s.quantity", "s.one", "s.time", "s.finished", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = s.unitid)", Core::getDB()->quoteInto("s.planetid = ?", Core::getUser()->get("curplanet")), "s.time ASC");
 		if($row = $result->fetchRow())
 		{
 			Core::getTPL()->assign("hasEvent", true);
@@ -190,7 +190,10 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 
 				if($id == 49 || $id == 50)
 				{
-					$_result = Core::getQuery()->select("unit2shipyard", "quantity", "", "unitid = '".$id."' AND planetid = '".Core::getUser()->get("curplanet")."'");
+					$where = Core::getDB()->quoteInto("unitid = ? AND planetid = ?", array(
+						$id, Core::getUser()->get("curplanet")
+					));
+					$_result = Core::getQuery()->select("unit2shipyard", "quantity", "", $where);
 					if($_result->rowCount() > 0)
 					{
 						throw new Recipe_Exception_Generic("You cannot build this.");
@@ -232,7 +235,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 				if($quantity > 0)
 				{
 					$latest = TIME;
-					$_result = Core::getQuery()->select("events", array("MAX(time) as latest"), "", "planetid = '".Core::getUser()->get("curplanet")."' AND (mode = '4' OR mode = '5') LIMIT 1");
+					$_result = Core::getQuery()->select("events", array("MAX(time) as latest"), "", Core::getDB()->quoteInto("planetid = ? AND (mode = '4' OR mode = '5')", Core::getUser()->get("curplanet")), "", 1);
 					$_row = $_result->fetchRow();
 					$_result->closeCursor();
 					if($_row["latest"] >= TIME)

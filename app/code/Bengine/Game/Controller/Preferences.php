@@ -93,7 +93,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		$result = Core::getQuery()->select("languages", array("languageid", "title"), "", "", "title ASC");
 		Core::getTPL()->addLoop("langs", $result);
 
-		$result = Core::getQuery()->select("feed_keys", array("feed_key"), "", "user_id = ".Core::getUser()->get("userid"));
+		$result = Core::getQuery()->select("feed_keys", array("feed_key"), "", Core::getDB()->quoteInto("user_id = ?", Core::getUser()->get("userid")));
 		if($result->rowCount() > 0)
 		{
 			$feed_key = $result->fetchColumn();
@@ -177,7 +177,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		// Check language
 		if(Core::getUser()->get("languageid") != $language)
 		{
-			$result = Core::getQuery()->select("languages", "languageid", "", "languageid = '".$language."'");
+			$result = Core::getQuery()->select("languages", "languageid", "", Core::getDB()->quoteInto("languageid = ?", $language));
 			if($result->rowCount() <= 0)
 			{
 				$language = Core::getUser()->get("languageid");
@@ -188,7 +188,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		// Check username
 		if(!Str::compare($username, Core::getUser()->get("username")))
 		{
-			$result = Core::getQuery()->select("user", "userid", "", "username = '$username'");
+			$result = Core::getQuery()->select("user", "userid", "", Core::getDB()->quoteInto("username = ?", $username));
 			if($result->rowCount() == 0)
 			{
 				$result->closeCursor();
@@ -223,7 +223,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		// Check email
 		if(!Str::compare($email, Core::getUser()->get("email")))
 		{
-			$result = Core::getQuery()->select("user", "userid", "", "email = '$email'");
+			$result = Core::getQuery()->select("user", "userid", "", Core::getDB()->quoteInto("email = ?", $email));
 			if($result->rowCount() == 0)
 			{
 				$result->closeCursor();
@@ -349,7 +349,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		if($generate_key)
 		{
 			$new_key = randString(16);
-			$result = Core::getQuery()->select("feed_keys", array("feed_key"), "", "user_id = '".Core::getUser()->get("userid")."'");
+			$result = Core::getQuery()->select("feed_keys", array("feed_key"), "", Core::getDB()->quoteInto("user_id = ?", Core::getUser()->get("userid")));
 			if($result->rowCount() > 0)
 			{
 				// User has a feed key

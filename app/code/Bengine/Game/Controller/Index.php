@@ -46,7 +46,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		$this->buildingEvent = Game::getEH()->getCurPlanetBuildingEvent();
 
 		// Messages
-		$result = Core::getQuery()->select("message", "msgid", "", "`receiver` = '".Core::getUser()->get("userid")."' AND `read` = '0'");
+		$result = Core::getQuery()->select("message", "msgid", "", Core::getDB()->quoteInto("`receiver` = ? AND `read` = '0'", Core::getUser()->get("userid")));
 		$msgs = $result->rowCount();
 		$result->closeCursor();
 		Core::getTPL()->assign("unreadmsg", $msgs);
@@ -104,7 +104,10 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		$result = Core::getQuery()->select("user", "userid");
 		Core::getLang()->assign("totalUsers", fNumber($result->rowCount()));
 		$result->closeCursor();
-		$result = Core::getQuery()->select("user", array("COUNT(`userid`)+1 AS rank"), "", "(`username` < '".Core::getUser()->get("username")."' AND `points` >= ".Core::getUser()->get("points").") OR `points` > ".Core::getUser()->get("points"), "", 1);
+		$where = Core::getDB()->quoteInto("(`username` < ? AND `points` >= ?) OR `points` > ?", array(
+			Core::getUser()->get("username"), Core::getUser()->get("points"), Core::getUser()->get("points")
+		));
+		$result = Core::getQuery()->select("user", array("COUNT(`userid`)+1 AS rank"), "", $where, "", 1);
 		Core::getLang()->assign("rank", fNumber($result->fetchColumn()));
 		$result->closeCursor();
 
@@ -113,12 +116,18 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 			if(Game::getPlanet()->getData("ismoon"))
 			{
 				// Planet has moon
-				$result = Core::getQuery()->select("galaxy g", array("p.planetid", "p.planetname", "p.picture"), "LEFT JOIN ".PREFIX."planet p ON (p.planetid = g.planetid)", "g.galaxy = '".Game::getPlanet()->getData("moongala")."' AND g.system = '".Game::getPlanet()->getData("moonsys")."' AND g.position = '".Game::getPlanet()->getData("moonpos")."'");
+				$where = Core::getDB()->quoteInto("g.galaxy = ? AND g.system = ? AND g.position = ?", array(
+					Game::getPlanet()->getData("moongala"), Game::getPlanet()->getData("moonsys"), Game::getPlanet()->getData("moonpos")
+				));
+				$result = Core::getQuery()->select("galaxy g", array("p.planetid", "p.planetname", "p.picture"), "LEFT JOIN ".PREFIX."planet p ON (p.planetid = g.planetid)", $where);
 			}
 			else
 			{
 				// Planet of current moon
-				$result = Core::getQuery()->select("galaxy g", array("p.planetid", "p.planetname", "p.picture"), "LEFT JOIN ".PREFIX."planet p ON (p.planetid = g.moonid)", "g.galaxy = '".Game::getPlanet()->getData("galaxy")."' AND g.system = '".Game::getPlanet()->getData("system")."' AND g.position = '".Game::getPlanet()->getData("position")."'");
+				$where = Core::getDB()->quoteInto("g.galaxy = ? AND g.system = ? AND g.position = ?", array(
+					Game::getPlanet()->getData("galaxy"), Game::getPlanet()->getData("system"), Game::getPlanet()->getData("position")
+				));
+				$result = Core::getQuery()->select("galaxy g", array("p.planetid", "p.planetname", "p.picture"), "LEFT JOIN ".PREFIX."planet p ON (p.planetid = g.moonid)", $where);
 			}
 			$row = $result->fetchRow();
 			$result->closeCursor();
@@ -135,7 +144,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		// Current events
 		$research = Game::getEH()->getResearchEvent();
 		Core::getTPL()->assign("research", $research);
-		$result = Core::getQuery()->select("shipyard s", array("s.quantity", "s.one", "s.time", "s.finished", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = s.unitid)", "s.planetid = '".Core::getUser()->get("curplanet")."' ORDER BY s.time ASC");
+		$result = Core::getQuery()->select("shipyard s", array("s.quantity", "s.one", "s.time", "s.finished", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = s.unitid)", Core::getDB()->quoteInto("s.planetid = ?", Core::getUser()->get("curplanet")), "s.time ASC");
 		$shipyardMissions = array();
 		foreach($result->fetchAll() as $row)
 		{
@@ -205,7 +214,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 				Logger::addMessage("CANNOT_DELETE_HOMEPLANET");
 				$ok = false;
 			}
-			$result = Core::getQuery()->select("password", "password", "", "userid = '".Core::getUser()->get("userid")."'");
+			$result = Core::getQuery()->select("password", "password", "", Core::getDB()->quoteInto("userid = ?", Core::getUser()->get("userid")));
 			$row = $result->fetchRow();
 			$result->closeCursor();
 			$encryption = Core::getOptions("USE_PASSWORD_SALT") ? "md5_salt" : "md5";

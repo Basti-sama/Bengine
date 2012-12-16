@@ -119,10 +119,10 @@ class Bengine_Game_Planet
 	 */
 	protected function loadData($checkUser = true)
 	{
-		$where = "p.planetid = '".$this->planetid."'";
+		$where = Core::getDB()->quoteInto("p.planetid = ?", $this->planetid);
 		if($checkUser)
 		{
-			$where .= " AND p.userid = '".$this->userid."'";
+			$where .= Core::getDB()->quoteInto(" AND p.userid = ?", $this->userid);
 		}
 		$atts = array("p.planetname", "p.userid", "p.ismoon", "p.picture", "p.temperature", "p.diameter", "p.last", "p.solar_satellite_prod", "g.galaxy", "g.system", "g.position", "gm.galaxy AS moongala", "gm.system AS moonsys", "gm.position AS moonpos", "g.moonid");
 		$result = Core::getQuery()->select("planet p", $atts, "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = p.planetid) LEFT JOIN ".PREFIX."galaxy gm ON (gm.moonid = p.planetid)", $where);
@@ -172,11 +172,13 @@ class Bengine_Game_Planet
 		$this->setStandardValues();
 		$solarSatId = self::SOLAR_SAT_ID;
 
+		$where  = Core::getDB()->quoteInto("u2s.planetid = ?", $this->planetid);
+		$where .= Core::getDB()->quoteInto(" AND c.name = ?", $solarSatId);
 		$result = Core::getQuery()->select(
 			"unit2shipyard u2s",
 			array("u2s.unitid", "u2s.quantity"),
 			"LEFT JOIN ".PREFIX."construction c ON (u2s.unitid = c.buildingid)",
-			"u2s.planetid = '".$this->planetid."' AND c.name = '".$solarSatId."'");
+			$where);
 		if($row = $result->fetchRow())
 		{
 			$this->building[$solarSatId] = $row["quantity"];
@@ -190,7 +192,7 @@ class Bengine_Game_Planet
 
 		$join = "LEFT JOIN ".PREFIX."building2planet b2p ON (b2p.buildingid = b.buildingid)";
 		$atts = array("b.buildingid", "b.name", "b.prod_metal", "b.prod_silicon", "b.prod_hydrogen", "b.prod_energy", "b.cons_metal", "b.cons_silicon", "b.cons_hydrogen", "b.cons_energy", "b.special", "b2p.level", "b2p.prod_factor AS factor");
-		$result = Core::getQuery()->select("construction b", $atts, $join, "(b.mode = '1' OR b.mode = '5') AND b2p.planetid = '".$this->planetid."'", "b.display_order ASC, b.buildingid ASC");
+		$result = Core::getQuery()->select("construction b", $atts, $join, Core::getDB()->quoteInto("(b.mode = '1' OR b.mode = '5') AND b2p.planetid = ?", $this->planetid), "b.display_order ASC, b.buildingid ASC");
 		foreach($result->fetchAll() as $row)
 		{
 			Hook::event("RessProdGetBuilding", array(&$row, $this));
@@ -327,7 +329,7 @@ class Bengine_Game_Planet
 	 */
 	public function loadResources()
 	{
-		$result = Core::getQuery()->select("planet", array("metal", "silicon", "hydrogen"), "", "planetid = '".$this->getPlanetId()."'", "", 1);
+		$result = Core::getQuery()->select("planet", array("metal", "silicon", "hydrogen"), "", Core::getDB()->quoteInto("planetid = ?", $this->getPlanetId()), "", 1);
 		$row = $result->fetchRow();
 		$this->setData("metal", $row["metal"])->setData("silicon", $row["silicon"])->setData("hydrogen", $row["hydrogen"]);
 		return $this;

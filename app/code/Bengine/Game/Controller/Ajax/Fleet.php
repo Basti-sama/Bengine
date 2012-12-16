@@ -57,14 +57,15 @@ class Bengine_Game_Controller_Ajax_Fleet extends Bengine_Game_Controller_Ajax_Ab
 		$joins .= "LEFT JOIN ".PREFIX."unit2shipyard u2s ON (u2s.planetid = p.planetid)";
 		$joins .= "LEFT JOIN ".PREFIX."ship_datasheet sd ON (sd.unitid = u2s.unitid)";
 		$joins .= "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)";
-		$result = Core::getQuery()->select("planet p", $select, $joins, "p.planetid = '".Core::getUser()->get("curplanet")."' AND u2s.unitid = '38'");
+		$result = Core::getQuery()->select("planet p", $select, $joins, Core::getDB()->quoteInto("p.planetid = ? AND u2s.unitid = '38'", Core::getUser()->get("curplanet")));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
 			$joins  = "LEFT JOIN ".PREFIX."planet p ON (g.planetid = p.planetid)";
 			$joins .= "LEFT JOIN ".PREFIX."user u ON (u.userid = p.userid)";
 			$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (u.userid = b.userid)";
-			$result = Core::getQuery()->select("galaxy g", array("g.galaxy", "g.system", "g.position", "u.points", "u.last", "u.umode", "b.to"), $joins, "g.planetid = '".$target."' OR g.moonid = '".$target."'");
+			$where  = Core::getDB()->quoteInto("g.planetid = ? OR g.moonid = ?", $target);
+			$result = Core::getQuery()->select("galaxy g", array("g.galaxy", "g.system", "g.position", "u.points", "u.last", "u.umode", "b.to"), $joins, $where);
 			if($tar = $result->fetchRow())
 			{
 				$result->closeCursor();

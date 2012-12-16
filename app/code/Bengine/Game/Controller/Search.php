@@ -86,7 +86,7 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 		$joins .= "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.userid = u.userid)";
 		$joins .= "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (b.userid = u.userid AND b.to > '".TIME."')";
-		$result = Core::getQuery()->select("user u", $select, $joins, "u.username LIKE '".$this->searchItem->get()."'", "u.username ASC", "25", "u.userid");
+		$result = Core::getQuery()->select("user u", $select, $joins, Core::getDB()->quoteInto("u.username LIKE ?", $this->searchItem->get()), "u.username ASC", "25", "u.userid");
 
 		$UserList = new Bengine_Game_User_List();
 		$UserList->load($result);
@@ -118,7 +118,7 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 		$joins .= "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.userid = u.userid)";
 		$joins .= "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (b.userid = u.userid)";
-		$result = Core::getQuery()->select("planet p", $select, $joins, "p.planetname LIKE '".$this->searchItem->get()."' AND u.username IS NOT NULL", "p.planetname ASC, u.username ASC", "25", "u.userid");
+		$result = Core::getQuery()->select("planet p", $select, $joins, Core::getDB()->quoteInto("p.planetname LIKE ? AND u.username IS NOT NULL", $this->searchItem->get()), "p.planetname ASC, u.username ASC", "25", "u.userid");
 		foreach($result->fetchAll() as $row)
 		{
 			$sr[$i] = $row;
@@ -156,7 +156,7 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 		$select = array("SUM(u.points) as points", "COUNT(u2a.userid) as members", "a.aid", "a.tag", "a.name", "a.homepage", "a.showhomepage", "a.showmember");
 		$joins  = "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.aid = a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid)";
-		$result = Core::getQuery()->select("alliance a", $select, $joins, "a.tag LIKE '".$this->searchItem->get()."' OR a.name LIKE '".$this->searchItem->get()."'", "a.tag ASC", "25", "u2a.aid");
+		$result = Core::getQuery()->select("alliance a", $select, $joins, Core::getDB()->quoteInto("a.tag LIKE ? OR a.name LIKE ?", $this->searchItem->get()), "a.tag ASC", "25", "u2a.aid");
 		$AllianceList = new Bengine_Game_Alliance_List($result);
 		Hook::event("SearchResultAlliance", array($AllianceList));
 		Core::getTPL()->addLoop("result", $AllianceList->getArray());
@@ -192,7 +192,7 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 			break;
 		}
 		$ret = array();
-		$where = "SUBSTRING(SOUNDEX(".$field."), 2, 4) = SUBSTRING(SOUNDEX('".$item->replace("%", "")."'), 2, 4)";
+		$where = Core::getDB()->quoteInto("SUBSTRING(SOUNDEX($field), 2, 4) = SUBSTRING(SOUNDEX(?), 2, 4)", $item->replace("%", ""));
 		$result = Core::getQuery()->select($table, array($field), "", $where);
 		foreach($result->fetchAll() as $row)
 		{

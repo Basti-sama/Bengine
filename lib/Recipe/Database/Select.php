@@ -268,7 +268,7 @@ class Recipe_Database_Select
 		}
 		else if($value != "NOT NULL")
 		{
-			$value = "'".$value."'";
+			$value = Core::getDB()->quote($value);
 		}
 		if(is_array($condition))
 		{

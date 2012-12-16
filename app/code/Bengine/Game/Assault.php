@@ -120,7 +120,7 @@ class Bengine_Game_Assault
 		Core::getQuery()->insert("assaultparticipant", array("assaultid" => $this->assaultid, "userid" => $this->owner, "planetid" => $this->location, "mode" => 0));
 		$participantid = Core::getDB()->lastInsertId();
 		$joins = "LEFT JOIN ".PREFIX."planet p ON (p.planetid = u2s.planetid)";
-		$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity"), $joins, "u2s.planetid = '".$this->location."'");
+		$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity"), $joins, Core::getDB()->quoteInto("u2s.planetid = ?", $this->location));
 		foreach($result->fetchAll() as $row)
 		{
 			Core::getQuery()->insert("fleet2assault", array("assaultid" => $this->assaultid, "participantid" => $participantid, "userid" => $this->owner, "unitid" => $row["unitid"], "quantity" => $row["quantity"], "mode" => 0));
@@ -128,7 +128,7 @@ class Bengine_Game_Assault
 		$result->closeCursor();
 
 		// Get holding fleets.
-		$result = Core::getQuery()->select("events", array("eventid", "user AS userid", "planetid", "time", "data"), "", "mode = '17' AND destination = '".$this->location."'");
+		$result = Core::getQuery()->select("events", array("eventid", "user AS userid", "planetid", "time", "data"), "", Core::getDB()->quoteInto("mode = '17' AND destination = ?", $this->location));
 		foreach($result->fetchAll() as $row)
 		{
 			$participant = new Bengine_Game_Assault_Participant();
@@ -171,7 +171,7 @@ class Bengine_Game_Assault
 		$commandResult = null;
 		exec($cmd, $output, $commandResult);
 
-		$result = Core::getQuery()->select("assault", array("result", "moonchance", "moon", "accomplished", "lostunits_defender"), "", "assaultid = '".$this->assaultid."'");
+		$result = Core::getQuery()->select("assault", array("result", "moonchance", "moon", "accomplished", "lostunits_defender"), "", Core::getDB()->quoteInto("assaultid = ?", $this->assaultid));
 		$row = $result->fetchRow();
 		$result->closeCursor();
 		$this->data = $row;
@@ -233,7 +233,9 @@ class Bengine_Game_Assault
 	{
 		if($lostUnits > 0 && !is_null($this->owner))
 		{
-			$result = Core::getQuery()->select("fleet2assault", array("unitid", "quantity"), "", "userid = '".$this->owner."' AND assaultid = '".$this->assaultid."'");
+			$where  = Core::getDB()->quoteInto("userid = ? AND ", $this->owner);
+			$where .= Core::getDB()->quoteInto("assaultid = ?", $this->assaultid);
+			$result = Core::getQuery()->select("fleet2assault", array("unitid", "quantity"), "", $where);
 			foreach($result->fetchAll() as $row)
 			{
 				if($row["quantity"] > 0)

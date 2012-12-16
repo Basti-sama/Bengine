@@ -80,7 +80,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			$join = Link::get("game/".SID."/Alliance/Join", Core::getLanguage()->getItem("JOIN_ALLIANCE"));
 
 			$apps = array();
-			$result = Core::getQuery()->select("allyapplication aa", array("a.aid", "a.tag", "a.name", "aa.date", "aa.application"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = aa.aid)", "aa.userid = '".Core::getUser()->get("userid")."'");
+			$result = Core::getQuery()->select("allyapplication aa", array("a.aid", "a.tag", "a.name", "aa.date", "aa.application"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = aa.aid)", Core::getDB()->quoteInto("aa.userid = ?", Core::getUser()->get("userid")));
 			foreach($result->fetchAll() as $row)
 			{
 				$apps[$row["aid"]]["tag"] = Link::get("game/".SID."/Alliance/Page/".$row["aid"], $row["tag"], $row["name"]);
@@ -149,7 +149,8 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		Hook::event("FoundAlliance", array(&$tag, &$name));
 		if(Str::length($tag) >= $minCharsTag && Str::length($tag) <= $maxCharsTag && Str::length($name) >= $minCharsName && Str::length($name) <= $maxCharsName && preg_match($this->namePattern, $tag) && preg_match($this->namePattern, $name))
 		{
-			$result = Core::getQuery()->select("alliance", array("tag", "name"), "", "tag = '".$tag."' OR name = '".$name."'");
+			$where = Core::getDB()->quoteInto("tag = ? OR name = ?", array($tag, $name));
+			$result = Core::getQuery()->select("alliance", array("tag", "name"), "", $where);
 			if($result->rowCount() == 0)
 			{
 				Core::getQuery()->insert("alliance", array("tag" => $tag, "name" => $name, "founder" => Core::getUser()->get("userid"), "open" => 1));
@@ -189,7 +190,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		$select = array("u2a.userid", "u2a.joindate", "a.aid", "a.name", "a.tag", "a.textextern", "a.textintern", "a.founder", "a.foundername", "a.logo", "a.homepage", "a.showmember", "a.showhomepage", "count(aa.userid) as applications");
 		$join  = "LEFT JOIN ".PREFIX."alliance a ON (u2a.aid = a.aid)";
 		$join .= " LEFT JOIN ".PREFIX."allyapplication aa ON (u2a.aid = aa.aid)";
-		$result = Core::getQuery()->select("user2ally u2a", $select, $join, "u2a.aid = '".$this->aid."'", "", "", "u2a.userid");
+		$result = Core::getQuery()->select("user2ally u2a", $select, $join, Core::getDB()->quoteInto("u2a.aid = ?", $this->aid), "", "", "u2a.userid");
 
 		$totalmember = $result->rowCount();
 		$row = $result->fetchRow();
@@ -199,7 +200,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		if(Core::getUser()->get("aid") == $row["aid"] && $row["founder"] != Core::getUser()->get("userid"))
 		{
 			// Load rights
-			$result = Core::getQuery()->select("allyrank ar", array("ar.name", "ar.CAN_SEE_MEMBERLIST", "ar.CAN_SEE_APPLICATIONS", "ar.CAN_MANAGE", "ar.CAN_WRITE_GLOBAL_MAILS"), "LEFT JOIN ".PREFIX."user2ally u2a ON u2a.rank = ar.rankid", "u2a.userid = '".Core::getUser()->get("userid")."'");
+			$result = Core::getQuery()->select("allyrank ar", array("ar.name", "ar.CAN_SEE_MEMBERLIST", "ar.CAN_SEE_APPLICATIONS", "ar.CAN_MANAGE", "ar.CAN_WRITE_GLOBAL_MAILS"), "LEFT JOIN ".PREFIX."user2ally u2a ON u2a.rank = ar.rankid", Core::getDB()->quoteInto("u2a.userid = ?", Core::getUser()->get("userid")));
 			$rights = $result->fetchRow();
 			$result->closeCursor();
 			Core::getTPL()->assign("rank", ($rights["name"] != "") ? $rights["name"] : Core::getLanguage()->getItem("NEWBIE"));
@@ -217,7 +218,8 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		}
 		else
 		{
-			$result = Core::getQuery()->select("allyapplication", "userid", "", "userid = '".Core::getUser()->get("userid")."' AND aid = '".$row["aid"]."'");
+			$where = Core::getDB()->quoteInto("userid = ? AND aid = ?", array(Core::getUser()->get("userid"), $row["aid"]));
+			$result = Core::getQuery()->select("allyapplication", "userid", "", $where);
 			Core::getTPL()->assign("appInProgress", $result->rowCount());
 			$result->closeCursor();
 			$manage = "";
@@ -259,7 +261,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		$select = array("a.aid", "a.founder", "ar.CAN_MANAGE", "ar.CAN_SEE_MEMBERLIST", "ar.CAN_SEE_APPLICATIONS", "ar.CAN_BAN_MEMBER", "ar.CAN_SEE_ONLINE_STATE", "ar.CAN_WRITE_GLOBAL_MAILS");
 		$joins  = "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."allyrank ar ON (ar.rankid = u2a.rank)";
-		$result = Core::getQuery()->select("user2ally u2a", $select, $joins, "u2a.userid = '".Core::getUser()->get("userid")."'");
+		$result = Core::getQuery()->select("user2ally u2a", $select, $joins, Core::getDB()->quoteInto("u2a.userid = ?", Core::getUser()->get("userid")));
 		if($_row = $result->fetchRow())
 		{
 			$result->closeCursor();
@@ -294,7 +296,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			$joins .= "LEFT JOIN ".PREFIX."alliance a2 ON (a2.aid = ara.request_ally)";
 			$joins .= "LEFT JOIN ".PREFIX."ally_relationship_type rt ON (rt.type_id = ara.mode)";
 			$select = array("ara.candidate_ally", "ara.request_ally", "rt.name AS type_name", "ara.application", "ara.time", "a1.tag AS tag1", "a1.name AS name1", "a2.tag AS tag2", "a2.name AS name2");
-			$result = Core::getQuery()->select("ally_relationships_application ara", $select, $joins, "ara.candidate_ally = '".$this->aid."' OR ara.request_ally = '".$this->aid."'");
+			$result = Core::getQuery()->select("ally_relationships_application ara", $select, $joins, Core::getDB()->quoteInto("ara.candidate_ally = ? OR ara.request_ally = ?", $this->aid));
 			foreach($result->fetchAll() as $row)
 			{
 				$apps[$i]["time"] = Date::timeToString(1, $row["time"]);
@@ -337,7 +339,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			if($status == 0 && Str::length($message) <= Core::getOptions()->get("MAX_PM_LENGTH") && Str::length($message) > 0)
 			{
 				Hook::event("SendAllianceMessage");
-				$result = Core::getQuery()->select("user2ally u2a", array("u2a.userid", "u2a.aid"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)", "a.tag = '".$tag."'");
+				$result = Core::getQuery()->select("user2ally u2a", array("u2a.userid", "u2a.aid"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)", Core::getDB()->quoteInto("a.tag = ?", $tag));
 				foreach($result->fetchAll() as $row)
 				{
 					if($row["aid"] == $this->aid) // You cannot send a message to your own alliance
@@ -354,11 +356,11 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			}
 			else
 			{
-				$result = Core::getQuery()->select("ally_relationship_type", array("name", "confirm_begin", "confirm_end", "storable"), "", "type_id = '".$status."'");
+				$result = Core::getQuery()->select("ally_relationship_type", array("name", "confirm_begin", "confirm_end", "storable"), "", Core::getDB()->quoteInto("type_id = ?", $status));
 				$typeData = $result->fetchRow();
 				$result->closeCursor();
 
-				$result = Core::getQuery()->select("alliance a", array("a.aid"), "", "a.tag = '".$tag."'");
+				$result = Core::getQuery()->select("alliance a", array("a.aid"), "", Core::getDB()->quoteInto("a.tag = ?", $tag));
 				if(($row = $result->fetchRow()) && !empty($typeData))
 				{
 					$result->closeCursor();
@@ -368,10 +370,11 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 					}
 					Hook::event("SendRelationApplication", array($row["aid"]));
 					// Check for existing relations and applications
-					$where  = "(ar.rel1 = '".$row["aid"]."' AND ar.rel2 = '".$this->aid."') OR ";
-					$where .= "(ar.rel1 = '".$this->aid."' AND ar.rel2 = '".$row["aid"]."') OR ";
-					$where .= "(ara.candidate_ally = '".$this->aid."' AND ara.request_ally = '".$row["aid"]."') OR ";
-					$where .= "(ara.candidate_ally = '".$row["aid"]."' AND ara.request_ally = '".$this->aid."')";
+					$where  = "(ar.rel1 = ? AND ar.rel2 = ?) OR ";
+					$where .= "(ar.rel1 = ? AND ar.rel2 = ?) OR ";
+					$where .= "(ara.candidate_ally = ? AND ara.request_ally = ?) OR ";
+					$where .= "(ara.candidate_ally = ? AND ara.request_ally = ?)";
+					$where  = Core::getDB()->quoteInto($where, array($row["aid"], $this->aid, $this->aid, $row["aid"], $this->aid, $row["aid"], $row["aid"], $this->aid));
 					$result = Core::getQuery()->select("ally_relationships_application ara, ".PREFIX."ally_relationships ar", array("ara.candidate_ally", "ara.request_ally", "ar.rel1", "ar.rel2"), "", $where);
 					if($result->rowCount() <= 0 || !$typeData["storable"])
 					{
@@ -424,7 +427,8 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			$attr = array("rt.type_id", "rt.confirm_begin", "rt.confirm_end", "rt.storable", "rt_c.type_id AS confirm_type_id");
 			$joins  = "LEFT JOIN ".PREFIX."ally_relationship_type rt ON (rt.type_id = ara.mode)";
 			$joins .= "LEFT JOIN ".PREFIX."ally_relationship_type rt_c ON (rt_c.type_id = rt.confirm_end)";
-			$result = Core::getQuery()->select("ally_relationships_application ara", $attr, $joins, "ara.request_ally = '".$this->aid."' AND ara.candidate_ally = '".$candidateAlly."'");
+			$where  = Core::getDB()->quoteInto("ara.request_ally = ? AND ara.candidate_ally = ?", array($this->aid, $candidateAlly));
+			$result = Core::getQuery()->select("ally_relationships_application ara", $attr, $joins, $where);
 			$row = $result->fetchRow();
 			$result->closeCursor();
 			if($row)
@@ -434,7 +438,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 				{
 					Core::getQuery()->insert("ally_relationships", array("rel1" => $this->aid, "rel2" => $candidateAlly, "time" => TIME, "mode" => $row["type_id"]));
 				}
-				$_result = Core::getQuery()->select("ally_relationship_type", array("type_id"), "", "confirm_end = '".$row["type_id"]."'");
+				$_result = Core::getQuery()->select("ally_relationship_type", array("type_id"), "", Core::getDB()->quoteInto("confirm_end = ?", $row["type_id"]));
 				if($_row = $_result->fetchRow())
 				{
 					Core::getQuery()->delete("ally_relationships", "((rel1 = ? AND rel2 = ?) OR (rel1 = ? AND rel2 = ?)) AND mode = ?", null, null, array($this->aid, $candidateAlly, $candidateAlly, $this->aid, $row["type_id"]));
@@ -460,7 +464,8 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		{
 			if($targetAlly > 0)
 			{
-				$where = "(request_ally = '".$this->aid."' AND candidate_ally = '".$targetAlly."') OR (candidate_ally = '".$this->aid."' AND request_ally = '".$targetAlly."')";
+				$where = "(request_ally = ? AND candidate_ally = ?) OR (candidate_ally = ? AND request_ally = ?)";
+				$where = Core::getDB()->quoteInto($where, array($this->aid, $targetAlly, $this->aid, $targetAlly));
 				$result = Core::getQuery()->select("ally_relationships_application", array("mode"), "", $where);
 				$row = $result->fetchRow();
 				$result->closeCursor();
@@ -511,7 +516,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			$joins .= "LEFT JOIN ".PREFIX."user u1 ON (u1.userid = a1.founder)";
 			$joins .= "LEFT JOIN ".PREFIX."user u2 ON (u2.userid = a2.founder)";
 			$joins .= "LEFT JOIN ".PREFIX."ally_relationship_type rt ON (rt.type_id = ar.mode)";
-			$result = Core::getQuery()->select("ally_relationships ar", $select, $joins, "(ar.rel1 = '".$this->aid."' OR ar.rel2 = '".$this->aid."')", "ar.mode ASC");
+			$result = Core::getQuery()->select("ally_relationships ar", $select, $joins, Core::getDB()->quoteInto("(ar.rel1 = ? OR ar.rel2 = ?)", $this->aid), "ar.mode ASC");
 			foreach($result->fetchAll() as $row)
 			{
 				$rels[$i]["num"] = $i;
@@ -534,7 +539,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			Hook::event("DiplomacyManagement", array(&$rels));
 
 			// Running applications?
-			$result = Core::getQuery()->select("ally_relationships_application", array("request_ally", "candidate_ally"), "", "candidate_ally = '".$this->aid."' OR request_ally = '".$this->aid."'");
+			$result = Core::getQuery()->select("ally_relationships_application", array("request_ally", "candidate_ally"), "", Core::getDB()->quoteInto("candidate_ally = ? OR request_ally = ?", $this->aid));
 			$applications = $result->rowCount();
 			$result->closeCursor();
 			if($applications > 0)
@@ -613,7 +618,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		$select = array("a.aid", "a.founder", "a.foundername", "a.name", "a.tag", "a.textextern", "a.textintern", "a.applicationtext", "a.homepage", "a.logo", "a.showhomepage", "a.showmember", "a.memberlistsort", "a.open", "u2a.rank", "ar.CAN_MANAGE");
 		$joins  = "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."allyrank ar ON (ar.rankid = u2a.rank)";
-		$result = Core::getQuery()->select("user2ally u2a", $select, $joins, "u2a.userid = '".Core::getUser()->get("userid")."'");
+		$result = Core::getQuery()->select("user2ally u2a", $select, $joins, Core::getDB()->quoteInto("u2a.userid = ?", Core::getUser()->get("userid")));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
@@ -665,7 +670,8 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 				if($row["founder"] == Core::getUser()->get("userid"))
 				{
 					$referfounder = "";
-					$result = Core::getQuery()->select("user2ally u2a", array("u2a.userid", "u.username"), "LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid)", "u2a.aid = '".$row["aid"]."' AND u2a.userid != '".Core::getUser()->get("userid")."'", "u.username ASC");
+					$where = Core::getDB()->quoteInto("u2a.aid = ? AND u2a.userid != ?", array($row["aid"], Core::getUser()->get("userid")));
+					$result = Core::getQuery()->select("user2ally u2a", array("u2a.userid", "u.username"), "LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid)", $where, "u.username ASC");
 					foreach($result->fetchAll() as $row)
 					{
 						$referfounder .= createOption($row["userid"], $row["username"], 0);
@@ -688,7 +694,8 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		if($this->aid == Core::getUser()->get("aid"))
 		{
 			$select = array("ar.CAN_SEE_MEMBERLIST", "ar.CAN_MANAGE", "ar.CAN_BAN_MEMBER", "ar.CAN_SEE_ONLINE_STATE", "a.founder", "a.showmember");
-			$result = Core::getQuery()->select("user2ally u2a", $select, "LEFT JOIN ".PREFIX."allyrank ar ON (u2a.rank = ar.rankid) LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)", "u2a.userid = '".Core::getUser()->get("userid")."' AND u2a.aid = '".$this->aid."'");
+			$where = Core::getDB()->quoteInto("u2a.userid = ? AND u2a.aid = ?", array(Core::getUser()->get("userid"), $this->aid));
+			$result = Core::getQuery()->select("user2ally u2a", $select, "LEFT JOIN ".PREFIX."allyrank ar ON (u2a.rank = ar.rankid) LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)", $where);
 			$row = $result->fetchRow();
 			$result->closeCursor();
 			if($row["founder"] != Core::getUser()->get("userid"))
@@ -709,7 +716,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		}
 		else
 		{
-			$result = Core::getQuery()->select("alliance", "showmember", "", "aid = '".$this->aid."'");
+			$result = Core::getQuery()->select("alliance", "showmember", "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 			$row = $result->fetchRow();
 			$result->closeCursor();
 			$can_see_memberlist = $row["showmember"];
@@ -725,7 +732,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			{
 				if(Core::getRequest()->getPOST("changeMembers"))
 				{
-					$result = Core::getQuery()->select("user2ally", "userid", "", "aid = '".$this->aid."'");
+					$result = Core::getQuery()->select("user2ally", "userid", "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 					foreach($result->fetchAll() as $row)
 					{
 						if($rankid = Core::getRequest()->getPOST("rank_".$row["userid"]))
@@ -756,7 +763,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 					}
 				}
 				$ranks = array();
-				$result = Core::getQuery()->select("allyrank", array("rankid", "name"), "", "aid = '".$this->aid."'");
+				$result = Core::getQuery()->select("allyrank", array("rankid", "name"), "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 				foreach($result->fetchAll() as $row)
 				{
 					$ranks[$row["rankid"]]["name"] = $row["name"];
@@ -777,7 +784,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			$joins .= "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = u.hp)";
 			$joins .= "LEFT JOIN ".PREFIX."allyrank ar ON (ar.rankid = u2a.rank)";
 			$joins .= "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)";
-			$result = Core::getQuery()->select("user2ally u2a", $select, $joins, "u2a.aid = '".$this->aid."' ORDER BY u.points DESC LIMIT 100");
+			$result = Core::getQuery()->select("user2ally u2a", $select, $joins, Core::getDB()->quoteInto("u2a.aid = ?", $this->aid), "u.points DESC LIMIT 100");
 			$sum = 0;
 			$membercount = 0;
 			$members = array();
@@ -862,7 +869,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		$maxCharsTag = Core::getOptions()->get("MAX_CHARS_ALLY_TAG");
 		if(!Str::compare($tag, $otag))
 		{
-			$result = Core::getQuery()->select("alliance", "tag", "", "tag = '".$tag."'");
+			$result = Core::getQuery()->select("alliance", "tag", "", Core::getDB()->quoteInto("tag = ?", $tag));
 			if($result->rowCount() > 0)
 			{
 				$tag = $otag;
@@ -895,7 +902,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		$maxCharsName = Core::getOptions()->get("MAX_CHARS_ALLY_NAME");
 		if(!Str::compare($name, $oname))
 		{
-			$result = Core::getQuery()->select("alliance", "name", "", "tag = '".$name."'");
+			$result = Core::getQuery()->select("alliance", "name", "", Core::getDB()->quoteInto("tag = ?", $name));
 			if($result->rowCount() > 0)
 			{
 				$name = $oname;
@@ -1010,7 +1017,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			}
 			else if(isset($post["changerights"]))
 			{
-				$result = Core::getQuery()->select("allyrank", "rankid", "", "aid = '".$this->aid."'");
+				$result = Core::getQuery()->select("allyrank", "rankid", "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 				foreach($result->fetchAll() as $row)
 				{
 					if(isset($post["CAN_SEE_MEMBERLIST_".$row["rankid"]])) { $can_see_memberlist = 1; }
@@ -1047,7 +1054,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 			}
 
 			$select = array("rankid", "name", "CAN_SEE_MEMBERLIST", "CAN_SEE_APPLICATIONS", "CAN_MANAGE", "CAN_BAN_MEMBER", "CAN_SEE_ONLINE_STATE", "CAN_WRITE_GLOBAL_MAILS");
-			$result = Core::getQuery()->select("allyrank", $select, "", "aid = '".$this->aid."'");
+			$result = Core::getQuery()->select("allyrank", $select, "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 			Core::getTPL()->assign("num", $result->rowCount());
 			Core::getTPL()->addLoop("ranks", $result);
 		}
@@ -1065,7 +1072,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		{
 			$this->apply($this->getParam("application"));
 		}
-		$result = Core::getQuery()->select("alliance", array("open", "tag", "applicationtext"), "", "aid = '".$this->aid."'");
+		$result = Core::getQuery()->select("alliance", array("open", "tag", "applicationtext"), "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
@@ -1092,12 +1099,13 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 	{
 		$text = Str::validateXHTML($text);
 		Hook::event("ApplyForAlliance", array(&$text));
-		$result1 = Core::getQuery()->select("allyapplication", "userid", "", "userid = '".Core::getUser()->get("userid")."' AND aid = '".$this->aid."'");
-		$result2 = Core::getQuery()->select("user2ally", "userid", "", "userid = '".Core::getUser()->get("userid")."'");
+		$where = Core::getDB()->quoteInto("userid = ? AND aid = ?", array(Core::getUser()->get("userid"), $this->aid));
+		$result1 = Core::getQuery()->select("allyapplication", "userid", "", $where);
+		$result2 = Core::getQuery()->select("user2ally", "userid", "", Core::getDB()->quoteInto("userid = ?", Core::getUser()->get("userid")));
 
 		if($result1->rowCount() == 0 && $result2->rowCount() == 0 && Str::length($text) > 0)
 		{
-			$result3 = Core::getQuery()->select("alliance", "aid", "", "aid = '".$this->aid."' AND open = '1'");
+			$result3 = Core::getQuery()->select("alliance", "aid", "", Core::getDB()->quoteInto("aid = ? AND open = '1'", $this->aid));
 			if($result3->rowCount() > 0)
 			{
 				Core::getQuery()->insert("allyapplication", array("userid" => Core::getUser()->get("userid"), "aid" => $this->aid, "date" => TIME, "application" => $text));
@@ -1132,7 +1140,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 				$select = array("a.aid", "a.tag", "a.name", "a.showhomepage", "a.homepage", "a.open", "COUNT(u2a.userid) AS members", "SUM(u.points) AS points");
 				$joins  = "LEFT JOIN ".PREFIX."user2ally u2a ON (a.aid = u2a.aid)";
 				$joins .= "LEFT JOIN ".PREFIX."user u ON (u2a.userid = u.userid)";
-				$result = Core::getQuery()->select("alliance a", $select, $joins, "a.tag LIKE '".$searchObj->get()."' OR a.name LIKE '".$searchObj->get()."'", "", "", "a.aid");
+				$result = Core::getQuery()->select("alliance a", $select, $joins, Core::getDB()->quoteInto("a.tag LIKE ? OR a.name LIKE ?", $searchObj->get()), "", "", "a.aid");
 			}
 			$results = new Bengine_Game_Alliance_List($result);
 			Hook::event("AllianceSearchResult", array(&$results, $searchObj));
@@ -1156,7 +1164,8 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		{
 			foreach($action as $userid)
 			{
-				$result = Core::getQuery()->select("allyapplication ap", array("a.tag", "u.username", "u2a.aid"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = ap.aid) LEFT JOIN ".PREFIX."user u ON (u.userid = ap.userid) LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.userid = u.userid)", "ap.userid = '".$userid."' AND ap.aid = '".$this->aid."'");
+				$where = Core::getDB()->quoteInto("ap.userid = ? AND ap.aid = ?", array($userid, $this->aid));
+				$result = Core::getQuery()->select("allyapplication ap", array("a.tag", "u.username", "u2a.aid"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = ap.aid) LEFT JOIN ".PREFIX."user u ON (u.userid = ap.userid) LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.userid = u.userid)", $where);
 				if($row = $result->fetchRow())
 				{
 					if($receipt && !$row["aid"])
@@ -1164,7 +1173,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 						Hook::event("ReceiptAllianceCandidate", array($userid, $row));
 						Core::getQuery()->insert("user2ally", array("userid" => $userid, "aid" => $this->aid, "joindate" => TIME));
 						new Bengine_Game_AutoMsg(24, $userid, TIME, $row);
-						$_result = Core::getQuery()->select("user2ally", "userid", "", "aid = '".$this->aid."'");
+						$_result = Core::getQuery()->select("user2ally", "userid", "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 						foreach($_result->fetchAll() as $_row)
 						{
 							new Bengine_Game_AutoMsg(100, $_row["userid"], TIME, $row);
@@ -1199,7 +1208,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		if($this->getRights(array("CAN_SEE_APPLICATIONS")))
 		{
 			$apps = array();
-			$result = Core::getQuery()->select("allyapplication a", array("a.userid", "a.date", "a.application ", "u.username", "u.points", "g.galaxy", "g.system", "g.position"), "LEFT JOIN ".PREFIX."user u ON (u.userid = a.userid) LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = u.hp)", "a.aid = '".$this->aid."'", "u.username ASC, a.date ASC");
+			$result = Core::getQuery()->select("allyapplication a", array("a.userid", "a.date", "a.application ", "u.username", "u.points", "g.galaxy", "g.system", "g.position"), "LEFT JOIN ".PREFIX."user u ON (u.userid = a.userid) LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = u.hp)", Core::getDB()->quoteInto("a.aid = ?", $this->aid), "u.username ASC, a.date ASC");
 			foreach($result->fetchAll() as $row)
 			{
 				$apps[$row["userid"]]["date"] = Date::timeToString(1, $row["date"]);
@@ -1225,7 +1234,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 	 */
 	protected function leaveAlliance()
 	{
-		$result = Core::getQuery()->select("alliance", "founder", "", "aid = '".Core::getUser()->get("aid")."'");
+		$result = Core::getQuery()->select("alliance", "founder", "", Core::getDB()->quoteInto("aid = ?", Core::getUser()->get("aid")));
 		if($row = $result->fetchRow())
 		{
 			if($row["founder"] != Core::getUser()->get("userid"))
@@ -1233,7 +1242,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 				Core::getQuery()->delete("user2ally", "userid = ?", null, null, array(Core::getUser()->get("userid")));
 				Core::getUser()->rebuild();
 				Hook::event("LeaveAlliance", array($row));
-				$_result = Core::getQuery()->select("user2ally", "userid", "", "aid = '".$this->aid."'");
+				$_result = Core::getQuery()->select("user2ally", "userid", "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 				foreach($_result->fetchAll() as $_row)
 				{
 					$data = array(
@@ -1258,13 +1267,14 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 	 */
 	protected function referFounderStatus($userid)
 	{
-		$result = Core::getQuery()->select("alliance", "founder", "", "aid = '".Core::getUser()->get("aid")."'");
+		$result = Core::getQuery()->select("alliance", "founder", "", Core::getDB()->quoteInto("aid = ?", Core::getUser()->get("aid")));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
 			if($row["founder"] == Core::getUser()->get("userid"))
 			{
-				$result = Core::getQuery()->select("user2ally", "rank", "", "userid = '".$userid."' AND aid = '".Core::getUser()->get("aid")."'");
+				$where = Core::getDB()->quoteInto("userid = ? AND aid = ?", array($userid, Core::getUser()->get("aid")));
+				$result = Core::getQuery()->select("user2ally", "rank", "", $where);
 				if($row = $result->fetchRow())
 				{
 					$result->closeCursor();
@@ -1289,7 +1299,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 	 */
 	protected function abandonAlly()
 	{
-		$result = Core::getQuery()->select("alliance", "founder", "", "aid = '".Core::getUser()->get("aid")."'");
+		$result = Core::getQuery()->select("alliance", "founder", "", Core::getDB()->quoteInto("aid = ?", Core::getUser()->get("aid")));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
@@ -1312,7 +1322,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 	 */
 	protected function globalMailAction($reply)
 	{
-		$result = Core::getQuery()->select("user2ally u2a", array("a.founder", "ar.CAN_WRITE_GLOBAL_MAILS"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid) LEFT JOIN ".PREFIX."allyrank ar ON (ar.rankid = u2a.rank)", "u2a.userid = '".Core::getUser()->get("userid")."'");
+		$result = Core::getQuery()->select("user2ally u2a", array("a.founder", "ar.CAN_WRITE_GLOBAL_MAILS"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid) LEFT JOIN ".PREFIX."allyrank ar ON (ar.rankid = u2a.rank)", Core::getDB()->quoteInto("u2a.userid = ?", Core::getUser()->get("userid")));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
@@ -1328,7 +1338,15 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 					if($length > 2 && $length <= Core::getOptions()->get("MAX_PM_LENGTH") && Str::length($subject) > 0 && Str::length($subject) < 101)
 					{
 						Hook::event("SendGlobalMail", array($subject, &$message));
-						$_result = Core::getQuery()->select("user2ally", "userid", "", (($receiver == "foo") ? "aid = '".$this->aid."'" : "rank = '".$receiver."' AND aid = '".$this->aid."'"));
+						if($receiver == "foo")
+						{
+							$where = Core::getDB()->quoteInto("aid = ?", $this->aid);
+						}
+						else
+						{
+							$where = Core::getDB()->quoteInto("rank = ? AND aid = ?", array($receiver, $this->aid));
+						}
+						$_result = Core::getQuery()->select("user2ally", "userid", "", $where);
 						foreach($_result->fetchAll() as $_row)
 						{
 							Core::getQuery()->insert("message", array("mode" => 6, "time" => TIME, "sender" => Core::getUser()->get("userid"), "receiver" => $_row["userid"], "message" => $message, "subject" => $subject, "read" => (($_row["userid"] == Core::getUser()->get("userid")) ? 1 : 0)));
@@ -1354,7 +1372,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 						Core::getTPL()->assign("subject", $reply);
 					}
 				}
-				$ranks = Core::getQuery()->select("allyrank", array("rankid", "name"), "", "aid = '".$this->aid."'");
+				$ranks = Core::getQuery()->select("allyrank", array("rankid", "name"), "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 				Core::getTPL()->assign("maxpmlength", fNumber(Core::getOptions()->get("MAX_PM_LENGTH")));
 				Core::getTPL()->addLoop("ranks", $ranks);
 			}

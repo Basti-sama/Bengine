@@ -46,7 +46,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 		$joins .= "LEFT JOIN ".PREFIX."user2ally u2a2 ON (u2a2.userid = b.friend2)";
 		$joins .= "LEFT JOIN ".PREFIX."alliance a1 ON (a1.aid = u2a1.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."alliance a2 ON (a2.aid = u2a2.aid)";
-		$result = Core::getQuery()->select("buddylist b", $select, $joins, "b.friend1 = '".Core::getUser()->get("userid")."' OR b.friend2 = '".Core::getUser()->get("userid")."'", "u1.points DESC, u2.points DESC, u1.username ASC, u2.username ASC");
+		$result = Core::getQuery()->select("buddylist b", $select, $joins, Core::getDB()->quoteInto("b.friend1 = ? OR b.friend2 = ?", Core::getUser()->get("userid")), "u1.points DESC, u2.points DESC, u1.username ASC, u2.username ASC");
 		foreach($result->fetchAll() as $row)
 		{
 			Hook::event("ShowBuddyFirst", array(&$row));
@@ -110,7 +110,10 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 		{
 			Logger::dieMessage("SELF_REQUEST");
 		}
-		$result = Core::getQuery()->select("buddylist", array("friend1", "friend2"), "", "friend1 = '".$userid."' AND friend2 = '".Core::getUser()->get("userid")."' OR friend1 = '".Core::getUser()->get("userid")."' AND friend2 = '".$userid."'");
+		$where = Core::getDB()->quoteInto("friend1 = ? AND friend2 = ? OR friend1 = ? AND friend2 = ?", array(
+			$userid, Core::getUser()->get("userid"), Core::getUser()->get("userid"), $userid
+		));
+		$result = Core::getQuery()->select("buddylist", array("friend1", "friend2"), "", $where);
 		if($result->rowCount() == 0)
 		{
 			Hook::event("AddToBuddyList", array($userid));
@@ -138,7 +141,10 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 	{
 		foreach($remove as $relid)
 		{
-			$result = Core::getQuery()->select("buddylist", array("friend1", "friend2", "accepted"), "", "relid = '".$relid."' AND (friend1 = '".Core::getUser()->get("userid")."' OR friend2 = '".Core::getUser()->get("userid")."')");
+			$where = Core::getDB()->quoteInto("relid = ?' AND (friend1 = ? OR friend2 = ?)", array(
+				$relid, Core::getUser()->get("userid"), Core::getUser()->get("userid")
+			));
+			$result = Core::getQuery()->select("buddylist", array("friend1", "friend2", "accepted"), "", $where);
 			if($row = $result->fetchRow())
 			{
 				Hook::event("RemoveFromBuddyList", array($relid));
@@ -178,6 +184,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 			Hook::event("AcceptBuddyListRequest", array($relid));
 			$where = "relid = ? AND friend2 = ?";
 			Core::getQuery()->update("buddylist", array("accepted" => 1), $where, array($relid, Core::getUser()->get("userid")));
+			$where = Core::getDB()->quoteInto($where, array($relid, Core::getUser()->get("userid")));
 			$result = Core::getQuery()->select("buddylist", array("friend1"), "", $where);
 			if($friend = $result->fetchColumn())
 			{

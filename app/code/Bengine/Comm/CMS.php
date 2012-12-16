@@ -45,7 +45,9 @@ class Bengine_Comm_CMS
 	public function getPage($page)
 	{
 		if(empty($page)) { return false; }
-		$result = Core::getQuery()->select("page", array("title", "content"), "", "label = '".$page."' AND languageid = '".$this->langid."' AND label != ''");
+		$where  = Core::getDB()->quoteInto("label = ? AND ", $page);
+		$where .= Core::getDB()->quoteInto("languageid = ? AND label != ''", $this->langid);
+		$result = Core::getQuery()->select("page", array("title", "content"), "", $where);
 		$row = $result->fetchRow();
 		return ($row) ? $row : false;
 	}
@@ -57,7 +59,7 @@ class Bengine_Comm_CMS
 	 */
 	protected function loadMenuItems()
 	{
-		$result = Core::getQuery()->select("page", array("position", "title", "label", "link"), "", "languageid = '".$this->langid."'", "displayorder ASC");
+		$result = Core::getQuery()->select("page", array("position", "title", "label", "link"), "", Core::getDB()->quoteInto("languageid = ?", $this->langid), "displayorder ASC");
 		foreach($result->fetchAll() as $row)
 		{
 			$position = $row["position"];

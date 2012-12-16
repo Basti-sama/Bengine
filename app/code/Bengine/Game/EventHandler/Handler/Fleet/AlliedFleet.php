@@ -93,10 +93,10 @@ class Bengine_Game_EventHandler_Handler_Fleet_AlliedFleet extends Bengine_Game_E
 				$joins  = "LEFT JOIN ".PREFIX."events e ON (e.eventid = fi.eventid)";
 				$joins .= "LEFT JOIN ".PREFIX."attack_formation af ON (e.eventid = af.eventid)";
 				$select = array("af.eventid", "af.time");
-				$where = "fi.userid = '".Core::getUser()->get("userid")."' AND af.time > '".TIME."' AND e.destination = '".$this->_target["planetid"]."'";
+				$where = Core::getDB()->quoteInto("fi.userid = ? AND af.time > ? AND e.destination = ?", array(Core::getUser()->get("userid"), TIME, $this->_target["planetid"]));
 				if(!empty($this->_target["formation"]))
 				{
-					$where .= " AND e.eventid = '".$this->_target["formation"]."'";
+					$where .= Core::getDB()->quoteInto(" AND e.eventid = ?", $this->_target["formation"]);
 				}
 				$result = Core::getQuery()->select("formation_invitation fi", $select, $joins, $where);
 				if($row = $result->fetchRow())

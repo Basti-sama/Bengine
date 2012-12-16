@@ -20,7 +20,7 @@ class Bengine_Game_Login extends Login
 		$select = array("u.userid", "u.username", "p.password", "u.activation", "b.banid", "b.reason", "u.umode");
 		$joins  = "LEFT JOIN ".PREFIX."password p ON (u.userid = p.userid)";
 		$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (b.userid = u.userid AND b.to > '".TIME."')";
-		$result = Core::getQuery()->select("user u", $select, $joins, "u.username = '".$this->usr."'", "b.to DESC");
+		$result = Core::getQuery()->select("user u", $select, $joins, Core::getDB()->quoteInto("u.username = ?", $this->usr), "b.to DESC");
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();

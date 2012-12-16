@@ -66,7 +66,7 @@ abstract class Application
 	 */
 	public function run()
 	{
-		$this->loadMeta();
+		self::loadMeta();
 
 		Core::getTPL()->assign("charset", Core::getLang()->getOpt("charset"));
 		Core::getTPL()->assign("langcode", Core::getLang()->getOpt("langcode"));
@@ -212,16 +212,15 @@ abstract class Application
 	/**
 	 * Loads the meta configuration.
 	 *
-	 * @return Application
+	 * @return void
 	 */
-	protected function loadMeta()
+	public static function loadMeta()
 	{
 		self::$meta = Core::getCache()->getMetaCache();
 		foreach(self::$meta["packages"] as $namespace => $vendor)
 		{
 			self::addNamespace($namespace);
 		}
-		return $this;
 	}
 
 	/**

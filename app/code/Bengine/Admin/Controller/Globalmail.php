@@ -43,7 +43,7 @@ class Bengine_Admin_Controller_Globalmail extends Bengine_Admin_Controller_Abstr
 	protected function send()
 	{
 		$subject = Str::validateXHTML($this->getParam("subject"));
-		$message = richtext($this->getParam("message"));
+		$message = richtext(nl2br($this->getParam("message")));
 		if(Str::length($message) < 10)
 		{
 			Core::getTPL()->assign("messageError", Logger::getMessageField("MESSAGE_TOO_SHORT"));

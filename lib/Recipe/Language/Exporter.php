@@ -56,23 +56,22 @@ class Recipe_Language_Exporter
 	/**
 	 * Constructor.
 	 *
-	 * @param string	Destination folder
-	 * @param string	Destination file
+	 * @param string $destination    Destination folder
+	 * @param string $filename        Destination file
 	 *
-	 * @return void
+	 * @return \Recipe_Language_Exporter
 	 */
 	public function __construct($destination, $filename)
 	{
 		$this->setDestination($destination);
 		$this->setFile($filename);
-		return;
 	}
 
 	/**
 	 * Sets the destination folder.
 	 *
-	 * @param string
-	 *
+	 * @param string $destination
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Language_Exporter
 	 */
 	public function setDestination($destination)
@@ -92,8 +91,8 @@ class Recipe_Language_Exporter
 	/**
 	 * Sets the destination file.
 	 *
-	 * @param string
-	 *
+	 * @param string $filename
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Language_Exporter
 	 */
 	public function setFile($filename)
@@ -109,23 +108,25 @@ class Recipe_Language_Exporter
 	/**
 	 * Starts the export process.
 	 *
-	 * @return LanguageExporter
+	 * @return Recipe_Language_Exporter
 	 */
 	public function startExport()
 	{
 		$data  = '<?xml version="1.0" encoding="UTF-8"?>'.$this->n;
 		$data .= '<lang>'.$this->n;
-		$where = (is_null($this->langId)) ? "" : "languageid = '".$this->langId."' OR langcode = '".$this->langId."'";
+		$where = (is_null($this->langId)) ? "" : Core::getDB()->quoteInto("languageid = ? OR langcode = ?", $this->langId);
 		$result = Core::getQuery()->select("languages", array("languageid", "langcode", "title", "charset"), "", $where);
-		while($row = Core::getDB()->fetch($result))
+		foreach($result->fetchAll() as $row)
 		{
 			$data .= $this->getI().'<'.$row["langcode"].' title="'.$row["title"].'" charset="'.$row["charset"].'">'.$this->n;
 			$groups = $this->getGroups();
 			foreach($groups as $group)
 			{
 				$data .= $this->getI(2).'<'.$group["title"].'>'.$this->n;
-				$_result = Core::getQuery()->select("phrases", array("title", "content"), "", "languageid = '".$row["languageid"]."' AND phrasegroupid = '".$group["phrasegroupid"]."'", "title ASC");
-				while($_row = Core::getDB()->fetch($_result))
+				$where  = Core::getDB()->quoteInto("languageid = ? AND ", $row["languageid"]);
+				$where .= Core::getDB()->quoteInto("phrasegroupid = ?", $group["phrasegroupid"]);
+				$_result = Core::getQuery()->select("phrases", array("title", "content"), "", $where, "title ASC");
+				foreach($_result->fetchAll() as $_row)
 				{
 					$data .= $this->getI(3).'<'.$_row["title"].'><![CDATA['.$_row["content"].']]></'.$_row["title"].'>'.$this->n;
 				}
@@ -160,7 +161,7 @@ class Recipe_Language_Exporter
 		if(is_null($this->groups))
 		{
 			$result = Core::getQuery()->select("phrasesgroups", array("phrasegroupid", "title"), "", "", "title ASC");
-			while($row = Core::getDB()->fetch($result))
+			foreach($result->fetchAll() as $row)
 			{
 				$this->groups[] = $row;
 			}
@@ -193,7 +194,7 @@ class Recipe_Language_Exporter
 	/**
 	 * Sets a specific language id or code that will be exported.
 	 *
-	 * @param mixed		Language id or code
+	 * @param mixed $langId	Language id or code
 	 *
 	 * @return Recipe_Language_Exporter
 	 */

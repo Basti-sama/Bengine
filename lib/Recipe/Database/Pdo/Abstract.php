@@ -176,10 +176,24 @@ abstract class Recipe_Database_Pdo_Abstract extends Recipe_Database_Abstract
 	/**
 	 * @param string $text
 	 * @param mixed $value
+	 * @throws Recipe_Exception_Generic
 	 * @return string
 	 */
 	public function quoteInto($text, $value)
 	{
+		if(is_array($value))
+		{
+			foreach($value as $val)
+			{
+				$pos = strpos($text, "?");
+				if($pos === false)
+				{
+					throw new Recipe_Exception_Generic("Missing placeholder for quoted text.");
+				}
+				$text = substr_replace($text, $this->pdo->quote($val), $pos, 1);
+			}
+			return $text;
+		}
 		return str_replace("?", $this->pdo->quote($value), $text);
 	}
 

@@ -59,7 +59,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 		$joins  = "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.userid = u.userid)";
 		$joins .= "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."user2group u2g ON (u.userid = u2g.userid)";
-		$result = Core::getQuery()->select("user u", $select, $joins, "u.userid = '".$this->userid."'");
+		$result = Core::getQuery()->select("user u", $select, $joins, Core::getDB()->quoteInto("u.userid = ?", $this->userid));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
@@ -89,7 +89,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 			Core::getTPL()->assign("loginLink", Link::get("game/".SID."/Moderator/SwitchUser/".$row["userid"], Core::getLang()->get("SWITCH_USER")));
 
 			$bans = array(); $i = 0;
-			$result = Core::getQuery()->select("ban_u", array("`banid`", "`to`", "`reason`"), "", "userid = '".$this->userid."'");
+			$result = Core::getQuery()->select("ban_u", array("`banid`", "`to`", "`reason`"), "", Core::getDB()->quoteInto("userid = ?", $this->userid));
 			foreach($result->fetchAll() as $row)
 			{
 				$bans[$i]["reason"] = $row["reason"];
@@ -150,7 +150,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	{
 		Hook::event("UnbanUser", array($banid));
 		Core::getQuery()->update("ban_u", array("to" => TIME, "reason" => Core::getLanguage()->getItem("ANNULED")), "banid = ?", array($banid));
-		$result = Core::getQuery()->select("ban_u", "userid", "", "banid = '".$banid."'");
+		$result = Core::getQuery()->select("ban_u", "userid", "", Core::getDB()->quoteInto("banid = ?", $banid));
 		$row = $result->fetchRow();
 		$result->closeCursor();
 		$this->redirect("game/".SID."/Moderator/Index/".$row["userid"], false);
@@ -181,7 +181,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	protected function updateUser($username, $usertitle, $email, $delete, $umode, $activation, $ipcheck, $usergroupid, $points, $fpoints, $rpoints, $password, $languageid, $templatepackage, $theme, $js_interface)
 	{
 		$select = array("userid", "username", "email");
-		$result = Core::getQuery()->select("user", $select, "", "userid = '".$this->userid."'");
+		$result = Core::getQuery()->select("user", $select, "", Core::getDB()->quoteInto("userid = ?", $this->userid));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
@@ -208,7 +208,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 
 			if(!Str::compare($username, $row["username"]))
 			{
-				$num = Core::getQuery()->select("user", "userid", "", "username = '".$username."'")->rowCount();
+				$num = Core::getQuery()->select("user", "userid", "", Core::getDB()->quoteInto("username = ?", $username))->rowCount();
 				if($num > 0)
 				{
 					$username = $row["username"];
@@ -217,7 +217,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 
 			if(!Str::compare($email, $row["email"]))
 			{
-				$num = Core::getQuery()->select("user", "userid", "", "email = '".$email."'")->rowCount();
+				$num = Core::getQuery()->select("user", "userid", "", Core::getDB()->quoteInto("email = ?", $email))->rowCount();
 				if($num > 0)
 				{
 					$email = $row["email"];
@@ -257,7 +257,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	protected function switchUserAction()
 	{
 		Core::getUser()->checkPermissions(array("CAN_SWITCH_USER"));
-		$result = Core::getQuery()->select("user u", array("u.username", "p.password"), "LEFT JOIN ".PREFIX."password p ON p.userid = u.userid", "u.userid = '".$this->userid."'");
+		$result = Core::getQuery()->select("user u", array("u.username", "p.password"), "LEFT JOIN ".PREFIX."password p ON p.userid = u.userid", Core::getDB()->quoteInto("u.userid = ?", $this->userid));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();

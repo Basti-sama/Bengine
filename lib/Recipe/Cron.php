@@ -19,12 +19,7 @@ class Recipe_Cron
 	 */
 	public function __construct()
 	{
-		try {
-			$this->exeCron();
-		} catch(Recipe_Exception_Generic $e) {
-			$e->printError();
-		}
-		return;
+		return $this;
 	}
 
 	/**
@@ -33,15 +28,15 @@ class Recipe_Cron
 	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Cron
 	 */
-	protected function exeCron()
+	public function exeCron()
 	{
-		if(EXEC_CRON === false)
-			return $this;
 		$select = array("cronid", "class", "month", "day", "weekday", "hour", "minute", "xtime", "active");
 		$_result = Core::getQuery()->select("cronjob", $select, "", "(xtime <= ".TIME." OR xtime IS NULL) AND active = '1'");
 		foreach($_result->fetchAll() as $_row)
 		{
-			$cronjobObj = new $_row["class"]();
+			$class = explode("/", $_row["class"]);
+			$class = $class[0]."/cronjob_".$class[1];
+			$cronjobObj = Application::factory($class);
 			if($cronjobObj instanceof Recipe_CronjobAbstract)
 			{
 				Hook::event("ExecuteCronjob", array($this, &$_row, $cronjobObj));
@@ -49,7 +44,7 @@ class Recipe_Cron
 			}
 			else
 			{
-				throw new Recipe_Exception_Generic("Cannot execute cron job \"{$_row["class"]}\".", __FILE__, __LINE__);
+				throw new Recipe_Exception_Generic("Cannot execute cron job \"{$_row["class"]}\".");
 			}
 		}
 		$_result->closeCursor();

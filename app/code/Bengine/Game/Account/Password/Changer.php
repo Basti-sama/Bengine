@@ -28,7 +28,9 @@ class Bengine_Game_Account_Password_Changer extends Bengine_Game_Account_Ajax
 			$this->printIt("PASSWORD_INVALID");
 		}
 
-		$result = Core::getQuery()->select("user", "userid", "", "userid = '".$userid."' AND activation = '".$key."'");
+		$where  = Core::getDB()->quoteInto("userid = ? AND ", $userid);
+		$where .= Core::getDB()->quoteInto("activation = ?", $key);
+		$result = Core::getQuery()->select("user", "userid", "", $where);
 		if($result->rowCount())
 		{
 			$result->closeCursor();

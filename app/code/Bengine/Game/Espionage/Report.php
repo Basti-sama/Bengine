@@ -119,11 +119,11 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 	protected function loadEspData()
 	{
 		// Load research
-		$result = Core::getQuery()->select("research2user", "level", "", "userid = '".$this->userid."' AND buildingid = '13'");
+		$result = Core::getQuery()->select("research2user", "level", "", Core::getDB()->quoteInto("userid = ? AND buildingid = '13'", $this->userid));
 		$row = $result->fetchRow();
 		$result->closeCursor();
 		$this->espTech = (int) $row["level"];
-		$result = Core::getQuery()->select("research2user r2u", array("r2u.buildingid", "r2u.level", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r2u.buildingid)", "r2u.userid = '".$this->getData("userid")."'", "b.display_order ASC, b.buildingid ASC");
+		$result = Core::getQuery()->select("research2user r2u", array("r2u.buildingid", "r2u.level", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = r2u.buildingid)", Core::getDB()->quoteInto("r2u.userid = ?", $this->getData("userid")), "b.display_order ASC, b.buildingid ASC");
 		foreach($result->fetchAll() as $row)
 		{
 			$this->research[$row["buildingid"]]["level"] = (int) $row["level"];
@@ -151,7 +151,7 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 		}
 
 		$units = 0;
-		$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", "u2s.planetid = '".$this->planetid."' AND b.mode = '3'", "b.display_order ASC, b.buildingid ASC");
+		$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", Core::getDB()->quoteInto("u2s.planetid = ? AND b.mode = '3'", $this->planetid), "b.display_order ASC, b.buildingid ASC");
 		foreach($result->fetchAll() as $row)
 		{
 			$units += $row["quantity"];
@@ -162,7 +162,7 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 		$this->loadHoldingFleet();
 		if($this->blocks > 2)
 		{
-			$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", "u2s.planetid = '".$this->planetid."' AND b.mode = '4'", "b.display_order ASC, b.buildingid ASC");
+			$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = u2s.unitid)", Core::getDB()->quoteInto("u2s.planetid = ? AND b.mode = '4'", $this->planetid), "b.display_order ASC, b.buildingid ASC");
 			foreach($result->fetchAll() as $row)
 			{
 				$this->defense[$row["unitid"]]["quantity"] = $row["quantity"];
@@ -171,7 +171,7 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 			$result->closeCursor();
 			if($this->blocks > 3)
 			{
-				$result = Core::getQuery()->select("building2planet b2p", array("b2p.buildingid", "b2p.level", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = b2p.buildingid)", "b2p.planetid = '".$this->planetid."' AND (b.mode = '1' OR b.mode = '5')", "b.display_order ASC, b.buildingid ASC");
+				$result = Core::getQuery()->select("building2planet b2p", array("b2p.buildingid", "b2p.level", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = b2p.buildingid)", Core::getDB()->quoteInto("b2p.planetid = ? AND (b.mode = '1' OR b.mode = '5')", $this->planetid), "b.display_order ASC, b.buildingid ASC");
 				foreach($result->fetchAll() as $row)
 				{
 					$this->building[$row["buildingid"]]["level"] = $row["level"];
@@ -312,7 +312,7 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 	 */
 	protected function loadHoldingFleet()
 	{
-		$result = Core::getQuery()->select("events", array("data"), "", "mode = '17' AND destination = '".$this->planetid."'");
+		$result = Core::getQuery()->select("events", array("data"), "", Core::getDB()->quoteInto("mode = '17' AND destination = ?", $this->planetid));
 		foreach($result->fetchAll() as $row)
 		{
 			$row["data"] = unserialize($row["data"]);

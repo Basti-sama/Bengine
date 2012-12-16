@@ -24,18 +24,6 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function indexAction()
 	{
-		if($this->getParam("add_user"))
-		{
-			$this->add(
-				$this->getParam("username"),
-				$this->getParam("email"),
-				$this->getParam("languageid"),
-				$this->getParam("templatepackage"),
-				$this->getParam("ipcheck"),
-				$this->getParam("password"),
-				$this->getParam("usergroup")
-			);
-		}
 		$langs = Core::getQuery()->select("languages", array("languageid", "title"), "", "", "title ASC");
 		$groups = Core::getQuery()->select("usergroup", array("usergroupid", "grouptitle"), "", "", "grouptitle ASC");
 
@@ -76,30 +64,6 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 	}
 
 	/**
-	 * @param string $username
-	 * @param string $email
-	 * @param integer $languageid
-	 * @param string $templatepackage
-	 * @param integer $ipcheck
-	 * @param string $password
-	 * @param array $usergroup
-	 * @return Bengine_Admin_Controller_User
-	 */
-	protected function add($username, $email, $languageid, $templatepackage, $ipcheck, $password, array $usergroup)
-	{
-		$spec = array("username" => $username, "email" => $email, "languageid" => $languageid, "templatepackage" => $templatepackage, "ipcheck" => $ipcheck);
-		Core::getQuery()->insert("user", $spec);
-		$userid = Core::getDB()->lastInsertId();
-		$password = Str::encode($password, Core::getConfig()->get("USE_PASSWORD_SALT") ? "md5_salt" : "md5");
-		Core::getQuery()->insert("password", array("userid" => $userid, "password" => $password, "time" => TIME));
-		foreach($usergroup as $groupid)
-		{
-			if($groupid > 0) { Core::getQuery()->insert("user2group", array("usergroupid" => $groupid, "userid" => $userid)); }
-		}
-		return $this;
-	}
-
-	/**
 	 * @return Bengine_Admin_Controller_User
 	 */
 	protected function seekAction()
@@ -119,7 +83,7 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 			$userwhere = "";
 			if(Str::length(Str::replace("%", "", $username)) > 0)
 			{
-				$userwhere = "username LIKE '%".$username."%'";
+				$userwhere = Core::getDB()->quoteInto("username LIKE ?", "%$username%");
 				$s = true;
 			}
 			$email = Str::replace("%", "", $email);
@@ -127,7 +91,7 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 			$mailwhere = "";
 			if(Str::length(Str::replace("%", "", $email)) > 0)
 			{
-				$mailwhere = "email LIKE '%".$email."%'";
+				$mailwhere = Core::getDB()->quoteInto("email LIKE ?", "%$email%");
 				$s = true;
 			}
 		}
@@ -179,7 +143,7 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 				$this->getParam("password")
 			);
 		}
-		$result = Core::getQuery()->select("user", array("username", "email", "languageid", "templatepackage", "ipcheck"), "", "userid = '".$userid."'");
+		$result = Core::getQuery()->select("user", array("username", "email", "languageid", "templatepackage", "ipcheck"), "", Core::getDB()->quoteInto("userid = ?", $userid));
 		if($row = $result->fetchRow())
 		{
 			if($this->getParam("add_usermembership"))
@@ -189,7 +153,7 @@ class Bengine_Admin_Controller_User extends Bengine_Admin_Controller_Abstract
 			$langs = Core::getQuery()->select("languages", array("languageid", "title"), "", "", "title ASC");
 			$groups = Core::getQuery()->select("usergroup", array("usergroupid", "grouptitle"), "", "", "grouptitle ASC");
 			$membership = array();
-			$_result = Core::getQuery()->select("user2group u2g", array("g.grouptitle", "u2g.usergroupid"), "LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = u2g.usergroupid)", "u2g.userid = '".$userid."'");
+			$_result = Core::getQuery()->select("user2group u2g", array("g.grouptitle", "u2g.usergroupid"), "LEFT JOIN ".PREFIX."usergroup g ON (g.usergroupid = u2g.usergroupid)", Core::getDB()->quoteInto("u2g.userid = ?", $userid));
 			foreach($_result->fetchAll() as $_row)
 			{
 				$id = $_row["usergroupid"];

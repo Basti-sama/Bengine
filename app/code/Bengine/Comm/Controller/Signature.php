@@ -101,7 +101,7 @@ class Bengine_Comm_Controller_Signature extends Bengine_Comm_Controller_Abstract
 
 		if($imageConfig["planets"]["show"])
 		{
-			$result = Core::getQuery()->select("planet", array("planetid"), "", "userid = '{$user->getUserid()}' AND ismoon = 0");
+			$result = Core::getQuery()->select("planet", array("planetid"), "", Core::getDB()->quoteInto("userid = ? AND ismoon = 0", $user->getUserid()));
 			$planets = Core::getLang()->get("NUMBER_OF_COLONY")." ".fNumber($result->rowCount() - 1);
 			$this->_addParamToImage($img, "planets", $planets);
 		}

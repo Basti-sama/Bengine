@@ -27,7 +27,7 @@ class Bengine_Game_MessageFolder_Combat extends Bengine_Game_MessageFolder_Abstr
 		{
 			if(!$assault->get("galaxy"))
 			{
-				$statement = Core::getQuery()->select("assaultparticipant ap", array("data"), "", "ap.assaultid = '".$assault->get("assaultid")."' && mode = 0");
+				$statement = Core::getQuery()->select("assaultparticipant ap", array("data"), "", Core::getDB()->quoteInto("ap.assaultid = ? && mode = 0", $assault->get("assaultid")));
 				$data = $statement->fetchColumn();
 				$tokens = explode(",", $data);
 				foreach($tokens as $token)

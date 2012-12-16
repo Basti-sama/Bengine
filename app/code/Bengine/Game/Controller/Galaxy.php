@@ -181,8 +181,8 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 		$joins .= "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.userid = u.userid)";
 		$joins .= "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (b.userid = u.userid AND b.to > '".TIME."')";
-		$result = Core::getQuery()->select("galaxy g", $select, $joins, "g.galaxy = '".$this->galaxy."' AND g.system = '".$this->system."'");
-		$systemData = array();
+		$where  = Core::getDB()->quoteInto("g.galaxy = ? AND g.system = ?", array($this->galaxy, $this->system));
+		$result = Core::getQuery()->select("galaxy g", $select, $joins, $where);
 		$UserList = new Bengine_Game_User_List();
 		$UserList->setKey("position");
 		$UserList->setNewbieProtection(true);

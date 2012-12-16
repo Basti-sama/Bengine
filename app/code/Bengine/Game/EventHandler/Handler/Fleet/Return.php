@@ -19,7 +19,8 @@ class Bengine_Game_EventHandler_Handler_Fleet_Return extends Bengine_Game_EventH
 		$this->_production($event);
 		foreach($data["ships"] as $ship)
 		{
-			$result = Core::getQuery()->select("unit2shipyard", "unitid", "", "unitid = '".$ship["id"]."' AND planetid = '".$event["destination"]."'");
+			$where = Core::getDB()->quoteInto("unitid = ? AND planetid = ?", array($ship["id"], $event["destination"]));
+			$result = Core::getQuery()->select("unit2shipyard", "unitid", "", $where);
 			if($result->rowCount() > 0)
 			{
 				Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity + ? WHERE unitid = ? AND planetid = ?", array($ship["quantity"], $ship["id"], $event["destination"]));

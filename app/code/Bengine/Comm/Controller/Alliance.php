@@ -25,7 +25,7 @@ class Bengine_Comm_Controller_Alliance extends Bengine_Comm_Controller_Abstract
 		$attr = array("a.aid", "a.name", "a.tag", "a.logo", "a.textextern", "a.homepage", "a.showhomepage", "COUNT(u2a.userid) AS member", "SUM(u.points) AS points", "SUM(u.rpoints) AS rpoints", "SUM(u.fpoints) AS fpoints");
 		$joins  = "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.aid = a.aid) ";
 		$joins .= "LEFT JOIN ".PREFIX."user u ON (u2a.userid = u.userid) ";
-		$result = Core::getQuery()->select("alliance a", $attr, $joins, "tag = '".$tag."'", "", 1, "a.aid");
+		$result = Core::getQuery()->select("alliance a", $attr, $joins, Core::getDB()->quoteInto("tag = ?", $tag), "", 1, "a.aid");
 		$row = $result->fetchRow();
 		if($row)
 		{

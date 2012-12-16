@@ -270,6 +270,7 @@ function richText($str)
 	{
 		define("HTMLPURIFIER_PREFIX", dirname(RECIPE_ROOT_DIR)."/lib");
 		require_once "HTMLPurifier/Bootstrap.php";
+		/* @var HTMLPurifier_Config $config */
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set("Cache.SerializerPath", APP_ROOT_DIR."var/cache/htmlpurifier");
 		$config->set("Core.Encoding", Core::getLang()->getOpt("charset"));
@@ -279,7 +280,7 @@ function richText($str)
 		$config->set("HTML.ForbiddenAttributes", array("id", "class"));
 		if($def = $config->maybeGetRawHTMLDefinition())
 		{
-			$form = $def->addElement(
+			$def->addElement(
 				"object",
 				"Inline",
 				"Optional:PARAM | Flow",
@@ -298,7 +299,7 @@ function richText($str)
 					"name" => "CDATA",
 					"tabindex" => "Number")
 			);
-			$param = $def->addElement(
+			$def->addElement(
 				"param",
 				"Inline",
 				"Empty",
@@ -313,9 +314,7 @@ function richText($str)
 		}
 		$purifier = new HTMLPurifier($config);
 	}
-	$str = Str::replace("\\r", "", $str);
-	$str = Str::replace("\\n", "", $str);
-	return Core::getDB()->escape($purifier->purify(stripslashes($str)));
+	return $purifier->purify(stripslashes($str));
 }
 
 /**
@@ -365,7 +364,7 @@ function createOption($value, $option, $selected, $class = "")
  */
 function deleteAlliance($aid)
 {
-	$result = Core::getQuery()->select("user2ally u2a", array("u2a.userid", "a.tag"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)", "u2a.aid = '".$aid."'");
+	$result = Core::getQuery()->select("user2ally u2a", array("u2a.userid", "a.tag"), "LEFT JOIN ".PREFIX."alliance a ON (a.aid = u2a.aid)", Core::getDB()->quoteInto("u2a.aid = ?", $aid));
 	foreach($result->fetchAll() as $row)
 	{
 		new Bengine_Game_AutoMsg(23, $row["userid"], TIME, $row);

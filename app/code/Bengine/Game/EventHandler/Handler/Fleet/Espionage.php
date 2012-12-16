@@ -38,7 +38,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Espionage extends Bengine_Game_Eve
 			$intoTF = floatval(Core::getOptions()->get("FLEET_INTO_DEBRIS"));
 			foreach($data["ships"] as $key => $ship)
 			{
-				$_result = Core::getQuery()->select("construction", array("basic_metal", "basic_silicon", "basic_hydrogen"), "", "buildingid = '".$key."'");
+				$_result = Core::getQuery()->select("construction", array("basic_metal", "basic_silicon", "basic_hydrogen"), "", Core::getDB()->quoteInto("buildingid = ?", $key));
 				$shipData = $_result->fetchRow();
 				$_result->closeCursor();
 				$points += ($shipData["basic_metal"] + $shipData["basic_silicon"] + $shipData["basic_hydrogen"]) * $ship["quantity"] / 1000;

@@ -92,7 +92,8 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 	 */
 	protected function playerRanking($type, $pos)
 	{
-		$result = Core::getQuery()->select("user", "userid", "", $type." >= FLOOR('".Core::getUser()->get($type)."')");
+		$where = Core::getDB()->quoteInto("$type >= FLOOR(?)", Core::getUser()->get($type));
+		$result = Core::getQuery()->select("user", "userid", "", $where);
 		$oPos = $result->rowCount();
 		$oPos = ($oPos <= 0) ? 1 : $oPos;
 		$oPos = ceil($oPos / Core::getOptions()->get("USER_PER_PAGE"));

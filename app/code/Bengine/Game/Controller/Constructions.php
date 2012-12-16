@@ -168,7 +168,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 		{
 			$this->redirect("game/".SID."/Constructions");
 		}
-		$result = Core::getQuery()->select("construction", array("buildingid"), "", "buildingid = '".$id."'");
+		$result = Core::getQuery()->select("construction", array("buildingid"), "", Core::getDB()->quoteInto("buildingid = ?", $id));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();
@@ -194,7 +194,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 		{
 			Recipe_Header::redirect("game/".SID."/Constructions", false);
 		}
-		$result = Core::getQuery()->select("building2planet b2p", array("c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.charge_metal", "c.charge_silicon", "c.charge_hydrogen", "c.name", "c.demolish"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = b2p.buildingid)", "b2p.buildingid = '".$id."'");
+		$result = Core::getQuery()->select("building2planet b2p", array("c.basic_metal", "c.basic_silicon", "c.basic_hydrogen", "c.charge_metal", "c.charge_silicon", "c.charge_hydrogen", "c.name", "c.demolish"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = b2p.buildingid)", Core::getDB()->quoteInto("b2p.buildingid = ?", $id));
 		if(!($row = $result->fetchRow()))
 		{
 			$result->closeCursor();
@@ -263,7 +263,7 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 			"cons_metal", "cons_silicon", "cons_hydrogen", "cons_energy",
 			"charge_metal", "charge_silicon", "charge_hydrogen", "charge_energy"
 		);
-		$result = Core::getQuery()->select("construction", $select, "", "buildingid = '".$id."' AND (mode = '1' OR mode = '2' OR mode = '5')");
+		$result = Core::getQuery()->select("construction", $select, "", Core::getDB()->quoteInto("buildingid = ? AND (mode = '1' OR mode = '2' OR mode = '5')", $id));
 		if($row = $result->fetchRow())
 		{
 			$result->closeCursor();

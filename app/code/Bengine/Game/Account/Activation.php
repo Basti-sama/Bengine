@@ -50,7 +50,7 @@ class Bengine_Game_Account_Activation
 	{
 		if(!empty($this->key))
 		{
-			$result = Core::getQuery()->select("user u", array("u.userid", "u.username", "p.password", "temp_email"), "LEFT JOIN ".PREFIX."password p ON (p.userid = u.userid)", "u.activation = '".$this->getKey()."'");
+			$result = Core::getQuery()->select("user u", array("u.userid", "u.username", "p.password", "temp_email"), "LEFT JOIN ".PREFIX."password p ON (p.userid = u.userid)", Core::getDB()->quoteInto("u.activation = ?", $this->getKey()));
 			if($row = $result->fetchRow())
 			{
 				$result->closeCursor();

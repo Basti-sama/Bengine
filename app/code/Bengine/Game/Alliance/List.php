@@ -167,10 +167,14 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 	 */
 	protected function getAllianceRank($aid, $pointType)
 	{
+		if($pointType != "points" & $pointType != "fpoints" && $pointType != "rpoints")
+		{
+			throw new Recipe_Exception_Generic("Unknown point type supplied.");
+		}
 		$joins  = "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.aid = a.aid)";
 		$joins .= "LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid)";
-		$subselect = "(SELECT SUM(u.".$pointType.") FROM ".PREFIX."user2ally u2a LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid) WHERE u2a.aid = '".$aid."')";
-		$result = Core::getQuery()->select("alliance a", "a.aid", $joins, "", "", "", "u2a.aid", "HAVING SUM(u.".$pointType.") >= ".$subselect, "");
+		$subselect = "(SELECT SUM(u.".$pointType.") FROM ".PREFIX."user2ally u2a LEFT JOIN ".PREFIX."user u ON (u.userid = u2a.userid) WHERE u2a.aid = ?)";
+		$result = Core::getQuery()->select("alliance a", "a.aid", $joins, "", "", "", "u2a.aid", "HAVING SUM(u.".$pointType.") >= ".$subselect, array($aid));
 		$rank = fNumber($result->rowCount());
 		$result->closeCursor();
 		return $rank;

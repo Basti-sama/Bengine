@@ -17,7 +17,6 @@ define("LOG_EXCEPTIONS", false);
 define("REQUEST_ADAPTER", "default");
 define("DEFAULT_PACKAGE", "comm");
 define("MOD_REWRITE", true);
-define("EXEC_CRON", false);
 
 // Required constants (Global preferences)
 define("COOKIE_PREFIX", "bengine_");	// Prefix for cookies.
