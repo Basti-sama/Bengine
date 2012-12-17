@@ -337,11 +337,11 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 						"mission" => $eventType->getModeName(),
 						"selected" => ($eventType->getCode() == $code)
 					);
-					if($eventType->getCode() == "alliedFleet")
+					if($eventType->getCode() == "game/alliedFleet")
 					{
 						$data["alliance_attack"] = $handler->getSpecialData();
 					}
-					else if($eventType->getCode() == "halt")
+					else if($eventType->getCode() == "game/halt")
 					{
 						$showHoldingTime = true;
 					}

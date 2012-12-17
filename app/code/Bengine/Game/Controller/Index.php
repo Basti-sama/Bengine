@@ -253,7 +253,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 	 */
 	protected function parseEvent(Bengine_Game_Model_Event $f)
 	{
-		if($f->getCode() == "alliedFleet" && $f->getUserid() != Core::getUser()->get("userid"))
+		if($f->getCode() == "game/alliedFleet" && $f->getUserid() != Core::getUser()->get("userid"))
 		{
 			return false; // Hide foreign formations
 		}
@@ -265,19 +265,19 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		Core::getLanguage()->assign("rockets", $f->getData("rockets", 0));
 		Core::getLanguage()->assign("planet", (!$f->getData("oldmode") || $f->getData("oldmode") != 9) ? $f->getPlanetname() : Core::getLanguage()->getItem("DEBRIS")); // TODO: Old mode should be translated to code
 		Core::getLanguage()->assign("coords", $f->getPlanetCoords());
-		Core::getLanguage()->assign("target", ($f->getCode() != "recycling") ? $f->getDestinationPlanetname() : Core::getLanguage()->getItem("DEBRIS"));
+		Core::getLanguage()->assign("target", ($f->getCode() != "game/recycling") ? $f->getDestinationPlanetname() : Core::getLanguage()->getItem("DEBRIS"));
 		Core::getLanguage()->assign("targetcoords", $f->getDestinationCoords());
 		Core::getLanguage()->assign("metal", fNumber($f->getData("metal", 0)));
 		Core::getLanguage()->assign("silicon", fNumber($f->getData("silicon", 0)));
 		Core::getLanguage()->assign("hydrogen", fNumber($f->getData("hydrogen", 0)));
 		Core::getLanguage()->assign("username", $f->getUsername());
 		Core::getLanguage()->assign("message", Link::get("game/".SID."/MSG/Write/".rawurlencode($f->getUsername()), Image::getImage("pm.gif", Core::getLanguage()->getItem("WRITE_MESSAGE"))));
-		Core::getLanguage()->assign("mission", ($f->getCode() == "return") ? $f->getOrgModeName() : $f->getModeName());
+		Core::getLanguage()->assign("mission", ($f->getCode() == "game/return") ? $f->getOrgModeName() : $f->getModeName());
 
 		Core::getLanguage()->assign("fleet", $f->getFleetString());
 
 		$event["class"] = $f->getCssClass();
-		if($f->getCode() == "allianceAttack")
+		if($f->getCode() == "game/allianceAttack")
 		{
 			if($f->getUserid() == Core::getUser()->get("userid"))
 			{
@@ -296,7 +296,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 				$event["message"] .= $msg;
 			}
 		}
-		else if($f->getCode() == "alliedFleet")
+		else if($f->getCode() == "game/alliedFleet")
 		{
 			$mainFleet = Game::getModel("game/event")->load($f->getParentId());
 			if($mainFleet->getUsierid() == Core::getUser()->get("userid"))
@@ -318,23 +318,23 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 				$event["message"] .= $msg;
 			}
 		}
-		else if($f->getCode() == "holding" && $f->getUserid() == Core::getUser()->get("userid"))
+		else if($f->getCode() == "game/holding" && $f->getUserid() == Core::getUser()->get("userid"))
 		{
 			$event["message"] = Core::getLanguage()->getItem("FLEET_MESSAGE_HOLDING_1");
 		}
-		else if($f->getCode() == "holding")
+		else if($f->getCode() == "game/holding")
 		{
 			$event["message"] = Core::getLanguage()->getItem("FLEET_MESSAGE_HOLDING_2");
 		}
-		else if($f->getCode() == "return" && $f->getUserid() == Core::getUser()->get("userid"))
+		else if($f->getCode() == "game/return" && $f->getUserid() == Core::getUser()->get("userid"))
 		{
 			$event["message"] = Core::getLanguage()->getItem("FLEET_MESSAGE_RETURN");
 		}
-		else if($f->getUserid() == Core::getUser()->get("userid") && $f->getCode() == "missileAttack")
+		else if($f->getUserid() == Core::getUser()->get("userid") && $f->getCode() == "game/missileAttack")
 		{
 			$event["message"] = Core::getLanguage()->getItem("FLEET_MESSAGE_ROCKET_ATTACK");
 		}
-		else if($f->getCode() == "missileAttack")
+		else if($f->getCode() == "game/missileAttack")
 		{
 			$event["message"] = Core::getLanguage()->getItem("FLEET_MESSAGE_ROCKET_ATTACK_FOREIGN");
 		}

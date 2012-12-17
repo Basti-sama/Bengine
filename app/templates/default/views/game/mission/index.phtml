@@ -58,7 +58,7 @@ quantities[<?php echo $unit->getId() ?>] = <?php echo $unit->getQty() ?>;
 			<td><?php echo $event->getDestinationCoords() ?></td>
 			<td><?php echo $event->getReturnTime() ?></td>
 			<td>
-				<?php if($event->getCode() != "return" && $event->getCode() != "missileAttack"): ?>
+				<?php if($event->getCode() != "game/return" && $event->getCode() != "game/missileAttack"): ?>
 				<form method="post" action="{@formaction}" class="form-sec">
 					<input type="hidden" name="retreat" value="1"/>
 					<input type="hidden" name="id" value="<?php echo $event->getEventid() ?>"/>

@@ -104,19 +104,19 @@ class Bengine_Game_Controller_MonitorPlanet extends Bengine_Game_Controller_Abst
 		foreach($collection as $row)
 		{
 			// Mission is missle attack >> hide
-			if($row->getCode() == "missileAttack")
+			if($row->getCode() == "game/missileAttack")
 				continue;
 			// Do not show mission on return fly from original planet
-			if($row->getCode() == "return" && $this->planetData->getPlanetid() == $row->getPlanetid() && $row->getDestination() != $row->getPlanetid())
+			if($row->getCode() == "game/return" && $this->planetData->getPlanetid() == $row->getPlanetid() && $row->getDestination() != $row->getPlanetid())
 				continue;
 			// Mission is recycling AND destination planet is the scanned planet >> hide
-			if($row->getCode() == "recycling" && $row->getDestination() == $this->planetData->getPlanetid() && $row->getDestination() != $row->getPlanetid())
+			if($row->getCode() == "game/recycling" && $row->getDestination() == $this->planetData->getPlanetid() && $row->getDestination() != $row->getPlanetid())
 				continue;
 			// Original mission is recycling AND original planet is the scanned planet >> hide
 			if($row->getOrgMode() == 9 && $row->getPlanetid() == $this->planetData->getPlanetid() && $row->getDestination() != $row->getPlanetid())
 				continue;
 			// Hide return missions if destination is a moon (always)
-			if($row->getCode() == "return" && $row->getDestinationIsmoon())
+			if($row->getCode() == "game/return" && $row->getDestinationIsmoon())
 			 	continue;
 			// Mission is position and on return >> hide
 			if($row->getOrgMode() == 6)
@@ -126,7 +126,7 @@ class Bengine_Game_Controller_MonitorPlanet extends Bengine_Game_Controller_Abst
 
 			Core::getLanguage()->assign("planet", $row->getPlanetname());
 			Core::getLanguage()->assign("coords", $row->getPlanetCoords());
-			Core::getLanguage()->assign("target", ($row->getCode() != "recycling") ? $row->getDestinationPlanetname() : Core::getLanguage()->getItem("DEBRIS"));
+			Core::getLanguage()->assign("target", ($row->getCode() != "game/recycling") ? $row->getDestinationPlanetname() : Core::getLanguage()->getItem("DEBRIS"));
 			Core::getLanguage()->assign("targetcoords", $row->getDestinationCoords());
 			Core::getLanguage()->assign("username", $row->getUsername());
 			Core::getLanguage()->assign("mission", ($row->getCode() == "return") ? $row->getOrgModeName() : $row->getModeName());

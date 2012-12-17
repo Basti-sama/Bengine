@@ -78,6 +78,8 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		$packs = array();
 		$excludedPackages = explode(",", Core::getOptions()->get("EXCLUDE_TEMPLATE_PACKAGE"));
 		$excludedPackages = array_map("trim", $excludedPackages);
+		$excludedPackages[] = "default";
+		$excludedPackages[] = Core::getOptions()->get("templatepackage");
 		$dir = new DirectoryIterator(APP_ROOT_DIR."app/templates/");
 		/* @var DirectoryIterator $package */
 		foreach($dir as $package)
