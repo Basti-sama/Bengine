@@ -37,7 +37,12 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 	 */
 	protected function init()
 	{
-		if(Game::getResearch(14) + 1 <= count(Game::getEH()->getOwnFleetEvents()))
+		$fleetEvents = Game::getEH()->getOwnFleetEvents();
+		if(!$fleetEvents)
+		{
+			$fleetEvents = array();
+		}
+		if(Game::getResearch(14) + 1 <= count($fleetEvents))
 		{
 			Core::getLanguage()->load("mission");
 			Logger::dieMessage("NO_FREE_FLEET_SLOTS");

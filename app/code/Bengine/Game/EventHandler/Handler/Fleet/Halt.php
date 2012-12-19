@@ -16,7 +16,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Halt extends Bengine_Game_EventHan
 	protected function _execute(Bengine_Game_Model_Event $event, array $data)
 	{
 		Hook::event("EhHalt", array($event, &$data, $this));
-		Core::getQuery()->update("events", array("mode", "time", "prev_rc"), array(17, $event["time"] + $data["duration"], null), "eventid = ?", array($event["eventid"]));
+		Core::getQuery()->update("events", array("mode" => 17, "time" => $event["time"] + $data["duration"], "prev_rc" => null), "eventid = ?", array($event["eventid"]));
 		return $this;
 	}
 

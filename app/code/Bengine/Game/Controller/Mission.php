@@ -85,8 +85,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			Hook::event("MissionFlettList", array($fleet));
 			Core::getTPL()->addLoop("fleet", $fleet);
 			$canSendFleet = false;
-			$fleetEvents = Game::getEH()->getOwnFleetEvents();
-			if(!$fleetEvents || Game::getResearch(14) + 1 > count($fleetEvents))
+			if(empty($fleetEvents) || Game::getResearch(14) + 1 > count($fleetEvents))
 			{
 				$canSendFleet = true;
 			}
