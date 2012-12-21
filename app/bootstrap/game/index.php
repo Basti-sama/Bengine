@@ -6,7 +6,7 @@
  * @license <http://www.bengine.de/pyl.txt> Public Bengine License
  */
 
-define("REQUEST_LEVEL_NAMES", "packages,sid,controller,action,1,2,3,4");
+define("REQUEST_LEVEL_NAMES", "packages,sid,controller,action,1,2,3,4,5");
 define("LOGIN_REQUIRED", true);
 define("VERSION_CHECK_PAGE", "http://bengine.de/version.php");
 define("COOKIE_SESSION", false);

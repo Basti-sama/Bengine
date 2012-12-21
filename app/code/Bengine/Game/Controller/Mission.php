@@ -331,10 +331,11 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 					->setTargetType($targetType);
 				if($handler->isValid())
 				{
+					list($tmp, $compareCode) = explode("/", $eventType->getCode());
 					$missions[$eventType->get("event_type_id")] = array(
 						"mode" => $eventType->get("event_type_id"),
 						"mission" => $eventType->getModeName(),
-						"selected" => ($eventType->getCode() == $code)
+						"selected" => ($compareCode == $code)
 					);
 					if($eventType->getCode() == "game/alliedFleet")
 					{
