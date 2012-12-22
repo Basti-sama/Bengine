@@ -463,25 +463,25 @@ CREATE TABLE IF NOT EXISTS `bengine_event_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `bengine_event_type` (`event_type_id`, `code`, `base_type`) VALUES
-(1, 'build', 'construct'),
-(2, 'demolish', 'construct'),
-(3, 'research', 'construct'),
-(4, 'shipyard', 'construct'),
-(5, 'shipyard', 'construct'),
-(6, 'position', 'fleet'),
-(7, 'transport', 'fleet'),
-(8, 'colonize', 'fleet'),
-(9, 'recycling', 'fleet'),
-(10, 'attack', 'fleet'),
-(11, 'espionage', 'fleet'),
-(12, 'allianceAttack', 'fleet'),
-(13, 'halt', 'fleet'),
-(14, 'moonDestruction', 'fleet'),
-(15, 'placeholder', 'fleet'),
-(16, 'missileAttack', 'fleet'),
-(17, 'holding', 'fleet'),
-(18, 'alliedFleet', 'fleet'),
-(20, 'return', 'fleet');
+(1, 'game/build', 'construct'),
+(2, 'game/demolish', 'construct'),
+(3, 'game/research', 'construct'),
+(4, 'game/shipyard', 'construct'),
+(5, 'game/shipyard', 'construct'),
+(6, 'game/position', 'fleet'),
+(7, 'game/transport', 'fleet'),
+(8, 'game/colonize', 'fleet'),
+(9, 'game/recycling', 'fleet'),
+(10, 'game/attack', 'fleet'),
+(11, 'game/espionage', 'fleet'),
+(12, 'game/allianceAttack', 'fleet'),
+(13, 'game/halt', 'fleet'),
+(14, 'game/moonDestruction', 'fleet'),
+(15, 'game/placeholder', 'fleet'),
+(16, 'game/missileAttack', 'fleet'),
+(17, 'game/holding', 'fleet'),
+(18, 'game/alliedFleet', 'fleet'),
+(20, 'game/return', 'fleet');
 
 DROP TABLE IF EXISTS `bengine_fleet2assault`;
 CREATE TABLE IF NOT EXISTS `bengine_fleet2assault` (
