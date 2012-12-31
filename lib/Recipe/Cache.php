@@ -759,7 +759,7 @@ class Recipe_Cache
 	{
 		$data = array();
 		$applicationDirectory = APP_ROOT_DIR."app/bootstrap";
-		$moduleDirectory = APP_ROOT_DIR."ext/modules/etc";
+		$moduleDirectory = APP_ROOT_DIR."etc/modules";
 		/* @var DirectoryIterator $fileObj */
 		foreach(new DirectoryIterator($applicationDirectory) as $fileObj)
 		{

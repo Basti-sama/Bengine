@@ -12,7 +12,7 @@ class Bengine_Game_Model_Collection_Planet extends Recipe_Model_Collection_Abstr
 	/**
 	 * Adds a galaxy filter.
 	 *
-	 * @param integer	Galaxy
+	 * @param integer $galaxy
 	 *
 	 * @return Bengine_Game_Model_Collection_Planet
 	 */
@@ -25,7 +25,7 @@ class Bengine_Game_Model_Collection_Planet extends Recipe_Model_Collection_Abstr
 	/**
 	 * Adds a solar system filter.
 	 *
-	 * @param integer	Solar system
+	 * @param integer $system
 	 *
 	 * @return Bengine_Game_Model_Collection_Planet
 	 */
@@ -38,13 +38,23 @@ class Bengine_Game_Model_Collection_Planet extends Recipe_Model_Collection_Abstr
 	/**
 	 * Adds a position filter.
 	 *
-	 * @param integer	Position
+	 * @param integer $position
 	 *
 	 * @return Bengine_Game_Model_Collection_Planet
 	 */
 	public function addPositionFilter($position)
 	{
 		$this->getSelect()->where(array("g" => "position"), $position);
+		return $this;
+	}
+
+	/**
+	 * @param integer $user
+	 * @return Bengine_Game_Model_Collection_Planet
+	 */
+	public function addUserFilter($user)
+	{
+		$this->getSelect()->where(array("p" => "userid"), (int) $user);
 		return $this;
 	}
 }

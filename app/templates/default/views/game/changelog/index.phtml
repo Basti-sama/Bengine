@@ -4,13 +4,13 @@
 		<th>{lang}CHANGES{/lang}</th>
 	</tr></thead>
 	<?php if($this->get("latestRevision") > BENGINE_REVISION): ?>{perm[CAN_MODERATE_USER]}<tfoot><tr>
-		<td class="pointer" colspan="2" onclick="window.open('{const}HTTP_HOST.REQUEST_DIR{/const}refdir.php?url=http://sourceforge.net/projects/bengine');"><span class="external">{lang}AVAILABLE_VERSION{/lang} {@latestVersion}</span></td>
+		<td class="pointer" colspan="2" onclick="window.open('{const}HTTP_HOST.REQUEST_DIR{/const}refdir.php?url=http://bengine.de/download/');"><span class="external">{lang}AVAILABLE_VERSION{/lang} {@latestVersion}</span></td>
 	</tr></tfoot>{/perm}<?php endif; ?>
 	<tbody>
 	{hook}showChangeLog{/hook}
-	<?php $count = count($this->getLoop("release")); foreach($this->getLoop("release") as $key => $row): ?> <tr>
-			<td>{loop}version{/loop}</td>
-			<td><pre>{loop}changes{/loop}</pre></td>
+	<?php foreach($this->getLoop("releases") as $key => $row): ?> <tr>
+			<td>{loop}versionNumber{/loop}</td>
+			<td><pre><?php foreach($row["changes"] as $change) { echo (isset($change[$this->get("languageKey")]) ? $change[$this->get("languageKey")] : $change["de"]).PHP_EOL; } ?></pre></td>
 		</tr> <?php endforeach; ?>
 	</tbody>
 </table>

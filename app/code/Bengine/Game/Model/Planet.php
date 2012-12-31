@@ -10,6 +10,16 @@
 class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 {
 	/**
+	 * @var array
+	 */
+	protected $buildings = array();
+
+	/**
+	 * @var int
+	 */
+	protected $fields = 0;
+
+	/**
 	 * (non-PHPdoc)
 	 * @see lib/Object#init()
 	 */
@@ -24,10 +34,10 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 	/**
 	 * Coordinates of this planet.
 	 *
-	 * @param boolean	Link or simple string
-	 * @param boolean	Replace session with wildcard
+	 * @param boolean $link			Link or simple string
+	 * @param boolean $sidWildcard	Replace session with wildcard
 	 *
-	 * @return string	Coordinates
+	 * @return string
 	 */
 	public function getCoords($link = true, $sidWildcard = false)
 	{
@@ -41,44 +51,44 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 	/**
 	 * Maximum available fields.
 	 *
-	 * @return integer	Max. fields
+	 * @return integer
 	 */
 	public function getMaxFields()
 	{
-		$fmax = floor(pow($this->data["diameter"] / 1000, 2));
-		if($this->getBuilding("TERRA_FORMER") > 0)
+		$fmax = floor(pow($this->get("diameter") / 1000, 2));
+		$terraFormer = (int) $this->getBuilding("TERRA_FORMER")->get("level");
+		if($terraFormer > 0)
 		{
-			$fmax += $this->getBuilding("TERRA_FORMER") * 5;
+			$fmax += $terraFormer * (int) Core::getOptions()->get("TERRAFORMER_ADDITIONAL_FIELDS");
 		}
 		else if($this->data["ismoon"])
 		{
-			$fields = $this->getBuilding("MOON_BASE") * 3 + 1;
+			$fields = (int) $this->getBuilding("MOON_BASE")->get("level") * 3 + 1;
 			if($fields < $fmax)
 			{
-				return $fields;
+				$fmax = $fields;
 			}
-			return $fmax;
 		}
-		Hook::event("GetMaxPlanetFields", array(&$fmax));
-		$addition = ($this->data["ismoon"]) ? 0 : Core::getOptions()->get("PLANET_FIELD_ADDITION");
+		Hook::event("GetMaxFields", array(&$fmax, $this));
+		$addition = $this->get("ismoon") ? 0 : Core::getOptions()->get("PLANET_FIELD_ADDITION");
 		return $fmax + $addition;
 	}
 
 	/**
 	 * Returns the number of occupied fields.
 	 *
-	 * @param boolean	Format the number
+	 * @param boolean $formatted
 	 *
-	 * @return integer	Fields
+	 * @return integer
 	 */
 	public function getFields($formatted = false)
 	{
-		$fields = $this->getBuildings()->getSum();
+		$this->getBuildings();
 		if($formatted)
 		{
-			return fNumber($fields);
+			return fNumber($this->fields);
 		}
-		return $fields;
+		return $this->fields;
 	}
 
 	/**
@@ -186,6 +196,71 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 			$this->setHydrogen($this->getHydrogen()+$hydrogen);
 		}
 		return $this;
+	}
+
+	/**
+	 * @return Bengine_Game_Model_Collection_Construction
+	 */
+	public function getBuildings()
+	{
+		if(!$this->exists("buildings"))
+		{
+			/* @var Bengine_Game_Model_Collection_Construction $collection */
+			$collection = Application::getCollection("game/construction");
+			$collection->addTypeFilter(1)
+				->addPlanetJoin($this->get("planetid"));
+			/* @var Bengine_Game_Model_Construction $building */
+			foreach($collection as $building)
+			{
+				$this->buildings[$building->get("name")] = $building;
+				$this->fields += (int) $building->get("level");
+			}
+			$collection->reset();
+			$this->set("buildings", $collection);
+		}
+		return $this->get("buildings");
+	}
+
+	/**
+	 * @param string $name
+	 * @return Bengine_Game_Model_Construction
+	 */
+	public function getBuilding($name)
+	{
+		$this->getBuildings();
+		return isset($this->buildings[$name]) ? $this->buildings[$name] : null;
+	}
+
+	/**
+	 * @return Bengine_Game_Model_Collection_Fleet
+	 */
+	public function getFleet()
+	{
+		if(!$this->exists("fleet"))
+		{
+			/* @var Bengine_Game_Model_Collection_Fleet $collection */
+			$collection = Application::getCollection("game/fleet");
+			$collection->addPlanetFilter($this)
+				->addTypeFilter(3);
+			$this->set("fleet", $collection);
+		}
+		return $this->get("fleet");
+	}
+
+	/**
+	 * @return Bengine_Game_Model_Collection_Fleet
+	 */
+	public function getDefense()
+	{
+		if(!$this->exists("defense"))
+		{
+			/* @var Bengine_Game_Model_Collection_Fleet $collection */
+			$collection = Application::getCollection("game/fleet");
+			$collection->addPlanetFilter($this)
+				->addTypeFilter(4);
+			$this->set("defense", $collection);
+		}
+		return $this->get("defense");
 	}
 }
 ?>

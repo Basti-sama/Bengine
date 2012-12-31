@@ -96,9 +96,14 @@ abstract class Application
 	{
 		$controllerName = Core::getRequest()->getGET("controller", "index");
 		$package = Core::getRequest()->getGET("package", DEFAULT_PACKAGE);
+		$overridePackage = null;
+		if(strpos($controllerName, "."))
+		{
+			list($overridePackage, $controllerName) = explode(".", $controllerName);
+		}
 		self::$controllerName = $controllerName;
 		$config = array("action" => Core::getRequest()->getGET("action", "index"));
-		self::$controller = self::factory($package."_controller/".$controllerName, $config);
+		self::$controller = self::factory(($overridePackage !== null ? $overridePackage : $package)."_controller/".$controllerName, $config);
 		if(!self::$controller)
 		{
 			self::$controller = self::factory($package."_controller/index", array("action" => "noroute"));
@@ -221,6 +226,10 @@ abstract class Application
 		{
 			self::addNamespace($namespace);
 		}
+		if(!empty(self::$meta["rewrite"]) && is_array(self::$meta["rewrite"]))
+		{
+			self::$rewrite = self::$meta["rewrite"];
+		}
 	}
 
 	/**
@@ -242,15 +251,9 @@ abstract class Application
 	 */
 	protected static function rewrite($class)
 	{
-		$split = explode("/", $class);
-		if(count($split) >= 2)
+		if(!empty(self::$rewrite[$class]))
 		{
-			$split[0] = strtolower($split[0]);
-			$split[1] = strtolower($split[1]);
-			if(isset(self::$rewrite[$split[0]][$split[1]]))
-			{
-				return self::$rewrite[$split[0]][$split[1]];
-			}
+			return self::$rewrite[$class];
 		}
 		return $class;
 	}
@@ -263,17 +266,5 @@ abstract class Application
 	public static function addNamespace($namespace)
 	{
 		self::$namespace[] = $namespace;
-	}
-
-	/**
-	 * Adds a new rewrite class.
-	 *
-	 * @param string
-	 *
-	 * @return array	rewrite stack
-	 */
-	public static function addRewrites($rewrite)
-	{
-		self::$rewrite[] = $rewrite;
 	}
 }
