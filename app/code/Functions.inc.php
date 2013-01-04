@@ -395,14 +395,14 @@ function deletePlanet($id, $userid, $ismoon)
 		if($row["moonid"]) { deletePlanet($row["moonid"], $userid, 1); }
 	}
 	Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ?, fpoints = fpoints - ? WHERE userid = ?", array($points, $fpoints, $userid));
-	Core::getQuery()->update("planet", array("userid"), array(null), "planetid = ?", array($id));
+	Core::getQuery()->update("planet", array("userid" => null), "planetid = ?", array($id));
 	if($ismoon)
 	{
-		Core::getQuery()->update("galaxy", array("moonid"), array(null), "moonid = ?", array($id));
+		Core::getQuery()->update("galaxy", array("moonid" => null), "moonid = ?", array($id));
 	}
 	else
 	{
-		Core::getQuery()->update("galaxy", array("destroyed"), array(1), "planetid = ?", array($id));
+		Core::getQuery()->update("galaxy", array("destroyed" => 1), "planetid = ?", array($id));
 	}
 	Hook::event("DeletePlanet", array($id, $userid, $ismoon));
 	return;
