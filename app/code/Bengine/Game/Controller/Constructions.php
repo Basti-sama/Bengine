@@ -203,6 +203,13 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 		$result->closeCursor();
 		$level = Game::getPlanet()->getBuilding($id);
 		if($level < 1) { throw new Recipe_Exception_Generic("Wut?"); }
+
+		if($id == 12 && Game::getEH()->getResearchEvent())
+			throw new Recipe_Exception_Generic("Do not mess with the url.");
+		$shipyardSize = Game::getEH()->getShipyardEvents()->getCalculatedSize();
+		if(($id == 8 || $id == 7) && $shipyardSize>0)
+			throw new Recipe_Exception_Generic("Do not mess with the url.");
+
 		Hook::event("DemolishBuldingFirst", array(&$row, $level));
 
 		$data["metal"] = 0;
@@ -414,7 +421,12 @@ class Bengine_Game_Controller_Constructions extends Bengine_Game_Controller_Cons
 				Core::getTPL()->assign("dimolishTime", getTimeTerm($time));
 
 				$showLink = (Game::getPlanet()->getData("metal") >= $_metal && Game::getPlanet()->getData("silicon") >= $_silicon && Game::getPlanet()->getData("hydrogen") >= $_hydrogen);
-				Core::getTPL()->assign("showLink", $showLink && !$this->event);
+				if($id == 12 && Game::getEH()->getResearchEvent())
+					$showLink = false;
+				$shipyardSize = Game::getEH()->getShipyardEvents()->getCalculatedSize();
+				if(($id == 8 || $id == 7) && $shipyardSize>0)
+					$showLink = false;
+				Core::getTPL()->assign("showLink", $showLink && !$this->event && !Core::getUser()->get("umode"));
 
 				Core::getTPL()->assign("demolishNow", Link::get("game/".SID."/Constructions/Demolish/{$id}", Core::getLanguage()->getItem("DEMOLISH_NOW")));
 			}
