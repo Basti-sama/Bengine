@@ -43,8 +43,8 @@ class Bengine_Game_Model_Resource_Event extends Recipe_Model_Resource_Abstract
 				"p2" => array("destination_planetname" => "planetname", "destination_ismoon" => "ismoon", "destination_user_id" => "userid"),
 				"u1" => array("points", "username"),
 				"u2" => array("destination_username" => "username"),
-				new Recipe_Database_Expr("IFNULL(`g1`.`galaxy`, `m1`.`galaxy`) AS `galaxy`, IFNULL(`g1`.`system`, `m1`.`system`) AS `system`, IFNULL(`g1`.`position`, `m1`.`position`) AS `position`"),
-				new Recipe_Database_Expr("IFNULL(`g2`.`galaxy`, `m2`.`galaxy`) AS `galaxy2`, IFNULL(`g2`.`system`, `m2`.`system`) AS `system2`, IFNULL(`g2`.`position`, `m2`.`position`) AS `position2`"),
+				new Recipe_Database_Expr("IFNULL(`g1`.`galaxy`, `m1`.`galaxy`) AS `galaxy`, IFNULL(`g1`.`system`, `m1`.`system`) AS `system`, IFNULL(`g1`.`position`, `m1`.`position`) AS `position`, `g1`.`destroyed`"),
+				new Recipe_Database_Expr("IFNULL(`g2`.`galaxy`, `m2`.`galaxy`) AS `galaxy2`, IFNULL(`g2`.`system`, `m2`.`system`) AS `system2`, IFNULL(`g2`.`position`, `m2`.`position`) AS `position2`, `g2`.`destroyed` as destination_destroyed"),
 			));
 		return $select;
 	}

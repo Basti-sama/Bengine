@@ -11,161 +11,96 @@
 
 package assault;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Database
 {
-	private Connection conn = null;
-	private String dbUrl = "";
-	private String dbUser = "";
-	private String dbPass = "";
-	private static HashMap<Integer, Database> connBuffer = new HashMap<Integer, Database>();
+	protected Connection connection = null;
+	protected String dbUrl = "";
+	protected String dbUser = "";
+	protected String dbPass = "";
 
-	private static Database getInstanceById(int id)
+	public Database(String dbUrl, String dbUser, String dbPass)
 	{
-		Integer connId = Integer.valueOf(id);
-
-		if(connBuffer.get(connId) != null)
-		{
-			return (Database) connBuffer.get(connId);
+		this.dbUrl = dbUrl;
+		this.dbUser = dbUser;
+		this.dbPass = dbPass;
+		this.connect();
+	}
+	
+	protected void connect()
+	{
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            this.connection = DriverManager.getConnection(dbUrl, dbUser, dbPass);
+        } catch (Exception e) {
+        	System.err.println(e.getMessage());
+        	System.exit(0);
+        }
+    }
+	
+	public void close()
+	{
+        if (this.connection != null) {
+            try {
+                this.connection.close();
+            } catch (Exception e) {
+            }
+        }
+    }
+	
+	public boolean isConnected()
+	{
+        try {
+            ResultSet rs = this.query("SELECT 1;");
+            if (rs == null) {
+                return false;
+            }
+            if (rs.next()) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+	
+	public ResultSet query(String sql)
+	{
+		ResultSet rs = null;
+		try {
+			rs = this.statement().executeQuery(sql);
+		} catch(SQLException e) {
+			System.err.println(e.getMessage());
+			 System.exit(1);
 		}
-		else
-		{
-			connBuffer.put(connId, new Database());
-			return (Database) connBuffer.get(connId);
+		return rs;
+	}
+	
+	public Statement statement()
+	{
+		Statement stmt = null;
+		try {
+			stmt = this.connection.createStatement();
+		} catch(SQLException e) {
+			 System.err.println(e.getMessage());
+			 System.exit(1);
 		}
+		return stmt;
 	}
 
-	private static Database getInstanceByTime()
+	public boolean execute(String sql)
 	{
-		int currTime = (int) (System.currentTimeMillis() / 600000);
-		Integer connId = Integer.valueOf(currTime);
-
-		// If there is a timeout connection delete it
-		for(int i = (currTime - 144); i < (currTime - 1); i++)
-		{
-			Integer oldConnId = Integer.valueOf(i);
-			if(connBuffer.containsKey(oldConnId))
-			{
-				try
-				{
-					((Database) connBuffer.remove(oldConnId)).closeConnection();
-					connBuffer.remove(oldConnId);
-				}
-				catch(Exception e)
-				{
-					System.err.println("Connection to MySQL Database failed: " + e.getMessage());
-					System.exit(1);
-				}
-			}
+		try {
+			return this.statement().execute(sql);
+		} catch(SQLException e) {
+			 System.err.println(e.getMessage());
+			 System.exit(1);
 		}
-
-		if(connBuffer.get(connId) != null)
-		{
-			return (Database) connBuffer.get(connId);
-		}
-		else
-		{
-			connBuffer.put(connId, new Database());
-			return (Database) connBuffer.get(connId);
-		}
-	}
-
-	private Database()
-	{
-		try
-		{
-			Class.forName("com.mysql.jdbc.Driver");
-
-			dbUrl = Assault.getDBHost();
-			dbUser = Assault.getUsername();
-			dbPass = Assault.getPassword();
-
-			conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
-		}
-		catch(Exception e)
-		{
-			System.err.println("Connection to MySQL Database failed: " + e.getMessage());
-			System.exit(1);
-		}
-	}
-
-	public Connection getConn()
-	{
-		try
-		{
-			if(conn.isClosed())
-			{
-				conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
-			}
-		}
-		catch(Exception e)
-		{
-			// ignore
-		}
-		return conn;
-	}
-
-	public static Connection getConnection()
-	{
-		return getInstanceByTime().getConn();
-	}
-
-	public static Connection getConnectionById(int id)
-	{
-		Database db2 = getInstanceById(id);
-		return db2.getConn();
-	}
-
-	public static void removeConnection(int id)
-	{
-		Integer connId = Integer.valueOf(id);
-		if(connBuffer.get(connId) != null)
-		{
-			((Database) connBuffer.get(connId)).closeConnection();
-			connBuffer.remove(connId);
-		}
-	}
-
-	private void closeConnection()
-	{
-		try
-		{
-			conn.close();
-		}
-		catch(Exception e)
-		{
-			// ignore
-		}
-	}
-
-	public static Statement createStatement()
-	{
-		try
-		{
-			return Database.getConnection().createStatement();
-		}
-		catch(SQLException e)
-		{
-			System.err.println("There is an error with the SQL query: " + e.getMessage());
-			System.exit(1);
-			return null;
-		}
-	}
-
-	public static PreparedStatement prepareStatement(String pstmt)
-	{
-		try
-		{
-			return Database.getConnection().prepareStatement(pstmt);
-		}
-		catch(SQLException e)
-		{
-			System.err.println("There is an error with the SQL query: " + e.getMessage());
-			System.err.println("Query code: " + pstmt);
-			System.exit(1);
-			return null;
-		}
+		return false;
 	}
 }

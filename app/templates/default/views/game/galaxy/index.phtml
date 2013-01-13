@@ -146,31 +146,53 @@
 			<td class="center">{loop}planetname{/loop} {loop}activity{/loop}</td>
 			<td class="center">
 				<?php if($row["moonid"] != ""): ?>
-				<script type="text/javascript">//<![CDATA[
-					var actions = '<?php if($row["userid"] != Core::getUser()->get("userid") && $row["userid"]): ?><a href="javascript:void(0);" onclick="sendFleet(&quot;espionage&quot;, {loop=moonid})">{lang=SPY}</a> | <a href="<?php echo $actionsUrl."/moon/attack" ?>">{lang=ATTACK}</a><?php else: ?><a href="<?php echo $actionsUrl."/moon/position" ?>">{lang=STATIONATE}</a><?php endif; ?> | <a href="<?php echo $actionsUrl."/moon/transport" ?>">{lang=TRANSPORT}</a>';
-					var moon_{loop}systempos{/loop} = '<table class="ttable"><tr><td rowspan="3">{@moon}</td><th colspan="2">{lang}FEATURES{/lang}</th></tr><tr><td>{lang}SIZE{/lang}:</td><td>{loop}moonsize{/loop}km</td></tr><tr><td>{lang}TEMPERATURE{/lang}:</td><td>{loop}moontemp{/loop} &deg;C</td></tr>{loop}moonrocket{/loop}</table>'+actions;
-				//]]></script>
-				<a href="{const=BASE_URL}game/{const=SID}/Mission/Index/{@galaxy}/{@system}/{loop=systempos}/moon" onmouseover="Tip(moon_{loop}systempos{/loop}, TITLE, '{loop}moon{/loop}', FADEIN, 300, FADEOUT, 300, STICKY, 1, CLOSEBTN, true);" onmouseout="UnTip();">{loop}moonpicture{/loop}</a>
+				<div class="tooltip-container" id="moon-{loop=systempos}">
+					<table class="ttable"><tr><td rowspan="3">{@moon}</td><th colspan="2">{lang}FEATURES{/lang}</th></tr><tr><td>{lang}SIZE{/lang}:</td><td>{loop}moonsize{/loop}km</td></tr><tr><td>{lang}TEMPERATURE{/lang}:</td><td>{loop}moontemp{/loop} &deg;C</td></tr>{loop}moonrocket{/loop}</table>
+					<?php if($row["userid"] != Core::getUser()->get("userid") && $row["userid"]): ?><a href="javascript:void(0);" onclick="sendFleet('espionage', {loop=moonid})">{lang=SPY}</a> | <a href="<?php echo $actionsUrl."/moon/attack" ?>">{lang=ATTACK}</a><?php else: ?><a href="<?php echo $actionsUrl."/moon/position" ?>">{lang=STATIONATE}</a><?php endif; ?> | <a href="<?php echo $actionsUrl."/moon/transport" ?>">{lang=TRANSPORT}</a>
+				</div>
+				<a href="{const=BASE_URL}game/{const=SID}/Mission/Index/{@galaxy}/{@system}/{loop=systempos}/moon" rel="#moon-{loop=systempos}" onmouseover="Tip($(this.rel).html(), TITLE, '{loop}moon{/loop}', FADEIN, 300, FADEOUT, 300, STICKY, 1, CLOSEBTN, true);" onmouseout="UnTip();">{loop}moonpicture{/loop}</a>
 				<?php endif; ?>
 			</td>
 			<td class="center">
 				<?php if($row["metal"] || $row["silicon"]): ?>
-				<script type="text/javascript">//<![CDATA[
-					var debris_{loop}systempos{/loop} = '<table class="ttable"><tr><td rowspan="3">{@debris}</td><th colspan="2">{lang}RESOURCES{/lang}</th></tr><tr><td>{lang}METAL{/lang}:</td><td>{loop}metal{/loop}</td></tr><tr><td>{lang}SILICON{/lang}:</td><td>{loop}silicon{/loop}</td></tr></table>';
-				//]]></script>
-				<a href="{const=BASE_URL}game/{const=SID}/Mission/Index/{@galaxy}/{@system}/{loop=systempos}/tf/recycling" onmouseover="Tip(debris_{loop}systempos{/loop}, TITLE, '{lang}DEBRIS{/lang}', FADEIN, 300, FADEOUT, 300, STICKY, 1, CLOSEBTN, true);" onmouseout="UnTip();">{loop}debris{/loop}</a>
+				<div id="debris-{loop=systempos}" class="tooltip-container">
+					<table class="ttable">
+						<tr>
+							<td rowspan="3">{@debris}</td>
+							<th colspan="2">{lang}RESOURCES{/lang}</th>
+						</tr>
+						<tr>
+							<td>{lang}METAL{/lang}:</td>
+							<td>{loop}metal{/loop}</td>
+						</tr>
+						<tr>
+							<td>{lang}SILICON{/lang}:</td>
+							<td>{loop}silicon{/loop}</td>
+						</tr>
+					</table>
+				</div>
+				<a href="{const=BASE_URL}game/{const=SID}/Mission/Index/{@galaxy}/{@system}/{loop=systempos}/tf/recycling" rel="#debris-{loop=systempos}" onmouseover="Tip($(this.rel).html(), TITLE, '{lang}DEBRIS{/lang}', FADEIN, 300, FADEOUT, 300, STICKY, 1, CLOSEBTN, true);" onmouseout="UnTip();">{loop}debris{/loop}</a>
 				<?php endif; ?>
 			</td>
 			<td class="center normal">{loop}username{/loop} <?php if(!empty($row["user_status_long"])): ?>({loop}user_status_long{/loop})<?php endif; ?><?php if(!empty($row["userid"])): ?><br /><span class="galaxysub">#{loop}rank{/loop} / {loop}points{/loop}</span><?php endif; ?></td>
 			<td class="center">
 				<?php if(!empty($row["alliance"])): ?>
-				<script type="text/javascript">//<![CDATA[
-					var ally_{loop}systempos{/loop} = '<table class="ttable"><tr><th>{loop}allydesc{/loop}</th></tr><tr><td>{loop}allypage{/loop}</td></tr>{loop}homepage{/loop}{loop}memberlist{/loop}</table>';
-				//]]></script>
-				<a href="javascript:void(0);" onmouseover="Tip(ally_{loop}systempos{/loop}, TITLE, '{lang}ALLIANCE{/lang}', FADEIN, 300, FADEOUT, 300, STICKY, 1, CLOSEBTN, true);" onmouseout="UnTip();">{loop}alliance{/loop}</a><?php if(!empty($row["userid"])): ?><br /><span class="galaxysub">#{loop}alliance_rank{/loop}</span><?php endif; ?>
+				<div id="ally-{loop=systempos}" class="tooltip-container">
+					<table class="ttable">
+						<tr>
+							<th>{loop}allydesc{/loop}</th>
+						</tr>
+						<tr>
+							<td>{loop}allypage{/loop}</td>
+						</tr>
+						{loop}homepage{/loop}
+						{loop}memberlist{/loop}
+					</table>
+				</div>
+				<a href="javascript:void(0);" rel="#ally-{loop=systempos}" onmouseover="Tip($(this.rel).html(), TITLE, '{lang}ALLIANCE{/lang}', FADEIN, 300, FADEOUT, 300, STICKY, 1, CLOSEBTN, true);" onmouseout="UnTip();">{loop}alliance{/loop}</a><?php if(!empty($row["userid"])): ?><br /><span class="galaxysub">#{loop}alliance_rank{/loop}</span><?php endif; ?>
 				<?php endif; ?>
 			</td>
-			<td class="center"><?php if($row["userid"] != Core::getUser()->get("userid") && $row["userid"]): ?><span class="pointer" onclick="sendFleet('espionage', {loop}planetid{/loop});">{@sendesp}</span> {loop}message{/loop} {loop}buddyrequest{/loop} {loop}rocketattack{/loop} <?php if($this->get("canMonitorActivity")): ?><span onclick="openWindow({loop}planetid{/loop});" class="pointer">{@monitorfleet}</span><?php endif; ?><?php endif; ?></td>
+			<td class="center"><?php if($row["userid"] != Core::getUser()->get("userid") && $row["planetid"]): ?><span class="pointer" onclick="sendFleet('espionage', {loop}planetid{/loop});">{@sendesp}</span> {loop}message{/loop} {loop}buddyrequest{/loop} {loop}rocketattack{/loop} <?php if($this->get("canMonitorActivity")): ?><span onclick="openWindow({loop}planetid{/loop});" class="pointer">{@monitorfleet}</span><?php endif; ?><?php endif; ?></td>
 		</tr> <?php endforeach; ?>
 	</tbody>
 </table>

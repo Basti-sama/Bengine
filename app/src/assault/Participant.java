@@ -86,11 +86,11 @@ public class Participant
 			aliens = true;
 		}
 		
-		if(userid != 0 && username == "")
+		if(userid != 0 && (username == null || username == ""))
 		{
 			this.username = "{lang}UNKNOWN_USER{/lang}";
 		}
-		else if(userid == 0 && username == "")
+		else if(userid == 0 && (username == null || username == ""))
 		{
 			this.username = "{lang}ALIENS{/lang}";
 		}
@@ -110,9 +110,8 @@ public class Participant
 			ResultSet rs = null;
 			try
 			{
-				Statement stmt = Database.createStatement();
-				rs = stmt
-						.executeQuery("SELECT r2u.level, r2u.buildingid FROM "
+				rs = Assault.database
+						.query("SELECT r2u.level, r2u.buildingid FROM "
 								+ prefix
 								+ "research2user r2u WHERE (r2u.buildingid = '15' OR r2u.buildingid = '16' OR r2u.buildingid = '17') AND r2u.userid = '"
 								+ userid + "'");
@@ -144,7 +143,6 @@ public class Participant
 		ResultSet rs = null;
 		try
 		{
-			Statement stmt = Database.createStatement();
 			String sql = "SELECT f2a.unitid, f2a.quantity, sd.attack, sd.shield, sd.capicity, b.mode, b.name, b.basic_metal, b.basic_silicon, b.basic_hydrogen FROM "
 					+ prefix
 					+ "fleet2assault f2a LEFT JOIN "
@@ -156,7 +154,7 @@ public class Participant
 					+ "' AND f2a.assaultid = '"
 					+ Assault.getAssaultid()
 					+ "' ORDER BY b.display_order ASC, f2a.unitid ASC, b.buildingid ASC";
-			rs = stmt.executeQuery(sql);
+			rs = Assault.database.query(sql);
 			while(rs.next())
 			{
 				if(rs.getInt("unitid") == 51 || rs.getInt("unitid") == 52)
@@ -309,7 +307,7 @@ public class Participant
 			unit.finish();
 		}
 
-		Statement stmt = Database.createStatement();
+		Statement stmt = Assault.database.statement();
 
 		// Get haul
 		if(userid > 0)

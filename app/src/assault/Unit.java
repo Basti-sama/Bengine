@@ -11,8 +11,6 @@
 
 package assault;
 
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -253,14 +251,7 @@ public class Unit
 		
 		if(!Assault.debugmode && fleetUpdate.length() > 0)
 		{
-			Statement stmt = Database.createStatement();
-			try {
-				stmt.execute(fleetUpdate);
-			}
-			catch(SQLException e)
-			{
-				e.printStackTrace();
-			}
+			Assault.database.execute(fleetUpdate);
 		}
 	}
 }

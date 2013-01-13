@@ -30,7 +30,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 	 */
 	protected function init()
 	{
-		Core::getLanguage()->load(array("Main", "info"));
+		Core::getLanguage()->load(array("Main", "info", "Galaxy"));
 		return parent::init();
 	}
 

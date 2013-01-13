@@ -617,6 +617,10 @@ h2 {
 	text-align: center;
 }
 
+.tooltip-container {
+  display: none;
+}
+
 @import "pagination.scss";
 @import "flashmessage.scss";
 @import "colors.scss";

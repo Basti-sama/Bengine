@@ -67,11 +67,13 @@ public class Assault
 	public static int haulHydrogen = 0;
 	private static boolean defenderZero = false;
 	public static Calendar calObj = Calendar.getInstance();
+	public static Database database;
 
 	/**
 	 * @param args
+	 * @throws SQLException 
 	 */
-	public static void main(String[] args)
+	public static void main(String[] args) throws SQLException
 	{
 		gentime = System.currentTimeMillis();
 		if(args.length > 0)
@@ -83,6 +85,8 @@ public class Assault
 			prefix = args[4];
 			assaultid = Integer.valueOf(args[5]);
 		}
+		
+		database = new Database(getDBHost(), getUsername(), getPassword());
 
 		// Assault configuration
 		bulkIntoDebris[3] = 0.3; // Fleet
@@ -107,90 +111,74 @@ public class Assault
 		 */
 		int userid = 0;
 		ResultSet rs = null;
-		try
+		rs = database
+				.query("SELECT a.time, a.accomplished, p.planetid, p.metal, p.silicon, p.hydrogen, p.ismoon, g.moonid FROM "
+						+ prefix
+						+ "assault a LEFT JOIN "
+						+ prefix
+						+ "planet p ON (p.planetid = a.planetid) LEFT JOIN "
+						+ prefix
+						+ "galaxy g ON (a.planetid = g.planetid) WHERE a.assaultid = '"
+						+ assaultid + "' LIMIT 1");
+		if(rs.next())
 		{
-			Statement stmt = Database.createStatement();
-			rs = stmt
-					.executeQuery("SELECT a.time, a.accomplished, p.planetid, p.metal, p.silicon, p.hydrogen, p.ismoon, g.moonid FROM "
-							+ prefix
-							+ "assault a LEFT JOIN "
-							+ prefix
-							+ "planet p ON (p.planetid = a.planetid) LEFT JOIN "
-							+ prefix
-							+ "galaxy g ON (a.planetid = g.planetid) WHERE a.assaultid = '"
-							+ assaultid + "' LIMIT 1");
-			if(rs.next())
+			if(rs.getInt("accomplished") == 1)
 			{
-				if(rs.getInt("accomplished") == 1)
-				{
-					System.err.println("Combat is already accomplished.");
-					System.exit(1);
-				}
-				planetid = rs.getInt("planetid");
-				if(planetid > 0)
-				{
-					metal = (int) Math.floor(rs.getFloat("metal") / 2);
-					silicon = (int) Math.floor(rs.getFloat("silicon") / 2);
-					hydrogen = (int) Math.floor(rs.getFloat("hydrogen") / 2);
-					if(rs.getInt("ismoon") == 1 || rs.getInt("moonid") > 0)
-					{
-						ismoon = true;
-					}
-				}
-				time = rs.getInt("time"); // Assault time
+				System.err.println("Combat is already accomplished.");
+				System.exit(1);
 			}
-		}
-		catch(SQLException e)
-		{
-			System.err.println(e.getMessage());
+			planetid = rs.getInt("planetid");
+			if(planetid > 0)
+			{
+				metal = (int) Math.floor(rs.getFloat("metal") / 2);
+				silicon = (int) Math.floor(rs.getFloat("silicon") / 2);
+				hydrogen = (int) Math.floor(rs.getFloat("hydrogen") / 2);
+				if(rs.getInt("ismoon") == 1 || rs.getInt("moonid") > 0)
+				{
+					ismoon = true;
+				}
+			}
+			time = rs.getInt("time"); // Assault time
 		}
 		
 		/**
 		 * Read in users for this assault.
 		 */
-		try
+		rs = database
+				.query("SELECT u.userid, u.username, pp.mode, pp.participantid, pp.planetid, pp.preloaded, pp.consumption, pp.data, IFNULL(g.galaxy, m.galaxy) AS galaxy, IFNULL(g.system, m.system) AS system, IFNULL(g.position, m.position) AS position FROM "
+						+ prefix
+						+ "assaultparticipant pp LEFT JOIN "
+						+ prefix
+						+ "user u ON (u.userid = pp.userid) LEFT JOIN "
+						+ prefix
+						+ "galaxy g ON (g.planetid = pp.planetid) lEFT JOIN "
+						+ prefix
+						+ "galaxy m ON (m.moonid = pp.planetid) WHERE pp.assaultid = '"
+						+ assaultid + "' ORDER BY pp.participantid ASC");
+		while(rs.next())
 		{
-			Statement stmt = Database.createStatement();
-			rs = stmt
-					.executeQuery("SELECT u.userid, u.username, pp.mode, pp.participantid, pp.planetid, pp.preloaded, pp.consumption, pp.data, IFNULL(g.galaxy, m.galaxy) AS galaxy, IFNULL(g.system, m.system) AS system, IFNULL(g.position, m.position) AS position FROM "
-							+ prefix
-							+ "assaultparticipant pp LEFT JOIN "
-							+ prefix
-							+ "user u ON (u.userid = pp.userid) LEFT JOIN "
-							+ prefix
-							+ "galaxy g ON (g.planetid = pp.planetid) lEFT JOIN "
-							+ prefix
-							+ "galaxy m ON (m.moonid = pp.planetid) WHERE pp.assaultid = '"
-							+ assaultid + "' ORDER BY pp.participantid ASC");
-			while(rs.next())
+			userid = rs.getInt("userid");
+			Participant participant = new Participant(userid, rs
+					.getInt("mode"), rs.getString("username"));
+			participant.setGalaxy(rs.getInt("galaxy"));
+			participant.setSystem(rs.getInt("system"));
+			participant.setPosition(rs.getInt("position"));
+			participant.setParticipantId(rs.getInt("participantid"));
+			participant.setConsumption(rs.getInt("consumption"));
+			participant.setPreloaded(rs.getInt("preloaded"));
+			if(rs.getString("data") != "" && rs.getString("data") != null)
 			{
-				userid = rs.getInt("userid");
-				Participant participant = new Participant(userid, rs
-						.getInt("mode"), rs.getString("username"));
-				participant.setGalaxy(rs.getInt("galaxy"));
-				participant.setSystem(rs.getInt("system"));
-				participant.setPosition(rs.getInt("position"));
-				participant.setParticipantId(rs.getInt("participantid"));
-				participant.setConsumption(rs.getInt("consumption"));
-				participant.setPreloaded(rs.getInt("preloaded"));
-				if(rs.getString("data") != "" && rs.getString("data") != null)
-				{
-					participant.setData(rs.getString("data"));
-				}
-				participant.loadShips();
-				if(rs.getInt("mode") == 1)
-				{
-					party.addAtter(participant);
-				}
-				else
-				{
-					party.addDefender(participant);
-				}
+				participant.setData(rs.getString("data"));
 			}
-		}
-		catch(SQLException e)
-		{
-			System.err.println(e.getMessage());
+			participant.loadShips();
+			if(rs.getInt("mode") == 1)
+			{
+				party.addAtter(participant);
+			}
+			else
+			{
+				party.addDefender(participant);
+			}
 		}
 		
 		if(party.defenderHasNoFleet())
@@ -203,22 +191,13 @@ public class Assault
 			/**
 			 * Load rapid fire.
 			 */
-			rs = null;
-			try
+			double value = 0;
+			rs = database.query("SELECT unitid, target, value FROM "
+					+ prefix + "rapidfire ORDER BY unitid ASC, target ASC");
+			while(rs.next())
 			{
-				double value = 0;
-				Statement stmt = Database.createStatement();
-				rs = stmt.executeQuery("SELECT unitid, target, value FROM "
-						+ prefix + "rapidfire ORDER BY unitid ASC, target ASC");
-				while(rs.next())
-				{
-					value = rs.getDouble("value");
-					rapidfire[rs.getInt("unitid")][rs.getInt("target")] = 100 * (value-1) / value;
-				}
-			}
-			catch(SQLException e)
-			{
-				System.err.println(e.getMessage());
+				value = rs.getDouble("value");
+				rapidfire[rs.getInt("unitid")][rs.getInt("target")] = 100 * (value-1) / value;
 			}
 		}
 		
@@ -477,7 +456,7 @@ public class Assault
 			break;
 		case 1:
 			assaultReport += "{lang}ATTACKER_WON{/lang}<br />\n";
-			if(!party.defender.get(0).aliens)
+			if(!party.atter.get(0).aliens)
 			{
 				assaultReport += "{lang}ATTACKER_HAUL{/lang}<br />\n";
 				assaultReport += decFormatter.format(haulMetal)
@@ -583,6 +562,7 @@ public class Assault
 			}
 		}
 
+		database.close();
 		System.out.println("Finished");
 		return;
 	}
@@ -834,7 +814,7 @@ public class Assault
 		{
 			_moon = 0;
 		}
-		Statement stmt = Database.createStatement();
+		Statement stmt = database.statement();
 
 		if(planetid > 0)
 		{
@@ -889,7 +869,7 @@ public class Assault
 	
 	private static void loadConfig()
 	{
-		Statement stmt = Database.createStatement();
+		Statement stmt = database.statement();
 		ResultSet rs = null;
 		try {
 			rs = stmt.executeQuery("SELECT var, value FROM " + prefix + "config WHERE groupid = '" + configGroupId + "'");

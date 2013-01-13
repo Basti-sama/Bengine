@@ -251,13 +251,29 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 			}
 			else
 			{
-				if(!isset($sys[$i]["destroyed"])) { $sys[$i] = array(); $sys[$i]["destroyed"] = false; }
+				if(empty($sys[$i]["destroyed"]))
+				{
+					$sys[$i] = array();
+					$sys[$i]["destroyed"] = false;
+					$sys[$i]["metal"] = 0;
+					$sys[$i]["silicon"] = 0;
+					$sys[$i]["debris"] = "";
+					$sys[$i]["picture"] = "";
+					$sys[$i]["planetname"] = "";
+					$sys[$i]["planetid"] = "";
+				}
+				else
+				{
+					$sys[$i]["metal"] = fNumber($sys[$i]["metal"]);
+					$sys[$i]["silicon"] = fNumber($sys[$i]["silicon"]);
+					$sys[$i]["debris"] = Image::getImage("debris.jpg", "", 25, 25);
+					$sys[$i]["picture"] = Image::getImage("planets/small/s_".$sys[$i]["picture"].Core::getConfig()->get("PLANET_IMG_EXT"), $sys[$i]["planetname"], 30, 30);
+					$sys[$i]["picture"] = Link::get("game/".SID."/Mission/Index/".$this->galaxy."/".$this->system."/".$i, $sys[$i]["picture"]);
+					$sys[$i]["planetname"] = Core::getLanguage()->getItem("DESTROYED_PLANET");
+					$sys[$i]["planetname"] = Link::get("game/".SID."/Mission/Index/".$this->galaxy."/".$this->system."/".$i, $sys[$i]["planetname"]);
+				}
 				$sys[$i]["systempos"] = $i;
 				$sys[$i]["userid"] = null;
-				$sys[$i]["metal"] = ($sys[$i]["destroyed"]) ? fNumber($sys[$i]["metal"]) : "";
-				$sys[$i]["silicon"] = ($sys[$i]["destroyed"]) ? fNumber($sys[$i]["silicon"]) : "";
-				$sys[$i]["picture"] = ($sys[$i]["destroyed"]) ? Image::getImage("planets/small/s_".$sys[$i]["picture"].Core::getConfig()->get("PLANET_IMG_EXT"), $sys[$i]["planetname"], 30, 30) : "";
-				$sys[$i]["planetname"] = ($sys[$i]["destroyed"]) ? Core::getLanguage()->getItem("DESTROYED_PLANET") : "";
 				$sys[$i]["moon"] = "";
 				$sys[$i]["moonid"] = "";
 				$sys[$i]["username"] = "";

@@ -30,7 +30,10 @@ class Bengine_Game_EventHandler_Handler_Fleet_Espionage extends Bengine_Game_Eve
 		$data["defending_chance"] = $espReport->getChance();
 		$data["probes_lost"] = $espReport->getProbesLost();
 		$data["event"] = $event;
-		new Bengine_Game_AutoMsg($event["mode"], $event["destination_user_id"], $event["time"], $data);
+		if($event["destination_user_id"])
+		{
+			new Bengine_Game_AutoMsg($event["mode"], $event["destination_user_id"], $event["time"], $data);
+		}
 		if($espReport->getProbesLost())
 		{
 			$points = 0; $fpoints = 0;

@@ -371,5 +371,29 @@ class Bengine_Game_Model_Event extends Recipe_Model_Abstract
 		$scope = ($this->getUserid() == Core::getUser()->get("userid")) ? "own-fleet" : "foreign-fleet";
 		return strtolower($scope." ".$code[1]);
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDestinationPlanetname()
+	{
+		if($this->get("destination_destroyed"))
+		{
+			return Core::getLang()->get("DESTROYED_PLANET");
+		}
+		return $this->get("destination_planetname");
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPlanetname()
+	{
+		if($this->get("destroyed"))
+		{
+			return Core::getLang()->get("DESTROYED_PLANET");
+		}
+		return $this->get("planetname");
+	}
 }
 ?>
