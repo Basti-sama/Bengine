@@ -9,5 +9,92 @@
 				"pool": "app/code"
 			}
 		}
+	},
+	"config": {
+		"adminModules": [
+			{
+				"enable": true,
+				"link": {
+					"controller": "commercial"
+				},
+				"version": "0.0.1",
+				"name": {
+					"value": "Ad Manager",
+					"noLangVar": true
+				}
+			},
+			{
+				"enable": true,
+				"version": "1.0.0",
+				"link": {
+					"controller": "cms"
+				},
+				"name": "CMS_Manager"
+			},
+			{
+				"enable": true,
+				"link": {
+					"controller": "config"
+				},
+				"version": "1.0.0",
+				"name": "Configuration"
+			},
+			{
+				"enable": true,
+				"link": {
+					"controller": "cronjob"
+				},
+				"version": "1.0.0",
+				"name": "Cronjobs"
+			},
+			{
+				"enable": true,
+				"link": {
+					"controller": "globalmail"
+				},
+				"version": "1.0.0",
+				"name": "Global_Mail"
+			},
+			{
+				"enable": true,
+				"link": {
+					"controller": "language"
+				},
+				"version": "1.0.0",
+				"name": "Language_Manager"
+			},
+			{
+				"enable": true,
+				"link": {
+					"controller": "news"
+				},
+				"version": "1.0.0",
+				"name": "News"
+			},
+			{
+				"enable": true,
+				"link": {
+					"controller": "permissions"
+				},
+				"version": "1.0.0",
+				"name": "Permission_Manager"
+			},
+			{
+				"enable": true,
+				"link": {
+					"controller": "user"
+				},
+				"version": "1.0.0",
+				"name": "User_Manager"
+			},
+			{
+				"enable": true,
+				"link": {
+					"controller": "usergroups"
+				},
+				"version": "1.0.0",
+				"name": "Usergroup_Manager"
+			}
+		]
 	}
 }

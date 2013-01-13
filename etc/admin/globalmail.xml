@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module>
-	<enable/>
-	<key>globalmail</key>
-	<name>Global_Mail</name>
-	<controller>globalmail</controller>
-	<version>1.0.0</version>
-</module>

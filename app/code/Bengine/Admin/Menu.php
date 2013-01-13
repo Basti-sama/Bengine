@@ -16,38 +16,15 @@ class Bengine_Admin_Menu
 	protected $menu = array();
 
 	/**
-	 * @var string
-	 */
-	protected $moduleDir = "";
-
-	/**
 	 * @var array
 	 */
 	protected $modules = null;
 
 	/**
-	 * @param string $dir
+	 * @return \Bengine_Admin_Menu
 	 */
-	public function __construct($dir = null)
+	public function __construct()
 	{
-		$this->setModuleDir($dir);
-		return $this;
-	}
-
-	/**
-	 * @param string $dir
-	 * @return Bengine_Admin_Menu
-	 */
-	public function setModuleDir($dir = null)
-	{
-		if(is_null($dir) || !is_dir($dir))
-		{
-			$this->moduleDir = APP_ROOT_DIR."etc/admin";
-		}
-		else
-		{
-			$this->moduleDir = $dir;
-		}
 		return $this;
 	}
 
@@ -56,15 +33,30 @@ class Bengine_Admin_Menu
 	 */
 	public function render()
 	{
-		/* @var XMLObj $module */
 		foreach($this->getModules() as $module)
 		{
-			if($module->getBoolean("enable"))
+			if($module["enable"])
 			{
-				$title = ($module->getChildren("name")->getAttribute("nolangvar", "bool")) ? $module->getString("name") : Core::getLang()->get($module->getString("name"));
-				$this->menu[] = array(
-					"link"	=> Link::get("admin/".$module->getString("controller"), $title),
-				);
+				$name = $module["name"];
+				$translate = true;
+				if(is_array($name))
+				{
+					$translate = $name["noLangVar"];
+					$name = $name["value"];
+				}
+				if($translate)
+				{
+					$name = Core::getLang()->get($name);
+				}
+				$uri = $module["link"];
+				if(is_array($uri))
+				{
+					$package = isset($uri["package"]) ? $uri["package"] : "admin";
+					$controller = isset($uri["controller"]) ? $uri["controller"] : "index";
+					$action = isset($uri["action"]) ? $uri["action"] : "index";
+					$uri = "$package/$controller/$action";
+				}
+				$this->menu[] = Link::get($uri, $name, "", isset($module["class"]) ? $module["class"] : "");
 			}
 		}
 		return $this->menu;
@@ -75,23 +67,10 @@ class Bengine_Admin_Menu
 	 */
 	public function getModules()
 	{
-		if(is_null($this->modules))
+		if($this->modules === null)
 		{
-			if(is_null($this->moduleDir))
-			{
-				$this->setModuleDir();
-			}
-			$this->modules = array();
-			$dir = new DirectoryIterator($this->moduleDir);
-			/* @var DirectoryIterator $file */
-			foreach($dir as $file)
-			{
-				if(!$file->isDot() && !$file->isDir())
-				{
-					$module = new XMLObj(file_get_contents($file->getPathname()));
-					$this->modules[] = $module->getChildren();
-				}
-			}
+			$meta = Admin::getMeta();
+			$this->modules = $meta["config"]["adminModules"];
 		}
 		return $this->modules;
 	}

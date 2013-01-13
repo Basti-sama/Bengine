@@ -9,14 +9,14 @@
 		<div class="mbg">
 			<div class="menu_title">{lang}Main_Menu{/lang}</div>
 			<ul>
-			<?php $count = count($this->getLoop("menu")); foreach($this->getLoop("menu") as $key => $row): ?> 
-				<li>{loop}link{/loop}</li>
+			<?php foreach($this->getLoop("menu") as $link): ?>
+				<li><?php echo $link ?></li>
 			 <?php endforeach; ?>
 			</ul>
 			<?php if($this->get("pluginCount", false)): ?><div class="menu_title">{lang}Plug_In_Management{/lang}</div>
 			<ul>
-			<?php $count = count($this->getLoop("plugins")); foreach($this->getLoop("plugins") as $key => $row): ?> 
-				<li>{loop}link{/loop}</li>
+			<?php foreach($this->getLoop("plugins") as $link): ?>
+				<li><?php echo $link ?></li>
 			 <?php endforeach; ?>
 			</ul><?php endif; ?>
 		</div>

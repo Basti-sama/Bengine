@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module>
-	<enable/>
-	<key>user_manager</key>
-	<name>User_Manager</name>
-	<controller>user</controller>
-	<version>1.0.0</version>
-</module>
