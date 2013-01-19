@@ -14,13 +14,13 @@ import java.util.*;
 
 public class Party
 {
-	public Vector<Participant> atter;
-	public Vector<Participant> defender;
+	public Vector<Participant> atter = new Vector<Participant>();
+	public Vector<Participant> defender = new Vector<Participant>();
+	public Vector<Unit> atterShips = new Vector<Unit>();
+	public Vector<Unit> defenderShips = new Vector<Unit>();
 	
 	public Party()
 	{
-		this.atter = new Vector<Participant>();
-		this.defender = new Vector<Participant>();
 	}
 	
 	public void addAtter(Participant participant)
@@ -43,24 +43,16 @@ public class Party
 		return defender.size();
 	}
 	
-	public Participant getRandomAtter()
+	public Unit getRandomAtterShip()
 	{
-		int rand = Assault.rand(0, atter.size());
-		if(rand < 0 || rand >= atter.size())
-		{
-			return new Participant(0, 2, "");
-		}
-		return atter.get(rand);
+		int rand = Assault.rand(0, atterShips.size());
+		return atterShips.get(rand);
 	}
 	
-	public Participant getRandomDefender()
+	public Unit getRandomDefenderShip()
 	{
-		int rand = Assault.rand(0, defender.size());
-		if(rand < 0 || rand >= defender.size())
-		{
-			return new Participant(0, 2, "");
-		}
-		return defender.get(rand);
+		int rand = Assault.rand(0, defenderShips.size());
+		return defenderShips.get(rand);
 	}
 	
 	public boolean atterHasNoFleet()

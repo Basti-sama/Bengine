@@ -240,7 +240,7 @@ class Bengine_Game_Assault
 			{
 				if($row["quantity"] > 0)
 				{
-					Core::getQuery()->update("unit2shipyard", "quantity", $row["quantity"], "unitid = ? AND planetid = ?", array($row["unitid"], $this->location));
+					Core::getQuery()->update("unit2shipyard", array("quantity" => $row["quantity"]), "unitid = ? AND planetid = ?", array($row["unitid"], $this->location));
 				}
 				else
 				{

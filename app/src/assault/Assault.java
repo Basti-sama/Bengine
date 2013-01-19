@@ -191,13 +191,11 @@ public class Assault
 			/**
 			 * Load rapid fire.
 			 */
-			double value = 0;
 			rs = database.query("SELECT unitid, target, value FROM "
 					+ prefix + "rapidfire ORDER BY unitid ASC, target ASC");
 			while(rs.next())
 			{
-				value = rs.getDouble("value");
-				rapidfire[rs.getInt("unitid")][rs.getInt("target")] = 100 * (value-1) / value;
+				rapidfire[rs.getInt("unitid")][rs.getInt("target")] = 9999 - (100 - (100/rs.getDouble("value")));
 			}
 		}
 		
@@ -242,10 +240,9 @@ public class Assault
 										.getShell() * 10);
 				assaultReport += "<table class=\"atable\"><tr><th>{lang}TYPE{/lang}</th>";
 				resetBuffer();
-				for(Iterator<Unit> fleetIter = participant.fleet.iterator(); fleetIter
-						.hasNext();)
+				for(Iterator<UnitType> fleetIter = participant.fleet.iterator(); fleetIter.hasNext();)
 				{
-					Unit unit = fleetIter.next();
+					UnitType unit = fleetIter.next();
 					if(unit.getQuantity() > 0)
 					{
 						assaultReport += "<th>{lang}" + unit.getName()
@@ -285,10 +282,9 @@ public class Assault
 										.getShell() * 10);
 				assaultReport += "<table class=\"atable\"><tr><th>{lang}TYPE{/lang}</th>";
 				resetBuffer();
-				for(Iterator<Unit> fleetIter = participant.fleet.iterator(); fleetIter
-						.hasNext();)
+				for(Iterator<UnitType> fleetIter = participant.fleet.iterator(); fleetIter.hasNext();)
 				{
-					Unit unit = fleetIter.next();
+					UnitType unit = fleetIter.next();
 					if(unit.getQuantity() > 0)
 					{
 						assaultReport += "<th>{lang}" + unit.getName()
@@ -302,8 +298,7 @@ public class Assault
 								.format(unit.getShield()));
 						shells += String.format("<td>%s</td>", decFormatter
 								.format(unit.getShell()));
-						shipShoots(unit, participant.getMode()); // Actual
-																	// calculations
+						shipShoots(unit, participant.getMode()); // Actual calculations
 					}
 				}
 				assaultReport += quantity + guns + shields + shells;
@@ -366,10 +361,10 @@ public class Assault
 			{
 				assaultReport += "<table class=\"atable\"><tr><th>{lang}TYPE{/lang}</th>";
 				resetBuffer();
-				for(Iterator<Unit> fleetIter = participant.fleet.iterator(); fleetIter
+				for(Iterator<UnitType> fleetIter = participant.fleet.iterator(); fleetIter
 						.hasNext();)
 				{
-					Unit unit = fleetIter.next();
+					UnitType unit = fleetIter.next();
 					if(unit.getQuantity() > 0)
 					{
 						assaultReport += "<th>{lang}" + unit.getName()
@@ -412,10 +407,10 @@ public class Assault
 			{
 				assaultReport += "<table class=\"atable\"><tr><th>{lang}TYPE{/lang}</th>";
 				resetBuffer();
-				for(Iterator<Unit> fleetIter = participant.fleet.iterator(); fleetIter
+				for(Iterator<UnitType> fleetIter = participant.fleet.iterator(); fleetIter
 						.hasNext();)
 				{
-					Unit unit = fleetIter.next();
+					UnitType unit = fleetIter.next();
 					if(unit.getQuantity() > 0)
 					{
 						assaultReport += "<th>{lang}" + unit.getName()
@@ -584,10 +579,10 @@ public class Assault
 	 * 
 	 * @param Participant
 	 */
-	private static void shipShoots(Unit unit, int mode)
+	private static void shipShoots(UnitType unit, int mode)
 	{
 		boolean shootsAgain;
-		if(unit.quantity == 0)
+		if(unit.getQuantity() == 0)
 		{
 			return;
 		}
@@ -595,7 +590,7 @@ public class Assault
 		// Set generic variables
 		double explodingChance = 0;
 		double damageToShell = 0;
-		int targetUnit = 0; // Represents a single unit
+		Unit target; // Represents a single unit
 		double sShield = 0; // Shield of this unit
 		double sShell = 0; // Shell of this unit
 
@@ -606,47 +601,29 @@ public class Assault
 			while(shootsAgain)
 			{
 				shootsAgain = false;
-				// Chose random target user
-				Participant targetUser;
-				if(mode == 1) // Attacking users
-				{
-					targetUser = party.getRandomDefender();
-				}
-				else
-				// Defending users
-				{
-					targetUser = party.getRandomAtter();
-				}
-				
-				if(targetUser.getMode() == 2) { continue; }
-				// Chose random target unit
-				Unit target = targetUser.getRandomUnit();
-				if(target.sUnit.size() <= 0)
-				{
-					shootsAgain = true;
-					continue;
-				}
-				
-				// Rapidfire
-				shootsAgain = canShootAgain(unit, target);
-				
-				targetUnit = target.getRandomSingleUnit();
-
+		
 				// Add turn values
 				if(mode == 1)
 				{
+					// Select random target unit
+					target = party.getRandomDefenderShip();
 					shotsAtter++;
 					atterPower += unit.getAttack();
 				}
 				else
 				{
+					// Select random target unit
+					target = party.getRandomAtterShip();
 					shotsDefender++;
 					defenderPower += unit.getAttack();
 				}
+				
+				// Rapidfire
+				shootsAgain = canShootAgain(unit, target.getUnitType());
 
 				// Get shell and shield of selected ship
-				sShield = target.sShield.get(targetUnit);
-				sShell = target.sShell.get(targetUnit);
+				sShield = target.getShield();
+				sShell = target.getShell();
 
 				// Damage of lesser than 1% to the shield will be ignored
 				if(unit.getAttack() <= target.getShield() / 100)
@@ -681,7 +658,7 @@ public class Assault
 
 						// Calculate damage to shell.
 						sShell = sShell - damageToShell;
-						target.sShell.put(targetUnit, sShell);
+						target.setShell(sShell);
 					}
 					// Shield sustains damage
 					else
@@ -700,7 +677,7 @@ public class Assault
 						damageToShell = 0; // Shell remains untouched
 					}
 					// Save damage to shield
-					target.sShield.put(targetUnit, sShield);
+					target.setShield(sShield);
 				}
 
 				// If there's still damage to shell
@@ -713,12 +690,12 @@ public class Assault
 						sShell = 0; // Shell destroyed
 						// Mark this unit with explosion flag. Ship will be
 						// removed at the end of a turn.
-						if(!target.explosionFlag.contains(targetUnit))
+						if(!target.getUnitType().explosionFlag.contains(target))
 						{
-							target.explosionFlag.add(targetUnit);
+							target.getUnitType().explosionFlag.add(target);
 						}
 					}
-					target.sShell.put(targetUnit, sShell); // Save shell
+					target.setShell(sShell); // Save shell
 				}
 				
 				// Explosion chance, if the unit's shell is 30% or
@@ -734,10 +711,10 @@ public class Assault
 						// Ships explodes due to perforated shell
 						// Mark this unit with explosion flag. Ship
 						// will be removed at the end of a turn.
-						if(!target.explosionFlag
-								.contains(targetUnit))
+						if(!target.getUnitType().explosionFlag
+								.contains(target))
 						{
-							target.explosionFlag.add(targetUnit);
+							target.getUnitType().explosionFlag.add(target);
 						}
 					}
 				}
@@ -746,7 +723,7 @@ public class Assault
 		return;
 	}
 
-	private static boolean canShootAgain(Unit unit, Unit target)
+	private static boolean canShootAgain(UnitType unit, UnitType target)
 	{
 		// Get rapidfire
 		double rf = rapidfire[unit.unitid][target.unitid];
@@ -755,9 +732,8 @@ public class Assault
 			return false;
 		}
 		// Random chance of shot again
-		double random = Math.abs(Math.random() * 100 - Math.random()*20);
-		//System.out.println(random);
-		if(random > rf)
+		double randomChance = new Double(random.nextInt(10000));
+		if(randomChance >= rf)
 		{
 			return false;
 		}

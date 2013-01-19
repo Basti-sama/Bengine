@@ -27,7 +27,7 @@ public class Participant
 	private int fleetQuantity;
 	private int fleetLost;
 	private String prefix;
-	public Vector<Unit> fleet;
+	public Vector<UnitType> fleet;
 	private int galaxy;
 	private int system;
 	private int position;
@@ -100,7 +100,7 @@ public class Participant
 		shell = 0;
 		fleetQuantity = 0;
 		fleetLost = 0;
-		fleet = new Vector<Unit>();
+		fleet = new Vector<UnitType>();
 
 		/**
 		 * Get techs.
@@ -161,31 +161,30 @@ public class Participant
 				{
 					continue;
 				}
-				Unit unit = new Unit(participantid, rs.getInt("unitid"), rs
+				UnitType unitType = new UnitType(this, rs.getInt("unitid"), rs
 						.getString("name"), rs.getInt("quantity"));
 				/**
-				 * Set data for this unit.
+				 * Set data for this unit type.
 				 */
-				unit.setStructure(rs.getInt("basic_metal")
+				unitType.setStructure(rs.getInt("basic_metal")
 						+ rs.getInt("basic_silicon"));
 				double unitAttack = (double) rs.getInt("attack")
 						+ (double) rs.getInt("attack") * (attack / 10);
 				double unitShield = (double) rs.getInt("shield")
 						+ (double) rs.getInt("shield") * (shield / 10);
-				double unitShell = (double) unit.getStructure() / 10
+				double unitShell = (double) unitType.getStructure() / 10
 						* (1 + shell / 10);
-				unit.setMode(rs.getInt("mode"));
-				unit.setAttack(Math.floor(unitAttack));
-				unit.setShell(unitShell);
-				unit.setShield(unitShield);
-				unit.setCapacity(rs.getInt("capicity"));
-				unit.setMetal(rs.getInt("basic_metal"));
-				unit.setSilicon(rs.getInt("basic_silicon"));
-				unit.setHydrogen(rs.getInt("basic_hydrogen"));
-				unit.setSingleUnits();
-				unit.setParticipantid(participantid);
-				fleet.add(unit);
-				if(unit.getMode() == 3)
+				unitType.setMode(rs.getInt("mode"));
+				unitType.setAttack(Math.floor(unitAttack));
+				unitType.setShell(unitShell);
+				unitType.setShield(unitShield);
+				unitType.setCapacity(rs.getInt("capicity"));
+				unitType.setMetal(rs.getInt("basic_metal"));
+				unitType.setSilicon(rs.getInt("basic_silicon"));
+				unitType.setHydrogen(rs.getInt("basic_hydrogen"));
+				unitType.setSingleUnits();
+				fleet.add(unitType);
+				if(unitType.getMode() == 3)
 				{
 					fleetQuantity += rs.getInt("quantity");
 				}
@@ -227,29 +226,10 @@ public class Participant
 		return points;
 	}
 
-	public Unit getRandomUnit()
-	{
-		try
-		{
-			int rand = Assault.rand(0, fleet.size());
-			if(rand < 0 || rand >= fleet.size())
-			{
-				return new Unit(0, 0, "", 0);
-			}
-			return fleet.get(rand);
-		}
-		catch(IllegalArgumentException e)
-		{
-			System.err.println(e.getMessage() + " (" + fleet.size() + ")");
-			System.exit(1);
-		}
-		return fleet.get(1);
-	}
-
 	public boolean hasFleet()
 	{
 		boolean ret = false;
-		for(Iterator<Unit> fleetIter = fleet.iterator(); fleetIter.hasNext();)
+		for(Iterator<UnitType> fleetIter = fleet.iterator(); fleetIter.hasNext();)
 		{
 			if(fleetIter.next().getQuantity() > 0)
 			{
@@ -279,9 +259,9 @@ public class Participant
 		fleetLost = fleetQuantity;
 		
 		// Finish this battle and calculate loss, remaining capacity and debris.
-		for(Iterator<Unit> fleetIter = fleet.iterator(); fleetIter.hasNext();)
+		for(Iterator<UnitType> fleetIter = fleet.iterator(); fleetIter.hasNext();)
 		{
-			Unit unit = fleetIter.next();
+			UnitType unit = fleetIter.next();
 			if(unit.getMode() == 3 || Assault.defenseIntoDebris)
 			{
 				metal += unit.getMetal();
@@ -458,6 +438,11 @@ public class Participant
 	public void setParticipantId(int participantid)
 	{
 		this.participantid = participantid;
+	}
+	
+	public int getParticipantId()
+	{
+		return participantid;
 	}
 
 	public void setData(String data)
