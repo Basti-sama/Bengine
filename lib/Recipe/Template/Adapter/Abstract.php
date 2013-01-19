@@ -360,7 +360,7 @@ abstract class Recipe_Template_Adapter_Abstract
 	{
 		if(!Recipe_Header::isSend())
 		{
-			if(@extension_loaded("zlib") && !$this->compressed && GZIP_ACITVATED)
+			if(extension_loaded("zlib") && strtolower(ini_get("zlib.output_compression")) == "off" && !$this->compressed && GZIP_ACITVATED)
 			{
 				ob_start("ob_gzhandler");
 				$this->compressed = true;
