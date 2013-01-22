@@ -509,12 +509,12 @@ CREATE TABLE IF NOT EXISTS `bengine_folder` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=7;
 
 INSERT INTO `bengine_folder` (`folder_id`, `label`, `userid`, `is_standard`, `class`) VALUES
-(1, 'PLAYER_MESSAGES', NULL, 1, 'bengine/user'),
-(2, 'OUTBOX', NULL, 1, 'bengine/user'),
-(3, 'FLEET_REPORTS', NULL, 1, 'bengine/system'),
-(4, 'ESPIONAGE_REPORTS', NULL, 1, 'bengine/system'),
-(5, 'BATTLE_REPORTS', NULL, 1, 'bengine/combat'),
-(6, 'ALLIANCE_MESSAGES', NULL, 1, 'bengine/alliance');
+(1, 'PLAYER_MESSAGES', NULL, 1, 'game/user'),
+(2, 'OUTBOX', NULL, 1, 'game/user'),
+(3, 'FLEET_REPORTS', NULL, 1, 'game/system'),
+(4, 'ESPIONAGE_REPORTS', NULL, 1, 'game/system'),
+(5, 'BATTLE_REPORTS', NULL, 1, 'game/combat'),
+(6, 'ALLIANCE_MESSAGES', NULL, 1, 'game/alliance');
 
 DROP TABLE IF EXISTS `bengine_formation_invitation`;
 CREATE TABLE IF NOT EXISTS `bengine_formation_invitation` (
