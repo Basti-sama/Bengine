@@ -1,7 +1,7 @@
 <?php echo $this->render("admin/html_header"); ?>
 <div id="top">
 	<div id="topheader">
-		<div class="link_a"><a href="javascript:location.reload(true);">{lang}Refresh{/lang}</a> | <a href="javascript:back();">{lang}Back{/lang}</a> | <?php echo Link::get("auth/logout", Core::getLanguage()->get("Logout")); ?> | <a href="{const=BASE_URL}">{lang}Page{/lang}</a></div>
+		<div class="link_a"><a href="javascript:location.reload(true);">{lang}Refresh{/lang}</a> | <a href="javascript:back();">{lang}Back{/lang}</a> | <?php echo Link::get("admin/auth/logout", Core::getLanguage()->get("Logout")); ?> | <a href="{const=BASE_URL}">{lang}Page{/lang}</a></div>
 	</div>
 </div>
 <div id="left">
