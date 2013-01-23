@@ -93,7 +93,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		Core::getTPL()->addLoop("templatePacks", $packs);
 
 		$result = Core::getQuery()->select("languages", array("languageid", "title"), "", "", "title ASC");
-		Core::getTPL()->addLoop("langs", $result);
+		Core::getTPL()->addLoop("langs", $result->fetchAll());
 
 		$result = Core::getQuery()->select("feed_keys", array("feed_key"), "", Core::getDB()->quoteInto("user_id = ?", Core::getUser()->get("userid")));
 		if($result->rowCount() > 0)

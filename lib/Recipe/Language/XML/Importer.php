@@ -21,21 +21,18 @@ class Recipe_Language_XML_Importer extends Recipe_Language_Importer
 	/**
 	 * Constructor
 	 *
-	 * @param string	XML-file or XML-data
-	 *
-	 * @return void
+	 * @param string $data    XML-file or XML-data
+	 * @return \Recipe_Language_XML_Importer
 	 */
 	public function __construct($data)
 	{
 		$this->setData($data);
-		return;
 	}
 
 	/**
 	 * Sets the XML data
 	 *
-	 * @param string	XML-file or XML-data
-	 *
+	 * @param string $data	XML-file or XML-data
 	 * @return Recipe_Language_XML_Importer
 	 */
 	public function setData($data)
@@ -48,6 +45,7 @@ class Recipe_Language_XML_Importer extends Recipe_Language_Importer
 	/**
 	 * Proceeds the import.
 	 *
+	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_Language_XML_Importer
 	 */
 	public function proceed()
@@ -57,6 +55,7 @@ class Recipe_Language_XML_Importer extends Recipe_Language_Importer
 			throw new Recipe_Exception_Generic("No XML data set.");
 		}
 		$defaultLang = false;
+		/* @var XMLObj $lang */
 		foreach($this->xml->children() as $lang)
 		{
 			if($lang->getAttribute("action") == "setDefault")
@@ -68,15 +67,13 @@ class Recipe_Language_XML_Importer extends Recipe_Language_Importer
 				"title"		=> $lang->getAttribute("title"),
 				"charset"	=> $lang->getAttribute("charset")
 			);
-			if(!$lang->getAttribute("create"))
-			{
-				$createData = null;
-			}
 			$this->getFromLangCode($lang->getName(), $createData);
+			/* @var XMLObj $group */
 			foreach($lang->getChildren() as $group)
 			{
 				$this->getFromGroupName($group->getName());
 				$this->importData = array();
+				/* @var XMLObj $phrase */
 				foreach($group->getChildren() as $phrase)
 				{
 					$this->importData[$phrase->getName()] = $phrase->getString();

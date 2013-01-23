@@ -196,8 +196,12 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 	 */
 	protected function export($langId, $destination)
 	{
+		if(empty($langId))
+		{
+			$langId = "all";
+		}
 		$file = "language_export_".$langId.".xml";
-		if(empty($langId) || $langId == "all")
+		if($langId == "all")
 		{
 			$langId = null;
 		}
