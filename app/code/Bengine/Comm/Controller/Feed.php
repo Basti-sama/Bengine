@@ -114,6 +114,7 @@ class Bengine_Comm_Controller_Feed extends Bengine_Comm_Controller_Abstract
 			throw new Recipe_Exception_Generic("You have followed an invalid feed link.");
 		}
 
+		Core::getTPL()->setContentType("application/xml");
 		$this->assign("selfUrl", BASE_URL."feed/".$type);
 		$this->assign("alternateUrl", BASE_URL."feed");
 		$this->assign("title", Core::getLang()->get("FEED"));
