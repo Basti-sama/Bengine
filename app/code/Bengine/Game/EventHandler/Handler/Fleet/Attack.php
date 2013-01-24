@@ -50,10 +50,15 @@ class Bengine_Game_EventHandler_Handler_Fleet_Attack extends Bengine_Game_EventH
 	 */
 	protected function _isValid()
 	{
-		if( $this->_target["userid"] != Core::getUser()->get("userid") &&
-			$this->_targetType != "tf" &&
+		if(empty($this->_target["planetid"]))
+		{
+			return false;
+		}
+		if( $this->_targetType != "tf" &&
+			(empty($this->_target["userid"]) || (
+			$this->_target["userid"] != Core::getUser()->get("userid") &&
 			!$this->isNewbieProtected() &&
-			!$this->_target["umode"] &&
+			!$this->_target["umode"])) &&
 			Core::getOptions()->get("ATTACKING_STOPPAGE") != 1 &&
 			$this->_checkShips())
 		{
