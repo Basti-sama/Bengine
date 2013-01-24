@@ -1769,7 +1769,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 7, 'REGISTER_NOW', 'Jetzt registrieren!'),
 (1, 5, 'OCCUPIED_FIELDS', '{@occupiedFields} von {@maxFields} Feldern'),
 (1, 11, 'MODERATOR_REPORT_COMBAT', '{@reportSender} meldete folgenden Kampfbericht vom {@reportSendTime}: {@reportLink}'),
-(1, 18, 'ALIENS', 'Alienvolk');
+(1, 18, 'ALIENS', 'Alienvolk'),
+(1, 10, 'COLONIZE_RESOURCE_WARNING', 'Die Intergalaktische Aufsichtsbeh&ouml;rde f&uuml;r Wirtschaft verbietet das Mitf&uuml;hren von G&uuml;tern bei der Kolonisierung von fremden Planeten aufgrund von Wettbewerbsverzerrung. Deine Flotte l&auml;sst die Rohstoffe daher zur&uuml;ck.');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (

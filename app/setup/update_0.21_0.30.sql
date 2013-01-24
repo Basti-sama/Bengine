@@ -28,7 +28,8 @@ UPDATE bengine_folder SET class = 'game/alliance' WHERE folder_id = 6;
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 ('1', '4', 'RESEARCH_LAB_UPGRADING', 'Das Forschungslabor wird gerade ausgebaut. Forschung ist derzeit nicht m&ouml;glich.'),
 ('1', '4', 'SHIPYARD_UPGRADING', 'Die Schiffswerft oder Nanitenfabrik wird gerade ausgebaut. Der Bau von Schiffen ist derzeit nicht m&ouml;glich.'),
-('1', '18', 'ALIENS', 'Alienvolk');
+('1', '18', 'ALIENS', 'Alienvolk'),
+('1', '10', 'COLONIZE_RESOURCE_WARNING', 'Die Intergalaktische Aufsichtsbeh&ouml;rde f&uuml;r Wirtschaft verbietet das Mitf&uuml;hren von G&uuml;tern bei der Kolonisierung von fremden Planeten aufgrund von Wettbewerbsverzerrung. Deine Flotte l&auml;sst die Rohstoffe daher zur&uuml;ck.');
 
 UPDATE bengine_cronjob SET `class` = 'game/pointClean' WHERE `cronid` = 1;
 UPDATE bengine_cronjob SET `class` = 'game/removeInactiveUser' WHERE `cronid` = 2;

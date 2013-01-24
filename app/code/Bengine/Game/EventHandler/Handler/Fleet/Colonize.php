@@ -81,6 +81,10 @@ class Bengine_Game_EventHandler_Handler_Fleet_Colonize extends Bengine_Game_Even
 	protected function _add(Bengine_Game_Model_Event $event, array $data)
 	{
 		$data["dont_save_resources"] = true;
+		if($data["metal"] > 0 || $data["silicon"] > 0 || $data["hydrogen"] > 0)
+		{
+			Logger::addMessage("COLONIZE_RESOURCE_WARNING", "info");
+		}
 		$data["metal"] = 0;
 		$data["silicon"] = 0;
 		$data["hydrogen"] = 0;
