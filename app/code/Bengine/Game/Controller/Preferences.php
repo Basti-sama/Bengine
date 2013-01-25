@@ -86,7 +86,9 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		{
 			if(!$package->isDot() && $package->isDir() && !in_array($package->getBasename(), $excludedPackages))
 			{
-				$packs[] = array("package" => $package->getFilename());
+				$directoryName = $package->getFilename();
+				$templateName = Core::getLang()->exists("TEMPLATE_NAME_".$directoryName) ? Core::getLang()->get("TEMPLATE_NAME_".$directoryName) : $directoryName;
+				$packs[] = array("value" => $directoryName, "name" => $templateName);
 			}
 		}
 		Hook::event("LoadTemplatePackages", array(&$packs));
@@ -169,8 +171,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		{
 			$theme .= "/";
 		}
-		$templatepackage = (empty($templatepackage)) ? "standard" : $templatepackage;
-		if(!is_dir(APP_ROOT_DIR."app/templates/".$templatepackage))
+		if(!empty($templatepackage) && !is_dir(APP_ROOT_DIR."app/templates/".$templatepackage))
 		{
 			$templatepackage = Core::getUser()->get("templatepackage");
 		}

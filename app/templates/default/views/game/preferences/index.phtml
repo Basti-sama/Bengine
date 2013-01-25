@@ -83,9 +83,9 @@
 	<tr>
 		<th colspan="2">{lang}CUSTOM_LOOK{/lang}</th>
 	</tr>
-	<?php if(count($this->getLoop("templatePacks")) > 1): ?><tr>
+	<?php if(count($this->getLoop("templatePacks")) > 0): ?><tr>
 		<td><label for="template-pack">{lang}TEMPLATE_PACKAGE{/lang}</label></td>
-		<td><select name="templatepackage" id="template-pack"><option value=""></option><?php $count = count($this->getLoop("templatePacks")); foreach($this->getLoop("templatePacks") as $key => $row): ?> <option value="{loop}package{/loop}"<?php if($row["package"] == Core::getUser()->get("templatepackage")): ?> selected="selected"<?php endif; ?>>{loop}package{/loop}</option> <?php endforeach; ?></select></td>
+		<td><select name="templatepackage" id="template-pack"><option value=""></option><?php foreach($this->getLoop("templatePacks") as $key => $row): ?> <option value="{loop}value{/loop}"<?php if($row["value"] == Core::getUser()->get("templatepackage")): ?> selected="selected"<?php endif; ?>>{loop}name{/loop}</option> <?php endforeach; ?></select></td>
 	</tr><?php endif; ?>
 	<tr>
 		<td><label for="theme">{lang}THEME{/lang}</label><br/><span class="small">{lang}THEME_HINT{/lang}</span></td>
