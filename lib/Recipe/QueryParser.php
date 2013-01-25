@@ -71,6 +71,10 @@ class Recipe_QueryParser
 			{
 				$value = "?";
 			}
+			else
+			{
+				unset($bind[$attribute]);
+			}
 			$value = "`".$attribute."` = ".$value;
 		}
 		$sql = "UPDATE `".PREFIX.$table."` SET ".implode(",", $spec);

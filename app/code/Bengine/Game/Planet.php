@@ -405,13 +405,21 @@ class Bengine_Game_Planet
 		Hook::event("AddRessProd", array($this, &$totalMetProd, &$totalHydProd, &$totalSilProd));
 
 		// Now write new resources into db and update times.
+		define('BLUBB', true);
 		$spec = array(
-			"metal" => $this->data["metal"],
-			"silicon" => $this->data["silicon"],
-			"hydrogen" => $this->data["hydrogen"],
-			"last" => TIME
+			"metal" => new Recipe_Database_Expr("metal + ?"),
+			"silicon" => new Recipe_Database_Expr("silicon + ?"),
+			"hydrogen" => new Recipe_Database_Expr("hydrogen + ?"),
+			"last" => new Recipe_Database_Expr("?"),
 		);
-		Core::getQuery()->update("planet", $spec, "planetid = ?", array($this->planetid));
+		$bind = array(
+			$totalMetProd,
+			$totalSilProd,
+			$totalHydProd,
+			TIME,
+			$this->planetid
+		);
+		Core::getQuery()->update("planet", $spec, "planetid = ?", $bind);
 
 		// Truncate resources.
 		$this->data["metal"] = floor($this->data["metal"]);
