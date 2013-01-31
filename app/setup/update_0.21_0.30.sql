@@ -37,3 +37,5 @@ UPDATE bengine_cronjob SET `class` = 'game/removeGalaxyGarbage' WHERE `cronid` =
 UPDATE bengine_cronjob SET `class` = 'game/cleanSessions' WHERE `cronid` = 4;
 UPDATE bengine_cronjob SET `class` = 'game/reminder' WHERE `cronid` = 5;
 UPDATE bengine_cronjob SET `class` = 'game/cleanCombats' WHERE `cronid` = 6;
+
+UPDATE bengine_user SET `templatepackage` = '' WHERE `templatepackage` = 'standard';

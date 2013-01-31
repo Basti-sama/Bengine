@@ -11,13 +11,13 @@
 		}
 	},
 	"config": {
-		"universes": [
-			{
+		"universes": {
+			"uni1": {
 				"name": "Uni 1",
 				"domain": "",
 				"external": false
 			}
-		],
+		},
 		"signature": {
 			"cache": {
 				"path": "var/signatures",

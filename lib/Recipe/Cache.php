@@ -768,7 +768,8 @@ class Recipe_Cache
 				$metaFile = $fileObj->getPathname()."/meta.json";
 				if(file_exists($metaFile))
 				{
-					$data = array_merge_recursive($data, json_decode(file_get_contents($metaFile), true));
+					$temp = json_decode(file_get_contents($metaFile), true);
+					$data = array_merge_recursive_distinct($data, $temp);
 				}
 			}
 		}
@@ -777,14 +778,16 @@ class Recipe_Cache
 			{
 				if(!$fileObj->isDot() && $fileObj->isFile())
 				{
-					$data = array_merge_recursive($data, json_decode(file_get_contents($fileObj->getPathname()), true));
+					$temp = json_decode(file_get_contents($fileObj->getPathname()), true);
+					$data = array_merge_recursive_distinct($data, $temp);
 				}
 			}
 		} catch(UnexpectedValueException $e) {
 
 		}
 
-		$data = array_merge_recursive($data, json_decode(file_get_contents(APP_ROOT_DIR.'etc/local.json'), true));
+		$temp = json_decode(file_get_contents(APP_ROOT_DIR.'etc/local.json'), true);
+		$data = array_merge_recursive_distinct($data, $temp);
 
 		$cacheContent  = $this->setCacheFileHeader("Meta data");
 		$cacheContent .= "\$lifetime=".(TIME+$lifetime).";\n";
