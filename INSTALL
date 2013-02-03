@@ -23,13 +23,13 @@ hosts. Installation should be done by advanced server administrators.
 
 2. Requirements
 - Apache 2.x Webserver + mod_rewrite (platform independent)
-- PHP 5.2.x or 5.3.x
+- PHP 5.2.x or 5.3.x or 5.4.x
 	* curl
 	* SimpleXMLElement
 	* gd
 	* json
 	* mysqli
-- Java Runtime Enviroment 6 (no Tomcat!)
+- Java Runtime Enviroment 6 or higher (no Tomcat!)
 - MySQL 5.1 or higher incl. InnoDB
 
 3. Upload files
@@ -86,13 +86,13 @@ erfahrenen Server Administrator durchgeführt werden.
 
 2. Anforderungen
 - Apache 2.x Webserver + mod_rewrite (Plattformunabhängig)
-- PHP 5.2.x or 5.3.x
+- PHP 5.2.x oder 5.3.x oder 5.4.x
 	* curl
 	* SimpleXMLElement
 	* gd
 	* json
 	* mysqli
-- Java Runtime Enviroment 6 (Kein Tomcat!)
+- Java Runtime Enviroment 6 oder höher (Kein Tomcat!)
 - MySQL 5.1 oder höher inkl. InnoDB
 
 3. Datei-Upload
