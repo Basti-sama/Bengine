@@ -405,7 +405,6 @@ class Bengine_Game_Planet
 		Hook::event("AddRessProd", array($this, &$totalMetProd, &$totalHydProd, &$totalSilProd));
 
 		// Now write new resources into db and update times.
-		define('BLUBB', true);
 		$spec = array(
 			"metal" => new Recipe_Database_Expr("metal + ?"),
 			"silicon" => new Recipe_Database_Expr("silicon + ?"),
