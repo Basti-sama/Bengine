@@ -35,7 +35,6 @@ public class UnitType
 	protected double basic_hydrogen;
 	public Vector<Unit> units = new Vector<Unit>();
 	protected int totalLoss = 0;
-	protected String prefix;
 	protected Participant participant;
 
 	public UnitType(Participant participant, int unitid, String name, int quantity)
@@ -44,7 +43,6 @@ public class UnitType
 		this.name = name;
 		this.quantity = quantity;
 		this.participant = participant;
-		prefix = Assault.getPrefix();
 		explosionFlag.clear();
 		metal = 0;
 		silicon = 0;
@@ -162,12 +160,24 @@ public class UnitType
 	public void updateFlags()
 	{
 		double loss = (double) explosionFlag.size();
+		int participantMode = participant.getMode();
 		Iterator<Unit> explosionIter = explosionFlag.iterator();
+		// Remove destroyed units
 		while(explosionIter.hasNext())
 		{
-			units.removeElement(explosionIter.next());
+			Unit unit = explosionIter.next();
+			units.removeElement(unit);
+			if(participantMode == 1)
+			{
+				Assault.party.atterShips.removeElement(unit);
+			}
+			else
+			{
+				Assault.party.defenderShips.removeElement(unit);
+			}
 		}
-
+		
+		// Reload shields
 		Iterator<Unit> fleetIter = units.iterator();
 		while(fleetIter.hasNext())
 		{
@@ -230,7 +240,7 @@ public class UnitType
 		String fleetUpdate = "";
 		if(getTotalLoss() > 0)
 		{
-			fleetUpdate = "UPDATE " + prefix
+			fleetUpdate = "UPDATE " + Assault.prefix
 					+ "fleet2assault SET quantity = '" + quantity
 					+ "' WHERE assaultid = '" + Assault.assaultid
 					+ "' AND unitid = '"
@@ -241,5 +251,114 @@ public class UnitType
 		{
 			Assault.database.execute(fleetUpdate);
 		}
+	}
+	
+	public void attack(int mode, Party party)
+	{
+		boolean shootsAgain;
+		if(this.getQuantity() == 0)
+		{
+			return;
+		}
+		
+		// Set generic variables
+		double explodingChance = 0;
+		double damage = 0;
+		double damageToShell = 0;
+		Unit target; // Represents a single unit
+		double shield = 0; // Shield of this unit
+		double shell = 0; // Shell of this unit
+
+		for(int i = 1; i <= this.getQuantity(); i++)
+		{
+			shootsAgain = true;
+			// Shot loop
+			while(shootsAgain)
+			{
+				shootsAgain = false;
+		
+				// Add turn values
+				if(mode == 1)
+				{
+					// Select random target unit
+					target = party.getRandomDefenderShip();
+					Assault.shotsAtter++;
+					Assault.atterPower += this.getAttack();
+				}
+				else
+				{
+					// Select random target unit
+					target = party.getRandomAtterShip();
+					Assault.shotsDefender++;
+					Assault.defenderPower += this.getAttack();
+				}
+				
+				// Rapidfire
+				shootsAgain = Assault.canShootAgain(this, target.getUnitType());
+
+				// Get shell and shield of selected ship
+				shield = target.getShield();
+				shell = target.getShell();
+				
+				damage = this.getAttack();
+				damageToShell = 0;
+
+				if(damage < shield)
+		        {
+		            // Consider 1%-rule
+					damage = Math.floor(100.00 * damage / target.getUnitType().getShield()) * target.getUnitType().getShield() / 100.00;
+		        }
+				if(shield <= 0 || damage > 0)
+				{
+		            // reduce shield by damage
+					target.setShield(shield - damage);
+					damageToShell = damage - shield;
+					
+					if(damageToShell < 0)
+					{
+						damageToShell = 0;
+					}
+				}
+				if(mode == 1)
+				{
+					Assault.shieldDefender += this.getAttack() - damageToShell;
+				}
+				else
+				{
+					Assault.shieldAtter += this.getAttack() - damageToShell;
+				}
+
+				// If there's still damage to shell
+				if(damageToShell > 0)
+				{
+					shell -= damageToShell; // Decrease shell
+					// Shell destroyed?
+					if(shell < 0)
+					{
+						shell = 0; // Shell destroyed
+					}
+					target.setShell(shell);
+				}
+				
+				// Explosion chance, if the unit's shell is 30% or
+				// higher destroyed
+				if(shell <= 0.7 * target.getUnitType().getShell())
+				{
+					explodingChance = 100.00 * shell / target.getUnitType().getShell();
+					int random = Assault.rand(0, 99);
+					if(random >= explodingChance)
+					{
+						// Ships explodes due to perforated shell
+						// Mark this unit with explosion flag. Ship
+						// will be removed at the end of a turn.
+						if(!target.getUnitType().explosionFlag.contains(target))
+						{
+							target.getUnitType().explosionFlag.add(target);
+						}
+					}
+				}
+			}
+		}
+		return;
 	}
 }

@@ -34,6 +34,10 @@ public class Unit
 	}
 
 	public void setShield(Double shield) {
+		if(shield < 0.00)
+		{
+			shield = 0.00;
+		}
 		this.shield = shield;
 	}
 

@@ -14,7 +14,7 @@ package assault;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.io.FileOutputStream;
+import java.io.*;
 
 public class Assault
 {
@@ -24,7 +24,7 @@ public class Assault
 	private static String dbdatabase = "bengine";
 	private static String username = "root";
 	private static String dbpasswd = "";
-	private static String prefix = "bengine_";
+	public static String prefix = "bengine_";
 	public static int assaultid = 0;
 	public static int planetid = 0;
 	private static double[][] rapidfire = new double[100][100];
@@ -33,12 +33,12 @@ public class Assault
 	public static double metal = 0;
 	public static double silicon = 0;
 	public static double hydrogen = 0;
-	private static int shotsAtter;
-	private static int shotsDefender;
-	private static int atterPower;
-	private static int defenderPower;
-	private static int shieldAtter;
-	private static int shieldDefender;
+	public static int shotsAtter;
+	public static int shotsDefender;
+	public static int atterPower;
+	public static int defenderPower;
+	public static int shieldAtter;
+	public static int shieldDefender;
 	private static String assaultReport;
 	private static String quantity = "";
 	private static String guns = "";
@@ -62,6 +62,7 @@ public class Assault
 	public static double defenseRepairMin = 0.6;
 	public static double defenseRepairMax = 0.8;
 	private static int configGroupId = 9;
+	public static boolean rapidfireDisabled = false;
 	public static int haulMetal = 0;
 	public static int haulSilicon = 0;
 	public static int haulHydrogen = 0;
@@ -195,7 +196,9 @@ public class Assault
 					+ prefix + "rapidfire ORDER BY unitid ASC, target ASC");
 			while(rs.next())
 			{
-				rapidfire[rs.getInt("unitid")][rs.getInt("target")] = 9999 - (100 - (100/rs.getDouble("value")));
+				double rfValue = rs.getDouble("value");
+				rapidfire[rs.getInt("unitid")][rs.getInt("target")] = rfValue > 0 ? 100 * (rfValue-1) / rfValue : 0;
+				//rapidfire[rs.getInt("unitid")][rs.getInt("target")] = 9999 - (100 - (100/rs.getDouble("value")));
 			}
 		}
 		
@@ -256,8 +259,7 @@ public class Assault
 								.format(unit.getShield()));
 						shells += String.format("<td>%s</td>", decFormatter
 								.format(unit.getShell()));
-						shipShoots(unit, participant.getMode()); // Actual
-																	// calculations
+						unit.attack(participant.getMode(), party);
 					}
 				}
 				assaultReport += quantity + guns + shields + shells;
@@ -298,7 +300,7 @@ public class Assault
 								.format(unit.getShield()));
 						shells += String.format("<td>%s</td>", decFormatter
 								.format(unit.getShell()));
-						shipShoots(unit, participant.getMode()); // Actual calculations
+						unit.attack(participant.getMode(), party);
 					}
 				}
 				assaultReport += quantity + guns + shields + shells;
@@ -544,6 +546,7 @@ public class Assault
 			{
 			}
 			System.out.println(assaultReport);
+			gentime = System.currentTimeMillis() - gentime;
 		}
 		else
 		{
@@ -558,7 +561,7 @@ public class Assault
 		}
 
 		database.close();
-		System.out.println("Finished");
+		System.out.println("Finished ("+gentime+")");
 		return;
 	}
 
@@ -574,165 +577,26 @@ public class Assault
 		return rand + min;
 	}
 
-	/**
-	 * Lets a ship shooting to hit defenders. ASSAULT CORE
-	 * 
-	 * @param Participant
-	 */
-	private static void shipShoots(UnitType unit, int mode)
+	public static boolean canShootAgain(UnitType unit, UnitType target)
 	{
-		boolean shootsAgain;
-		if(unit.getQuantity() == 0)
+		if(rapidfireDisabled)
 		{
-			return;
+			return false;
 		}
-		
-		// Set generic variables
-		double explodingChance = 0;
-		double damageToShell = 0;
-		Unit target; // Represents a single unit
-		double sShield = 0; // Shield of this unit
-		double sShell = 0; // Shell of this unit
-
-		for(int i = 1; i <= unit.getQuantity(); i++)
-		{
-			shootsAgain = true;
-			// Shot loop
-			while(shootsAgain)
-			{
-				shootsAgain = false;
-		
-				// Add turn values
-				if(mode == 1)
-				{
-					// Select random target unit
-					target = party.getRandomDefenderShip();
-					shotsAtter++;
-					atterPower += unit.getAttack();
-				}
-				else
-				{
-					// Select random target unit
-					target = party.getRandomAtterShip();
-					shotsDefender++;
-					defenderPower += unit.getAttack();
-				}
-				
-				// Rapidfire
-				shootsAgain = canShootAgain(unit, target.getUnitType());
-
-				// Get shell and shield of selected ship
-				sShield = target.getShield();
-				sShell = target.getShell();
-
-				// Damage of lesser than 1% to the shield will be ignored
-				if(unit.getAttack() <= target.getShield() / 100)
-				{
-					if(mode == 1)
-					{
-						shieldDefender += unit.getAttack();
-					}
-					else
-					{
-						shieldAtter += unit.getAttack();
-					}
-					damageToShell = 0; // Shield blocks all damage
-				}
-				else
-				{
-					// Shield destroyed?
-					if(unit.getAttack() > sShield)
-					{
-						if(mode == 1)
-						{
-							shieldDefender += sShield;
-						}
-						else
-						{
-							shieldAtter += sShield;
-						}
-						damageToShell = unit.getAttack() - sShield;
-
-						// Shield has been destroyed.
-						sShield = 0;
-
-						// Calculate damage to shell.
-						sShell = sShell - damageToShell;
-						target.setShell(sShell);
-					}
-					// Shield sustains damage
-					else
-					{
-						if(mode == 1)
-						{
-							shieldDefender += new Double(unit.getAttack())
-									.intValue();
-						}
-						else
-						{
-							shieldAtter += new Double(unit.getAttack())
-									.intValue();
-						}
-						sShield -= unit.getAttack(); // Decrease shield
-						damageToShell = 0; // Shell remains untouched
-					}
-					// Save damage to shield
-					target.setShield(sShield);
-				}
-
-				// If there's still damage to shell
-				if(damageToShell > 0)
-				{
-					sShell -= damageToShell; // Decrease shell
-					// Shell destroyed?
-					if(sShell <= 0)
-					{
-						sShell = 0; // Shell destroyed
-						// Mark this unit with explosion flag. Ship will be
-						// removed at the end of a turn.
-						if(!target.getUnitType().explosionFlag.contains(target))
-						{
-							target.getUnitType().explosionFlag.add(target);
-						}
-					}
-					target.setShell(sShell); // Save shell
-				}
-				
-				// Explosion chance, if the unit's shell is 30% or
-				// higher destroyed
-				if(target.getShell() * 0.7 >= sShell)
-				{
-					explodingChance = 100 - Math.ceil(sShell
-							/ (target.getShell() / 100));
-					int random = rand(1, 100);
-					if(random <= explodingChance
-							&& explodingChance >= 30)
-					{
-						// Ships explodes due to perforated shell
-						// Mark this unit with explosion flag. Ship
-						// will be removed at the end of a turn.
-						if(!target.getUnitType().explosionFlag
-								.contains(target))
-						{
-							target.getUnitType().explosionFlag.add(target);
-						}
-					}
-				}
-			}
-		}
-		return;
-	}
-
-	private static boolean canShootAgain(UnitType unit, UnitType target)
-	{
 		// Get rapidfire
 		double rf = rapidfire[unit.unitid][target.unitid];
+		/*if(unit.getName().equals("FRIGATE"))
+		{
+			System.out.println("Fregatte gegen "+target.getName()+" = "+rf);
+			System.out.println();
+			System.exit(0);
+		}*/
 		if(rf == 0)
 		{
 			return false;
 		}
 		// Random chance of shot again
-		double randomChance = new Double(random.nextInt(10000));
+		double randomChance = random.nextDouble() * 100;
 		if(randomChance >= rf)
 		{
 			return false;
@@ -876,6 +740,10 @@ public class Assault
 				else if(var.equals("timezone") && rs.getString("value") != "")
 				{
 					calObj.setTimeZone(TimeZone.getTimeZone(rs.getString("value")));
+				}
+				else if(var.equals("RAPIDFIRE_DISABLED"))
+				{
+					rapidfireDisabled = rs.getBoolean("value");
 				}
 			}
 		} catch(Exception e) {

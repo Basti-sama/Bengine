@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `bengine_assault` (
   `lostunits_defender` int(10) unsigned NOT NULL DEFAULT '0',
   `gentime` int(8) unsigned NOT NULL DEFAULT '0',
   `report` text NULL,
-  `accomplished` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `accomplished` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`assaultid`),
   KEY `planetid` (`planetid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -353,6 +353,7 @@ INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, 
 ('PLANET_FIELD_ADDITION', '10', 'integer', 'Additional fields each planet obtains.', '', 2, 1, 0),
 ('PLANET_IMG_EXT', '.jpg', 'char', 'Extension for the planet pictures.', '', 5, 1, 0),
 ('PRODUCTION_FACTOR', '1', 'integer', 'Production factor. e.g. 2 doubles the production.', '', 2, 1, 0),
+('RAPIDFIRE_DISABLED', '0', 'boolean', 'Disables the rapid fire in combat system.', 9, 1, 0),
 ('REGISTRATION_DISABLED', '', 'boolean', 'Disables the registration.', '', 4, 1, 0),
 ('REMINDER_MAIL_TIME', '14', 'integer', 'Days passing to send reminder mail.', '', 8, 1, 0),
 ('REPAIR_DEFENSE_MAX', '0.8', 'double', 'Maximum chance of rebuilding defenes immediately after combat.', '', 9, 1, 0),

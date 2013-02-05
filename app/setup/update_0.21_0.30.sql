@@ -39,3 +39,8 @@ UPDATE bengine_cronjob SET `class` = 'game/reminder' WHERE `cronid` = 5;
 UPDATE bengine_cronjob SET `class` = 'game/cleanCombats' WHERE `cronid` = 6;
 
 UPDATE bengine_user SET `templatepackage` = '' WHERE `templatepackage` = 'standard';
+
+INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, `groupid`, `islisted`, `sort_index`) VALUES
+('RAPIDFIRE_DISABLED', '0', 'boolean', 'Disables the rapid fire in combat system.', 9, 1, 0);
+
+ALTER TABLE  `bengine_assault` CHANGE  `accomplished` `accomplished` TINYINT( 1 ) NOT NULL DEFAULT '0';
