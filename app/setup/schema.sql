@@ -121,7 +121,8 @@ CREATE TABLE IF NOT EXISTS `bengine_assault` (
   `lostunits_defender` int(10) unsigned NOT NULL DEFAULT '0',
   `gentime` int(8) unsigned NOT NULL DEFAULT '0',
   `report` text NULL,
-  `accomplished` tinyint(1) NOT NULL DEFAULT '0',
+  `accomplished` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `running` tinyint(1) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY  (`assaultid`),
   KEY `planetid` (`planetid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

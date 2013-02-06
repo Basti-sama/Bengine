@@ -64,7 +64,7 @@ class Bengine_Game_Assault
 		$this->assaultid = Core::getDB()->lastInsertId();
 
 		// If the location is a planet, we have to update the ressource production.
-		if(!is_null($this->location))
+		if($this->location !== null)
 		{
 			$planet = new Bengine_Game_Planet($this->location, $this->owner, false);
 			$planet->getProduction()->addProd();
@@ -219,6 +219,8 @@ class Bengine_Game_Assault
 			}
 		}
 		$this->updateMainDefender($this->data["lostunits_defender"]);
+		Core::getQuery()->update("assault", array("running" => 0), "assaultid = ?", array($this->assaultid));
+		Hook::event("AssaultFinished", array($this));
 		return $this;
 	}
 

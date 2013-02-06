@@ -4,7 +4,7 @@
 			"comm": {
 				"type": "application",
 				"name": "Bengine Community Login",
-				"version": "0.30alpha2",
+				"version": "0.30",
 				"revision": 30,
 				"pool": "app/code"
 			}

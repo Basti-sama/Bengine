@@ -16,6 +16,14 @@ class Bengine_Game_EventHandler_Handler_Fleet_Attack extends Bengine_Game_EventH
 	protected function _execute(Bengine_Game_Model_Event $event, array $data)
 	{
 		Hook::event("EhAttack", array($event, &$data, $this));
+
+		$statement = Core::getQuery()->select("assault", array("assaultid"), "", "planetid = ? AND running = 1", "", "", "", "", array($event->get("destination")));
+		if($statement->fetchRow())
+		{
+			$event->set("prev_rc", null);
+			$event->save();
+			return $this;
+		}
 		$assault = new Bengine_Game_Assault($event["destination"], $event["destination_user_id"]);
 		$assault->addParticipant(1, $event["userid"], $event["planetid"], $event["time"], $data)
 			->startAssault($data["galaxy"], $data["system"], $data["position"])

@@ -4,7 +4,7 @@
 			"admin": {
 				"type": "application",
 				"name": "Bengine Admin Interface",
-				"version": "0.30alpha2",
+				"version": "0.30",
 				"revision": 30,
 				"pool": "app/code"
 			}

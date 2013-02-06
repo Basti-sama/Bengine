@@ -36,6 +36,9 @@ class Bengine_Game_Cronjob_CleanSessions extends Recipe_CronjobAbstract
 		(`count`, `day`, `week`, `day_of_week`, `month`, `day_of_month`, `year`, `time`) VALUES
 		((SELECT COUNT(`userid`) FROM `".PREFIX."user` LIMIT 1), DAYOFYEAR(CURDATE()), WEEK(CURDATE()), DAYOFWEEK(CURDATE()), MONTH(CURDATE()), DAYOFMONTH(CURDATE()), YEAR(CURDATE()), UNIX_TIMESTAMP())";
 		Core::getDatabase()->query($sql);
+
+		// Clean combats running flag
+		Core::getQuery()->update("assault", array("running" => 0));
 		return $this;
 	}
 

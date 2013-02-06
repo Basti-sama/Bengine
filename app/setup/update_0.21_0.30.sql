@@ -43,4 +43,5 @@ UPDATE bengine_user SET `templatepackage` = '' WHERE `templatepackage` = 'standa
 INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, `groupid`, `islisted`, `sort_index`) VALUES
 ('RAPIDFIRE_DISABLED', '0', 'boolean', 'Disables the rapid fire in combat system.', 9, 1, 0);
 
-ALTER TABLE  `bengine_assault` CHANGE  `accomplished` `accomplished` TINYINT( 1 ) NOT NULL DEFAULT '0';
+ALTER TABLE `bengine_assault` ADD `running` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1';
+UPDATE `bengine_assault` SET `running` = 0;
