@@ -104,9 +104,10 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		$result = Core::getQuery()->select("user", "userid");
 		Core::getLang()->assign("totalUsers", fNumber($result->rowCount()));
 		$result->closeCursor();
-		$where = Core::getDB()->quoteInto("(`username` < ? AND `points` >= ?) OR `points` > ?", array(
-			Core::getUser()->get("username"), Core::getUser()->get("points"), Core::getUser()->get("points")
+		$where = Core::getDB()->quoteInto("(`username` < ? AND `points` >= {points}) OR `points` > {points}", array(
+			Core::getUser()->get("username"),
 		));
+		$where = str_replace("{points}", (float) Core::getUser()->get("points"), $where);
 		$result = Core::getQuery()->select("user", array("COUNT(`userid`)+1 AS rank"), "", $where, "", 1);
 		Core::getLang()->assign("rank", fNumber($result->fetchColumn()));
 		$result->closeCursor();
