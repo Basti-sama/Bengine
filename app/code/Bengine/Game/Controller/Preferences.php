@@ -101,11 +101,11 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		if($result->rowCount() > 0)
 		{
 			$feed_key = $result->fetchColumn();
-			$link = BASE_URL.Core::getLang()->getOpt("langcode")."/feed/{type}/".Core::getUser()->get("userid")."/".$feed_key;
+			$link = Core::getLang()->getOpt("langcode")."/feed/{type}/".Core::getUser()->get("userid")."/".$feed_key;
 			$rss = Str::replace("{type}", "rss", $link);
 			$atom = Str::replace("{type}", "atom", $link);
-			$this->assign("rss_feed_url", Link::get($rss, $rss, "", "", "target=\"_blank\""));
-			$this->assign("atom_feed_url", Link::get($atom, $atom, "", "", "target=\"_blank\""));
+			$this->assign("rss_feed_url", Link::get($rss, BASE_URL.$rss, "", "", "target=\"_blank\""));
+			$this->assign("atom_feed_url", Link::get($atom, BASE_URL.$atom, "", "", "target=\"_blank\""));
 		}
 		else
 		{
