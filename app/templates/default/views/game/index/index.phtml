@@ -1,12 +1,15 @@
+<?php $newsCount = count($this->getLoop("news")); ?>
 <script type="text/javascript">
 //<![CDATA[
 $(function () {
-<?php $count = count($this->getLoop("fleetEvents")); foreach($this->getLoop("fleetEvents") as $key => $row): ?> 
+<?php $count = count($this->getLoop("fleetEvents")); foreach($this->getLoop("fleetEvents") as $key => $row): ?>
 	$('#timer_{loop}eventid{/loop}').countdown({until: {loop}time_r{/loop}, description: '<span class="finish-time">{loop=time_finished}</span>', compact: true, onExpiry: function() {
 		$('#timer_{loop}eventid{/loop}').text('-');
 	}});
- <?php endforeach; ?>
-$("#news").newsticker(9500);
+<?php endforeach; ?>
+<?php if($newsCount > 0): ?>
+	$("#news").newsticker(9500);
+<?php endif; ?>
 });
 //]]>
 </script>
@@ -18,11 +21,15 @@ $("#news").newsticker(9500);
 	</tr>
 	<tr>
 		<td class="news-field">
+			<?php if($newsCount > 0): ?>
 			<ul id="news">
 				<?php foreach($this->getLoop("news") as $i => $item): ?>
 				<li<?php if($i == 0): ?> style="display: block;"<?php endif; ?>><b><?php echo $item->getTitle() ?></b> <?php echo $item->getText() ?></li>
 				<?php endforeach ?>
 			</ul>
+			<?php else: ?>
+			{lang=NO_NEWS_FOUND}
+			<?php endif; ?>
 		</td>
 		<td class="center">{@newMessages}</td>
 	</tr>

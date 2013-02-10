@@ -624,8 +624,8 @@ CREATE TABLE IF NOT EXISTS `bengine_news` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `bengine_news` (`news_id`, `title`, `text`, `user_id`, `time`, `enabled`, `language_id`) VALUES
-(1, 'Sample News #1:', 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam.', NULL, 1258839317, 1, 1),
-(2, 'Sample News #2:', 'Erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren.', NULL, 1258839317, 1, 1);
+(1, 'Modern:', 'Bengine ist ein modernes Out-of-the-box Browsergame Framework basierend auf neusten Software-Standards.', NULL, UNIX_TIMESTAMP(), 1, 1),
+(2, 'Anpassbar:', 'Bengine bietet unz&auml;hlige M&ouml;glichkeiten sein Browsergame individuell zu gestalten.', NULL, UNIX_TIMESTAMP(), 1, 1);
 
 DROP TABLE IF EXISTS `bengine_page`;
 CREATE TABLE IF NOT EXISTS `bengine_page` (
@@ -801,6 +801,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 3, 'INVALID_PLANET_NAME', 'Der Planetenname enth&auml;lt ung&uuml;ltige Zeichen oder ist zu kurz.'),
 (1, 3, 'NEW_PLANET_NAME', 'Planeten umbennen'),
 (1, 3, 'NEWS_AND_INFO', 'News und Infos'),
+(1, 3, 'NO_NEWS_FOUND', 'Keine aktuellen News vorhanden.'),
 (1, 3, 'PLANETDIAMETER', 'Durchmesser'),
 (1, 3, 'PLANET_OPTIONS', 'Planeten Optionen'),
 (1, 3, 'POINTS', 'Punkte'),
