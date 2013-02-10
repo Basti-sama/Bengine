@@ -63,7 +63,7 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 		}
 		else if($this->data["ismoon"])
 		{
-			$fields = (int) $this->getBuilding("MOON_BASE")->get("level") * 3 + 1;
+			$fields = (int) $this->getBuilding("MOON_BASE")->get("level") * (int) Core::getOptions()->get("MOON_BASE_FIELDS") + 1;
 			if($fields < $fmax)
 			{
 				$fmax = $fields;

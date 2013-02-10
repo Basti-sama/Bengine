@@ -41,7 +41,11 @@ UPDATE bengine_cronjob SET `class` = 'game/cleanCombats' WHERE `cronid` = 6;
 UPDATE bengine_user SET `templatepackage` = '' WHERE `templatepackage` = 'standard';
 
 INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, `groupid`, `islisted`, `sort_index`) VALUES
-('RAPIDFIRE_DISABLED', '0', 'boolean', 'Disables the rapid fire in combat system.', 9, 1, 0);
+('RAPIDFIRE_DISABLED', '0', 'boolean', 'Disables the rapid fire in combat system.', 9, 1, 0),
+('MOON_BASE_FIELDS', '3', 'integer', 'Number of fields that will be added to a moon per moon base level.', 2, 1, 0);
 
 ALTER TABLE `bengine_assault` ADD `running` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1';
 UPDATE `bengine_assault` SET `running` = 0;
+
+UPDATE `bengine_phrases` SET `content` = 'Mit der Zeit wurde Planeten immer dichter besiedelt, sodass die nutzbare Fl&auml;che immer weniger wurde. Einige Planeten erreichten sogar ihre Grenzen und konnten nicht mehr weiter ausgebaut werden. Um dieses Problem zu beseitigen, entwicklete man eine neue Methode unbrauchbares Land in wirtschaftlich nutzbare Fl&auml;che zu formen. Dabei werden gigantische Mengen an Fels, Erde und Ger&ouml;ll aus Gebirgen entfernt und in das Meer gesch&uuml;ttet. Anschlie&szlig;end konnte die Gebirgsfl&auml;che zum Bau genutzt werden. Jede Stufe erweitert den Planeten um {config=TERRAFORMER_ADDITIONAL_FIELDS} Felder.' WHERE `title` = 'TERRA_FORMER_FULL_DESC' AND `languageid` = 1;
+UPDATE `bengine_phrases` SET `content` = 'Da bei gro&szlig;en Schlachten oftmals Tr&uuml;mmerfelder von abgeschossenen Schiffen zur&uuml;ck bleibt, kann es passieren, dass sich diese Tr&uuml;mmer zu einem gro&szlig;en Trabanten vereinen. Da man diesen Mond nicht ungenutzt lassen wollte, entwickelte man die Mondbasis um technisch n&uuml;tzliche Bauwerke errichten zu k&ouml;nnen. Jede Stufe erweitert den Planeten um {config=MOON_BASE_FIELDS} Felder.' WHERE `title` = 'MOON_BASE_FULL_DESC' AND `languageid` = 1;

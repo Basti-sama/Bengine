@@ -441,7 +441,7 @@ class Bengine_Game_Planet
 		}
 		else if($this->data["ismoon"])
 		{
-			$fields = $this->getBuilding("MOON_BASE") * 3 + 1;
+			$fields = $this->getBuilding("MOON_BASE") * (int) Core::getOptions()->get("MOON_BASE_FIELDS") + 1;
 			if($fields < $fmax)
 			{
 				$fmax = $fields;
