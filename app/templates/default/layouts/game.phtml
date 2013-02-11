@@ -9,13 +9,13 @@
 
 <link rel="shortcut icon" href="{@themePath}favicon.ico" type="image/x-icon"/>
 <?php if($this->get("CSS_FILES") != "" && Core::getUser()->get("theme") == ""): ?>
-<link rel="stylesheet" type="text/css" href="{const}BASE_URL{/const}css/?f={@CSS_FILES}&c=1"/>
+<link rel="stylesheet" type="text/css" href="{const}BASE_URL{/const}css/?f={@CSS_FILES}"/>
 <?php else: ?>
 <?php foreach($this->htmlHead["css"] as $file): ?>
 <link rel="stylesheet" type="text/css" href="{user}theme{/user}css/<?php echo $file ?>"/>
 <?php endforeach ?>
 <?php endif ?>
-<?php if($this->get("JS_FILES")): ?><script type="text/javascript" src="{const}BASE_URL{/const}js/?f={@JS_FILES}&c=1"></script><?php endif ?>
+<?php if($this->get("JS_FILES")): ?><script type="text/javascript" src="{const}BASE_URL{/const}js/?f={@JS_FILES}"></script><?php endif ?>
 <?php if($js_interface = Core::getUser()->get("js_interface")): ?>
 <script type="text/javascript" src="<?php echo $js_interface ?>"></script>
 <?php endif ?>
