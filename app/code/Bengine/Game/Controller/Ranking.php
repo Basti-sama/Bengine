@@ -92,11 +92,13 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 	 */
 	protected function playerRanking($type, $pos)
 	{
-		$where = Core::getDB()->quoteInto("$type >= FLOOR(?)", Core::getUser()->get($type));
-		$result = Core::getQuery()->select("user", "userid", "", $where);
-		$oPos = $result->rowCount();
-		$oPos = ($oPos <= 0) ? 1 : $oPos;
-		$oPos = ceil($oPos / Core::getOptions()->get("USER_PER_PAGE"));
+		$where = Core::getDB()->quoteInto("(`username` < ? AND `{$type}` >= {points}) OR `{$type}` > {points}", array(
+			Core::getUser()->get("username"),
+		));
+		$where = str_replace("{points}", (float) Core::getUser()->get($type), $where);
+		$result = Core::getQuery()->select("user", array("COUNT(`userid`)+1 AS rank"), "", $where, "", 1);
+		$rank = (int) $result->fetchColumn();
+		$currentPage = ceil($rank / Core::getOptions()->get("USER_PER_PAGE"));
 		$result->closeCursor();
 
 		$result = Core::getQuery()->select("user u", "userid", "", "u.userid > '0'");
@@ -104,7 +106,7 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		$result->closeCursor();
 		if(!is_numeric($pos))
 		{
-			$pos = $oPos;
+			$pos = $currentPage;
 		}
 		else if($pos > $pages) { $pos = $pages; }
 		else if($pos < 1) { $pos = 1; }
@@ -114,7 +116,7 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		{
 			$n = $i * Core::getOptions()->get("USER_PER_PAGE") + 1;
 			if($i + 1 == $pos) { $s = 1; } else { $s = 0; }
-			if($i + 1 == $oPos) { $c = "ownPosition"; } else { $c = ""; }
+			if($i + 1 == $currentPage) { $c = "ownPosition"; } else { $c = ""; }
 			$ranks .= createOption($i + 1, fNumber($n)." - ".fNumber($n + Core::getOptions()->get("USER_PER_PAGE") - 1), $s, $c);
 		}
 		Core::getTPL()->assign("rankingSel", $ranks);
