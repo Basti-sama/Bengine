@@ -49,7 +49,7 @@ abstract class Recipe_Database_Pdo_Abstract extends Recipe_Database_Abstract
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 			));
 		} catch(PDOException $e) {
-			die($e->getMessage());
+			throw new Exception($e->getMessage());
 		}
 		return $this;
 	}

@@ -41,8 +41,9 @@ class Recipe_Database_Statement_Pdo extends Recipe_Database_Statement_Abstract
 		{
 			$bind = array_values($bind);
 		}
-		if(!$statement->execute($bind))
-		{
+		try {
+			$statement->execute($bind);
+		} catch(PDOException $e) {
 			$errorInfo = $statement->errorInfo();
 			throw new Recipe_Exception_Sql($errorInfo[2], $errorInfo[1], $this->getSql());
 		}

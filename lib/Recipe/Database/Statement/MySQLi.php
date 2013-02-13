@@ -37,8 +37,9 @@ class Recipe_Database_Statement_MySQLi extends Recipe_Database_Statement_Abstrac
 
 	/**
 	 * @param array $bind
-	 * @return Recipe_Database_Statement_MySQLi
+	 * @throws Recipe_Exception_Generic
 	 * @throws Recipe_Exception_Sql
+	 * @return Recipe_Database_Statement_MySQLi
 	 */
 	public function execute(array $bind = null)
 	{
@@ -58,6 +59,10 @@ class Recipe_Database_Statement_MySQLi extends Recipe_Database_Statement_Abstrac
 		{
 			$connection = $this->getConnection();
 			throw new Recipe_Exception_Sql($connection->error, $connection->errno, $this->getSql());
+		}
+		if(!method_exists($statement, "get_result"))
+		{
+			throw new Recipe_Exception_Generic("Your MySQLi driver is unsupported. Consider switching to PDO.");
 		}
 		$this->result = $statement->get_result();
 		return $this;
