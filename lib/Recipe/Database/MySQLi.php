@@ -31,7 +31,7 @@ class Recipe_Database_MySQLi extends Recipe_Database_Abstract
 		}
 		if(mysqli_connect_errno())
 		{
-			throw new Recipe_Exception_Generic("Connection to database failed: ".mysqli_connect_error());
+			die("Connection to database failed: ".mysqli_connect_error());
 		}
 		return $this;
 	}
