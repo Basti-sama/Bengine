@@ -21,7 +21,7 @@ class Map extends Type implements IteratorAggregate
 	/**
 	 * Internal pointer on the current element.
 	 *
-	 * @var integer
+	 * @var ArrayIterator
 	 */
 	protected $iterator = null;
 
@@ -274,15 +274,8 @@ class Map extends Type implements IteratorAggregate
 	 */
 	public function current()
 	{
-		if($this->iterator === null)
-		{
-			throw new Recipe_Exception_Issue("Iterator is not initialized. Please call next() first.");
-		}
-		if(isset($this->map[$this->iterator]))
-		{
-			return $this->map[$this->iterator];
-		}
-		return false;
+		$this->initializeIterator();
+		return $this->iterator->current();
 	}
 
 	/**
@@ -292,36 +285,11 @@ class Map extends Type implements IteratorAggregate
 	 */
 	public function next()
 	{
-		if($this->iterator === null)
+		if($this->initializeIterator())
 		{
-			$this->iterator = -1;
+			$this->iterator->next();
 		}
-		if(isset($this->map[$this->iterator+1]))
-		{
-			$this->iterator++;
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Sets the internal pointer on the previous element.
-	 *
-	 * @throws Recipe_Exception_Issue
-	 * @return boolean    True, if the map has a previous element, false otherwise
-	 */
-	public function prev()
-	{
-		if($this->iterator === null)
-		{
-			throw new Recipe_Exception_Issue("Iterator is not initialized. Please call end() first.");
-		}
-		if(isset($this->map[$this->iterator-1]))
-		{
-			$this->iterator--;
-			return true;
-		}
-		return false;
+		return $this->iterator->valid();
 	}
 
 	/**
@@ -332,11 +300,8 @@ class Map extends Type implements IteratorAggregate
 	 */
 	public function key()
 	{
-		if($this->iterator === null)
-		{
-			throw new Recipe_Exception_Issue("Iterator is not initialized. Please call next() first.");
-		}
-		return $this->iterator;
+		$this->initializeIterator();
+		return $this->iterator->key();
 	}
 
 	/**
@@ -346,7 +311,8 @@ class Map extends Type implements IteratorAggregate
 	 */
 	public function rewind()
 	{
-		$this->iterator = null;
+		$this->initializeIterator();
+		$this->iterator->rewind();
 		return $this;
 	}
 
@@ -357,7 +323,8 @@ class Map extends Type implements IteratorAggregate
 	 */
 	public function end()
 	{
-		$this->iterator = $this->getLastIndex() + 1;
+		$this->initializeIterator();
+		$this->iterator->seek($this->getLastIndex() + 1);
 		return $this;
 	}
 
@@ -407,7 +374,8 @@ class Map extends Type implements IteratorAggregate
 	 */
 	public function getIterator()
 	{
-		return new ArrayIterator($this->map);
+		$this->initializeIterator();
+		return $this->iterator;
 	}
 
 	/**
@@ -419,7 +387,7 @@ class Map extends Type implements IteratorAggregate
 	 */
 	public function toString($glue = null)
 	{
-		if(!is_null($glue))
+		if($glue !== null)
 		{
 			$glue = $this->getFromArgument($glue);
 			return implode($glue->get(), $this->map);
@@ -523,6 +491,19 @@ class Map extends Type implements IteratorAggregate
 	{
 		$keys = new Map(array_keys($this->map));
 		return $keys->getRandomElement();
+	}
+
+	/**
+	 * @return boolean
+	 */
+	protected function initializeIterator()
+	{
+		if($this->iterator === null)
+		{
+			$this->iterator = new ArrayIterator($this->map);
+			return false;
+		}
+		return true;
 	}
 
 	/**
