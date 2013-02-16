@@ -419,8 +419,6 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 				Logger::dieMessage("NOT_ENOUGH_FUEL");
 			}
 
-			Game::getPlanet()->setData("hydrogen", Game::getPlanet()->getData("hydrogen") - $data["consumption"]);
-
 			if($temp["capacity"] < $data["consumption"])
 			{
 				Logger::dieMessage("NOT_ENOUGH_CAPACITY");

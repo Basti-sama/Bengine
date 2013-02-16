@@ -258,17 +258,25 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 					$data["hydrogen"] = $construction->get("basic_hydrogen");
 					$data["points"] = ($construction->get("basic_metal") + $construction->get("basic_silicon") + $construction->get("basic_hydrogen")) / 1000;
 					$data["dont_save_resources"] = true; // We save the subtracted resources manually to avoid unnecessary SQL queries.
-					if($this->mode == self::FLEET_CONSTRUCTION_TYPE)
-						$mode = 4;
-					else
-						$mode = 5;
+					$mode = ($this->mode == self::FLEET_CONSTRUCTION_TYPE) ? 4 : 5;
 					Hook::event("UnitOrderLast", array($construction, $quantity, $mode, &$time, &$latest, &$data));
 					for($i = 1; $i <= $quantity; $i++)
 					{
 						Game::getEH()->addEvent($mode, $time * $i + $latest, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), null, $data);
 					}
-					$planet = Game::getPlanet();
-					Core::getQuery()->update("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = ?", array(Core::getUser()->get("curplanet")));
+					$spec = array(
+						"metal" => new Recipe_Database_Expr("metal - ?"),
+						"silicon" => new Recipe_Database_Expr("silicon - ?"),
+						"hydrogen" => new Recipe_Database_Expr("hydrogen - ?")
+					);
+					$bind = array(
+						$data["metal"] * $quantity,
+						$data["silicon"] * $quantity,
+						$data["hydrogen"] * $quantity,
+						Core::getUser()->get("curplanet")
+					);
+					$bind = array_map("intval", $bind);
+					Core::getQuery()->update("planet", $spec, "planetid = ?", $bind);
 				}
 			}
 		}

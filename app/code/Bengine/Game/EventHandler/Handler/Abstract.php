@@ -69,13 +69,29 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 	 */
 	protected function removeResourceFromPlanet(array $data)
 	{
+		if(!empty($data["consumption"]))
+		{
+			$data["hydrogen"] += (int) $data["consumption"];
+		}
 		$planet = Game::getPlanet();
 		$planet->setData("metal", $planet->getData("metal") - $data["metal"]);
 		$planet->setData("silicon", $planet->getData("silicon") - $data["silicon"]);
 		$planet->setData("hydrogen", $planet->getData("hydrogen") - $data["hydrogen"]);
 		if(!isset($data["dont_save_resources"]) || !$data["dont_save_resources"])
 		{
-			Core::getQuery()->update("planet", array("metal" => $planet->getData("metal"), "silicon" => $planet->getData("silicon"), "hydrogen" => $planet->getData("hydrogen")), "planetid = ?", array(Core::getUser()->get("curplanet")));
+			$spec = array(
+				"metal" => new Recipe_Database_Expr("metal - ?"),
+				"silicon" => new Recipe_Database_Expr("silicon - ?"),
+				"hydrogen" => new Recipe_Database_Expr("hydrogen - ?")
+			);
+			$bind = array(
+				$data["metal"],
+				$data["silicon"],
+				$data["hydrogen"],
+				$planet->getPlanetId()
+			);
+			$bind = array_map("intval", $bind);
+			Core::getQuery()->update("planet", $spec, "planetid = ?", $bind);
 		}
 		return $this;
 	}
@@ -89,7 +105,19 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 	 */
 	protected function addResourceToPlanet(array $data)
 	{
-		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + ?, silicon = silicon + ?, hydrogen = hydrogen + ? WHERE planetid = ?", array($data["metal"], $data["silicon"], $data["hydrogen"], $this->getEvent()->getPlanetid()));
+		$spec = array(
+			"metal" => new Recipe_Database_Expr("metal + ?"),
+			"silicon" => new Recipe_Database_Expr("silicon + ?"),
+			"hydrogen" => new Recipe_Database_Expr("hydrogen + ?")
+		);
+		$bind = array(
+			$data["metal"],
+			$data["silicon"],
+			$data["hydrogen"],
+			$this->getEvent()->getPlanetid()
+		);
+		$bind = array_map("intval", $bind);
+		Core::getQuery()->update("planet", $spec, "planetid = ?", $bind);
 		return $this;
 	}
 
