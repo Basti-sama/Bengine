@@ -43,7 +43,8 @@ UPDATE bengine_user SET `templatepackage` = '' WHERE `templatepackage` = 'standa
 
 INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, `groupid`, `islisted`, `sort_index`) VALUES
 ('RAPIDFIRE_DISABLED', '0', 'boolean', 'Disables the rapid fire in combat system.', '', 9, 1, 0),
-('MOON_BASE_FIELDS', '3', 'integer', 'Number of fields that will be added to a moon per moon base level.', '', 2, 1, 0);
+('MOON_BASE_FIELDS', '3', 'integer', 'Number of fields that will be added to a moon per moon base level.', '', 2, 1, 0),
+('GALAXY_VIEW_CONSUMPTION', '10', 'integer', 'Consumption cost per galaxy view (except for home solar system) in hydrogen.', '', 5, 1, 0);
 
 ALTER TABLE `bengine_assault` ADD `running` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1';
 UPDATE `bengine_assault` SET `running` = 0;

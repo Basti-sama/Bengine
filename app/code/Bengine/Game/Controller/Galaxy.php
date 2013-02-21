@@ -31,6 +31,11 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 	protected $missileRange = 0;
 
 	/**
+	 * @var integer
+	 */
+	protected $viewConsumption = 0;
+
+	/**
 	 * Main method to display a sun system.
 	 *
 	 * @return Bengine_Game_Controller_Galaxy
@@ -39,6 +44,7 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 	{
 		Core::getLanguage()->load(array("Galaxy", "Statistics"));
 		$this->missileRange = Game::getRocketRange();
+		$this->viewConsumption = (int) Core::getOptions()->get("GALAXY_VIEW_CONSUMPTION");
 		if(Core::getRequest()->getGET("1") && Core::getRequest()->getGET("2"))
 		{
 			$this->setCoordinatesByGet(Core::getRequest()->getGET("1"), Core::getRequest()->getGET("2"));
@@ -127,12 +133,12 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 	{
 		if($this->galaxy != Game::getPlanet()->getData("galaxy") || $this->system != Game::getPlanet()->getData("system"))
 		{
-			if(Game::getPlanet()->getData("hydrogen") - 10 < 0)
+			if(Game::getPlanet()->getData("hydrogen") - $this->viewConsumption < 0)
 			{
 				Logger::dieMessage("DEFICIENT_CONSUMPTION");
 			}
-			Game::getPlanet()->setData("hydrogen", Game::getPlanet()->getData("hydrogen") - 10);
-			Core::getDB()->query("UPDATE ".PREFIX."planet SET hydrogen = hydrogen - ? WHERE planetid = ?", array(10, Core::getUser()->get("curplanet")));
+			Game::getPlanet()->setData("hydrogen", Game::getPlanet()->getData("hydrogen") - $this->viewConsumption);
+			Core::getDB()->query("UPDATE ".PREFIX."planet SET hydrogen = hydrogen - ? WHERE planetid = ?", array($this->viewConsumption, Core::getUser()->get("curplanet")));
 		}
 		return $this;
 	}
