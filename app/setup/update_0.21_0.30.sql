@@ -30,7 +30,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 ('1', '4', 'SHIPYARD_UPGRADING', 'Die Schiffswerft oder Nanitenfabrik wird gerade ausgebaut. Der Bau von Schiffen ist derzeit nicht m&ouml;glich.'),
 ('1', '18', 'ALIENS', 'Alienvolk'),
 ('1', '10', 'COLONIZE_RESOURCE_WARNING', 'Die Intergalaktische Aufsichtsbeh&ouml;rde f&uuml;r Wirtschaft verbietet das Mitf&uuml;hren von G&uuml;tern bei der Kolonisierung von fremden Planeten aufgrund von Wettbewerbsverzerrung. Deine Flotte l&auml;sst die Rohstoffe daher zur&uuml;ck.'),
-('1', '3', 'NO_NEWS_FOUND', 'Keine aktuellen News vorhanden.');
+('1', '3', 'NO_NEWS_FOUND', 'Keine aktuellen News vorhanden.'),
+('1', '14', 'RIGHT_LEGEND', 'Rechte Legende');
 
 UPDATE bengine_cronjob SET `class` = 'game/pointClean' WHERE `cronid` = 1;
 UPDATE bengine_cronjob SET `class` = 'game/removeInactiveUser' WHERE `cronid` = 2;
