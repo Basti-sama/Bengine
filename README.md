@@ -10,6 +10,7 @@ The following software is required to run bengine on your server:
 
 - Apache 2.x Webserver + mod_rewrite (platform independent)
 - PHP 5.2.x or 5.3.x or 5.4.x
+  - pdo_mysql (recommended) or mysqli
   - curl
   - SimpleXMLElement
 - Java Runtime Enviroment 6 or higher (no Tomcat!)

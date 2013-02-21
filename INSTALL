@@ -28,7 +28,7 @@ hosts. Installation should be done by advanced server administrators.
 	* SimpleXMLElement
 	* gd
 	* json
-	* mysqli
+	* pdo_mysql (recommended) or mysqli
 - Java Runtime Enviroment 6 or higher (no Tomcat!)
 - MySQL 5.1 or higher incl. InnoDB
 
@@ -56,7 +56,7 @@ e.g.:
 The PHP script will take care of the different cronjobs.
 
 8. Finish
-Play the game or call http://your-host.com/ai to configure your installation.
+Play the game or call http://your-host.com/admin to configure your installation.
 
 +++
 
@@ -91,7 +91,7 @@ erfahrenen Server Administrator durchgeführt werden.
 	* SimpleXMLElement
 	* gd
 	* json
-	* mysqli
+	* pdo_mysql (empfohlen) oder mysqli
 - Java Runtime Enviroment 6 oder höher (Kein Tomcat!)
 - MySQL 5.1 oder höher inkl. InnoDB
 
@@ -121,6 +121,6 @@ Das PHP-Skript führt anschließend alle Cronjobs automatisch aus.
 
 8. Fertig
 Das war's. Die Installation lässt sich anschließend noch über
-http://dein-host.com/ai konfigurieren.
+http://dein-host.com/admin konfigurieren.
 
 +++
