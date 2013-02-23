@@ -89,13 +89,30 @@
 				{@totalHydrogen} ({@percentHydrogen} %)
 			</td>
 		</tr>
+
+		<?php $translator = Core::getLang() ?>
+		<?php $ships = $this->getLoop("ships") ?>
+		<?php $fleet = $ships[Bengine_Game_Controller_Shipyard::FLEET_CONSTRUCTION_TYPE] ?>
 		<tr>
 			<th colspan="2">
-				{lang}STATISTICS_SHIPS{/lang}
+				{lang}STATISTICS_SHIPS{/lang}: {lang=FLEET}
 			</th>
 		</tr>
-		<?php $translator = Core::getLang() ?>
-		<?php foreach($this->getLoop("ships") as $name => $total): ?>
+		<?php foreach($fleet as $name => $total): ?>
+		<?php if($total): ?>
+		<tr>
+			<td><?php echo $translator->get($name) ?></td>
+			<td><?php echo fNumber($total) ?></td>
+		</tr>
+		<?php endif ?>
+		<?php endforeach ?>
+		<tr>
+			<th colspan="2">
+				{lang}STATISTICS_SHIPS{/lang}: {lang=DEFENSE}
+			</th>
+		</tr>
+		<?php $defense = $ships[Bengine_Game_Controller_Shipyard::DEFENSE_CONSTRUCTION_TYPE] ?>
+		<?php foreach($defense as $name => $total): ?>
 		<?php if($total): ?>
 		<tr>
 			<td><?php echo $translator->get($name) ?></td>

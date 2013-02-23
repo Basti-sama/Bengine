@@ -37,7 +37,7 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	 */
 	protected function init()
 	{
-		Core::getLang()->load(array("Statistics", "info"));
+		Core::getLang()->load(array("Statistics", "info", "buildings"));
 		return parent::init();
 	}
 
@@ -50,7 +50,8 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	{
 		Hook::event("StatisticsStart");
 
-		$this->loadTotalUnits();
+		$this->loadTotalUnits(Bengine_Game_Controller_Shipyard::FLEET_CONSTRUCTION_TYPE);
+		$this->loadTotalUnits(Bengine_Game_Controller_Shipyard::DEFENSE_CONSTRUCTION_TYPE);
 		$statistics = array(
 			"totalMetal" => $this->fetchTotalMetal(),
 			"totalSilicon" => $this->fetchTotalSilicon(),
@@ -139,9 +140,10 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 	/**
 	 * Loads all total units.
 	 *
+	 * @param integer $mode
 	 * @return Bengine_Game_Controller_Statistics
 	 */
-	protected function loadTotalUnits()
+	protected function loadTotalUnits($mode)
 	{
 		$select = new Recipe_Database_Select();
 		$select->from(array("c" => "construction"));
@@ -151,14 +153,13 @@ class Bengine_Game_Controller_Statistics extends Bengine_Game_Controller_Abstrac
 		));
 		$select->join(array("s" => "unit2shipyard"), array("s" => "unitid", "c" => "buildingid"))
 			->group(array("c" => "buildingid"))
-			->where(array("c" => "mode"), 3, "OR")
-			->where(array("c" => "mode"), 4, "OR")
+			->where(array("c" => "mode"), $mode)
 			->order(array("c" => "display_order"), "ASC")
 			->order(array("c" => "buildingid"), "ASC");
 		$result = $select->getStatement();
 		foreach($result->fetchAll() as $row)
 		{
-			$this->unitCount[$row["name"]] = $row["total"];
+			$this->unitCount[$mode][$row["name"]] = $row["total"];
 		}
 		$result->closeCursor();
 		return $this;
