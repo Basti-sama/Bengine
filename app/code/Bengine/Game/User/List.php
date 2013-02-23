@@ -108,7 +108,6 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 		$row["user_status"] = sprintf("%s%s%s", $inactive, $ban, $umode);
 		$row["user_status_long"] = sprintf("%s%s%s%s", $inactive, $ban, $umode, $status);
 		$title = (!empty($row["usertitle"])) ? $row["usertitle"] : Core::getLang()->get("GO_TO_PROFILE");
-		$row["username"] = Link::get("game/".SID."/Profile/Page/".$row["userid"], $this->formatUsername($row["username"], $row["userid"], $row["aid"], $userClass), $title);
 
 		$row["alliance"] = "";
 		if(!empty($row["aid"]) && !empty($row["tag"]))
@@ -132,7 +131,7 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 		// Points
 		if($this->fetchRankByQuery)
 		{
-			$row["rank"] = $this->getUserRank($row[$this->pointType], $this->pointType);
+			$row["rank"] = $this->getUserRank($row[$this->pointType], $row["username"], $this->pointType);
 		}
 		else if(isset($row["rank"]))
 		{
@@ -150,6 +149,9 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 		{
 			$row["rpoints"] = fNumber(floor($row["rpoints"]));
 		}
+
+		$row["username"] = Link::get("game/".SID."/Profile/Page/".$row["userid"], $this->formatUsername($row["username"], $row["userid"], $row["aid"], $userClass), $title);
+
 		Hook::event("FormatUserListRowLast", array(&$row, $this));
 		return $row;
 	}
@@ -158,17 +160,21 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 	 * Fetches the user rank from database.
 	 *
 	 * @param integer $points
+	 * @param string $username
 	 * @param string $pointType
+	 * @throws Recipe_Exception_Generic
 	 * @return integer
 	 */
-	protected function getUserRank($points, $pointType)
+	protected function getUserRank($points, $username, $pointType)
 	{
 		if($pointType != "points" && $pointType != "fpoints" && $pointType != "rpoints")
 		{
 			throw new Recipe_Exception_Generic("Unknown point type supplied.");
 		}
-		$result = Core::getQuery()->select("user", "userid", "", Core::getDB()->quoteInto("$pointType >= FLOOR(?)", $points));
-		$rank = fNumber($result->rowCount());
+		$where = "(`username` < ? AND `$pointType` >= {points}) OR `$pointType` > {points}";
+		$where = str_replace("{points}", (float) $points, $where);
+		$result = Core::getQuery()->select("user", array("COUNT(`userid`)+1 AS rank"), "", $where, "", 1, "", "", array($username));
+		$rank = fNumber($result->fetchColumn());
 		$result->closeCursor();
 		return $rank;
 	}
