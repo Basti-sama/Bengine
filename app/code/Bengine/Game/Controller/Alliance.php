@@ -344,6 +344,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 				{
 					if($row["aid"] == $this->aid) // You cannot send a message to your own alliance
 					{
+						Logger::addMessage("RELATION_TO_OWN_ALLIANCE", "warning");
 						return $this;
 					}
 					Core::getQuery()->insert("message", array("mode" => 6, "time" => TIME, "sender" => Core::getUser()->get("userid"), "receiver" => $row["userid"], "message" => Str::validateXHTML($message), "subject" => Core::getLang()->getItem("MESSAGE_BY_ALLIANCE"), "read" => 0));
@@ -366,6 +367,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 					$result->closeCursor();
 					if($row["aid"] == $this->aid)
 					{
+						Logger::addMessage("RELATION_TO_OWN_ALLIANCE", "warning");
 						return $this;
 					}
 					Hook::event("SendRelationApplication", array($row["aid"]));

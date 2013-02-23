@@ -1776,7 +1776,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 11, 'MODERATOR_REPORT_COMBAT', '{@reportSender} meldete folgenden Kampfbericht vom {@reportSendTime}: {@reportLink}'),
 (1, 18, 'ALIENS', 'Alienvolk'),
 (1, 10, 'COLONIZE_RESOURCE_WARNING', 'Die Intergalaktische Aufsichtsbeh&ouml;rde f&uuml;r Wirtschaft verbietet das Mitf&uuml;hren von G&uuml;tern bei der Kolonisierung von fremden Planeten aufgrund von Wettbewerbsverzerrung. Deine Flotte l&auml;sst die Rohstoffe daher zur&uuml;ck.'),
-(1, 14, 'RIGHT_LEGEND', 'Rechte Legende');
+(1, 14, 'RIGHT_LEGEND', 'Rechte Legende'),
+(1, 14, 'RELATION_TO_OWN_ALLIANCE', 'Du kannst keine diplomatische Beziehung mit deiner eigenen Allianz beginnen.');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (
