@@ -326,7 +326,7 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 			$ipcheck = 1;
 		}
 		if($esps > 99) { $esps = 99; }
-		else if($esps < 0) { $esps = 1; }
+		else if($esps <= 0) { $esps = 1; }
 
 		Hook::event("SaveUserDataLast", array(&$username, &$usertitle, &$email, &$templatepackage, &$theme, &$umode, &$umodemin, &$delete, $ipcheck, $esps, &$js_interface));
 
