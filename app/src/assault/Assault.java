@@ -14,7 +14,7 @@ package assault;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.io.*;
+import java.io.FileOutputStream;
 
 public class Assault
 {
@@ -85,6 +85,9 @@ public class Assault
 			dbpasswd = args[2];
 			prefix = args[4];
 			assaultid = Integer.valueOf(args[5]);
+			try {
+				debugmode = args[6].equals("1") || args[6].equals("true");
+			} catch(IndexOutOfBoundsException e) {}
 		}
 		
 		database = new Database(getDBHost(), getUsername(), getPassword());
