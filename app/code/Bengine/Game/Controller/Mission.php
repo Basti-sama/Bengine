@@ -81,6 +81,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 
 			/* @var Bengine_Game_Model_Collection_Fleet $fleet */
 			$fleet = Game::getModel("game/fleet")->getCollection();
+			$fleet->addTypeFilter(3);
 			$fleet->addPlanetFilter(Core::getUser()->get("curplanet"));
 			Hook::event("MissionFlettList", array($fleet));
 			Core::getTPL()->addLoop("fleet", $fleet);
@@ -707,6 +708,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 				/* @var Bengine_Game_Model_Collection_Fleet $shipyard */
 				$shipyard = Game::getCollection("game/fleet");
 				$shipyard->addPlanetFilter($moonid);
+				$shipyard->addTypeFilter(3);
 				$shipyard->getSelect()->where("u2s.unitid = ?", $key);
 				if($shipyard->count() > 0)
 				{

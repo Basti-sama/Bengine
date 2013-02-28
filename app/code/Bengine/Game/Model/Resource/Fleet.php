@@ -17,7 +17,6 @@ class Bengine_Game_Model_Resource_Fleet extends Bengine_Game_Model_Resource_Cons
 	{
 		$select = parent::getSelect();
 		$select->join(array("s" => "ship_datasheet"), array("s" => "unitid", "c" => "buildingid"));
-		$select->where(array("c" => "mode"), 3);
 		return $select;
 	}
 
