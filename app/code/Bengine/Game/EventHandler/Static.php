@@ -55,7 +55,7 @@ class Bengine_Game_EventHandler_Static
 	{
 		$handler = self::translateCode($code);
 		list($package, $class) = explode("/", $handler->get("code"));
-		$class = $package."_EventHandler_Handler_".$handler->get("base_type")."_".$class;
+		$class = $package."/eventHandler_handler_".$handler->get("base_type")."_".$class;
 		if($handlerObj = Application::factory($class, $event))
 		{
 			return $handlerObj;
