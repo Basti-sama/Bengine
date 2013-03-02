@@ -103,10 +103,11 @@ abstract class Application
 		}
 		self::$controllerName = $controllerName;
 		$config = array("action" => Core::getRequest()->getGET("action", "index"));
-		self::$controller = self::factory(($overridePackage !== null ? $overridePackage : $package)."_controller/".$controllerName, $config);
+		$class = ($overridePackage !== null ? $overridePackage : $package)."/controller_".lcfirst($controllerName);
+		self::$controller = self::factory($class, $config);
 		if(!self::$controller)
 		{
-			self::$controller = self::factory($package."_controller/index", array("action" => "noroute"));
+			self::$controller = self::factory($package."/controller_index", array("action" => "noroute"));
 		}
 		return self::$controller->run();
 	}
