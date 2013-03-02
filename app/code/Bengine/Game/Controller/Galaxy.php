@@ -232,7 +232,7 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 				if(Game::getPlanet()->getBuilding("ROCKET_STATION") > 3 && $sys[$i]["userid"] != Core::getUser()->get("userid") && $this->inMissileRange())
 				{
 					$sys[$i]["rocketattack"] = Link::get("game/".SID."/RocketAttack/Index/".$sys[$i]["planetid"], $rockimg);
-					$sys[$i]["moonrocket"] = "<tr><td colspan=&quot;3&quot;>".Str::replace("\"", "", Link::get("game/".SID."/RocketAttack/Index/".$sys[$i]["moon"]."/1", Core::getLanguage()->getItem("ROCKET_ATTACK")))."</td></tr>";
+					$sys[$i]["moonrocket"] = "<tr><td colspan=\"3\" class=\"center\">".Link::get("game/".SID."/RocketAttack/Index/".$sys[$i]["moonid"]."/1", Core::getLanguage()->getItem("ROCKET_ATTACK"))."</td></tr>";
 				}
 				else
 				{

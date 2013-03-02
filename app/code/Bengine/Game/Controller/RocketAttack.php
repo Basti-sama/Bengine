@@ -50,19 +50,26 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 
 		$this->target = Core::getRequest()->getGET("1");
 		Core::getLanguage()->load("Galaxy,info");
-		$joins  = "LEFT JOIN ".PREFIX."user u ON (u.userid = p.userid)";
-		$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (u.userid = b.userid)";
-		if(Core::getRequest()->getGET("moon"))
+		$select = new Recipe_Database_Select();
+		$select->from(array("p" => "planet"))
+			->attributes(array(
+			"p" => array("planetname"),
+			"g" => array("galaxy", "system", "position"),
+			"u" => array("points", "last", "umode"),
+			"b" => array("to")
+		))
+		->join(array("u" => "user"), array("u" => "userid", "p" => "userid"))
+		->join(array("b" => "ban_u"), array("u" => "userid", "b" => "userid"))
+		->where(array("p" => "planetid"), $this->target);
+		if(Core::getRequest()->getGET("2"))
 		{
-			$joins .= "LEFT JOIN ".PREFIX."galaxy g ON (g.moonid = p.planetid)";
+			$select->join(array("g" => "galaxy"), array("g" => "moonid", "p" => "planetid"));
 		}
 		else
 		{
-			$joins .= "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = p.planetid)";
+			$select->join(array("g" => "galaxy"), array("g" => "planetid", "p" => "planetid"));
 		}
-		$select = array("p.planetname", "g.galaxy", "g.system", "g.position", "g.position", "u.points", "u.last", "u.umode", "b.to");
-		$where = Core::getDB()->quoteInto("p.planetid = ?", $this->target);
-		$result = Core::getQuery()->select("planet p", $select, $joins, $where);
+		$result = $select->getStatement();
 		if($this->t = $result->fetchRow())
 		{
 			$result->closeCursor();
