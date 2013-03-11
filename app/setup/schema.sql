@@ -1747,7 +1747,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 3, 'CURRENT_SHIPYARD', 'Schiffswerft-Auftr&auml;ge:'),
 (1, 3, 'NONE', 'keine'),
 (1, 5, 'GO_TO_MERCHANT', 'Zum Schrotth&auml;ndler'),
-(1, 5, 'SCRAP_MERCHANT_DESCRIPTION', 'Der H&auml;nder bezahlt aktuell {@merchantRate}% des Originalpreises.'),
+(1, 5, 'SCRAP_MERCHANT_DESCRIPTION', 'Der H&auml;ndler bezahlt aktuell {@merchantRate}% des Originalpreises.'),
 (1, 5, 'PRICE', 'Preis'),
 (1, 5, 'SELL', 'Verkaufen'),
 (1, 5, 'SCRAP_MERCHANT', 'Schrotth&auml;ndler'),
