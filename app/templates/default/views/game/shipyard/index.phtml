@@ -48,7 +48,7 @@
 				{lang}PRODUCTION_TIME{/lang} <?php echo $unit->getProductionTime(true) ?>
 			</td>
 			<td>
-				<?php if($id == 49 && Game::getEH()->hasSShieldDome() || $id == 50 && Game::getEH()->hasLShieldDome()): ?>
+				<?php if($id == 49 && Game::getEH()->hasSmallShieldDome() || $id == 50 && Game::getEH()->hasLargeShieldDome()): ?>
 				{lang=ALREADY_BUILDED}
 				<?php elseif($unit->get("quantity") > 0 && ($id == 49 || $id == 50)): ?>
 				{lang=ALREADY_BUILDED}

@@ -199,11 +199,11 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 						throw new Recipe_Exception_Generic("You cannot build this.");
 					}
 					$_result->closeCursor();
-					if(Game::getEH()->hasSShieldDome() && $id == 49)
+					if(Game::getEH()->hasSmallShieldDome() && $id == 49)
 					{
 						throw new Recipe_Exception_Generic("You cannot build this.");
 					}
-					if(Game::getEH()->hasLShieldDome() && $id == 50)
+					if(Game::getEH()->hasLargeShieldDome() && $id == 50)
 					{
 						throw new Recipe_Exception_Generic("You cannot build this.");
 					}

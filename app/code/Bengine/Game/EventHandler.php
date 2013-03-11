@@ -36,7 +36,7 @@ class Bengine_Game_EventHandler
 	 * @var boolean
 	 */
 	protected $canResearch = null, $canBuildUnits = null,
-		$hasSShieldDome = null, $hasLShieldDome = null;
+		$hasSmallShieldDome = null, $hasLargeShieldDome = null;
 
 	/**
 	 * Holds the number of missiles in the shipyard queue.
@@ -459,17 +459,17 @@ class Bengine_Game_EventHandler
 	 *
 	 * @return boolean
 	 */
-	public function hasSShieldDome()
+	public function hasSmallShieldDome()
 	{
-		if(is_null($this->hasSShieldDome))
+		if($this->hasSmallShieldDome === null)
 		{
 			$collection = $this->getEventCollectionTemplate();
-			$collection->addTypeFilter("shipyard")
+			$collection->addTypeFilter("game/shipyard")
 				->addPlanetFilter(Core::getUser()->get("curplanet"))
 				->addDataSearchFilter("SMALL_SHIELD");
-			$this->hasSShieldDome = count($collection);
+			$this->hasSmallShieldDome = count($collection);
 		}
-		return $this->hasSShieldDome;
+		return $this->hasSmallShieldDome;
 	}
 
 	/**
@@ -477,17 +477,17 @@ class Bengine_Game_EventHandler
 	 *
 	 * @return boolean
 	 */
-	public function hasLShieldDome()
+	public function hasLargeShieldDome()
 	{
-		if(is_null($this->hasLShieldDome))
+		if($this->hasLargeShieldDome === null)
 		{
 			$collection = $this->getEventCollectionTemplate();
-			$collection->addTypeFilter("shipyard")
+			$collection->addTypeFilter("game/shipyard")
 				->addPlanetFilter(Core::getUser()->get("curplanet"))
 				->addDataSearchFilter("LARGE_SHIELD");
-			$this->hasLShieldDome = count($collection);
+			$this->hasLargeShieldDome = count($collection);
 		}
-		return $this->hasLShieldDome;
+		return $this->hasLargeShieldDome;
 	}
 
 	/**
@@ -501,13 +501,13 @@ class Bengine_Game_EventHandler
 		{
 			$this->workingMissiles = 0;
 			$collection = $this->getEventCollectionTemplate();
-			$collection->addTypeFilter("shipyard")
+			$collection->addTypeFilter("game/shipyard")
 				->addPlanetFilter(Core::getUser()->get("curplanet"))
 				->addDataSearchFilter("INTERCEPTOR_ROCKET");
 			$this->workingMissiles = count($collection);
 
 			$collection = $this->getEventCollectionTemplate();
-			$collection->addTypeFilter("shipyard")
+			$collection->addTypeFilter("game/shipyard")
 				->addPlanetFilter(Core::getUser()->get("curplanet"))
 				->addDataSearchFilter("INTERPLANETARY_ROCKET");
 			$this->workingMissiles += count($collection)*2;
