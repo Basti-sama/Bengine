@@ -198,8 +198,12 @@ class Bengine_Game_Espionage_Report extends Bengine_Game_Planet
 	 */
 	protected function generateReport()
 	{
-		$rHeadline = Core::getLanguage()->getItem("ESP_REPORT_RESSOURCE_HEADLINE");
-		$rHeadline = sprintf($rHeadline, $this->getData("planetname"), $this->position, $this->targetName);
+		Core::getLanguage()->assign(array(
+			"espPlanetName" => $this->getData("planetname"),
+			"espPlanetCoords" => $this->position,
+			"espUser" => $this->targetName
+		));
+		$rHeadline = Core::getLanguage()->getItem($this->getTargetUserId() ? "ESP_REPORT_RESOURCE_HEADLINE" : "ESP_REPORT_RESOURCE_HEADLINE_ALIEN");
 		$this->espReport  = "<table class=\"ntable\" style=\"width: 400px;\">";
 		$this->espReport .= "<tr><th colspan=\"4\">".$rHeadline."</th></tr>";
 		$this->espReport .= "<tr><td>".Core::getLanguage()->getItem("ESP_REPORT_METAL")."</td><td>".fNumber($this->getData("metal"))."</td><td>".Core::getLanguage()->getItem("ESP_REPORT_SILICON")."</td><td>".fNumber($this->getData("silicon"))."</td></tr>";
