@@ -24,6 +24,13 @@ class Bengine_Game_Assault
 	protected $owner = 0;
 
 	/**
+	 * Main defender participant id.
+	 *
+	 * @var int
+	 */
+	protected $mainDefender = 0;
+
+	/**
 	 * The assault id.
 	 *
 	 * @var integer
@@ -118,12 +125,13 @@ class Bengine_Game_Assault
 	{
 		Hook::event("AssaultLoadDefender", array($this));
 		Core::getQuery()->insert("assaultparticipant", array("assaultid" => $this->assaultid, "userid" => $this->owner, "planetid" => $this->location, "mode" => 0));
-		$participantid = Core::getDB()->lastInsertId();
+		$participantId = Core::getDB()->lastInsertId();
+		$this->mainDefender = $participantId;
 		$joins = "LEFT JOIN ".PREFIX."planet p ON (p.planetid = u2s.planetid)";
 		$result = Core::getQuery()->select("unit2shipyard u2s", array("u2s.unitid", "u2s.quantity"), $joins, Core::getDB()->quoteInto("u2s.planetid = ?", $this->location));
 		foreach($result->fetchAll() as $row)
 		{
-			Core::getQuery()->insert("fleet2assault", array("assaultid" => $this->assaultid, "participantid" => $participantid, "userid" => $this->owner, "unitid" => $row["unitid"], "quantity" => $row["quantity"], "mode" => 0));
+			Core::getQuery()->insert("fleet2assault", array("assaultid" => $this->assaultid, "participantid" => $participantId, "userid" => $this->owner, "unitid" => $row["unitid"], "quantity" => $row["quantity"], "mode" => 0));
 		}
 		$result->closeCursor();
 
@@ -233,10 +241,9 @@ class Bengine_Game_Assault
 	 */
 	public function updateMainDefender($lostUnits)
 	{
-		if($lostUnits > 0 && !is_null($this->owner))
+		if($lostUnits > 0)
 		{
-			$where  = Core::getDB()->quoteInto("userid = ? AND ", $this->owner);
-			$where .= Core::getDB()->quoteInto("assaultid = ?", $this->assaultid);
+			$where  = Core::getDB()->quoteInto("participantid = ?", $this->mainDefender);
 			$result = Core::getQuery()->select("fleet2assault", array("unitid", "quantity"), "", $where);
 			foreach($result->fetchAll() as $row)
 			{
