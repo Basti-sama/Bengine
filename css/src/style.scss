@@ -216,6 +216,15 @@ a, a:link, a:hover, a:active, a:visited {
 	text-align: center;
 }
 
+.ntable td {
+	ul li {
+		list-style-type: disc;
+	}
+	ol li {
+		list-style-type: decimal;
+	}
+}
+
 .strongBorderTop {
 	border-top: 3px solid #39435C !important;
 }
@@ -411,15 +420,15 @@ td .underline {
 	padding-left: 23px !important;
 }
 
-.usernameInput {
+.usernameInput, .usernameInput:focus {
 	background-image: url("../img/user.gif");
 }
 
-.pwInput {
+.pwInput, .pwInput:focus {
 	background-image: url("../img/key.gif");
 }
 
-.searchInput {
+.searchInput, .searchInput:focus {
 	background-image: url("../img/search.gif");
 }
 
