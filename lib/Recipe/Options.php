@@ -171,6 +171,10 @@ class Recipe_Options extends Recipe_Collection
 			case "int":
 				return (int) $item;
 			break;
+			case "float":
+			case "double":
+				return (float) $item;
+			break;
 			case "string":
 			case "char":
 			case "text":

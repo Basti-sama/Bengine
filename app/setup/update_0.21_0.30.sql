@@ -56,3 +56,5 @@ UPDATE `bengine_phrases` SET `content` = 'Mit der Zeit wurde Planeten immer dich
 UPDATE `bengine_phrases` SET `content` = 'Da bei gro&szlig;en Schlachten oftmals Tr&uuml;mmerfelder von abgeschossenen Schiffen zur&uuml;ck bleibt, kann es passieren, dass sich diese Tr&uuml;mmer zu einem gro&szlig;en Trabanten vereinen. Da man diesen Mond nicht ungenutzt lassen wollte, entwickelte man die Mondbasis um technisch n&uuml;tzliche Bauwerke errichten zu k&ouml;nnen. Jede Stufe erweitert den Mond um {config=MOON_BASE_FIELDS} Felder.' WHERE `title` = 'MOON_BASE_FULL_DESC' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Der H&auml;ndler bezahlt aktuell {@merchantRate}% des Originalpreises.' WHERE `title` = 'SCRAP_MERCHANT_DESCRIPTION' AND `languageid` = 1;
 UPDATE `bengine_phrases` SET `content` = 'Ressourcen auf {@espPlanetName} {@espPlanetCoords} (Spieler: {@espUser})', `title` = 'ESP_REPORT_RESOURCE_HEADLINE' WHERE `title` = 'ESP_REPORT_RESSOURCE_HEADLINE' AND `languageid` = 1;
+
+UPDATE `bengine_config` SET `type` = 'double' WHERE `var` = 'PRODUCTION_FACTOR';

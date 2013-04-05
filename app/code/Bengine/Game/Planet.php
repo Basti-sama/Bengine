@@ -284,9 +284,10 @@ class Bengine_Game_Planet
 		$this->prod["hydrogen"] -= $this->consumption["hydrogen"];
 
 		// Increase storage by production factor
-		$this->storage["metal"] *= Core::getConfig()->get("PRODUCTION_FACTOR");
-		$this->storage["silicon"] *= Core::getConfig()->get("PRODUCTION_FACTOR");
-		$this->storage["hydrogen"] *= Core::getConfig()->get("PRODUCTION_FACTOR");
+		$productionFactor = (double) Core::getConfig()->get("PRODUCTION_FACTOR");
+		$this->storage["metal"] *= $productionFactor;
+		$this->storage["silicon"] *= $productionFactor;
+		$this->storage["hydrogen"] *= $productionFactor;
 
 		// Reduce production regarding the energy.
 		$this->energy = $this->prod["energy"] - $this->consumption["energy"];

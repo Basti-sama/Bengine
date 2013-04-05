@@ -17,7 +17,8 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		"char" => "Text field",
 		"string" => "Text area",
 		"boolean" => "Check box",
-		"integer" => "Number",
+		"integer" => "Integer",
+		"double" => "Float",
 		"enum" => "Select box"
 	);
 
