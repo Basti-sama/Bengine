@@ -154,13 +154,17 @@ class Core
 	protected function setApplication()
 	{
 		$arguments = $this->getRequest()->getRawArguments();
-		if(empty($arguments[0]))
+		if(!empty($arguments[0]))
 		{
-			$application = DEFAULT_PACKAGE;
+			$application = $arguments[0];
+		}
+		elseif(!empty($arguments["package"]))
+		{
+			$application = $arguments["package"];
 		}
 		else
 		{
-			$application = $arguments[0];
+			$application = DEFAULT_PACKAGE;
 		}
 		$application = strtolower($application);
 		if(!file_exists(APP_ROOT_DIR."app/bootstrap/".$application."/index.php"))

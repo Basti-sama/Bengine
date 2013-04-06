@@ -186,13 +186,6 @@ class Pagination
 		$sp = "&amp;";
 		$in = "?";
 		$param = "page";
-		if($this->getConfig("rewrite_on"))
-		{
-			$op = ":";
-			$sp = "/";
-			$in = "/";
-			$param = "Page";
-		}
 		$requestVars = Core::getRequest()->getGET();
 		$queryStr = array();
 		$containsPage = false;
@@ -210,7 +203,7 @@ class Pagination
 			$queryStr[] = $param.$op.$page;
 		}
 		$queryStr = $in.implode($sp, $queryStr);
-		return basename($_SERVER["SCRIPT_FILENAME"]).$queryStr;
+		return $queryStr;
 	}
 
 	/**

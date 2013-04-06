@@ -147,7 +147,7 @@ class Recipe_Request
 	 */
 	public function getRawArguments()
 	{
-		return $this->args;
+		return $this->args + $_GET;
 	}
 
 	/**
@@ -311,13 +311,21 @@ class Recipe_Request
 	 */
 	public function setLevelNames(array $levelNames = null)
 	{
-		if(is_null($levelNames) && defined("REQUEST_LEVEL_NAMES"))
+		if($levelNames === null && defined("REQUEST_LEVEL_NAMES"))
 		{
 			$levelNames = explode(",", REQUEST_LEVEL_NAMES);
 			$levelNames = array_map("trim", $levelNames);
 		}
 		$this->levelNames = $levelNames;
 		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getLevelNames()
+	{
+		return $this->levelNames;
 	}
 
 	/**

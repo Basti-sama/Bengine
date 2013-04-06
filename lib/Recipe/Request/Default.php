@@ -21,7 +21,7 @@ class Recipe_Request_Default extends Recipe_Request_Adapter
 	 */
 	public function getGet($var = null, $default = null)
 	{
-		if(is_null($var))
+		if($var === null)
 		{
 			return $_GET;
 		}
