@@ -47,6 +47,11 @@ class Bengine_Game_Controller_RocketAttack extends Bengine_Game_Controller_Abstr
 			Core::getLanguage()->load("mission");
 			Logger::dieMessage("NO_FREE_FLEET_SLOTS");
 		}
+		if(Core::getOptions()->get("ATTACKING_STOPPAGE"))
+		{
+			Core::getLanguage()->load("mission");
+			Logger::dieMessage("ATTACKING_STOPPAGE_ENABLED");
+		}
 
 		$this->target = Core::getRequest()->getGET("1");
 		Core::getLanguage()->load("Galaxy,info");

@@ -196,6 +196,10 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 	 */
 	protected function _add(Bengine_Game_Model_Event $event, array $data)
 	{
+		if(Core::getOptions()->get("ATTACKING_STOPPAGE"))
+		{
+			throw new Recipe_Exception_Generic("Attacking stoppage enabled.");
+		}
 		Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity - ? WHERE unitid = ? AND planetid = ?", array($data["rockets"], 52, $event->getPlanetid()));
 		Core::getQuery()->delete("unit2shipyard", "quantity = '0'");
 		return $this;
@@ -217,7 +221,6 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 	 */
 	protected function _isValid()
 	{
-
 		return false;
 	}
 }

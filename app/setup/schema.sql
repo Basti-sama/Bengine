@@ -1735,7 +1735,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 1, 'ERROR_404_MESSAGE', 'Die aufgerufene Seite ist nicht mehr aktuell oder exisiert nicht.'),
 (1, 8, 'JS_INTERFACE', 'JavaScript Schnittstelle'),
 (1, 8, 'JS_INTERFACE_DESCRIPTION', 'Nutze dieses Feld, um eine externe JavaScript-Datei in das Spiel einzubinden.'),
-(1, 10, 'ATTACKING_STOPPAGE_ENABLED', '(Angriffssperre aktiv)'),
+(1, 10, 'ATTACKING_STOPPAGE_ENABLED', 'Angriffssperre aktiv'),
 (1, 10, 'FLEET_SLOTS', 'Flottenslots:'),
 (1, 9, 'FLY_DURATION', 'Flugdauer'),
 (1, 14, 'MISSING_RIGHTS_FOR_GLOBAL_MAIL', 'Du hast nicht ausreichend Rechte um eine Rundmail zu schreiben.'),
