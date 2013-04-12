@@ -141,7 +141,7 @@ class Bengine_Game_Controller_Friends extends Bengine_Game_Controller_Abstract
 	{
 		foreach($remove as $relid)
 		{
-			$where = Core::getDB()->quoteInto("relid = ?' AND (friend1 = ? OR friend2 = ?)", array(
+			$where = Core::getDB()->quoteInto("relid = ? AND (friend1 = ? OR friend2 = ?)", array(
 				$relid, Core::getUser()->get("userid"), Core::getUser()->get("userid")
 			));
 			$result = Core::getQuery()->select("buddylist", array("friend1", "friend2", "accepted"), "", $where);
