@@ -773,17 +773,20 @@ class Recipe_Cache
 				}
 			}
 		}
-		try {
-			foreach(new DirectoryIterator($moduleDirectory) as $fileObj)
-			{
-				if(!$fileObj->isDot() && $fileObj->isFile())
+		if(is_dir($moduleDirectory))
+		{
+			try {
+				foreach(new DirectoryIterator($moduleDirectory) as $fileObj)
 				{
-					$temp = json_decode(file_get_contents($fileObj->getPathname()), true);
-					$data = array_merge_recursive_distinct($data, $temp);
+					if(!$fileObj->isDot() && $fileObj->isFile())
+					{
+						$temp = json_decode(file_get_contents($fileObj->getPathname()), true);
+						$data = array_merge_recursive_distinct($data, $temp);
+					}
 				}
-			}
-		} catch(UnexpectedValueException $e) {
+			} catch(UnexpectedValueException $e) {
 
+			}
 		}
 
 		$temp = json_decode(file_get_contents(APP_ROOT_DIR.'etc/local.json'), true);
