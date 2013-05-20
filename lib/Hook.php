@@ -66,6 +66,10 @@ class Hook
 	 */
 	protected static function runHooks($hook, $event, array $args = null)
 	{
+		if(null === $args)
+		{
+			$args = array();
+		}
 		$return = null;
 		foreach($hook as $pluginObj)
 		{
