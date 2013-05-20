@@ -1165,7 +1165,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 9, 'DEFICIENT_CAPACITY', 'Ladekapazit&auml;t reicht nicht aus'),
 (1, 9, 'DEFICIENT_CONSUMPTION', 'Kein Treibstoff'),
 (1, 9, 'DEFICIENT_ESPS', 'Keine Spionagesonden'),
-(1, 9, 'DESTROYED_PLANET', 'Zerst&ouml;rter Planet'),
+(1, 9, 'DESTROYED_PLANET', 'Verlassener Planet'),
 (1, 9, 'ENEMY', 'Feind'),
 (1, 9, 'ESPS_SENT', '%s Spionagesonde(n) nach %s:%s:%s versendet.'),
 (1, 9, 'FEATURES', 'Eigenschaften'),
