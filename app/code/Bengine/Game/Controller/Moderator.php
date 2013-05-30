@@ -24,7 +24,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	protected function init()
 	{
 		Core::getUser()->checkPermissions("CAN_MODERATE_USER");
-		Core::getLanguage()->load(array("Prefs" ,"Statistics"));
+		Core::getLanguage()->load(array("Prefs" ,"Statistics", "Registration"));
 		$this->userid = (Core::getRequest()->getPOST("userid")) ? Core::getRequest()->getPOST("userid") : Core::getRequest()->getGET("1");
 		parent::init();
 	}
@@ -136,6 +136,13 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 			setProdOfUser($this->userid, 0);
 		}
 		Core::getQuery()->update("sessions", array("logged" => 0), "userid = ?", array($this->userid));
+		$user = Game::getModel("game/user")->load($this->userid);
+		Core::getTemplate()->assign("banReason", $reason);
+		Core::getLang()->assign("banDate", Date::timeToString(1, $to, "", 0));
+		Core::getLang()->assign("username", $user->get("username"));
+		$template = new Recipe_Email_Template("ban_notification");
+		$mail = new Email(array($user->get("email") => $user->get("username")), Core::getLanguage()->getItem("BAN_NOTIFICATION_MAIL_SUBJECT"));
+		$template->send($mail);
 		return $this;
 	}
 
@@ -146,7 +153,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	 *
 	 * @return Bengine_Game_Controller_Moderator
 	 */
-	protected function annulBan($banid)
+	protected function annulBanAction($banid)
 	{
 		Hook::event("UnbanUser", array($banid));
 		Core::getQuery()->update("ban_u", array("to" => TIME, "reason" => Core::getLanguage()->getItem("ANNULED")), "banid = ?", array($banid));

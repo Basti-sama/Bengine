@@ -801,7 +801,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 3, 'INBOX', 'Postfach'),
 (1, 3, 'INVALID_PLANET_NAME', 'Der Planetenname enth&auml;lt ung&uuml;ltige Zeichen oder ist zu kurz.'),
 (1, 3, 'NEW_PLANET_NAME', 'Planeten umbennen'),
-(1, 3, 'NEWS_AND_INFO', 'News und Infos'),
+(1, 3, 'NEWS_AND_INFO', 'News und Ank&uuml;ndigungen'),
 (1, 3, 'NO_NEWS_FOUND', 'Keine aktuellen News vorhanden.'),
 (1, 3, 'PLANETDIAMETER', 'Durchmesser'),
 (1, 3, 'PLANET_OPTIONS', 'Planeten Optionen'),
@@ -1780,7 +1780,10 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 14, 'RIGHT_LEGEND', 'Rechte Legende'),
 (1, 14, 'RELATION_TO_OWN_ALLIANCE', 'Du kannst keine diplomatische Beziehung mit deiner eigenen Allianz beginnen.');
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
-(1, 8, 'THEME_INVALID', 'Bitte verwende als Theme eine g&uuml;ltige URL mit abschlie&szlig;endem &quot;/&quot;.');
+(1, 8, 'THEME_INVALID', 'Bitte verwende als Theme eine g&uuml;ltige URL mit abschlie&szlig;endem &quot;/&quot;.'),
+(1, 8, 'BAN_NOTIFICATION_MAIL_SUBJECT', 'Benutzerkonto gesperrt'),
+(1, 8, 'BAN_NOTIFICATION_MAIL_1', 'dein Benutzerkonto wurde bis zum {@banDate} gesperrt. Der zuständige Moderator hat folgenden Grund für die Sperre angegeben:'),
+(1, 8, 'BAN_NOTIFICATION_MAIL_2', 'Wende dich bei Problemen bitte direkt an deinen Moderator:');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (
