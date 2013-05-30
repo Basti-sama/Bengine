@@ -167,9 +167,10 @@ class Bengine_Game_Controller_Preferences extends Bengine_Game_Controller_Abstra
 		$usertitle = trim($usertitle);
 		$js_interface = trim($js_interface);
 		$language = (int) (empty($language) ? Core::getConfig()->get("defaultlanguage") : $language);
-		if(!preg_match("/^.+\/$/i", $theme) && $theme != "")
+		if(!empty($theme) && !filter_var($theme, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
 		{
-			$theme .= "/";
+			$theme = "";
+			Logger::addMessage("THEME_INVALID");
 		}
 		if(!empty($templatepackage) && !is_dir(APP_ROOT_DIR."app/templates/".$templatepackage))
 		{
