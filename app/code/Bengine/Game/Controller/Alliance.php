@@ -1173,7 +1173,6 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 					if($receipt && !$row["aid"])
 					{
 						Hook::event("ReceiptAllianceCandidate", array($userid, $row));
-						Core::getQuery()->insert("user2ally", array("userid" => $userid, "aid" => $this->aid, "joindate" => TIME));
 						new Bengine_Game_AutoMsg(24, $userid, TIME, $row);
 						$_result = Core::getQuery()->select("user2ally", "userid", "", Core::getDB()->quoteInto("aid = ?", $this->aid));
 						foreach($_result->fetchAll() as $_row)
@@ -1181,6 +1180,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 							new Bengine_Game_AutoMsg(100, $_row["userid"], TIME, $row);
 						}
 						$_result->closeCursor();
+						Core::getQuery()->insert("user2ally", array("userid" => $userid, "aid" => $this->aid, "joindate" => TIME));
 						Core::getQuery()->delete("allyapplication", "userid = ?", null, null, array($userid));
 					}
 					else
