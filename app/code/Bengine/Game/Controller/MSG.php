@@ -116,6 +116,7 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 	 */
 	protected function sendMessage($receiver, $subject, $message)
 	{
+		$this->checkForSpam();
 		$receiver = trim($receiver);
 		$subject = trim($subject);
 		$message = richText($message);
@@ -356,6 +357,25 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 		Hook::event("MarkFolderAsRead", array($folderId));
 		Core::getQuery()->update("message", array("read" => 1), "mode = ? AND receiver = ?", array($folderId, Core::getUser()->get("userid")));
 		$this->redirect("game/".SID."/MSG");
+		return $this;
+	}
+
+	/**
+	 * Checks if the user send to many message (spam protection).
+	 *
+	 * @return Bengine_Game_Controller_MSG
+	 */
+	protected function checkForSpam()
+	{
+		if($max = Core::getConfig()->get("MESSAGE_FLOOD_MAX"))
+		{
+			$bind = array(Core::getUser()->get("userid"), TIME - Core::getConfig()->get("MESSAGE_FLOOD_SPAN"));
+			$result = Core::getQuery()->select("message", array("COUNT(msgid)"), "", "sender = ? AND time >= ?", "", 1, "", "", $bind);
+			if($result->fetchColumn() >= $max)
+			{
+				Logger::dieMessage("MESSAGE_FLOOD_INFO", "warning");
+			}
+		}
 		return $this;
 	}
 }

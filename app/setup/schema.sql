@@ -342,6 +342,8 @@ INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, 
 ('MAX_PMS', '10', 'integer', 'Maximum messages shown per page.', '', 6, 1, 0),
 ('MAX_PM_LENGTH', '1000', 'integer', 'Maximum length for messages.', '', 6, 1, 0),
 ('MAX_USER_CHARS', '20', 'integer', 'Maximum allowed characters of usernames.', '', 4, 1, 0),
+('MESSAGE_FLOOD_MAX', '10', 'integer', 'Maximum private message after checking for spam. Set to 0 to deactivate spam check.', NULL, '6', '1', '0'),
+('MESSAGE_FLOOD_SPAN', '600', 'integer', 'Time span for checking private message spam in seconds.', NULL, '6', '1', '0'),
 ('METAL_BASIC_PROD', '20', 'integer', 'Basic metal production per hour.', '', 2, 1, 0),
 ('MIN_CHARS_ALLY_NAME', '3', 'integer', 'Minimum characters for alliance names.', '', 7, 1, 0),
 ('MIN_CHARS_ALLY_TAG', '2', 'integer', 'Minimum characters for alliance tags.', '', 7, 1, 0),
@@ -1783,7 +1785,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 8, 'THEME_INVALID', 'Bitte verwende als Theme eine g&uuml;ltige URL mit abschlie&szlig;endem &quot;/&quot;.'),
 (1, 8, 'BAN_NOTIFICATION_MAIL_SUBJECT', 'Benutzerkonto gesperrt'),
 (1, 8, 'BAN_NOTIFICATION_MAIL_1', 'dein Benutzerkonto wurde bis zum {@banDate} gesperrt. Der zuständige Moderator hat folgenden Grund für die Sperre angegeben:'),
-(1, 8, 'BAN_NOTIFICATION_MAIL_2', 'Wende dich bei Problemen bitte direkt an deinen Moderator:');
+(1, 8, 'BAN_NOTIFICATION_MAIL_2', 'Wende dich bei Problemen bitte direkt an deinen Moderator:'),
+(1, 11, 'MESSAGE_FLOOD_INFO', 'Du hast du viele Nachrichten hintereinander verschickt. Warte ein wenig und versuche es anschlie&szlig;end erneut.');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (

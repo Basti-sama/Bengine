@@ -5,4 +5,9 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 8, 'THEME_INVALID', 'Bitte verwende als Theme eine g&uuml;ltige URL mit abschlie&szlig;endem &quot;/&quot;.'),
 (1, 8, 'BAN_NOTIFICATION_MAIL_SUBJECT', 'Benutzerkonto gesperrt'),
 (1, 8, 'BAN_NOTIFICATION_MAIL_1', 'dein Benutzerkonto wurde bis zum {@banDate} gesperrt. Der zuständige Moderator hat folgenden Grund für die Sperre angegeben:'),
-(1, 8, 'BAN_NOTIFICATION_MAIL_2', 'Wende dich bei Problemen bitte direkt an deinen Moderator:');
+(1, 8, 'BAN_NOTIFICATION_MAIL_2', 'Wende dich bei Problemen bitte direkt an deinen Moderator:'),
+(1, 11, 'MESSAGE_FLOOD_INFO', 'Du hast du viele Nachrichten hintereinander verschickt. Warte ein wenig und versuche es anschlie&szlig;end erneut.');
+
+INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, `groupid`, `islisted`, `sort_index`) VALUES
+('MESSAGE_FLOOD_MAX', '10', 'integer', 'Maximum private message after checking for spam. Set to 0 to deactivate spam check.', NULL, '6', '1', '0'),
+('MESSAGE_FLOOD_SPAN', '600', 'integer', 'Time span for checking private message spam in seconds.', NULL, '6', '1', '0');
