@@ -219,6 +219,7 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Account_Ajax
 		}
 
 		// Send start-up message
+		Core::getLang()->assign("regUsername", $this->getUsername());
 		Core::getQuery()->insert("message", array("mode" => 1, "time" => TIME, "sender" => null, "receiver" => $userid, "message" => Core::getLang()->getItem("START_UP_MESSAGE"), "subject" => Core::getLang()->getItem("START_UP_MESSAGE_SUBJECT"), "read" => 0));
 		Hook::event("UserRegistrationSuccess", array($this, $planet));
 		// Delete Registrations older than 7 days
