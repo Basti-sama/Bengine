@@ -192,6 +192,7 @@ class Bengine_Game_Alliance_Page_Parser
 		$this->text = preg_replace("/\{totalmember\}/esiU", '$this->getTotalMember()', $this->text);
 		$this->text = preg_replace("/\{avarage\}/esiU", '$this->getAvarage()', $this->text);
 		$this->text = preg_replace("/\{no\}/esiU", '$this->getNumber()', $this->text);
+		$this->text = preg_replace("~src=['\"]([^'\"]+)['\"]~i", "src=\"".BASE_URL."img/remote.php?file=\\1\"", $this->text);
 		Hook::event("AllyPageParserEnd", array($this));
 		return $this->text;
 	}

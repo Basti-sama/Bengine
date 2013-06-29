@@ -21,23 +21,28 @@ class Image
 	/**
 	 * Generate image tag in HTML.
 	 *
-	 * @param string	Image URL
-	 * @param string	Additional title
-	 * @param integer	Image width
-	 * @param integer	Image height
-	 * @param string	Additional CSS class designation
+	 * @param string $url		Image URL
+	 * @param string $title		Additional title
+	 * @param integer $width	Image width
+	 * @param integer $height	Image height
+	 * @param string $cssClass	Additional CSS class designation
 	 *
-	 * @return string	Image tag
+	 * @return string			Image tag
 	 */
 	public static function getImage($url, $title, $width = null, $height = null, $cssClass = "")
 	{
-		if(Core::getUser()->get("theme") != "" && !Link::isExternal($url))
+		$isExternal = Link::isExternal($url);
+		if(Core::getUser()->get("theme") != "" && !$isExternal)
 		{
 			$url = Core::getUser()->get("theme")."img/".$url;
 		}
-		if(!Link::isExternal($url))
+		if(!$isExternal)
 		{
 			$url = BASE_URL."img/".$url;
+		}
+		else
+		{
+			$url = BASE_URL."img/remote.php?file=".$url;
 		}
 
 		if(Str::length($cssClass) == 0) { $cssClass = self::IMAGE_CSS_CLASS; }
