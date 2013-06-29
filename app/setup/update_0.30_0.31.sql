@@ -11,3 +11,85 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, `groupid`, `islisted`, `sort_index`) VALUES
 ('MESSAGE_FLOOD_MAX', '10', 'integer', 'Maximum private message after checking for spam. Set to 0 to deactivate spam check.', NULL, '6', '1', '0'),
 ('MESSAGE_FLOOD_SPAN', '600', 'integer', 'Time span for checking private message spam in seconds.', NULL, '6', '1', '0');
+
+ALTER TABLE `bengine_languages` DROP `charset`;
+
+UPDATE `bengine_phrases` SET `content` = REPLACE(`content`, 'Ã¤', 'ä');
+UPDATE `bengine_phrases` SET `content` = REPLACE(`content`, 'Ã„', 'Ä');
+UPDATE `bengine_phrases` SET `content` = REPLACE(`content`, 'Ã¶', 'ö');
+UPDATE `bengine_phrases` SET `content` = REPLACE(`content`, 'Ã–', 'Ö');
+UPDATE `bengine_phrases` SET `content` = REPLACE(`content`, 'Ã¼', 'ü');
+UPDATE `bengine_phrases` SET `content` = REPLACE(`content`, 'Ãœ', 'Ü');
+UPDATE `bengine_phrases` SET `content` = REPLACE(`content`, 'ÃŸ', 'ß');
+
+UPDATE `bengine_alliance` SET `textextern` = REPLACE(`textextern`, 'Ã¤', 'ä');
+UPDATE `bengine_alliance` SET `textextern` = REPLACE(`textextern`, 'Ã„', 'Ä');
+UPDATE `bengine_alliance` SET `textextern` = REPLACE(`textextern`, 'Ã¶', 'ö');
+UPDATE `bengine_alliance` SET `textextern` = REPLACE(`textextern`, 'Ã–', 'Ö');
+UPDATE `bengine_alliance` SET `textextern` = REPLACE(`textextern`, 'Ã¼', 'ü');
+UPDATE `bengine_alliance` SET `textextern` = REPLACE(`textextern`, 'Ãœ', 'Ü');
+UPDATE `bengine_alliance` SET `textextern` = REPLACE(`textextern`, 'ÃŸ', 'ß');
+
+UPDATE `bengine_alliance` SET `textintern` = REPLACE(`textintern`, 'Ã¤', 'ä');
+UPDATE `bengine_alliance` SET `textintern` = REPLACE(`textintern`, 'Ã„', 'Ä');
+UPDATE `bengine_alliance` SET `textintern` = REPLACE(`textintern`, 'Ã¶', 'ö');
+UPDATE `bengine_alliance` SET `textintern` = REPLACE(`textintern`, 'Ã–', 'Ö');
+UPDATE `bengine_alliance` SET `textintern` = REPLACE(`textintern`, 'Ã¼', 'ü');
+UPDATE `bengine_alliance` SET `textintern` = REPLACE(`textintern`, 'Ãœ', 'Ü');
+UPDATE `bengine_alliance` SET `textintern` = REPLACE(`textintern`, 'ÃŸ', 'ß');
+
+UPDATE `bengine_page` SET `content` = REPLACE(`content`, 'Ã¤', 'ä');
+UPDATE `bengine_page` SET `content` = REPLACE(`content`, 'Ã„', 'Ä');
+UPDATE `bengine_page` SET `content` = REPLACE(`content`, 'Ã¶', 'ö');
+UPDATE `bengine_page` SET `content` = REPLACE(`content`, 'Ã–', 'Ö');
+UPDATE `bengine_page` SET `content` = REPLACE(`content`, 'Ã¼', 'ü');
+UPDATE `bengine_page` SET `content` = REPLACE(`content`, 'Ãœ', 'Ü');
+UPDATE `bengine_page` SET `content` = REPLACE(`content`, 'ÃŸ', 'ß');
+
+UPDATE `bengine_page` SET `title` = REPLACE(`title`, 'Ã¤', 'ä');
+UPDATE `bengine_page` SET `title` = REPLACE(`title`, 'Ã„', 'Ä');
+UPDATE `bengine_page` SET `title` = REPLACE(`title`, 'Ã¶', 'ö');
+UPDATE `bengine_page` SET `title` = REPLACE(`title`, 'Ã–', 'Ö');
+UPDATE `bengine_page` SET `title` = REPLACE(`title`, 'Ã¼', 'ü');
+UPDATE `bengine_page` SET `title` = REPLACE(`title`, 'Ãœ', 'Ü');
+UPDATE `bengine_page` SET `title` = REPLACE(`title`, 'ÃŸ', 'ß');
+
+UPDATE `bengine_message` SET `message` = REPLACE(`message`, 'Ã¤', 'ä');
+UPDATE `bengine_message` SET `message` = REPLACE(`message`, 'Ã„', 'Ä');
+UPDATE `bengine_message` SET `message` = REPLACE(`message`, 'Ã¶', 'ö');
+UPDATE `bengine_message` SET `message` = REPLACE(`message`, 'Ã–', 'Ö');
+UPDATE `bengine_message` SET `message` = REPLACE(`message`, 'Ã¼', 'ü');
+UPDATE `bengine_message` SET `message` = REPLACE(`message`, 'Ãœ', 'Ü');
+UPDATE `bengine_message` SET `message` = REPLACE(`message`, 'ÃŸ', 'ß');
+
+UPDATE `bengine_message` SET `subject` = REPLACE(`subject`, 'Ã¤', 'ä');
+UPDATE `bengine_message` SET `subject` = REPLACE(`subject`, 'Ã„', 'Ä');
+UPDATE `bengine_message` SET `subject` = REPLACE(`subject`, 'Ã¶', 'ö');
+UPDATE `bengine_message` SET `subject` = REPLACE(`subject`, 'Ã–', 'Ö');
+UPDATE `bengine_message` SET `subject` = REPLACE(`subject`, 'Ã¼', 'ü');
+UPDATE `bengine_message` SET `subject` = REPLACE(`subject`, 'Ãœ', 'Ü');
+UPDATE `bengine_message` SET `subject` = REPLACE(`subject`, 'ÃŸ', 'ß');
+
+UPDATE `bengine_profile2user` SET `data` = REPLACE(`data`, 'Ã¤', 'ä');
+UPDATE `bengine_profile2user` SET `data` = REPLACE(`data`, 'Ã„', 'Ä');
+UPDATE `bengine_profile2user` SET `data` = REPLACE(`data`, 'Ã¶', 'ö');
+UPDATE `bengine_profile2user` SET `data` = REPLACE(`data`, 'Ã–', 'Ö');
+UPDATE `bengine_profile2user` SET `data` = REPLACE(`data`, 'Ã¼', 'ü');
+UPDATE `bengine_profile2user` SET `data` = REPLACE(`data`, 'Ãœ', 'Ü');
+UPDATE `bengine_profile2user` SET `data` = REPLACE(`data`, 'ÃŸ', 'ß');
+
+UPDATE `bengine_news` SET `title` = REPLACE(`title`, 'Ã¤', 'ä');
+UPDATE `bengine_news` SET `title` = REPLACE(`title`, 'Ã„', 'Ä');
+UPDATE `bengine_news` SET `title` = REPLACE(`title`, 'Ã¶', 'ö');
+UPDATE `bengine_news` SET `title` = REPLACE(`title`, 'Ã–', 'Ö');
+UPDATE `bengine_news` SET `title` = REPLACE(`title`, 'Ã¼', 'ü');
+UPDATE `bengine_news` SET `title` = REPLACE(`title`, 'Ãœ', 'Ü');
+UPDATE `bengine_news` SET `title` = REPLACE(`title`, 'ÃŸ', 'ß');
+
+UPDATE `bengine_news` SET `text` = REPLACE(`text`, 'Ã¤', 'ä');
+UPDATE `bengine_news` SET `text` = REPLACE(`text`, 'Ã„', 'Ä');
+UPDATE `bengine_news` SET `text` = REPLACE(`text`, 'Ã¶', 'ö');
+UPDATE `bengine_news` SET `text` = REPLACE(`text`, 'Ã–', 'Ö');
+UPDATE `bengine_news` SET `text` = REPLACE(`text`, 'Ã¼', 'ü');
+UPDATE `bengine_news` SET `text` = REPLACE(`text`, 'Ãœ', 'Ü');
+UPDATE `bengine_news` SET `text` = REPLACE(`text`, 'ÃŸ', 'ß');

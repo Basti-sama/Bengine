@@ -370,7 +370,7 @@ abstract class Recipe_Template_Adapter_Abstract
 				ob_start("ob_gzhandler");
 				$this->compressed = true;
 			}
-			Recipe_Header::add("Content-Type", $this->contentType."; charset=".Core::getLanguage()->getOpt("charset"));
+			Recipe_Header::add("Content-Type", $this->contentType."; charset=".CHARACTER_SET);
 			Recipe_Header::send();
 		}
 		return $this;

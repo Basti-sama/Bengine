@@ -273,7 +273,7 @@ function richText($str)
 		/* @var HTMLPurifier_Config $config */
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set("Cache.SerializerPath", APP_ROOT_DIR."var/cache/htmlpurifier");
-		$config->set("Core.Encoding", Core::getLang()->getOpt("charset"));
+		$config->set("Core.Encoding", CHARACTER_SET);
 		$config->set("HTML.DefinitionID", "enduser-customize.html tutorial");
 		$config->set('HTML.DefinitionRev', 1);
 		$config->set("HTML.Doctype", "XHTML 1.0 Strict");

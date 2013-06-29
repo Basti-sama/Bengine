@@ -37,24 +37,22 @@
 		<table class="ntable" cellpadding="4" cellspacing="0">
 			<thead>
 				<tr>
-					<th colspan="4">{lang}Manager_Languages{/lang}</th>
+					<th colspan="3">{lang}Manager_Languages{/lang}</th>
 				</tr>
 			</thead>
 			<tr>
 				<td>{lang}Language{/lang}</td>
-				<td>{lang}Charset{/lang}</td>
 				<td>{lang}Variables{/lang}</td>
 				<td>{lang}Delete{/lang}</td>
 			</tr>
 			<?php $count = count($this->getLoop("languages")); foreach($this->getLoop("languages") as $key => $row): ?> <tr>
 				<td>[{loop}langcode{/loop}] <input type="hidden" name="langs[]" value="{loop}languageid{/loop}" /><input type="text" name="title_{loop}languageid{/loop}" value="{loop}title{/loop}" maxlength="128" /></td>
-				<td><input type="text" name="charset_{loop}languageid{/loop}" value="{loop}charset{/loop}" maxlength="128" /></td>
 				<td>{loop}phrases{/loop}</td>
 				<td><input type="checkbox" name="delete[]" value="{loop}languageid{/loop}" /></td> {loop}link{/loop}
 			</tr> <?php endforeach; ?>
 			<tfoot>
 				<tr>
-					<td colspan="4">
+					<td colspan="3">
 						<input type="submit" name="save_languages" value="{lang}Commit{/lang}" class="button" /><br />
 						[<?php echo Link::get("admin/language/newlanguage", Core::getLanguage()->get("New_Language")); ?>]
 					</td>

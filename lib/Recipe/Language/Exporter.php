@@ -115,10 +115,10 @@ class Recipe_Language_Exporter
 		$data  = '<?xml version="1.0" encoding="UTF-8"?>'.$this->n;
 		$data .= '<lang>'.$this->n;
 		$where = (is_null($this->langId)) ? "" : Core::getDB()->quoteInto("languageid = ? OR langcode = ?", $this->langId);
-		$result = Core::getQuery()->select("languages", array("languageid", "langcode", "title", "charset"), "", $where);
+		$result = Core::getQuery()->select("languages", array("languageid", "langcode", "title"), "", $where);
 		foreach($result->fetchAll() as $row)
 		{
-			$data .= $this->getI().'<'.$row["langcode"].' title="'.$row["title"].'" charset="'.$row["charset"].'">'.$this->n;
+			$data .= $this->getI().'<'.$row["langcode"].' title="'.$row["title"].'">'.$this->n;
 			$groups = $this->getGroups();
 			foreach($groups as $group)
 			{

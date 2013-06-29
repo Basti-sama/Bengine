@@ -34,7 +34,7 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 		}
 		$result = Core::getQuery()->select("languages", array("languageid", "title"), "", "", "title ASC");
 		Core::getTPL()->addLoop("langselection", $result->fetchAll());
-		$result = Core::getQuery()->select("languages l", array("l.languageid", "l.title", "l.langcode", "l.charset", "COUNT(p.phraseid) AS phrases"), "LEFT JOIN ".PREFIX."phrases p ON (p.languageid = l.languageid) GROUP BY l.languageid");
+		$result = Core::getQuery()->select("languages l", array("l.languageid", "l.title", "l.langcode", "COUNT(p.phraseid) AS phrases"), "LEFT JOIN ".PREFIX."phrases p ON (p.languageid = l.languageid) GROUP BY l.languageid");
 		Core::getTPL()->addLoop("languages", $result->fetchAll());
 		$result = Core::getQuery()->select("phrasesgroups", array("phrasegroupid", "title"), "", "", "title ASC");
 		Core::getTPL()->addLoop("groupselection", $result->fetchAll());
@@ -136,7 +136,7 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 		}
 		foreach($langs as $id)
 		{
-			$spec = array("title" => Core::getRequest()->getPOST("title_".$id), "charset" => Core::getRequest()->getPOST("charset_".$id));
+			$spec = array("title" => Core::getRequest()->getPOST("title_".$id));
 			Core::getQuery()->update("languages", $spec, "languageid = ?", array($id));
 		}
 		return $this;
@@ -145,12 +145,11 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 	/**
 	 * @param string $langcode
 	 * @param string $language
-	 * @param string $charset
 	 * @return Bengine_Admin_Controller_Language
 	 */
-	protected function addLanguage($langcode, $language, $charset)
+	protected function addLanguage($langcode, $language)
 	{
-		Core::getQuery()->insert("languages", array("langcode" => $langcode, "title" => $language, "charset" => $charset));
+		Core::getQuery()->insert("languages", array("langcode" => $langcode, "title" => $language));
 		return $this;
 	}
 
@@ -161,7 +160,7 @@ class Bengine_Admin_Controller_Language extends Bengine_Admin_Controller_Abstrac
 	{
 		if($this->getParam("add_language"))
 		{
-			$this->addLanguage($this->getParam("langcode"), $this->getParam("language"), $this->getParam("charset"));
+			$this->addLanguage($this->getParam("langcode"), $this->getParam("language"));
 		}
 		return $this;
 	}

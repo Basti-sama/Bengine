@@ -64,8 +64,7 @@ class Recipe_Language_XML_Importer extends Recipe_Language_Importer
 			}
 			$createData = array(
 				"langcode"	=> $lang->getName(),
-				"title"		=> $lang->getAttribute("title"),
-				"charset"	=> $lang->getAttribute("charset")
+				"title"		=> $lang->getAttribute("title")
 			);
 			$this->getFromLangCode($lang->getName(), $createData);
 			/* @var XMLObj $group */

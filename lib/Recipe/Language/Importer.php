@@ -195,7 +195,7 @@ class Recipe_Language_Importer
 		{
 			if(is_array($createData))
 			{
-				$spec = array_combine(array("langcode", "title", "charset"), $createData);
+				$spec = array_combine(array("langcode", "title"), $createData);
 				Core::getQuery()->insert("languages", $spec);
 				$this->langId = Core::getDB()->lastInsertId();
 				return $this;

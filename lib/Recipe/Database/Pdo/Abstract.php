@@ -16,6 +16,13 @@ abstract class Recipe_Database_Pdo_Abstract extends Recipe_Database_Abstract
 	protected $pdo = null;
 
 	/**
+	 * @var array
+	 */
+	protected $pdoConnectionOptions = array(
+		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+	);
+
+	/**
 	 * @var string
 	 */
 	protected $driver = null;
@@ -39,15 +46,13 @@ abstract class Recipe_Database_Pdo_Abstract extends Recipe_Database_Abstract
 		{
 			die("PDO driver '{$this->driver}' not installed.");
 		}
-		$dsn = $this->driver.":host=".$this->host.";dbname=".$this->database.";";
+		$dsn = $this->driver.":host=".$this->host.";dbname=".$this->database.";charset=UTF8";
 		if($this->port !== null)
 		{
 			$dsn .= "port=".$this->port.";";
 		}
 		try {
-			$this->pdo = new PDO($dsn, $this->user, $this->password, array(
-				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-			));
+			$this->pdo = new PDO($dsn, $this->user, $this->password, $this->pdoConnectionOptions);
 		} catch(PDOException $e) {
 			die($e->getMessage());
 		}

@@ -13,7 +13,7 @@ new Core();
 if($url = Core::getRequest()->getGET("url"))
 {
 	Core::getTPL()->assign("link", $url);
-	Core::getTPL()->assign("charset", Core::getLang()->getOpt("charset"));
+	Core::getTPL()->assign("charset", CHARACTER_SET);
 	Core::getTPL()->addHTMLHeaderFile("style.css", "css");
 
 	$pageTitle = array();

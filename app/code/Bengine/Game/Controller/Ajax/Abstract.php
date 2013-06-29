@@ -59,7 +59,7 @@ abstract class Bengine_Game_Controller_Ajax_Abstract extends Bengine_Game_Contro
 				ob_start("ob_gzhandler");
 				$this->compressed = true;
 			}
-			@header("Content-Type: text/html; charset=".Core::getLanguage()->getOpt("charset"));
+			@header("Content-Type: text/html; charset=".CHARACTER_SET);
 			$this->headersSent = true;
 		}
 		return $this;

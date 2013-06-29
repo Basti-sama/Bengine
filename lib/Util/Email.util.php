@@ -513,7 +513,7 @@ class Email
 	{
 		if(is_null($this->charset))
 		{
-			$this->charset = Core::getLang()->getOpt("charset");
+			$this->charset = CHARACTER_SET;
 		}
 		return $this->charset;
 	}

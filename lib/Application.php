@@ -68,7 +68,7 @@ abstract class Application
 	{
 		self::loadMeta();
 
-		Core::getTPL()->assign("charset", Core::getLang()->getOpt("charset"));
+		Core::getTPL()->assign("charset", CHARACTER_SET);
 		Core::getTPL()->assign("langcode", Core::getLang()->getOpt("langcode"));
 		Core::getTPL()->assign("formaction", Core::getRequest()->getRequestedUrl());
 

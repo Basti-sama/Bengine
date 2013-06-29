@@ -17,6 +17,7 @@ define("LOG_EXCEPTIONS", false);
 define("REQUEST_ADAPTER", "default");
 define("DEFAULT_PACKAGE", "comm");
 define("MOD_REWRITE", true);
+define("CHARACTER_SET", "utf-8");
 
 // Required constants (Global preferences)
 define("COOKIE_PREFIX", "bengine_");	// Prefix for cookies.

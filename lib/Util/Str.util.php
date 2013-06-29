@@ -29,9 +29,7 @@ class Str
 	{
 		if(strlen($text) > 0)
 		{
-			if(self::compare(Core::getLanguage()->getOpt("charset"), "utf-8")) { $chars = HTML_SPECIALCHARS; }
-			else { $chars = HTML_ENTITIES; }
-			$XHTMLConvertEntities = get_html_translation_table($chars);
+			$XHTMLConvertEntities = get_html_translation_table(HTML_SPECIALCHARS);
 			$text = trim($text);
 			$text = strtr($text, $XHTMLConvertEntities);
 		}

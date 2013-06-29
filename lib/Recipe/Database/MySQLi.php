@@ -26,6 +26,7 @@ class Recipe_Database_MySQLi extends Recipe_Database_Abstract
 	{
 		try {
 			$this->mysqli = new mysqli($this->host, $this->user, $this->password, $this->database, $this->port);
+			$this->mysqli->set_charset("utf8");
 		} catch(Exception $e) {
 			die("Unable to connect to database. Please try again later.");
 		}

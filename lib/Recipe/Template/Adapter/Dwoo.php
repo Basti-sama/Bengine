@@ -40,7 +40,7 @@ class Recipe_Template_Adapter_Dwoo extends Recipe_Template_Adapter_Abstract
 		$this->_dwoo = new Dwoo();
 		$this->_data = new Dwoo_Data();
 		$this->_compiler = new Dwoo_Compiler();
-		$this->getDwoo()->setCharset(Core::getLang()->getOpt("charset"));
+		$this->getDwoo()->setCharset(CHARACTER_SET);
 		$this->_setup();
 		return parent::init();
 	}

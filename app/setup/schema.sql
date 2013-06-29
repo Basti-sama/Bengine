@@ -587,7 +587,7 @@ CREATE TABLE IF NOT EXISTS `bengine_languages` (
   PRIMARY KEY  (`languageid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `bengine_languages` (`languageid`, `title`, `langcode`, `charset`) VALUES
+INSERT INTO `bengine_languages` (`languageid`, `title`, `langcode`) VALUES
 (1, 'Deutsch', 'de', 'utf-8');
 
 DROP TABLE IF EXISTS `bengine_loginattempts`;

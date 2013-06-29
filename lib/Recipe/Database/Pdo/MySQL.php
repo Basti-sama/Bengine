@@ -14,4 +14,12 @@ class Recipe_Database_Pdo_MySQL extends Recipe_Database_Pdo_Abstract
 	 * @var string
 	 */
 	protected $driver = "mysql";
+
+	/**
+	 * @var array
+	 */
+	protected $pdoConnectionOptions = array(
+		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+		PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+	);
 }
