@@ -484,7 +484,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 				}
 			}
 
-  			$data["capacity"] = $temp["capacity"] - $data["metal"] - $data["silicon"] - $data["hydrogen"];
+  			$data["capacity"] = $temp["capacity"] - $data["consumption"] - $data["metal"] - $data["silicon"] - $data["hydrogen"];
 
 			if($data["capacity"] < 0)
 			{

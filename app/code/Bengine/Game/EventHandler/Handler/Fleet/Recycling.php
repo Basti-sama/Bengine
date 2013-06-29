@@ -23,6 +23,11 @@ class Bengine_Game_EventHandler_Handler_Fleet_Recycling extends Bengine_Game_Eve
 			$result->closeCursor();
 			$capacityMetal = (int) (($data["capacity"] * 66.7) / 100);
 			$capacitySilicon = (int) (($data["capacity"] * 33.3) / 100);
+			$roundFix = $data["capacity"] - $capacityMetal - $capacitySilicon;
+			if($roundFix > 0)
+			{
+				$capacitySilicon += $roundFix;
+			}
 
 			$data["debrismetal"] = $_row["metal"];
 			$data["debrissilicon"] = $_row["silicon"];
