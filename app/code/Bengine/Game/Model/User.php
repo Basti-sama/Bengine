@@ -203,5 +203,101 @@ class Bengine_Game_Model_User extends Recipe_Model_Abstract
 		}
 		return $this->get("home_planet");
 	}
+
+	/**
+	 * @return Bengine_Game_Model_Collection_Construction
+	 */
+	public function getResearch()
+	{
+		if(!$this->exists("research"))
+		{
+			$collection = Application::getCollection("game/construction");
+			$collection->addUserJoin($this->get("userid"));
+			$this->set("research", $collection);
+		}
+		return $this->get("research");
+	}
+
+	/**
+	 * @return Bengine_Game_Model_Collection_Planet
+	 */
+	public function getPlanets()
+	{
+		if(!$this->exists("planets"))
+		{
+			$collection = Application::getCollection("game/planet");
+			$collection->addUserFilter($this->get("userid"));
+			$this->set("planets", $collection);
+		}
+		return $this->get("planets");
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getRequiredXPForNextLevel()
+	{
+		return pow($this->get("level"), 2) * 10;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getTotalRequiredXPForCurrentLevel()
+	{
+		$level = (int) $this->get("level") - 1;
+		return floor(($level * ($level + 1) * (2 * $level + 1)) / 6 * 10);
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getTotalRequiredXPForNextLevel()
+	{
+		$level = (int) $this->get("level");
+		return floor(($level * ($level + 1) * (2 * $level + 1)) / 6 * 10);
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getXPForCurrentLevel()
+	{
+		return $this->get("xp") - $this->getTotalRequiredXPForCurrentLevel();
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLeftXPForNextLevel()
+	{
+		return $this->getTotalRequiredXPForNextLevel() - $this->get("xp");
+	}
+
+	/**
+	 * Adds XP and checks if the user has reached the next level.
+	 *
+	 * @param int $xp
+	 * @return bool
+	 */
+	public function addXP($xp)
+	{
+		$hasReachedNextLevel = false;
+		if($xp >= $this->getLeftXPForNextLevel())
+		{
+			Hook::event("BeforeUserReachedNextLevel", array($this, &$xp));
+			$currentLevel = $this->get("level");
+			do {
+				$xp -= $this->getLeftXPForNextLevel();
+				$this->set("xp", $this->get("xp") + $this->getLeftXPForNextLevel());
+				$this->set("level", ++$currentLevel);
+			} while($xp >= $this->getLeftXPForNextLevel());
+			Hook::event("AfterUserReachedNextLevel", array($this));
+			$hasReachedNextLevel = true;
+		}
+		$this->set("xp", $this->get("xp") + $xp);
+		$this->save();
+		return $hasReachedNextLevel;
+	}
 }
 ?>

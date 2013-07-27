@@ -447,6 +447,7 @@ abstract class Recipe_Model_Collection_Abstract implements Countable, IteratorAg
 	public function getCalculatedSize($groupBy = true)
 	{
 		$select = clone $this->getSelect();
+		$select->resetAttrs();
 		$select->attributes("COUNT(*) AS collection_count");
 
 		if($groupBy)

@@ -5,6 +5,70 @@
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
+DROP TABLE IF EXISTS `bengine_achievement`;
+CREATE TABLE IF NOT EXISTS `bengine_achievement` (
+  `achievement_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(250) NOT NULL,
+  `description` text NOT NULL,
+  `icon` varchar(250) NOT NULL,
+  `xp` int(4) unsigned NOT NULL DEFAULT '0',
+  `sort_index` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`achievement_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+INSERT INTO `bengine_achievement` (`achievement_id`, `name`, `description`, `icon`, `xp`, `sort_index`) VALUES
+(1, 'Grundversorgung', 'Baue Metallmine, Siliziumlabor, Wasserstofflabor und Solarkraftwerk auf mindestens auf Stufe 1 aus.', 'achievement.png', 10, NULL),
+(2, 'Angehender Forscher', 'Erforsche deine erste Technologie.', 'achievement.png', 10, NULL),
+(3, 'Handelsbereit', 'Baue deinen ersten Transporter.', 'achievement.png', 10, NULL),
+(4, 'Feindselig', 'Baue einen Leichten Jäger.', 'achievement.png', 10, NULL),
+(5, 'Teamfähig', 'Trete einer Allianz mit mindestens 4 weiteren Mitgliedern bei.', 'achievement.png', 20, NULL),
+(6, 'Siegessicher', 'Greife jemanden erfolgreich an.', 'achievement.png', 50, NULL),
+(7, 'Kolonist', 'Kolonisiere einen Planeten.', 'achievement.png', 50, NULL),
+(8, 'Hinterhalt', 'Verteidige dich erfolgreich gegen einen feindlichen Angriff.', 'achievement.png', 80, NULL),
+(9, 'Imperium', 'Kolonisiere 8 Planeten.', 'achievement.png', 80, NULL),
+(10, 'Bunker', 'Errichte 2000 Verteidigungsanlagen auf einem Planeten.', 'achievement.png', 80, NULL),
+(11, 'Kleiner Schritt', 'Errichte eine Mondbasis.', 'achievement.png', 100, NULL),
+(12, 'Angesehner Forscher', 'Erreiche 130 Forschungspunkte.', 'achievement.png', 100, NULL),
+(13, 'Imperator', 'Baue einen Todesstern', 'achievement.png', 200, NULL);
+
+CREATE TABLE IF NOT EXISTS `bengine_achievement2user` (
+  `achievement2user_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `achievement_id` int(11) unsigned NOT NULL,
+  `user_id` int(11) unsigned NOT NULL,
+  `date` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`achievement2user_id`),
+  KEY `achievement_id` (`achievement_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `bengine_achievement_requirement` (
+  `achievement_requirement_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `achievement_id` int(11) unsigned NOT NULL,
+  `class` varchar(255) NOT NULL,
+  `id` varchar(250) NOT NULL,
+  `value` varchar(250) NOT NULL,
+  `config` text,
+  PRIMARY KEY (`achievement_requirement_id`),
+  KEY `achievement_id` (`achievement_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+INSERT INTO `bengine_achievement_requirement` (`achievement_requirement_id`, `achievement_id`, `class`, `id`, `value`, `config`) VALUES
+(1, 1, 'game/achievement_requirement_building', 'METALMINE', '1', NULL),
+(2, 1, 'game/achievement_requirement_building', 'SILICON_LAB', '1', NULL),
+(3, 1, 'game/achievement_requirement_building', 'HYDROGEN_LAB', '1', NULL),
+(4, 1, 'game/achievement_requirement_building', 'SOLAR_PLANT', '1', NULL),
+(5, 2, 'game/achievement_requirement_researchPoints', '', '1', NULL),
+(6, 3, 'game/achievement_requirement_unit', 'SMALL_TRANSPORTER', '1', NULL),
+(7, 4, 'game/achievement_requirement_unit', 'LIGHT_FIGHTER', '1', NULL),
+(8, 5, 'game/achievement_requirement_allianceMember', '', '4', NULL),
+(9, 6, 'game/achievement_requirement_assaultCount', 'ATTACKER_WON', '1', NULL),
+(10, 7, 'game/achievement_requirement_planets', '', '2', NULL),
+(11, 8, 'game/achievement_requirement_assaultCount', 'DEFENDER_WON', '1', NULL),
+(12, 9, 'game/achievement_requirement_planets', '', '9', NULL),
+(13, 10, 'game/achievement_requirement_unit', '_DEFENSE', '2000', NULL),
+(14, 11, 'game/achievement_requirement_building', 'MOON_BASE', '1', NULL),
+(15, 12, 'game/achievement_requirement_researchPoints', '', '130', NULL),
+(16, 13, 'game/achievement_requirement_unit', 'DEATH_STAR', '1', NULL);
+
 DROP TABLE IF EXISTS `bengine_ad`;
 CREATE TABLE IF NOT EXISTS `bengine_ad` (
   `ad_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
@@ -1786,7 +1850,13 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 8, 'BAN_NOTIFICATION_MAIL_SUBJECT', 'Benutzerkonto gesperrt'),
 (1, 8, 'BAN_NOTIFICATION_MAIL_1', 'dein Benutzerkonto wurde bis zum {@banDate} gesperrt. Der zuständige Moderator hat folgenden Grund für die Sperre angegeben:'),
 (1, 8, 'BAN_NOTIFICATION_MAIL_2', 'Wende dich bei Problemen bitte direkt an deinen Moderator:'),
-(1, 11, 'MESSAGE_FLOOD_INFO', 'Du hast du viele Nachrichten hintereinander verschickt. Warte ein wenig und versuche es anschlie&szlig;end erneut.');
+(1, 11, 'MESSAGE_FLOOD_INFO', 'Du hast du viele Nachrichten hintereinander verschickt. Warte ein wenig und versuche es anschlie&szlig;end erneut.'),
+(1, 1, 'MENU_ACHIEVEMENTS', 'Abzeichen'),
+(1, 37, 'CURRENT_LEVEL', 'Aktuelles Level: {user=level} ({user=xp})'),
+(1, 37, 'XP_TO_NEXT_LEVEL', '{@leftXP} XP bis Level {@nextLevel}'),
+(1, 37, 'UNLOCKED', 'abgeschlossen'),
+(1, 37, 'ACHIEVEMENT_UNLOCKED', 'Abzeichen freigeschaltet'),
+(1, 37, 'COLLECTED_XP', 'Gesammelte XP');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (
@@ -1829,7 +1899,8 @@ INSERT INTO `bengine_phrasesgroups` (`phrasegroupid`, `title`) VALUES
 (31, 'AI_Globalmail'),
 (33, 'AI_News'),
 (34, 'Profile'),
-(36, 'Signature');
+(36, 'Signature'),
+(37, 'Achievements');
 
 DROP TABLE IF EXISTS `bengine_planet`;
 CREATE TABLE IF NOT EXISTS `bengine_planet` (
@@ -2202,7 +2273,9 @@ CREATE TABLE IF NOT EXISTS `bengine_user` (
   `templatepackage` varchar(128) NULL,
   `theme` varchar(255) NULL,
   `js_interface` varchar(255) NULL,
-  `curplanet` int(10) NOT NULL default '0',
+  `level` tinynt(3) unsigned NOT NULL default '0',
+  `xp` int(11) unsigned NOT NULL default '0',
+  `curplanet` int(10) unsigned NOT NULL default '0',
   `points` float(128,8) NOT NULL default '0.0',
   `credits` float(128,8) NOT NULL default '0.0',
   `fpoints` int(9) unsigned NOT NULL default '0',

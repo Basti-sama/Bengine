@@ -519,6 +519,15 @@ class Recipe_Database_Select
 	}
 
 	/**
+	 * @return Recipe_Database_Select
+	 */
+	public function resetAttrs()
+	{
+		$this->attrs = "";
+		return $this;
+	}
+
+	/**
 	 * Converts this object to a string.
 	 *
 	 * @return string

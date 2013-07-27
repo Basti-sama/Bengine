@@ -4,8 +4,8 @@
 			"game": {
 				"type": "application",
 				"name": "Bengine Game",
-				"version": "0.31beta1",
-				"revision": 31,
+				"version": "0.40-dev",
+				"revision": 40,
 				"pool": "app/code"
 			}
 		}
@@ -89,6 +89,13 @@
 					"class": "menu-user"
 				},
 				"items": {
+					"achievements": {
+						"label": "MENU_ACHIEVEMENTS",
+						"sort": 99,
+						"link": {
+							"controller": "Achievements"
+						}
+					},
 					"alliance": {
 						"label": "MENU_ALLIANCE",
 						"sort": 100,
