@@ -20,7 +20,8 @@ class Bengine_Game_Controller_Achievements extends Bengine_Game_Controller_Abstr
 
 		/* @var Bengine_Game_Model_Collection_Achievement $achievements */
 		$achievements = Application::getCollection("game/achievement");
-		$achievements->addUserJoin(Core::getUser()->get("userid"));
+		$achievements->addUserJoin(Core::getUser()->get("userid"))
+			->addDefaultSorting();
 		Core::getTemplate()->addLoop("achievements", $achievements);
 
 		$unlocked = $achievements->checkForUnlockedAchievements($user);

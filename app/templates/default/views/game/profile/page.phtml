@@ -100,11 +100,12 @@ function statusTooltip()
 							<li class="odd"><?php if($this->get("user")->getUserid() != Core::getUser()->get("userid")) { ?><strong>{lang=CONTACT}</strong> {@pm} {@addToBuddylist} {perm[CAN_MODERATE_USER]}{@moderate}{/perm}<?php } else { ?>&nbsp;<?php } ?></li>
 							<li class="even"><strong>{lang=POINTS}</strong> {@points}</li>
 							<li class="odd"><strong>{lang=RANK}</strong> {@rank}</li>
-							<?php if($this->get("status") != ""): ?><li class="even helptip" onmouseover="statusTooltip()" onmouseout="UnTip();"><strong>{lang=STATUS}</strong> {@status}</li><?php else: ?><li class="even">&nbsp;</li><?php endif; ?>
-							<li class="odd"><strong>{lang=ALLIANCE}</strong> {@allianceName}</li>
+							<li class="even"><strong>{lang=LEVEL}</strong> <?php echo $this->get("user")->get("level") ?></li>
+							<?php if($this->get("status") != ""): ?><li class="odd helptip" onmouseover="statusTooltip()" onmouseout="UnTip();"><strong>{lang=STATUS}</strong> {@status}</li><?php else: ?><li class="odd">&nbsp;</li><?php endif; ?>
+							<li class="even"><strong>{lang=ALLIANCE}</strong> {@allianceName}</li>
 							<?php $i = 0; ?>
 							<?php foreach($this->getLoop("profile") as $field): ?>
-							<li class="<?php echo ($i % 2 == 0) ? "even" : "odd"; ?>"><strong><?php echo $field->getTranslatedName() ?></strong> <?php echo ($field->getData()) ? $field->getData() : "&nbsp;"; ?></li>
+							<li class="<?php echo ($i % 2 == 0) ? "odd" : "even"; ?>"><strong><?php echo $field->getTranslatedName() ?></strong> <?php echo ($field->getData()) ? $field->getData() : "&nbsp;"; ?></li>
 							<?php $i++; ?>
 							<?php endforeach; ?>
 						</ul>

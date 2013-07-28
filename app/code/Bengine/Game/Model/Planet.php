@@ -262,5 +262,13 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 		}
 		return $this->get("defense");
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getFreeFields()
+	{
+		return $this->getMaxFields() - $this->getFields();
+	}
 }
 ?>

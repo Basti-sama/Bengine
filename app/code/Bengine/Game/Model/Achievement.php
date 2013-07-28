@@ -44,16 +44,20 @@ class Bengine_Game_Model_Achievement extends Recipe_Model_Abstract
 		{
 			return false;
 		}
-		$unlocked = true;
-		foreach($this->getRequirements() as $requirement)
+		if(count($this->getRequirements()))
 		{
-			/* @var Bengine_Game_Model_AchievementRequirement $requirement */
-			if(!$requirement->checkIfRequirementMatched($user))
+			$unlocked = true;
+			foreach($this->getRequirements() as $requirement)
 			{
-				$unlocked = false;
+				/* @var Bengine_Game_Model_AchievementRequirement $requirement */
+				if(!$requirement->checkIfRequirementMatched($user))
+				{
+					$unlocked = false;
+				}
 			}
+			return $unlocked;
 		}
-		return $unlocked;
+		return false;
 	}
 
 	/**
