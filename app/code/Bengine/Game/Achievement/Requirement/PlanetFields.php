@@ -11,7 +11,7 @@ class Bengine_Game_Achievement_Requirement_PlanetFields extends Bengine_Game_Ach
 		foreach($planets as $planet)
 		{
 			/* @var Bengine_Game_Model_Planet $planet */
-			if(($this->getValue() <= 0 && $planet->getFreeFields() <= 0) || ($planet->getFields() >= $this->getValue()))
+			if(($this->getValue() <= 0 && $planet->getFreeFields() <= 0) || ($this->getValue() > 0 && $planet->getFields() >= $this->getValue()))
 			{
 				return true;
 			}

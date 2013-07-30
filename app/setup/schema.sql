@@ -69,7 +69,7 @@ INSERT INTO `bengine_achievement_requirement` (`achievement_requirement_id`, `ac
 (14, 11, 'game/achievement_requirement_building', 'MOON_BASE', '1', NULL),
 (15, 12, 'game/achievement_requirement_researchPoints', '', '130', NULL),
 (16, 13, 'game/achievement_requirement_unit', 'DEATH_STAR', '1', NULL),
-(17, 14, 'game/achievment_requirement_planetFields', '', '0', NULL);
+(17, 14, 'game/achievement_requirement_planetFields', '', '0', NULL);
 
 DROP TABLE IF EXISTS `bengine_ad`;
 CREATE TABLE IF NOT EXISTS `bengine_ad` (

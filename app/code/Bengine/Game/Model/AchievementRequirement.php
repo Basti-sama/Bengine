@@ -39,6 +39,10 @@ class Bengine_Game_Model_AchievementRequirement extends Recipe_Model_Abstract
 		{
 			/* @var Bengine_Game_Achievement_Requirement_Abstract $object */
 			$object = Application::factory($this->get("class"), null);
+			if(!$object)
+			{
+				throw new Recipe_Exception_Generic("Unknown achievement requirement '{$this->get("class")}'.");
+			}
 			$object->setValue($this->get("value"));
 			$object->setId($this->get("id"));
 			$config = $this->get("config");

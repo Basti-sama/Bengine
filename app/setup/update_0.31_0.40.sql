@@ -63,7 +63,7 @@ INSERT INTO `bengine_achievement_requirement` (`achievement_requirement_id`, `ac
 (14, 11, 'game/achievement_requirement_building', 'MOON_BASE', '1', NULL),
 (15, 12, 'game/achievement_requirement_researchPoints', '', '130', NULL),
 (16, 13, 'game/achievement_requirement_unit', 'DEATH_STAR', '1', NULL),
-(17, 14, 'game/achievment_requirement_planetFields', '', '0', NULL);
+(17, 14, 'game/achievement_requirement_planetFields', '', '0', NULL);
 
 ALTER TABLE `bengine_achievement_requirement`
   ADD CONSTRAINT `bengine_achievement_requirement_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
