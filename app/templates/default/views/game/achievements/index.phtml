@@ -1,0 +1,43 @@
+<?php $user = $this->get("user") ?>
+<?php foreach($this->getLoop("unlocked") as $achievement): ?>
+	<div class="success">
+		{lang=ACHIEVEMENT_UNLOCKED}: <strong><?php echo $achievement->get("name") ?></strong><br/>
+		{lang=COLLECTED_XP}: <strong><?php echo $achievement->get("xp") ?></strong>
+	</div>
+<?php endforeach ?>
+<table class="ntable">
+	<thead>
+		<tr>
+			<th>{lang=CURRENT_LEVEL}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{lang=XP_TO_NEXT_LEVEL}
+				<div class="xp-bar">
+					<div style="width:{@percent}%;"><?php echo $user->getXPForCurrentLevel() ?> / <?php echo $user->getRequiredXPForNextLevel() ?></div>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<table class="ntable">
+	<thead>
+		<tr>
+			<th colspan="2">{lang=MENU_ACHIEVEMENTS}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach($this->getLoop("achievements") as $achievement): ?>
+		<tr>
+			<td><?php echo Image::getImage($achievement->get("icon"), $achievement->get("name"), null, null, !$achievement->get("user_id") ? "disabled" : "") ?></td>
+			<td>
+				<strong><?php echo $achievement->get("name") ?> <?php if($achievement->get("user_id")): ?>({lang=UNLOCKED})<?php endif ?></strong>
+				<div><?php echo $achievement->get("description") ?></div>
+				<div>XP: <?php echo $achievement->get("xp") ?></div>
+			</td>
+		</tr>
+		<?php endforeach ?>
+	</tbody>
+</table>
