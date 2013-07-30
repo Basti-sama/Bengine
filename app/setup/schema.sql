@@ -1854,7 +1854,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 8, 'BAN_NOTIFICATION_MAIL_2', 'Wende dich bei Problemen bitte direkt an deinen Moderator:'),
 (1, 11, 'MESSAGE_FLOOD_INFO', 'Du hast du viele Nachrichten hintereinander verschickt. Warte ein wenig und versuche es anschlie&szlig;end erneut.'),
 (1, 1, 'MENU_ACHIEVEMENTS', 'Abzeichen'),
-(1, 37, 'CURRENT_LEVEL', 'Aktuelles Level: {user=level} ({user=xp})'),
+(1, 37, 'CURRENT_LEVEL', 'Aktuelles Level: {user=level} ({user=xp} XP)'),
 (1, 37, 'XP_TO_NEXT_LEVEL', '{@leftXP} XP bis Level {@nextLevel}'),
 (1, 37, 'UNLOCKED', 'abgeschlossen'),
 (1, 37, 'ACHIEVEMENT_UNLOCKED', 'Abzeichen freigeschaltet'),

@@ -73,7 +73,7 @@ SET @achievements_phrasegroup_id = LAST_INSERT_ID();
 
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 ('1', '1', 'MENU_ACHIEVEMENTS', 'Abzeichen'),
-('1', @achievements_phrasegroup_id, 'CURRENT_LEVEL', 'Aktuelles Level: {user=level} ({user=xp})'),
+('1', @achievements_phrasegroup_id, 'CURRENT_LEVEL', 'Aktuelles Level: {user=level} ({user=xp} XP)'),
 ('1', @achievements_phrasegroup_id, 'XP_TO_NEXT_LEVEL', '{@leftXP} XP bis Level {@nextLevel}'),
 ('1', @achievements_phrasegroup_id, 'UNLOCKED', 'abgeschlossen'),
 ('1', @achievements_phrasegroup_id, 'ACHIEVEMENT_UNLOCKED', 'Abzeichen freigeschaltet'),
