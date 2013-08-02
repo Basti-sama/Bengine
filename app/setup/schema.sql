@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS `bengine_achievement2user` (
   `user_id` int(11) unsigned NOT NULL,
   `date` int(11) unsigned NOT NULL,
   PRIMARY KEY (`achievement2user_id`),
-  KEY `achievement_id` (`achievement_id`,`user_id`)
+  KEY `achievement_id` (`achievement_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `bengine_achievement_requirement` (
@@ -1854,7 +1855,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 8, 'BAN_NOTIFICATION_MAIL_2', 'Wende dich bei Problemen bitte direkt an deinen Moderator:'),
 (1, 11, 'MESSAGE_FLOOD_INFO', 'Du hast du viele Nachrichten hintereinander verschickt. Warte ein wenig und versuche es anschlie&szlig;end erneut.'),
 (1, 1, 'MENU_ACHIEVEMENTS', 'Abzeichen'),
-(1, 37, 'CURRENT_LEVEL', 'Aktuelles Level: {user=level} ({user=xp} XP)'),
+(1, 37, 'CURRENT_LEVEL', 'Aktuelles Level: {@level} ({@xp} XP)'),
 (1, 37, 'XP_TO_NEXT_LEVEL', '{@leftXP} XP bis Level {@nextLevel}'),
 (1, 37, 'UNLOCKED', 'abgeschlossen'),
 (1, 37, 'ACHIEVEMENT_UNLOCKED', 'Abzeichen freigeschaltet'),
@@ -2275,7 +2276,7 @@ CREATE TABLE IF NOT EXISTS `bengine_user` (
   `templatepackage` varchar(128) NULL,
   `theme` varchar(255) NULL,
   `js_interface` varchar(255) NULL,
-  `level` tinynt(3) unsigned NOT NULL default '0',
+  `level` tinyint(3) unsigned NOT NULL default '0',
   `xp` int(11) unsigned NOT NULL default '0',
   `curplanet` int(10) unsigned NOT NULL default '0',
   `points` float(128,8) NOT NULL default '0.0',
@@ -2354,6 +2355,9 @@ INSERT INTO `bengine_usergroup` (`usergroupid`, `grouptitle`, `standard`) VALUES
 (3, 'User', 1),
 (4, 'Moderator', 1);
 
+ALTER TABLE `bengine_achievement_requirement` ADD CONSTRAINT `bengine_achievement_requirement_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `achievement_id` ) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `user_id` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_alliance` ADD FOREIGN KEY ( `founder` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_allyapplication` ADD FOREIGN KEY ( `userid` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_allyapplication` ADD FOREIGN KEY ( `aid` ) REFERENCES `bengine_alliance` (`aid`) ON DELETE CASCADE ON UPDATE CASCADE;

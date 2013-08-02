@@ -15,26 +15,27 @@ class Bengine_Game_Achievement_Requirement_AssaultCount extends Bengine_Game_Ach
 			case "ATTACKER_WON":
 				$collection->addParticipantFilter($this->getUser(), 1)
 					->addResultFilter(1);
-				return $collection->getCalculatedSize() >= $this->getValue();
+				define("DEBUG", true);
+				return $collection->getCalculatedSize(false) >= $this->getValue();
 			break;
 			case "DEFENDER_WON":
 				$collection->addParticipantFilter($this->getUser(), 0)
 					->addResultFilter(2);
-				return $collection->getCalculatedSize() >= $this->getValue();
+				return $collection->getCalculatedSize(false) >= $this->getValue();
 			break;
 			case "TOTAL_WON":
 				$collection->addParticipantFilter($this->getUser())
 					->addResultFilter(1);
-				return $collection->getCalculatedSize() >= $this->getValue();
+				return $collection->getCalculatedSize(false) >= $this->getValue();
 			break;
 			case "TOTAL_DRAW":
 				$collection->addParticipantFilter($this->getUser())
 					->addResultFilter(0);
-				return $collection->getCalculatedSize() >= $this->getValue();
+				return $collection->getCalculatedSize(false) >= $this->getValue();
 			break;
 			case "OVER_ALL":
 				$collection->addParticipantFilter($this->getUser());
-				return $collection->getCalculatedSize() >= $this->getValue();
+				return $collection->getCalculatedSize(false) >= $this->getValue();
 			break;
 		}
 		return false;

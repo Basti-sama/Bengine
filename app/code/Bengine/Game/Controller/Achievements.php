@@ -32,6 +32,8 @@ class Bengine_Game_Controller_Achievements extends Bengine_Game_Controller_Abstr
 		Core::getLanguage()->assign("nextLevel", $user->get("level")+1);
 		Core::getTemplate()->assign("user", $user);
 		Core::getTemplate()->assign("percent", $percent);
+		Core::getLang()->assign("xp", $user->get("xp"));
+		Core::getLang()->assign("level", $user->get("level"));
 		return $this;
 	}
 }

@@ -48,10 +48,15 @@ class Bengine_Game_Model_Collection_Assault extends Recipe_Model_Collection_Abst
 		$on  = Core::getDB()->quoteInto("pa.assaultid = a.assaultid AND pa.userid = ?", (int) $user);
 		if(null !== $mode)
 		{
-			$on .= Core::getDB()->quoteInto(" AND mode = ?", (int) $mode);
+			$on .= Core::getDB()->quoteInto(" AND pa.mode = ?", (int) $mode);
 		}
 		$this->getSelect()
-			->join(array("pa" => "assaultparticipant"), $on);
+			->join(array("pa" => "assaultparticipant"), $on)
+			->where("pa.userid", (int) $user);
+		if(null !== $mode)
+		{
+			$this->getSelect()->where("pa.mode = ?", (int) $mode);
+		}
 		return $this;
 	}
 

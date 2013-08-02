@@ -349,17 +349,21 @@ class Recipe_User extends Recipe_Collection
 	 *
 	 * @param string $var
 	 * @param mixed $value
+	 * @param bool $update
 	 * @throws Recipe_Exception_Generic
 	 * @return Recipe_User
 	 */
-	public function set($var, $value)
+	public function set($var, $value, $update = true)
 	{
 		if(Str::compare($var, "userid"))
 		{
 			throw new Recipe_Exception_Generic("The primary key of a data record cannot be changed.");
 		}
-		Core::getQuery()->update("user", array($var => $value), "userid = ?", array($this->get("userid")));
-		$this->rebuild();
+		if($update)
+		{
+			Core::getQuery()->update("user", array($var => $value), "userid = ?", array($this->get("userid")));
+			$this->rebuild();
+		}
 		$this->item[$var] = $value;
 		return $this;
 	}

@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS `bengine_achievement2user` (
   `user_id` int(11) unsigned NOT NULL,
   `date` int(11) unsigned NOT NULL,
   PRIMARY KEY (`achievement2user_id`),
-  KEY `achievement_id` (`achievement_id`,`user_id`)
+  KEY `achievement_id` (`achievement_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `bengine_achievement_requirement` (
@@ -65,15 +66,16 @@ INSERT INTO `bengine_achievement_requirement` (`achievement_requirement_id`, `ac
 (16, 13, 'game/achievement_requirement_unit', 'DEATH_STAR', '1', NULL),
 (17, 14, 'game/achievement_requirement_planetFields', '', '0', NULL);
 
-ALTER TABLE `bengine_achievement_requirement`
-  ADD CONSTRAINT `bengine_achievement_requirement_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement_requirement` ADD CONSTRAINT `bengine_achievement_requirement_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `achievement_id` ) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `user_id` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 INSERT INTO `bengine_phrasesgroups` (`title`) VALUES ('Achievements');
 SET @achievements_phrasegroup_id = LAST_INSERT_ID();
 
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 ('1', '1', 'MENU_ACHIEVEMENTS', 'Abzeichen'),
-('1', @achievements_phrasegroup_id, 'CURRENT_LEVEL', 'Aktuelles Level: {user=level} ({user=xp} XP)'),
+('1', @achievements_phrasegroup_id, 'CURRENT_LEVEL', 'Aktuelles Level: {@level} ({@xp} XP)'),
 ('1', @achievements_phrasegroup_id, 'XP_TO_NEXT_LEVEL', '{@leftXP} XP bis Level {@nextLevel}'),
 ('1', @achievements_phrasegroup_id, 'UNLOCKED', 'abgeschlossen'),
 ('1', @achievements_phrasegroup_id, 'ACHIEVEMENT_UNLOCKED', 'Abzeichen freigeschaltet'),
