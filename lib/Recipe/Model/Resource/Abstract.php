@@ -77,5 +77,28 @@ abstract class Recipe_Model_Resource_Abstract extends Recipe_Database_Table
 		}
 		return $this->fetchRow($where, $id);
 	}
+
+	/**
+	 * @param Recipe_Database_Select $select
+	 * @param array $fields
+	 * @return Recipe_Model_Resource_Abstract
+	 */
+	public function addL10nOverlay(Recipe_Database_Select $select, array $fields)
+	{
+		$relTableName = current($this->getMainTable())."_l10n";
+		$primaryKey = $this->getPrimaryKey();
+		$tableAlias = key($this->getMainTable());
+		$on = "l10n.$primaryKey = $tableAlias.$primaryKey AND l10n.language_id = ?";
+		$on = $this->getDb()->quoteInto($on, Core::getLang()->getOpt("languageid"));
+		$select->join(array("l10n" => $relTableName), $on);
+		$attributes = array();
+		foreach($fields as $field)
+		{
+			$expr = "IFNULL(l10n.$field, $tableAlias.$field)";
+			$attributes[$field] = new Recipe_Database_Expr($expr);
+		}
+		$select->attributes(array("$tableAlias.*", "l10n" => $attributes));
+		return $this;
+	}
 }
 ?>
