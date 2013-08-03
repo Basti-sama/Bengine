@@ -4,9 +4,8 @@
  * @project Bengine
  * @package Assault
  * @author Sebastian Noll <snoll@4ym.org>
- * @copyright Copyright protected by / Urheberrechtlich gesch�tzt durch "Sebastian Noll"
+ * @copyright Copyright protected by / Urheberrechtlich geschützt durch "Sebastian Noll"
  * @license Proprietary
- * @version $Id: Participant.java 8 2010-10-17 20:55:04Z secretchampion $
  */
 
 package assault;
@@ -275,7 +274,7 @@ public class Participant
 			points += unit.getPoints() * unit.getTotalLoss() / 1000;
 			lostUnits += (unit.getBasic_metal() + unit.getBasic_silicon())
 					* unit.getTotalLoss();
-			if(unit.getTotalLoss() > 0 && unit.getMode() == 4 && userid > 0)
+			if(unit.getTotalLoss() > 0 && unit.getMode() == 4)
 			{
 				double repair = Math.round(unit.getTotalLoss()
 						* Assault.randDouble(Assault.defenseRepairMin,
