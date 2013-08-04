@@ -29,8 +29,8 @@ INSERT INTO `bengine_achievement` (`achievement_id`, `name`, `description`, `ico
 (10, 'Bunker', 'Errichte 2000 Verteidigungsanlagen auf einem Planeten.', 'achievement.png', 80, 100),
 (11, 'Kleiner Schritt', 'Errichte eine Mondbasis.', 'achievement.png', 100, 120),
 (12, 'Angesehner Forscher', 'Erreiche 130 Forschungspunkte.', 'achievement.png', 100, 130),
-(13, 'Imperator', 'Baue einen Todesstern', 'achievement.png', 200, 140),
-(14, 'Urbanisierung', 'Baue einen Planeten komplett aus.', 'achievement.png', 100, 110);
+(13, 'Imperator', 'Baue einen Todesstern.', 'achievement.png', 200, 140),
+(14, 'Urbanisierung', 'Baue einen Planeten vollständig aus.', 'achievement.png', 100, 110);
 
 CREATE TABLE IF NOT EXISTS `bengine_achievement_l10n` (
 	`achievement_l10n_id` int(10) unsigned NOT NULL AUTO_INCREMENT,

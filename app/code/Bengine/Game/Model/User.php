@@ -219,14 +219,28 @@ class Bengine_Game_Model_User extends Recipe_Model_Abstract
 	}
 
 	/**
+	 * @param bool $includeMoons
 	 * @return Bengine_Game_Model_Collection_Planet
 	 */
-	public function getPlanets()
+	public function getPlanets($includeMoons = false)
 	{
+		if($includeMoons)
+		{
+			if(!$this->exists("planets_w_moons"))
+			{
+				/* @var Bengine_Game_Model_Collection_Planet $collection */
+				$collection = Application::getCollection("game/planet");
+				$collection->addUserFilter($this->get("userid"));
+				$this->set("planets_w_moons", $collection);
+			}
+			return $this->get("planets_w_moons");
+		}
 		if(!$this->exists("planets"))
 		{
+			/* @var Bengine_Game_Model_Collection_Planet $collection */
 			$collection = Application::getCollection("game/planet");
 			$collection->addUserFilter($this->get("userid"));
+			$collection->addMoonFilter(false);
 			$this->set("planets", $collection);
 		}
 		return $this->get("planets");

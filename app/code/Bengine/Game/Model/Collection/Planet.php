@@ -57,5 +57,16 @@ class Bengine_Game_Model_Collection_Planet extends Recipe_Model_Collection_Abstr
 		$this->getSelect()->where(array("p" => "userid"), (int) $user);
 		return $this;
 	}
+
+	/**
+	 * @param bool $isMoon
+	 * @return Bengine_Game_Model_Collection_Planet
+	 */
+	public function addMoonFilter($isMoon = false)
+	{
+		$this->getSelect()
+			->where(array("p" => "ismoon"), $isMoon ? 1 : 0);
+		return $this;
+	}
 }
 ?>
