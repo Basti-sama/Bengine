@@ -56,7 +56,15 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 	public function getMaxFields()
 	{
 		$fmax = floor(pow($this->get("diameter") / 1000, 2));
-		$terraFormer = (int) $this->getBuilding("TERRA_FORMER")->get("level");
+		$terraFormer = $this->getBuilding("TERRA_FORMER");
+		if(null !== $terraFormer)
+		{
+			$terraFormer = (int) $terraFormer->get("level");
+		}
+		else
+		{
+			$terraFormer = 0;
+		}
 		if($terraFormer > 0)
 		{
 			$fmax += $terraFormer * (int) Core::getOptions()->get("TERRAFORMER_ADDITIONAL_FIELDS");
@@ -207,8 +215,15 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 		{
 			/* @var Bengine_Game_Model_Collection_Construction $collection */
 			$collection = Application::getCollection("game/construction");
-			$collection->addTypeFilter(1)
-				->addPlanetJoin($this->get("planetid"));
+			if($this->get("ismoon"))
+			{
+				$collection->addTypeFilter(1, true, 5);
+			}
+			else
+			{
+				$collection->addTypeFilter(1);
+			}
+			$collection->addPlanetJoin($this->get("planetid"));
 			/* @var Bengine_Game_Model_Construction $building */
 			foreach($collection as $building)
 			{
