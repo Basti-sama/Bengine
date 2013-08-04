@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `bengine_achievement` (
   `xp` int(4) unsigned NOT NULL DEFAULT '0',
   `sort_index` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`achievement_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 INSERT INTO `bengine_achievement` (`achievement_id`, `name`, `description`, `icon`, `xp`, `sort_index`) VALUES
 (1, 'Grundversorgung', 'Baue Metallmine, Siliziumlabor, Wasserstofflabor und Solarkraftwerk auf mindestens auf Stufe 1 aus.', 'achievement.png', 10, 10),
@@ -25,6 +25,17 @@ INSERT INTO `bengine_achievement` (`achievement_id`, `name`, `description`, `ico
 (12, 'Angesehner Forscher', 'Erreiche 130 Forschungspunkte.', 'achievement.png', 100, 130),
 (13, 'Imperator', 'Baue einen Todesstern', 'achievement.png', 200, 140),
 (14, 'Urbanisierung', 'Baue einen Planeten komplett aus.', 'achievement.png', 100, 110);
+
+CREATE TABLE IF NOT EXISTS `bengine_achievement_l10n` (
+  `achievement_l10n_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	`language_id` int(4) unsigned NOT NULL,
+  `achievement_id` int(10) unsigned NOT NULL,
+  `name` varchar(250) NOT NULL,
+  `description` text NOT NULL,
+  PRIMARY KEY (`achievement_l10n_id`),
+	KEY `language_id` (`language_id`),
+  KEY `achievement_id` (`achievement_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `bengine_achievement2user` (
   `achievement2user_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -69,6 +80,8 @@ INSERT INTO `bengine_achievement_requirement` (`achievement_requirement_id`, `ac
 ALTER TABLE `bengine_achievement_requirement` ADD CONSTRAINT `bengine_achievement_requirement_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `achievement_id` ) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `user_id` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement_l10n` ADD CONSTRAINT `bengine_achievement_l10n_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement_l10n` ADD FOREIGN KEY ( `language_id` ) REFERENCES  `demo.bengine.de`.`bengine_languages` (`languageid`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 INSERT INTO `bengine_phrasesgroups` (`title`) VALUES ('Achievements');
 SET @achievements_phrasegroup_id = LAST_INSERT_ID();

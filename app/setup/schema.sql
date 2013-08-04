@@ -32,6 +32,17 @@ INSERT INTO `bengine_achievement` (`achievement_id`, `name`, `description`, `ico
 (13, 'Imperator', 'Baue einen Todesstern', 'achievement.png', 200, 140),
 (14, 'Urbanisierung', 'Baue einen Planeten komplett aus.', 'achievement.png', 100, 110);
 
+CREATE TABLE IF NOT EXISTS `bengine_achievement_l10n` (
+	`achievement_l10n_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	`language_id` int(4) unsigned NOT NULL,
+	`achievement_id` int(10) unsigned NOT NULL,
+	`name` varchar(250) NOT NULL,
+	`description` text NOT NULL,
+	PRIMARY KEY (`achievement_l10n_id`),
+	KEY `language_id` (`language_id`),
+	KEY `achievement_id` (`achievement_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 CREATE TABLE IF NOT EXISTS `bengine_achievement2user` (
   `achievement2user_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `achievement_id` int(11) unsigned NOT NULL,
@@ -655,7 +666,7 @@ CREATE TABLE IF NOT EXISTS `bengine_languages` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `bengine_languages` (`languageid`, `title`, `langcode`) VALUES
-(1, 'Deutsch', 'de', 'utf-8');
+(1, 'Deutsch', 'de');
 
 DROP TABLE IF EXISTS `bengine_loginattempts`;
 CREATE TABLE IF NOT EXISTS `bengine_loginattempts` (
@@ -2355,6 +2366,8 @@ INSERT INTO `bengine_usergroup` (`usergroupid`, `grouptitle`, `standard`) VALUES
 (3, 'User', 1),
 (4, 'Moderator', 1);
 
+ALTER TABLE `bengine_achievement_l10n` ADD FOREIGN KEY ( `language_id` ) REFERENCES  `demo.bengine.de`.`bengine_languages` (`languageid`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement_l10n` ADD CONSTRAINT `bengine_achievement_l10n_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement_requirement` ADD CONSTRAINT `bengine_achievement_requirement_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `achievement_id` ) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `user_id` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
