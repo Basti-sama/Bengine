@@ -30,6 +30,7 @@
 	</thead>
 	<tbody>
 		<?php foreach($this->getLoop("achievements") as $achievement): ?>
+		<?php if($this->getLoop("achievements")->isVisibleForUser($achievement)): ?>
 		<tr>
 			<td><?php echo Image::getImage($achievement->get("icon"), $achievement->get("name"), null, null, !$achievement->get("user_id") ? "disabled" : "") ?></td>
 			<td>
@@ -38,6 +39,7 @@
 				<div>XP: <?php echo $achievement->get("xp") ?></div>
 			</td>
 		</tr>
+		<?php endif ?>
 		<?php endforeach ?>
 	</tbody>
 </table>
