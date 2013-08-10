@@ -175,9 +175,16 @@ class Bengine_Game_Assault
 		$jrePath = $cs["jre"];
 		$jarPath = APP_ROOT_DIR."app/Assault.jar";
 		$cmd = $jrePath.' -jar "'.$jarPath.'" "'.$cs["host"].'" "'.$cs["user"].'" "'.$cs["userpw"].'" "'.$database["databasename"].'" "'.$database["tableprefix"].'" '.escapeshellarg($this->assaultid).' 2>&1';
-		$output = "";
+		$output = array();
 		$commandResult = null;
-		exec($cmd, $output, $commandResult);
+		if(function_exists("exec"))
+		{
+			exec($cmd, $output, $commandResult);
+		}
+		else
+		{
+			$output[] = "Function exec() disabled.";
+		}
 
 		$result = Core::getQuery()->select("assault", array("result", "moonchance", "moon", "accomplished", "lostunits_defender"), "", Core::getDB()->quoteInto("assaultid = ?", $this->assaultid));
 		$row = $result->fetchRow();

@@ -261,6 +261,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 	 */
 	protected function selectMission($galaxy, $system, $position, $targetType, $speed, $code, $formation)
 	{
+		Core::getLang()->load(array("Galaxy"));
 		$this->noAction = true;
 		$result = Core::getQuery()->select("temp_fleet", "data", "", Core::getDB()->quoteInto("planetid = ?", Core::getUser()->get("curplanet")));
 		if($row = $result->fetchRow())
@@ -284,7 +285,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			}
 			$data["speed"] = $speed;
 
-			$select = array("p.planetid", "p.planetname", "p.ismoon", "u.userid", "u.points", "u.last", "u.umode", "b.to", "u2a.aid");
+			$select = array("p.planetid", "p.planetname", "p.ismoon", "g.destroyed", "u.userid", "u.points", "u.last", "u.umode", "b.to", "u2a.aid");
 			$joins  = "LEFT JOIN ".PREFIX."planet p ON (p.planetid = g.".$targetMode.")";
 			$joins .= "LEFT JOIN ".PREFIX."user u ON (p.userid = u.userid)";
 			$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (u.userid = b.userid)";
@@ -300,10 +301,10 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 				$target = null;
 			}
 
-			$targetName = Core::getLanguage()->getItem("UNKOWN_PLANET");
+			$targetName = Core::getLanguage()->getItem("UNKNOWN_PLANET");
 			if(!empty($target["planetid"]))
 			{
-				$targetName = $target["planetname"];
+				$targetName = !$target["destroyed"] ? $target["planetname"] : Core::getLanguage()->getItem("DESTROYED_PLANET");
 				$data["destination"] = $target["planetid"];
 				$target["formation"] = (int) $formation;
 			}
@@ -401,7 +402,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 		{
 			$result->closeCursor();
 			$temp = unserialize($row["data"]);
-			if(!in_array($mode, $temp["amissions"])) { Logger::dieMessage("UNKOWN_MISSION"); }
+			if(!in_array($mode, $temp["amissions"])) { Logger::dieMessage("UNKNOWN_MISSION"); }
 
 			$data["ships"] = $temp["ships"];
 			$data["galaxy"] = $temp["galaxy"];

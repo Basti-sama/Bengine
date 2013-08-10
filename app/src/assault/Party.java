@@ -4,9 +4,8 @@
  * @project Bengine
  * @package Assault
  * @author Sebastian Noll <snoll@4ym.org>
- * @copyright Copyright protected by / Urheberrechtlich gesch�tzt durch "Sebastian Noll"
+ * @copyright Copyright protected by / Urheberrechtlich geschützt durch "Sebastian Noll"
  * @license Proprietary
- * @version $Id: Party.java 8 2010-10-17 20:55:04Z secretchampion $
  */
 
 package assault;

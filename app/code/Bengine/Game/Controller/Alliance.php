@@ -382,6 +382,9 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 					{
 						if(!$typeData["confirm_begin"])
 						{
+							Core::getQuery()->delete("ally_relationships", "(rel1 = ? AND rel2 = ?) OR (rel1 = ? AND rel2 = ?)", null, null, array(
+								$this->aid, $row["aid"], $row["aid"], $this->aid
+							));
 							Core::getQuery()->insert("ally_relationships", array("rel1" => $this->aid, "rel2" => $row["aid"], "time" => TIME, "mode" => $status));
 						}
 						else if(Str::length($message) > 0 && Str::length($message) <= Core::getOptions()->get("MAX_PM_LENGTH"))
@@ -395,6 +398,10 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 								"time" => TIME
 							);
 							Core::getQuery()->insert("ally_relationships_application", $spec);
+						}
+						else
+						{
+							Logger::dieMessage("ALLIANCE_RELATION_APPLICATION_MESSAGE_REQUIRED");
 						}
 						$this->redirect("game/".SID."/Alliance/RelApplications");
 					}
@@ -438,12 +445,15 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 				Hook::event("AcceptAllianceRelation", array($candidateAlly, $row));
 				if($row["storable"])
 				{
+					Core::getQuery()->delete("ally_relationships", "(rel1 = ? AND rel2 = ?) OR (rel1 = ? AND rel2 = ?)", null, null, array(
+						$this->aid, $candidateAlly, $candidateAlly, $this->aid
+					));
 					Core::getQuery()->insert("ally_relationships", array("rel1" => $this->aid, "rel2" => $candidateAlly, "time" => TIME, "mode" => $row["type_id"]));
 				}
 				$_result = Core::getQuery()->select("ally_relationship_type", array("type_id"), "", Core::getDB()->quoteInto("confirm_end = ?", $row["type_id"]));
 				if($_row = $_result->fetchRow())
 				{
-					Core::getQuery()->delete("ally_relationships", "((rel1 = ? AND rel2 = ?) OR (rel1 = ? AND rel2 = ?)) AND mode = ?", null, null, array($this->aid, $candidateAlly, $candidateAlly, $this->aid, $row["type_id"]));
+					Core::getQuery()->delete("ally_relationships", "((rel1 = ? AND rel2 = ?) OR (rel1 = ? AND rel2 = ?)) AND mode = ?", null, null, array($this->aid, $candidateAlly, $candidateAlly, $this->aid, $_row["type_id"]));
 				}
 				$this->deleteAllyRelationApplication($this->aid, $candidateAlly);
 			}

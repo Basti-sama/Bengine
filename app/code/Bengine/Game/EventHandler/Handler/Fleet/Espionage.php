@@ -88,7 +88,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Espionage extends Bengine_Game_Eve
 	 */
 	protected function _isValid()
 	{
-		if(!empty($this->_target["userid"]) && !$this->isNewbieProtected() &&
+		if(!empty($this->_target["planetid"]) && !$this->isNewbieProtected() &&
 			$this->_target["userid"] != Core::getUser()->get("userid") &&
 			$this->_targetType != "tf" && $this->_checkProbes() &&
 			!$this->_target["umode"] &&

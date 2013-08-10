@@ -1,3 +1,13 @@
+/**
+ * Single unit.
+ *
+ * @project Bengine
+ * @package Assault
+ * @author Sebastian Noll <snoll@4ym.org>
+ * @copyright Copyright protected by / Urheberrechtlich geschützt durch "Sebastian Noll"
+ * @license Proprietary
+ */
+
 package assault;
 
 public class Unit

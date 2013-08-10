@@ -1312,7 +1312,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 10, 'NO_MISSIONS_AVAILABLE', 'Keine Missionen verf&uuml;gbar'),
 (1, 10, 'NO_RESOURCES', 'Keine Ressourcen'),
 (1, 10, 'NO_SHIPS', 'Keine Schiffe'),
-(1, 10, 'NO_SHIPS_REDEADY', 'Es sind keine Raumschiffe vorhanden'),
+(1, 10, 'NO_SHIPS_READY', 'Es sind keine Raumschiffe vorhanden'),
 (1, 10, 'ORDER', 'Befehl'),
 (1, 10, 'QUANTITY', 'Anzahl'),
 (1, 10, 'RELOADING_STAR_GATE', 'Das Star Gate ist noch nicht vollst&auml;ndig aufgeladen ({@reloadTime} Minunten verbleiben).'),
@@ -1331,8 +1331,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 10, 'STAR_GATE_JUMP', 'Star Gate Sprung'),
 (1, 10, 'TARGET', 'Ziel'),
 (1, 10, 'TIME', 'Dauer'),
-(1, 10, 'UNKOWN_MISSION', 'Mission unbekannt oder nicht verf&uuml;gbar.'),
-(1, 10, 'UNKOWN_PLANET', 'Unbekannter Planet'),
+(1, 10, 'UNKNOWN_MISSION', 'Mission unbekannt oder nicht verf&uuml;gbar.'),
+(1, 10, 'UNKNOWN_PLANET', 'Unbekannter Planet'),
 (1, 10, 'WAITING', 'Bereit'),
 (1, 11, 'ACTION', 'Aktion'),
 (1, 11, 'ALLIANCE_GLOBAL_MAIL', 'Allianz-Rundmail'),
@@ -1867,12 +1867,14 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 8, 'BAN_NOTIFICATION_MAIL_1', 'dein Benutzerkonto wurde bis zum {@banDate} gesperrt. Der zuständige Moderator hat folgenden Grund für die Sperre angegeben:'),
 (1, 8, 'BAN_NOTIFICATION_MAIL_2', 'Wende dich bei Problemen bitte direkt an deinen Moderator:'),
 (1, 11, 'MESSAGE_FLOOD_INFO', 'Du hast du viele Nachrichten hintereinander verschickt. Warte ein wenig und versuche es anschlie&szlig;end erneut.'),
+(1, 14, 'ALLIANCE_RELATION_APPLICATION_MESSAGE_REQUIRED', 'Bitte gib eine Nachricht an.'),
 (1, 1, 'MENU_ACHIEVEMENTS', 'Abzeichen'),
 (1, 37, 'CURRENT_LEVEL', 'Aktuelles Level: {@level} ({@xp} XP)'),
 (1, 37, 'XP_TO_NEXT_LEVEL', '{@leftXP} XP bis Level {@nextLevel}'),
 (1, 37, 'UNLOCKED', 'abgeschlossen'),
 (1, 37, 'ACHIEVEMENT_UNLOCKED', 'Abzeichen freigeschaltet'),
 (1, 37, 'COLLECTED_XP', 'Gesammelte XP');
+
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (
