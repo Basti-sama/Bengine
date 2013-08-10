@@ -80,10 +80,10 @@ INSERT INTO `bengine_achievement_requirement` (`achievement_requirement_id`, `ac
 (17, 14, 'game/achievement_requirement_planetFields', '', '0', NULL);
 
 ALTER TABLE `bengine_achievement` ADD FOREIGN KEY ( `parent` ) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `bengine_achievement_requirement` ADD CONSTRAINT `bengine_achievement_requirement_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement_requirement` ADD FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `achievement_id` ) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `user_id` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE `bengine_achievement_l10n` ADD CONSTRAINT `bengine_achievement_l10n_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement_l10n` ADD FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement_l10n` ADD FOREIGN KEY ( `language_id` ) REFERENCES `bengine_languages` (`languageid`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 INSERT INTO `bengine_phrasesgroups` (`title`) VALUES ('Achievements');
