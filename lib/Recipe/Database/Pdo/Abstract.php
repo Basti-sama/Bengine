@@ -49,7 +49,7 @@ abstract class Recipe_Database_Pdo_Abstract extends Recipe_Database_Abstract
 		$dsn = $this->driver.":host=".$this->host.";dbname=".$this->database.";charset=UTF8";
 		if($this->port !== null)
 		{
-			$dsn .= "port=".$this->port.";";
+			$dsn .= ";port=".$this->port;
 		}
 		try {
 			$this->pdo = new PDO($dsn, $this->user, $this->password, $this->pdoConnectionOptions);
