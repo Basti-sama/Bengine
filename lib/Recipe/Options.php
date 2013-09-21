@@ -74,13 +74,12 @@ class Recipe_Options extends Recipe_Collection
 		Hook::event("SetOptionVariable", array($this, &$var, &$value));
 		if($this->hasVariable($var, false))
 		{
-			Core::getQuery()->update("config", "value", $value, "var = ?", array($var));
+			Core::getQuery()->update("config", array("value" => $value), "var = ?", array($var));
 		}
 		else
 		{
-			$att = array("var", "value", "type", "groupid", "islisted");
-			$val = array($var, $value, "char", "1", "1");
-			Core::getQuery()->insert("config", $att, $val);
+			$spec = array("var" => $var, "value" => $value, "type" => "char", "groupid" => 1, "islisted" => 1);
+			Core::getQuery()->insert("config", $spec);
 		}
 		if($this->cacheActive && $renewcache) { Core::getCache()->buildConfigCache(); }
 		return $this;
