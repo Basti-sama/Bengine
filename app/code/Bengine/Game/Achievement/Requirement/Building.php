@@ -7,10 +7,7 @@ class Bengine_Game_Achievement_Requirement_Building extends Bengine_Game_Achieve
 	 */
 	protected function _match()
 	{
-		/* @var Bengine_Game_Model_Collection_Planet $planets */
-		$planets = Application::getCollection("game/planet");
-		$planets->addUserFilter($this->getUser()->get("userid"));
-		foreach($planets as $planet)
+		foreach($this->getUser()->getPlanets(true) as $planet)
 		{
 			/* @var Bengine_Game_Model_Planet $planet */
 			$building = $planet->getBuilding($this->getId());

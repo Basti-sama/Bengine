@@ -8,9 +8,7 @@ class Bengine_Game_Achievement_Requirement_Unit extends Bengine_Game_Achievement
 	protected function _match()
 	{
 		/* @var Bengine_Game_Model_Collection_Planet $planets */
-		$planets = Application::getCollection("game/planet");
-		$planets->addUserFilter($this->getUser()->get("userid"));
-		foreach($planets as $planet)
+		foreach($this->getUser()->getPlanets(true) as $planet)
 		{
 			$totalFleet = 0;
 			$totalDefense = 0;
