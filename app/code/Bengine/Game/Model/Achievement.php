@@ -62,9 +62,10 @@ class Bengine_Game_Model_Achievement extends Recipe_Model_Abstract
 
 	/**
 	 * @param Bengine_Game_Model_User $user
+	 * @param Bengine_Game_Model_Planet $planet
 	 * @return Bengine_Game_Model_Achievement
 	 */
-	public function unlockForUser(Bengine_Game_Model_User $user)
+	public function unlockForUser(Bengine_Game_Model_User $user, Bengine_Game_Model_Planet $planet = null)
 	{
 		Core::getQuery()->insert("achievement2user", array(
 			"achievement_id" => $this->get("achievement_id"),
@@ -73,7 +74,52 @@ class Bengine_Game_Model_Achievement extends Recipe_Model_Abstract
 		));
 		$this->set("user_id", $user->get("userid"));
 		$user->addXP($this->get("xp"));
+		if(count($this->getRewards()) > 0)
+		{
+			if(null === $planet)
+			{
+				$planet = $user->getHomePlanet();
+			}
+			foreach($this->getRewards() as $rewardModel)
+			{
+				/* @var Bengine_Game_Model_AchievementReward $rewardModel */
+				$reward = $rewardModel->getRewardObject();
+				$reward->setUser($user)
+					->setPlanet($planet);
+				$reward->reward();
+			}
+		}
 		return $this;
+	}
+
+	/**
+	 * @return Bengine_Game_Model_Collection_AchievementReward
+	 */
+	public function getRewards()
+	{
+		if(!$this->exists("rewards"))
+		{
+			/* @var Bengine_Game_Model_Collection_AchievementReward $collection */
+			$collection = Application::getCollection("game/achievementReward");
+			$collection->addAchievementFilter($this);
+			$this->set("rewards", $collection);
+		}
+		return $this->get("rewards");
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getRewardString()
+	{
+		$rewards = array();
+		foreach($this->getRewards() as $rewardModel)
+		{
+			/* @var Bengine_Game_Model_AchievementReward $rewardModel */
+			$reward = $rewardModel->getRewardObject();
+			$rewards[] = $reward->getLabel().": ".$reward->getValue();
+		}
+		return implode(", ", $rewards);
 	}
 }
 ?>

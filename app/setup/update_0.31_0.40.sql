@@ -64,6 +64,16 @@ CREATE TABLE IF NOT EXISTS `bengine_achievement_requirement` (
   KEY `achievement_id` (`achievement_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
+CREATE TABLE IF NOT EXISTS `bengine_achievement_reward` (
+	`achievement_reward_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+	`achievement_id` int(11) unsigned NOT NULL,
+	`class` varchar(255) NOT NULL,
+	`type` varchar(128) NOT NULL,
+	`value` int(11) NOT NULL,
+	PRIMARY KEY (`achievement_reward_id`),
+	KEY `achievement_id` (`achievement_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `bengine_achievement_requirement` (`achievement_requirement_id`, `achievement_id`, `class`, `id`, `value`, `config`) VALUES
 (1, 1, 'game/achievement_requirement_building', 'METALMINE', '1', NULL),
 (2, 1, 'game/achievement_requirement_building', 'SILICON_LAB', '1', NULL),
@@ -89,6 +99,7 @@ INSERT INTO `bengine_achievement_requirement` (`achievement_requirement_id`, `ac
 
 ALTER TABLE `bengine_achievement` ADD FOREIGN KEY ( `parent` ) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement_requirement` ADD FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement_reward` ADD FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `achievement_id` ) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement2user` ADD FOREIGN KEY ( `user_id` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement_l10n` ADD FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;

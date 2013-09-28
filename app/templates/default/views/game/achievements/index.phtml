@@ -36,7 +36,12 @@
 			<td>
 				<strong><?php echo $achievement->get("name") ?> <?php if($achievement->get("user_id")): ?>({lang=UNLOCKED})<?php endif ?></strong>
 				<div><?php echo $achievement->get("description") ?></div>
-				<div>XP: <?php echo $achievement->get("xp") ?></div>
+				<div>
+					XP: <?php echo $achievement->get("xp") ?>
+					<?php if(count($achievement->getRewards())): ?>
+					, <?php echo $achievement->getRewardString() ?>
+					<?php endif ?>
+				</div>
 			</td>
 		</tr>
 		<?php endif ?>

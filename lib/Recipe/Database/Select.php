@@ -258,17 +258,27 @@ class Recipe_Database_Select
 	 */
 	protected function _condition($condition, $value = null)
 	{
-		if(is_integer($value))
+		if(is_object($value))
 		{
-			$value = (int) $value;
+			if($value instanceof Recipe_Model_Abstract)
+			{
+				$value = $value->getId();
+			}
+			else
+			{
+				$value = (string) $value;
+			}
 		}
-		else if(is_null($value))
+		if(null === $value || "NULL" === $value)
 		{
 			$value = "NULL";
 		}
-		else if($value != "NOT NULL")
+		else if(is_string($value))
 		{
-			$value = Core::getDB()->quote($value);
+			if($value != "NOT NULL" && !preg_match("/^-?(?:\d+|\d*\.\d+)$/", $value))
+			{
+				$value = Core::getDB()->quote($value);
+			}
 		}
 		if(is_array($condition))
 		{

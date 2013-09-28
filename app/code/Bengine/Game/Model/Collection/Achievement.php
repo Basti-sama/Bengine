@@ -43,9 +43,10 @@ class Bengine_Game_Model_Collection_Achievement extends Recipe_Model_Collection_
 
 	/**
 	 * @param Bengine_Game_Model_User $user
+	 * @param Bengine_Game_Model_Planet $planet
 	 * @return array
 	 */
-	public function checkForUnlockedAchievements(Bengine_Game_Model_User $user)
+	public function checkForUnlockedAchievements(Bengine_Game_Model_User $user, Bengine_Game_Model_Planet $planet = null)
 	{
 		$unlocked = array();
 		foreach($this->getItems() as $achievement)
@@ -53,7 +54,7 @@ class Bengine_Game_Model_Collection_Achievement extends Recipe_Model_Collection_
 			/* @var Bengine_Game_Model_Achievement $achievement */
 			if($achievement->checkIfUnlocked($user))
 			{
-				$achievement->unlockForUser($user);
+				$achievement->unlockForUser($user, $planet);
 				$unlocked[] = $achievement;
 			}
 		}

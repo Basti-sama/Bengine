@@ -17,6 +17,8 @@ class Bengine_Game_Controller_Achievements extends Bengine_Game_Controller_Abstr
 
 		/* @var Bengine_Game_Model_User $user */
 		$user = Application::getModel("game/user")->load(Core::getUser()->get("userid"));
+		/* @var Bengine_Game_Model_Planet $planet */
+		$planet = Application::getModel("game/planet")->load(Core::getUser()->get("curplanet"));
 
 		/* @var Bengine_Game_Model_Collection_Achievement $achievements */
 		$achievements = Application::getCollection("game/achievement");
@@ -24,7 +26,7 @@ class Bengine_Game_Controller_Achievements extends Bengine_Game_Controller_Abstr
 			->addDefaultSorting();
 		Core::getTemplate()->addLoop("achievements", $achievements);
 
-		$unlocked = $achievements->checkForUnlockedAchievements($user);
+		$unlocked = $achievements->checkForUnlockedAchievements($user, $planet);
 		Core::getTemplate()->addLoop("unlocked", $unlocked);
 
 		$percent = 100 / $user->getRequiredXPForNextLevel() * ($user->getRequiredXPForNextLevel() - $user->getLeftXPForNextLevel());
