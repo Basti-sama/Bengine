@@ -369,8 +369,12 @@ class Bengine_Game_Controller_MSG extends Bengine_Game_Controller_Abstract
 	{
 		if($max = Core::getConfig()->get("MESSAGE_FLOOD_MAX"))
 		{
-			$bind = array(Core::getUser()->get("userid"), TIME - Core::getConfig()->get("MESSAGE_FLOOD_SPAN"));
-			$result = Core::getQuery()->select("message", array("COUNT(msgid)"), "", "sender = ? AND time >= ?", "", 1, "", "", $bind);
+			$bind = array(
+				Core::getUser()->get("userid"),
+				TIME - Core::getConfig()->get("MESSAGE_FLOOD_SPAN"),
+				Bengine_Game_Model_Message::USER_FOLDER_ID
+			);
+			$result = Core::getQuery()->select("message", array("COUNT(msgid)"), "", "sender = ? AND time >= ? AND folder = ?", "", 1, "", "", $bind);
 			if($result->fetchColumn() >= $max)
 			{
 				Logger::dieMessage("MESSAGE_FLOOD_INFO", "warning");
