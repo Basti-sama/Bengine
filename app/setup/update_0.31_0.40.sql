@@ -115,3 +115,5 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 ('1', @achievements_phrasegroup_id, 'UNLOCKED', 'abgeschlossen'),
 ('1', @achievements_phrasegroup_id, 'ACHIEVEMENT_UNLOCKED', 'Abzeichen freigeschaltet'),
 ('1', @achievements_phrasegroup_id, 'COLLECTED_XP', 'Gesammelte XP');
+
+UPDATE `bengine_phrases` SET `content` = 'Du hast zu viele Nachrichten hintereinander verschickt. Warte ein wenig und versuche es anschlie&szlig;end erneut.' WHERE `title` = 'MESSAGE_FLOOD_INFO' AND `languageid` = 1;
