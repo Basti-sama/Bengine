@@ -29,7 +29,12 @@ class Bengine_Game_Controller_Achievements extends Bengine_Game_Controller_Abstr
 		$unlocked = $achievements->checkForUnlockedAchievements($user, $planet);
 		Core::getTemplate()->addLoop("unlocked", $unlocked);
 
-		$percent = 100 / $user->getRequiredXPForNextLevel() * ($user->getRequiredXPForNextLevel() - $user->getLeftXPForNextLevel());
+		$x = $user->getRequiredXPForNextLevel() * ($user->getRequiredXPForNextLevel() - $user->getLeftXPForNextLevel());
+		$percent = 0;
+		if($x > 0)
+		{
+			$percent = 100 / $x;
+		}
 		Core::getLanguage()->assign("leftXP", $user->getLeftXPForNextLevel());
 		Core::getLanguage()->assign("nextLevel", $user->get("level")+1);
 		Core::getTemplate()->assign("user", $user);
