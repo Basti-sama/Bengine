@@ -438,9 +438,9 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			{
 				$data["silicon"] = _pos(Game::getPlanet()->getData("silicon"));
 			}
-			if($data["hydrogen"] > Game::getPlanet()->getData("hydrogen"))
+			if($data["hydrogen"] > Game::getPlanet()->getData("hydrogen") - $data["consumption"])
 			{
-				$data["hydrogen"] = _pos(Game::getPlanet()->getData("hydrogen"));
+				$data["hydrogen"] = _pos(Game::getPlanet()->getData("hydrogen") - $data["consumption"]);
 			}
 
 			if($mode == 13)
