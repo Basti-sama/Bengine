@@ -19,7 +19,7 @@ class Bengine_Admin_Controller_Commercial extends Bengine_Admin_Controller_Abstr
 		{
 			if($this->getParam("add_ad"))
 			{
-				$this->addAd($this->getParam("name"), $this->getParam("position"), $this->getParam("max_views"), $this->getParam("enabled"), $this->getParam("html_code"));
+				$this->addAd($this->getParam("name"), $this->getParam("position"), $this->getParam("max_views"), $this->getParam("enabled", 0), $this->getParam("html_code"));
 			}
 			else if($this->getParam("delete"))
 			{
@@ -91,7 +91,7 @@ class Bengine_Admin_Controller_Commercial extends Bengine_Admin_Controller_Abstr
 	{
 		if($this->isPost())
 		{
-			$this->save($this->getParam("ad_id"), $this->getParam("name"), $this->getParam("position"), $this->getParam("max_views"), $this->getParam("enabled"), $this->getParam("html_code"));
+			$this->save($this->getParam("ad_id"), $this->getParam("name"), $this->getParam("position"), $this->getParam("max_views"), $this->getParam("enabled", 0), $this->getParam("html_code"));
 		}
 		$result = Core::getQuery()->select("ad", array("*"), "", Core::getDB()->quoteInto("ad_id = ?", $adId));
 		$row = $result->fetchRow();
