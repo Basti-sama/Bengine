@@ -24,7 +24,7 @@ INSERT INTO `bengine_achievement` (`achievement_id`, `name`, `description`, `ico
 (9, 'Imperium', 'Kolonisiere 8 Planeten.', 'achievement.png', 80, 90, NULL),
 (10, 'Bunker', 'Errichte 2000 Verteidigungsanlagen auf einem Planeten.', 'achievement.png', 80, 100, NULL),
 (11, 'Kleiner Schritt', 'Errichte eine Mondbasis.', 'achievement.png', 100, 120, NULL),
-(12, 'Angesehner Forscher', 'Erreiche 130 Forschungspunkte.', 'achievement.png', 100, 130, NULL),
+(12, 'Angesehener Forscher', 'Erreiche 130 Forschungspunkte.', 'achievement.png', 100, 130, NULL),
 (13, 'Imperator', 'Baue einen Todesstern.', 'achievement.png', 200, 140, NULL),
 (14, 'Urbanisierung', 'Baue einen Planeten vollständig aus.', 'achievement.png', 100, 110, NULL),
 (16, 'Namensgeber', 'Benenne deinen Hauptplaneten um.', 'achievement.png', 10, 11, NULL),
