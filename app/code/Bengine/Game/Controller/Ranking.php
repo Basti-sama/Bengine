@@ -124,13 +124,20 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		$rank = abs(($pos - 1) * Core::getOptions()->get("USER_PER_PAGE"));
 		$max = Core::getOptions()->get("USER_PER_PAGE");
 		$select = array("u.userid", "u.username", "u.usertitle", "u.last as useractivity", "u.umode", "u.level", "g.galaxy", "g.system", "g.position", "a.aid", "a.tag", "a.name", "b.to");
-		if($this->average && $type != "level")
+		if($type != "level")
 		{
-			$select[] = "(u.".$type."/(('".TIME."' - u.regtime)/60/60/24)) AS points";
+			if($this->average)
+			{
+				$select[] = "(u.".$type."/(('".TIME."' - u.regtime)/60/60/24)) AS points";
+			}
+			else
+			{
+				$select[] = "u.".$type." AS points";
+			}
 		}
 		else
 		{
-			$select[] = "u.".$type." AS points";
+			$select[] = "u.points";
 		}
 		$joins  = "LEFT JOIN ".PREFIX."galaxy g ON u.hp = g.planetid ";
 		$joins .= "LEFT JOIN ".PREFIX."user2ally u2a ON u2a.userid = u.userid ";
