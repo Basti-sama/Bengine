@@ -289,6 +289,22 @@ class Bengine_Game_Model_User extends Recipe_Model_Abstract
 	}
 
 	/**
+	 * Returns the current level progress in percent.
+	 *
+	 * @return int
+	 */
+	public function getLevelProgress()
+	{
+		$requiredXPForNextLevel = $this->getRequiredXPForNextLevel();
+		$percent = 0;
+		if($requiredXPForNextLevel > 0)
+		{
+			$percent = (100 / $requiredXPForNextLevel) * ($requiredXPForNextLevel - $this->getLeftXPForNextLevel());
+		}
+		return $percent;
+	}
+
+	/**
 	 * Adds XP and checks if the user has reached the next level.
 	 *
 	 * @param int $xp

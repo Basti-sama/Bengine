@@ -16,7 +16,7 @@
 			<td>
 				{lang=XP_TO_NEXT_LEVEL}
 				<div class="xp-bar">
-					<div style="width:{@percent}%;"><?php echo $user->getXPForCurrentLevel() ?> / <?php echo $user->getRequiredXPForNextLevel() ?></div>
+					<div style="width:<?php echo $user->getLevelProgress() ?>%;"><?php echo $user->getXPForCurrentLevel() ?> / <?php echo $user->getRequiredXPForNextLevel() ?></div>
 				</div>
 			</td>
 		</tr>

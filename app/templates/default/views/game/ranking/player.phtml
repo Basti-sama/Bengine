@@ -2,12 +2,13 @@
 
 <table class="ntable">
 	<colgroup>
-		<col width="30"/>
-		<col width="180"/>
-		<col width="70"/>
-		<col width="80"/>
-		<col width="82"/>
-		<col width="60"/>
+		<col width="5%">
+		<col width="22%">
+		<col width="15%">
+		<col width="15%">
+		<col width="18%">
+		<col width="10%">
+		<col width="15%">
 	</colgroup>
 	<thead><tr>
 		<th>#</th>
@@ -15,10 +16,11 @@
 		<th></th>
 		<th>{lang}ALLIANCE{/lang}</th>
 		<th>{lang}POINTS{/lang}</th>
+		<th>{lang=LEVEL}</th>
 		<th>{lang}POSITION{/lang}</th>
 	</tr></thead>
 	<tfoot><tr>
-		<td colspan="6">
+		<td colspan="7">
 			<p class="legend"><cite><span>i</span> = {lang}LOWER_INACTIVE{/lang}</cite><cite><span>I</span> = {lang}UPPER_INACTIVE{/lang}</cite><cite><span class="banned">b</span> = {lang}BANNED{/lang}</cite><cite><span class="vacation-mode">v</span> = {lang}VACATION_MODE{/lang}</cite></p>
 			<p class="legend"><cite><span class="ownPosition">{lang=ONESELF}</span></cite><cite><span class="alliance">{lang=ALLIANCE}</span></cite><cite><span class="friend">{lang=FRIEND}</span></cite><?php $count = count($this->getLoop("relationTypes")); foreach($this->getLoop("relationTypes") as $key => $row): ?> <cite><span class="{loop=css}">{loop=name}</span></cite> <?php endforeach; ?></p>
 		</td>
@@ -29,6 +31,7 @@
 		<td class="center"><?php if($row["userid"] != Core::getUser()->get("userid")): ?>{perm[CAN_MODERATE_USER]}{loop}moderator{/loop} {/perm}{loop}message{/loop} {loop}buddyrequest{/loop}<?php endif; ?></td>
 		<td>{loop}alliance{/loop}</td>
 		<td>{loop}points{/loop}</td>
+		<td>{loop=level_link}</td>
 		<td>{loop}position{/loop}</td>
 	</tr> <?php endforeach; ?></tbody>
 </table>

@@ -29,18 +29,35 @@ class Bengine_Game_Controller_Achievements extends Bengine_Game_Controller_Abstr
 		$unlocked = $achievements->checkForUnlockedAchievements($user, $planet);
 		Core::getTemplate()->addLoop("unlocked", $unlocked);
 
-		$requiredXPForNextLevel = $user->getRequiredXPForNextLevel();
-		$percent = 0;
-		if($requiredXPForNextLevel > 0)
-		{
-			$percent = (100 / $requiredXPForNextLevel) * ($requiredXPForNextLevel - $user->getLeftXPForNextLevel());
-		}
 		Core::getLanguage()->assign("leftXP", $user->getLeftXPForNextLevel());
 		Core::getLanguage()->assign("nextLevel", $user->get("level")+1);
 		Core::getTemplate()->assign("user", $user);
-		Core::getTemplate()->assign("percent", $percent);
 		Core::getLang()->assign("xp", $user->get("xp"));
 		Core::getLang()->assign("level", $user->get("level"));
 		return $this;
+	}
+
+	/**
+	 * @var int $user
+	 * @return Bengine_Game_Controller_Achievements
+	 */
+	public function userAction($user)
+	{
+		Core::getLanguage()->load(array("Achievements"));
+
+		$user = Application::getModel("game/user")->load((int) $user);
+		/* @var Bengine_Game_Model_Collection_Achievement $achievements */
+		$achievements = Application::getCollection("game/achievement");
+		$achievements->addUserJoin($user->get("userid"), true)
+			->addDefaultSorting();
+
+		$this->view->addLoop("achievements", $achievements);
+		$this->view->assign("user", $user);
+
+		$this->language->assign("leftXP", $user->getLeftXPForNextLevel());
+		$this->language->assign("nextLevel", $user->get("level")+1);
+		$this->language->assign("xp", $user->get("xp"));
+		$this->language->assign("level", $user->get("level"));
+		$this->language->assign("achievementUser", Link::get("game/".SID."/Profile/Page/".$user->get("userid"), $user->get("username")));
 	}
 }

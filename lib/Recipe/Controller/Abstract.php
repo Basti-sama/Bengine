@@ -68,6 +68,16 @@ abstract class Recipe_Controller_Abstract
 	private $_actionNameSuffix = "Action";
 
 	/**
+	 * @var Recipe_Template_Adapter_Abstract
+	 */
+	public $view;
+
+	/**
+	 * @var Recipe_Language
+	 */
+	public $language;
+
+	/**
 	 * Creates a new controller object.
 	 *
 	 * @param array $args
@@ -83,6 +93,8 @@ abstract class Recipe_Controller_Abstract
 		$this->_requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
 		$this->setPackage(Core::getRequest()->getGET("package"));
 		$this->setMainTemplate($this->getPackage());
+		$this->view = Core::getTemplate();
+		$this->language = Core::getLanguage();
 		$this->init();
 		return $this;
 	}

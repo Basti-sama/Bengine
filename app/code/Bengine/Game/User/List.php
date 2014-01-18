@@ -65,6 +65,7 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 		$row["message"] = Link::get("game/".SID."/MSG/Write/".$row["username"], $this->pmPic);
 		$row["buddyrequest"] = Link::get("game/".SID."/Friends/Add/".$row["userid"], $this->buddyPic);
 		$row["moderator"] = Link::get("game/".SID."/Moderator/Index/".$row["userid"], $this->modPic);
+		$row["level_link"] = Link::get("game/".SID."/Achievements/User/".$row["userid"], $row["level"]);
 
 		$userClass = ""; $inactive = ""; $ban = ""; $umode = ""; $status = "";
 		// Newbie protection

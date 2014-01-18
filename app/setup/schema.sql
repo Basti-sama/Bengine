@@ -1891,7 +1891,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 37, 'XP_TO_NEXT_LEVEL', '{@leftXP} XP bis Level {@nextLevel}'),
 (1, 37, 'UNLOCKED', 'abgeschlossen'),
 (1, 37, 'ACHIEVEMENT_UNLOCKED', 'Abzeichen freigeschaltet'),
-(1, 37, 'COLLECTED_XP', 'Gesammelte XP');
+(1, 37, 'COLLECTED_XP', 'Gesammelte XP'),
+(1, 37, 'CURRENT_LEVEL_FOR_USER', 'Aktuelles Level von {@achievementUser}: {@level} ({@xp} XP)');
 
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;

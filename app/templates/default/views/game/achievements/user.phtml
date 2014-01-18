@@ -1,0 +1,44 @@
+<?php $user = $this->get("user") ?>
+<table class="ntable">
+	<thead>
+	<tr>
+		<th>{lang=CURRENT_LEVEL_FOR_USER}</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td>
+			{lang=XP_TO_NEXT_LEVEL}
+			<div class="xp-bar">
+				<div style="width:<?php echo $user->getLevelProgress() ?>%;"><?php echo $user->getXPForCurrentLevel() ?> / <?php echo $user->getRequiredXPForNextLevel() ?></div>
+			</div>
+		</td>
+	</tr>
+	</tbody>
+</table>
+<table class="ntable">
+	<thead>
+	<tr>
+		<th colspan="2">{lang=MENU_ACHIEVEMENTS}</th>
+	</tr>
+	</thead>
+	<tbody>
+	<?php foreach($this->getLoop("achievements") as $achievement): ?>
+		<?php if($this->getLoop("achievements")->isVisibleForUser($achievement)): ?>
+			<tr>
+				<td><?php echo Image::getImage($achievement->get("icon"), $achievement->get("name"), null, null, !$achievement->get("user_id") ? "disabled" : "") ?></td>
+				<td>
+					<strong><?php echo $achievement->get("name") ?></strong>
+					<div><?php echo $achievement->get("description") ?></div>
+					<div>
+						XP: <?php echo $achievement->get("xp") ?>
+						<?php if(count($achievement->getRewards())): ?>
+							, <?php echo $achievement->getRewardString() ?>
+						<?php endif ?>
+					</div>
+				</td>
+			</tr>
+		<?php endif ?>
+	<?php endforeach ?>
+	</tbody>
+</table>
