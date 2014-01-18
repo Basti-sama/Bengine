@@ -42,7 +42,7 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 	 *
 	 * @param integer $mode		Ranking mode (Alliance or Player)
 	 * @param integer $type		Points type and order
-	 * @param boolean $avg		Avarage mode
+	 * @param boolean $avg		Average mode
 	 * @param integer $position	Start position
 	 *
 	 * @return Bengine_Game_Controller_Ranking
@@ -51,7 +51,7 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 	{
 		Core::getLanguage()->load(array("Statistics", "Galaxy", "Alliance"));
 		$this->assignRelationTypes();
-		$validTypes = array("points", "fpoints", "rpoints");
+		$validTypes = array("points", "fpoints", "rpoints", "level");
 		if(!in_array($type, $validTypes))
 		{
 			$type = "points";
@@ -65,6 +65,7 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		Core::getTPL()->assign("type1Sel", $type == "points" ? " selected=\"selected\"" : "");
 		Core::getTPL()->assign("type2Sel", $type == "fpoints" ? " selected=\"selected\"" : "");
 		Core::getTPL()->assign("type3Sel", $type == "rpoints" ? " selected=\"selected\"" : "");
+		Core::getTPL()->assign("type4Sel", $type == "level" ? " selected=\"selected\"" : "");
 		Core::getTPL()->assign("avg_on", $this->average);
 
 		if($mode == 2)
@@ -123,7 +124,7 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		$rank = abs(($pos - 1) * Core::getOptions()->get("USER_PER_PAGE"));
 		$max = Core::getOptions()->get("USER_PER_PAGE");
 		$select = array("u.userid", "u.username", "u.usertitle", "u.last as useractivity", "u.umode", "u.level", "g.galaxy", "g.system", "g.position", "a.aid", "a.tag", "a.name", "b.to");
-		if($this->average)
+		if($this->average && $type != "level")
 		{
 			$select[] = "(u.".$type."/(('".TIME."' - u.regtime)/60/60/24)) AS points";
 		}
