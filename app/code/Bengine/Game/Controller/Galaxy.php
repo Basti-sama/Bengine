@@ -176,7 +176,7 @@ class Bengine_Game_Controller_Galaxy extends Bengine_Game_Controller_Abstract
 		$select = array(
 			"g.planetid", "g.position", "g.destroyed", "g.metal", "g.silicon", "g.moonid",
 			"p.picture", "p.planetname", "p.last as planetactivity",
-			"u.username", "u.usertitle", "u.userid", "u.points", "u.last as useractivity", "u.umode",
+			"u.username", "u.usertitle", "u.userid", "u.points", "u.last as useractivity", "u.umode", "u.level",
 			"m.planetid AS moon", "m.picture AS moonpic", "m.planetname AS moonname", "m.diameter AS moonsize", "m.temperature", "m.last as moonactivity",
 			"a.tag", "a.name", "a.showmember", "a.homepage", "a.showhomepage",
 			"u2a.aid", "b.to"

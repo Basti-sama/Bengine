@@ -23,6 +23,7 @@
 	</tr>
 	</thead>
 	<tbody>
+	<?php if(count($this->getLoop("achievements"))): ?>
 	<?php foreach($this->getLoop("achievements") as $achievement): ?>
 		<?php if($this->getLoop("achievements")->isVisibleForUser($achievement)): ?>
 			<tr>
@@ -40,5 +41,12 @@
 			</tr>
 		<?php endif ?>
 	<?php endforeach ?>
+	<?php else: ?>
+	<tr>
+		<td class="center">
+			{lang=NO_MATCHES_FOUND}
+		</td>
+	</tr>
+	<?php endif ?>
 	</tbody>
 </table>

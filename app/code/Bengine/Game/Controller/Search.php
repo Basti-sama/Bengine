@@ -80,7 +80,7 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 	 */
 	protected function playerSearch()
 	{
-		$select = array("u.userid", "u.username", "u.usertitle", "u.points", "u.last as useractivity", "u.umode", "p.planetname", "g.galaxy", "g.system", "g.position", "a.aid", "a.tag", "a.name", "b.to");
+		$select = array("u.userid", "u.username", "u.usertitle", "u.points", "u.last as useractivity", "u.umode", "u.level", "p.planetname", "g.galaxy", "g.system", "g.position", "a.aid", "a.tag", "a.name", "b.to");
 		$joins  = "LEFT JOIN ".PREFIX."planet p ON (p.planetid = u.hp)";
 		$joins .= "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = u.hp)";
 		$joins .= "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.userid = u.userid)";
@@ -106,7 +106,7 @@ class Bengine_Game_Controller_Search extends Bengine_Game_Controller_Abstract
 	{
 		$sr = array(); $i = 0;
 		$select = array(
-			"u.userid", "u.username", "u.usertitle", "u.points", "u.last as useractivity", "u.umode", "u.hp", "b.to",
+			"u.userid", "u.username", "u.usertitle", "u.points", "u.last as useractivity", "u.umode", "u.level", "u.hp", "b.to",
 			"p.planetid", "p.planetname", "p.ismoon",
 			"g.galaxy", "g.system", "g.position",
 			"a.aid", "a.tag", "a.name",
