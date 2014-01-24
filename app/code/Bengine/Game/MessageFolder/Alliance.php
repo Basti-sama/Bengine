@@ -21,6 +21,7 @@ class Bengine_Game_MessageFolder_Alliance extends Bengine_Game_MessageFolder_Abs
 		$senderName = $message->get("username");
 		$sender = (!empty($senderName)) ? Core::getLanguage()->getItem("ALLIANCE_GLOBAL_MAIL")." (".$senderName.")" : Core::getLanguage()->getItem("ALLIANCE");
 		$message->set("sender", $sender);
+		$this->replaceForeignSessionId($message);
 
 		if(Core::getUser()->get("aid"))
 		{

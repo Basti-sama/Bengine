@@ -31,6 +31,7 @@ class Bengine_Game_MessageFolder_User extends Bengine_Game_MessageFolder_Abstrac
 			$sender = "System";
 		}
 		$message->set("sender", $sender);
+		$this->replaceForeignSessionId($message);
 		return $this;
 	}
 }

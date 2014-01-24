@@ -51,6 +51,18 @@ abstract class Bengine_Game_MessageFolder_Abstract
 	}
 
 	/**
+	 * @param Bengine_Game_Model_Message $message
+	 * @return Bengine_Game_MessageFolder_Abstract
+	 */
+	protected function replaceForeignSessionId(Bengine_Game_Model_Message $message)
+	{
+		$str = $message->get("message");
+		$str = preg_replace("#(".BASE_URL."game)/([a-f0-9]{32})#i", "$1/".SID, $str);
+		$message->set("message", $str);
+		return $this;
+	}
+
+	/**
 	 * Formats the message.
 	 *
 	 * @param Bengine_Game_Model_Message $message

@@ -265,10 +265,6 @@ function parseBBCode($text)
  */
 function richText($str)
 {
-	if(defined("SID") && SID != "")
-	{
-		$str = str_replace(SID, "!SID!", $str);
-	}
 	static $purifier = false;
 	if(!$purifier)
 	{
