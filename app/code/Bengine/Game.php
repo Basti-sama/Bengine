@@ -599,5 +599,18 @@ class Game extends Application
 		$meta = self::getMeta();
 		return $meta["packages"]["bengine"]["game"]["version"];
 	}
+
+	/**
+	 * @return bool
+	 */
+	public static function attackingStoppageEnabled()
+	{
+		if(Core::getOptions()->get("ATTACKING_STOPPAGE_END_DATE") > 0 && Core::getOptions()->get("ATTACKING_STOPPAGE_END_DATE") < TIME)
+		{
+			Core::getOptions()->setValue("ATTACKING_STOPPAGE", 0);
+			Core::getOptions()->setValue("ATTACKING_STOPPAGE_END_DATE", 0, true);
+		}
+		return (bool) Core::getOptions()->get("ATTACKING_STOPPAGE");
+	}
 }
 ?>
