@@ -119,8 +119,12 @@ quantities[<?php echo $unit->getId() ?>] = <?php echo $unit->getQty() ?>;
 				<?php endif; ?>
 				<div class="right">
 					{lang=FLEET_SLOTS} <?php echo count($this->getLoop("missions")) ?> / <?php echo Game::getResearch(14) + 1 ?>
-					<?php if(Core::getOptions()->get("ATTACKING_STOPPAGE")): ?>
+					<?php if(Game::attackingStoppageEnabled()): ?>
+					<?php if(Core::getOptions()->get("ATTACKING_STOPPAGE_END_DATE")): ?>
+					<b class="false">({lang=ATTACKING_STOPPAGE_ENABLED_UNTIL}: <?php echo Date::timeToString(1, Core::getOptions()->get("ATTACKING_STOPPAGE_END_DATE")) ?>)</b>
+					<?php else: ?>
 					<b class="false">({lang=ATTACKING_STOPPAGE_ENABLED})</b>
+					<?php endif ?>
 					<?php endif ?>
 				</div>
 			</td>

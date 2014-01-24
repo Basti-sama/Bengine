@@ -387,6 +387,7 @@ CREATE TABLE IF NOT EXISTS `bengine_config` (
 
 INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, `groupid`, `islisted`, `sort_index`) VALUES
 ('ATTACKING_STOPPAGE', '', 'boolean', 'Disallows all attacking fleet missions.', '', 3, 1, 0),
+('ATTACKING_STOPPAGE_END_DATE', '0', 'datetime', 'Disables the attacking stoppage at the given date.', '', 3, 1, 0),
 ('BANNED_EMAILS', '', 'text', 'List of banned email addresses. You may type complete email addresses (user@example.com) or just fragments (@example.com).<br/><br/>Note: Rules like "example" will match all email addresses containing the phrase "example".<br/>Separate your rules with a comma.', '', 4, 1, 0),
 ('COMBAT_STORE_DAYS', '35', 'integer', 'Number of days storing combat reports.', '', 3, 1, 0),
 ('COMMERCIALS_ENABLED', '1', 'boolean', 'Enables the ad plug-in.', '', 8, 1, 0),
@@ -1892,8 +1893,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 37, 'UNLOCKED', 'abgeschlossen'),
 (1, 37, 'ACHIEVEMENT_UNLOCKED', 'Abzeichen freigeschaltet'),
 (1, 37, 'COLLECTED_XP', 'Gesammelte XP'),
-(1, 37, 'CURRENT_LEVEL_FOR_USER', 'Aktuelles Level von {@achievementUser}: {@level} ({@xp} XP)');
-
+(1, 37, 'CURRENT_LEVEL_FOR_USER', 'Aktuelles Level von {@achievementUser}: {@level} ({@xp} XP)'),
+(1, 10, 'ATTACKING_STOPPAGE_ENABLED_UNTIL', 'Angriffssperre bis');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (

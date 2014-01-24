@@ -19,7 +19,8 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 		"boolean" => "Check box",
 		"integer" => "Integer",
 		"double" => "Float",
-		"enum" => "Select box"
+		"enum" => "Select box",
+		"datetime" => "Date time field",
 	);
 
 	/**
@@ -250,14 +251,23 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 				return "<input type=\"checkbox\" value=\"1\" name=\"".$var."\" id=\"config-".$var."\"".$checked." class=\"boolean\"/>";
 			break;
 			case "char":
-			case "int":
-			case "integer":
 			case "double":
 				return "<input type=\"text\" value=\"".$value."\" name=\"".$var."\" id=\"config-".$var."\" class=\"".$type."\"/>";
+			break;
+			case "int":
+			case "integer":
+				return "<input type=\"number\" value=\"".$value."\" name=\"".$var."\" id=\"config-".$var."\" class=\"".$type."\"/>";
 			break;
 			case "text":
 			case "string":
 				return "<textarea name=\"".$var."\" id=\"config-".$var."\" class=\"text\">".$value."</textarea>";
+			break;
+			case "datetime":
+				if($value)
+				{
+					$value = date("Y-m-d\TH:i:s", $value);
+				}
+				return "<input type=\"datetime-local\" value=\"".$value."\" name=\"".$var."\" id=\"config-".$var."\" class=\"".$type."\"/>";
 			break;
 			case "select":
 			case "enum":
@@ -281,10 +291,11 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 	 */
 	protected function saveVars($id)
 	{
-		$result = Core::getQuery()->select("config", array("var"), "", Core::getDB()->quoteInto("groupid = ? AND islisted = '1'", $id), "sort_index ASC");
+		$result = Core::getQuery()->select("config", array("var", "type"), "", Core::getDB()->quoteInto("groupid = ? AND islisted = '1'", $id), "sort_index ASC");
 		foreach($result->fetchAll() as $row)
 		{
-			Core::getQuery()->update("config", array("value" => Core::getRequest()->getPOST($row["var"])), "var = ?", array($row["var"]));
+			$value = Core::getRequest()->getPOST($row["var"]);
+			Core::getQuery()->update("config", array("value" => $this->convertRawValue($value, $row["type"])), "var = ?", array($row["var"]));
 		}
 		Admin::rebuildCache("config");
 		return $this;
@@ -331,6 +342,37 @@ class Bengine_Admin_Controller_Config extends Bengine_Admin_Controller_Abstract
 			Core::getQuery()->insert("configgroups", array("groupname" => $this->getParam("groupname")));
 		}
 		return $this;
+	}
+
+	/**
+	 * @param mixed $value
+	 * @param string $type
+	 * @return mixed
+	 */
+	protected function convertRawValue($value, $type)
+	{
+		switch($type)
+		{
+			case "boolean":
+			case "bool":
+				return $value ? 1 : 0;
+				break;
+			case "double":
+				return (double) $value;
+				break;
+			case "int":
+			case "integer":
+				return (int) $value;
+				break;
+			case "datetime":
+				if($value)
+				{
+					return strtotime($value);
+				}
+				return 0;
+				break;
+		}
+		return $value;
 	}
 }
 ?>

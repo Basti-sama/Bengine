@@ -70,7 +70,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_AlliedFleet extends Bengine_Game_E
 			$this->_targetType != "tf" &&
 			!$this->_target["umode"] &&
 			!$this->isNewbieProtected() &&
-			Core::getOptions()->get("ATTACKING_STOPPAGE") != 1 &&
+			Game::attackingStoppageEnabled() &&
 			is_array($formations))
 		{
 			return true;

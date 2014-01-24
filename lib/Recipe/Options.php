@@ -81,6 +81,7 @@ class Recipe_Options extends Recipe_Collection
 			$spec = array("var" => $var, "value" => $value, "type" => "char", "groupid" => 1, "islisted" => 1);
 			Core::getQuery()->insert("config", $spec);
 		}
+		$this->item[$var] = $value;
 		if($this->cacheActive && $renewcache) { Core::getCache()->buildConfigCache(); }
 		return $this;
 	}

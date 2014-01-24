@@ -48,9 +48,9 @@ class Bengine_Game_Controller_Ajax_Fleet extends Bengine_Game_Controller_Ajax_Ab
 	 */
 	protected function espionageAction($target)
 	{
-		if(Core::getConfig()->get("ATTACKING_STOPPAGE"))
+		if(Game::attackingStoppageEnabled())
 		{
-			$this->display($this->format(Core::getLang()->get("TARGET_IN_UMODE")));
+			$this->display($this->format(Core::getLang()->get("ATTACKING_STOPPAGE_ENABLED")));
 		}
 		$select = array("p.planetid", "g.galaxy", "g.system", "g.position", "u2s.quantity", "sd.capicity", "sd.speed", "sd.consume", "b.name AS shipname");
 		$joins  = "LEFT JOIN ".PREFIX."galaxy g ON (g.planetid = p.planetid)";

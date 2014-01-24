@@ -196,7 +196,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 	 */
 	protected function _add(Bengine_Game_Model_Event $event, array $data)
 	{
-		if(Core::getOptions()->get("ATTACKING_STOPPAGE"))
+		if(Game::attackingStoppageEnabled())
 		{
 			throw new Recipe_Exception_Generic("Attacking stoppage enabled.");
 		}

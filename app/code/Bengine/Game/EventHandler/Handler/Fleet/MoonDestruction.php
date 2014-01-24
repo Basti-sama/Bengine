@@ -151,7 +151,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_MoonDestruction extends Bengine_Ga
 			!$this->_target["umode"] &&
 			!empty($this->_ships[self::DEATH_STAR_CONSTRUCTION_ID]) &&
 			!$this->isNewbieProtected() &&
-			Core::getOptions()->get("ATTACKING_STOPPAGE") != 1)
+			Game::attackingStoppageEnabled())
 		{
 			return true;
 		}
