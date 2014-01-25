@@ -278,5 +278,12 @@ $(document).ready(function() {
 			$("#leftMenu").css("top", $(window).scrollTop()+leftMenuTop+"px");
 		}
 	});
+	var rankingSetup = $("#ranking-setup");
+	if(rankingSetup)
+	{
+		rankingSetup.find("select, input[type=checkbox]").change(function() {
+			rankingSetup.submit();
+		});
+	}
 	$('a.external').bind("click",function(){window.open(this.href);return false;});
 });
