@@ -74,7 +74,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		{
 			if($this->isPost() && $this->getParam("cancel"))
 			{
-				$this->cancleApplication($this->getParam("alliance", array()));
+				$this->cancelApplication($this->getParam("alliance", array()));
 			}
 			$found = Link::get("game/".SID."/Alliance/Found", Core::getLanguage()->getItem("FOUND_ALLIANCE"));
 			$join = Link::get("game/".SID."/Alliance/Join", Core::getLanguage()->getItem("JOIN_ALLIANCE"));
@@ -115,13 +115,13 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 	}
 
 	/**
-	 * Cancles an application.
+	 * Cancels an application.
 	 *
 	 * @param array $alliance
 	 *
 	 * @return Bengine_Game_Controller_Alliance
 	 */
-	protected function cancleApplication($alliance)
+	protected function cancelApplication($alliance)
 	{
 		foreach($alliance as $aid)
 		{
@@ -494,7 +494,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 	}
 
 	/**
-	 * Deltes a relation application.
+	 * Deletes a relation application.
 	 *
 	 * @param integer
 	 * @param integer
@@ -914,7 +914,7 @@ class Bengine_Game_Controller_Alliance extends Bengine_Game_Controller_Abstract
 		$maxCharsName = Core::getOptions()->get("MAX_CHARS_ALLY_NAME");
 		if(!Str::compare($name, $oname))
 		{
-			$result = Core::getQuery()->select("alliance", "name", "", Core::getDB()->quoteInto("tag = ?", $name));
+			$result = Core::getQuery()->select("alliance", "name", "", Core::getDB()->quoteInto("name = ?", $name));
 			if($result->rowCount() > 0)
 			{
 				$name = $oname;
