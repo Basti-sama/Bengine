@@ -2391,7 +2391,7 @@ INSERT INTO `bengine_usergroup` (`usergroupid`, `grouptitle`, `standard`) VALUES
 (4, 'Moderator', 1);
 
 ALTER TABLE `bengine_achievement` ADD FOREIGN KEY ( `parent` ) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `bengine_achievement_l10n` ADD FOREIGN KEY ( `language_id` ) REFERENCES  `demo.bengine.de`.`bengine_languages` (`languageid`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_achievement_l10n` ADD FOREIGN KEY ( `language_id` ) REFERENCES `bengine_languages` (`languageid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement_l10n` ADD FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement_requirement` ADD FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_achievement_reward` ADD FOREIGN KEY (`achievement_id`) REFERENCES `bengine_achievement` (`achievement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
