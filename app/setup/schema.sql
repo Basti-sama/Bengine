@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `bengine_achievement` (
 INSERT INTO `bengine_achievement` (`achievement_id`, `name`, `description`, `icon`, `xp`, `sort_index`, `parent`) VALUES
 (1, 'Grundversorgung', 'Baue Metallmine, Siliziumlabor, Wasserstofflabor und Solarkraftwerk auf mindestens auf Stufe 1 aus.', 'achievement.png', 10, 10, NULL),
 (2, 'Angehender Forscher', 'Erforsche deine erste Technologie.', 'achievement.png', 10, 20, NULL),
-(3, 'Handelsbereit', 'Baue deinen ersten Transporter.', 'achievement.png', 10, 30, NULL),
+(3, 'Handelsbereit', 'Baue deinen ersten kl. Transporter.', 'achievement.png', 10, 30, NULL),
 (4, 'Feindselig', 'Baue einen Leichten Jäger.', 'achievement.png', 10, 40, NULL),
 (5, 'Teamfähig', 'Trete einer Allianz mit mindestens 4 weiteren Mitgliedern bei.', 'achievement.png', 20, 50, NULL),
 (6, 'Siegessicher', 'Greife jemanden erfolgreich an.', 'achievement.png', 50, 60, NULL),
