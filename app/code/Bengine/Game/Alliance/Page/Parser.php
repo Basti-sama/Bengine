@@ -186,12 +186,16 @@ class Bengine_Game_Alliance_Page_Parser
 	{
 		$this->text = $text;
 		Hook::event("AllyPageParserBegin", array($this));
-		$this->text = preg_replace("/\{list\:([^\"]+)\|(yes|no)\|(yes|no)\|(yes|no)\}/esiU", '\$this->replaceList("\\1", "\\2", "\\3", "\\4")', $this->text);
-		$this->text = preg_replace("/\{member\|(yes|no)\|([^\"]+)\}/esiU", '$this->replaceMember("\\1", "\\2")', $this->text);
-		$this->text = preg_replace("/\{points\}/esiU", '$this->getPoints()', $this->text);
-		$this->text = preg_replace("/\{totalmember\}/esiU", '$this->getTotalMember()', $this->text);
-		$this->text = preg_replace("/\{avarage\}/esiU", '$this->getAvarage()', $this->text);
-		$this->text = preg_replace("/\{no\}/esiU", '$this->getNumber()', $this->text);
+		$this->text = preg_replace_callback("/\{list\:([^\"]+)\|(yes|no)\|(yes|no)\|(yes|no)\}/siU", function($matches) {
+			return $this->replaceList($matches[1], $matches[2], $matches[3], $matches[4]);
+		}, $this->text);
+		$this->text = preg_replace_callback("/\{member\|(yes|no)\|([^\"]+)\}/siU", function($matches) {
+			return $this->replaceMember($matches[1], $matches[2]);
+		}, $this->text);
+		$this->text = str_replace("{points}", $this->getPoints(), $this->text);
+		$this->text = str_replace("{totalmember}", $this->getTotalMember(), $this->text);
+		$this->text = str_replace("{average}", $this->getAverage(), $this->text);
+		$this->text = str_replace("{no}", $this->getNumber(), $this->text);
 		$this->text = preg_replace("~src=['\"]([^'\"]+)['\"]~i", "src=\"".BASE_URL."img/remote.php?file=\\1\"", $this->text);
 		Hook::event("AllyPageParserEnd", array($this));
 		return $this->text;
@@ -224,7 +228,7 @@ class Bengine_Game_Alliance_Page_Parser
 	 *
 	 * @return string	Avarage points
 	 */
-	public function getAvarage()
+	public function getAverage()
 	{
 		$this->loadMember();
 		return fNumber($this->points / $this->totalMember);
