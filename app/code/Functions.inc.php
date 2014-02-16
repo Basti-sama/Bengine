@@ -24,8 +24,12 @@ function parseFormula($formula, $basic, $level)
 	$formula = Str::replace("{level}", $level, $formula);
 	$formula = Str::replace("{basic}", $basic, $formula);
 	$formula = Str::replace("{temp}", Game::getPlanet()->getData("temperature"), $formula);
-	$formula = preg_replace("#\{tech\=([0-9]+)\}#ie", 'Game::getResearch(\\1)', $formula);
-	$formula = preg_replace("#\{building\=([0-9]+)\}#ie", 'Game::getPlanet()->getBuilding(\\1)', $formula);
+	$formula = preg_replace_callback("#\{tech\=([0-9]+)\}#i", function($matches) {
+		return Game::getResearch($matches[1]);
+	}, $formula);
+	$formula = preg_replace_callback("#\{building\=([0-9]+)\}#i", function($matches) {
+		return Game::getPlanet()->getBuilding($matches[1]);
+	}, $formula);
 	$result = 0;
 	eval("\$result = ".$formula.";");
 	return (int) $result;
@@ -221,8 +225,21 @@ function getFleetMessageClass($id)
 function parseBBCode($text)
 {
 	$patterns = array();
-	$patterns[] = "/\[url=(&quot;|['\"]?)([^\"']+)\\1](.+)\[\/url\]/esiU";
-	$patterns[] = "/\[url]([^\"\[]+)\[\/url\]/eiU";
+	$patterns[] = "/\[url=(&quot;|['\"]?)([^\"']+)\\1](.+)\[\/url\]/siU";
+	$patterns[] = "/\[url]([^\"\[]+)\[\/url\]/iU";
+	$patterns[] = "/\[list](.+)\[\/list\]/siU";
+	$replace = array();
+	$replace[] = function($matches) {
+		return Link::get($matches[1], $matches[2], $matches[3]);
+	};
+	$replace[] = function($matches) {
+		return Link::get($matches[1], $matches[1]);
+	};
+	$replace[] = function($matches) {
+		return parseList($matches[1]);
+	};
+	$text = preg_replace_callback($patterns, $replace);
+	$patterns = array();
 	$patterns[] = "/\[img]([^\"]+)\[\/img\]/siU";
 	$patterns[] = "/\[b]([^\"]+)\[\/b\]/siU";
 	$patterns[] = "/\[u]([^\"]+)\[\/u\]/siU";
@@ -232,10 +249,7 @@ function parseBBCode($text)
 	$patterns[] = "/\[color=([^\"]+)\]/siU";
 	$patterns[] = "/\[size=([^\"]+)\]/siU";
 	$patterns[] = "/\[align=(center|right|left|justify)\]/siU";
-	$patterns[] = "/\[list](.+)\[\/list\]/esiU";
 	$replace = array();
-	$replace[] = 'Link::get("\\2", "\\3", "\\2")';
-	$replace[] = 'Link::get("\\1", "\\1")';
 	$replace[] = "<img src=\"\\1\" alt=\"\" title=\"\" />";
 	$replace[] = "<span style=\"font-weight: bold;\">\\1</span>";
 	$replace[] = "<span style=\"text-decoration: underline;\">\\1</span>";
@@ -245,7 +259,6 @@ function parseBBCode($text)
 	$replace[] = "<span style=\"color: \\1;\">";
 	$replace[] = "<span style=\"font-size: \\1;\">";
 	$replace[] = "<div style=\"text-align: \\1;\">";
-	$replace[] = 'parseList("\\1")';
 	Hook::event("ParseBbCodeStart", array(&$text, &$patterns, &$replace));
 	$text = preg_replace($patterns, $replace, $text);
 

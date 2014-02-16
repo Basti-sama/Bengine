@@ -38,8 +38,12 @@ class Bengine_Comm_Controller_Combat extends Bengine_Comm_Controller_Abstract
 		if($row)
 		{
 			$report = $row["report"];
-			$report = preg_replace("/\{lang}([^\"]+)\{\/lang}/siUe", 'Core::getLanguage()->getItem("$1")', $report);
-			$report = preg_replace("/\{embedded\[([^\"]+)]}(.*)\{\/embedded}/siUe", 'sprintf(Core::getLanguage()->getItem("$1"), "$2")', $report);
+			$report = preg_replace_callback("/\{lang}([^\"]+)\{\/lang}/siU", function($matches) {
+				return Core::getLanguage()->getItem($matches[1]);
+			}, $report);
+			$report = preg_replace_callback("/\{embedded\[([^\"]+)]}(.*)\{\/embedded}/siU", function($matches) {
+				return sprintf(Core::getLanguage()->getItem($matches[1]), $matches[2])
+			}, $report);
 			$this->assign("report", $report);
 			$this->assign("planetName", $row["planetname"]);
 			$this->setIsAjax();
