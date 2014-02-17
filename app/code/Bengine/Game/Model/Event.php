@@ -38,8 +38,14 @@ class Bengine_Game_Model_Event extends Recipe_Model_Abstract
 	 */
 	public function execute()
 	{
-		$this->getEventHandler()
-			->execute();
+		try {
+			$this->getEventHandler()
+				->execute();
+		} catch (Exception $e) {
+			$this->set("prev_rc", "error");
+			$this->save();
+			Logger::addMessage($e->getMessage());
+		}
 		return $this;
 	}
 
