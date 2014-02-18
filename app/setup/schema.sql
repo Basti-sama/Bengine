@@ -2420,7 +2420,7 @@ ALTER TABLE `bengine_buddylist` ADD FOREIGN KEY ( `friend2` ) REFERENCES `bengin
 ALTER TABLE `bengine_building2planet` ADD FOREIGN KEY ( `planetid` ) REFERENCES `bengine_planet` (`planetid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_building2planet` ADD FOREIGN KEY ( `buildingid` ) REFERENCES `bengine_construction` (`buildingid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_config` ADD FOREIGN KEY ( `groupid` ) REFERENCES `bengine_configgroups` (`groupid`) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE `bengine_events` ADD FOREIGN KEY ( `planetid` ) REFERENCES `bengine_planet` (`planetid`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_events` ADD FOREIGN KEY ( `planetid` ) REFERENCES `bengine_planet` (`planetid`) ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE `bengine_events` ADD FOREIGN KEY ( `user` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_events` ADD FOREIGN KEY ( `destination` ) REFERENCES `bengine_planet` (`planetid`) ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE `bengine_events` ADD FOREIGN KEY ( `mode` ) REFERENCES `bengine_event_type` (`event_type_id`) ON DELETE CASCADE ON UPDATE CASCADE;
