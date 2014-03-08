@@ -92,7 +92,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Espionage extends Bengine_Game_Eve
 			$this->_target["userid"] != Core::getUser()->get("userid") &&
 			$this->_targetType != "tf" && $this->_checkProbes() &&
 			!$this->_target["umode"] &&
-			Game::attackingStoppageEnabled())
+			!Game::attackingStoppageEnabled())
 		{
 			return true;
 		}
