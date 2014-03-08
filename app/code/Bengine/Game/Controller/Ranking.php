@@ -126,6 +126,7 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		$select = array("u.userid", "u.username", "u.usertitle", "u.last as useractivity", "u.umode", "u.level", "g.galaxy", "g.system", "g.position", "a.aid", "a.tag", "a.name", "b.to");
 		if($type != "level")
 		{
+			$orderType = "points";
 			if($this->average)
 			{
 				$select[] = "(u.".$type."/(('".TIME."' - u.regtime)/60/60/24)) AS points";
@@ -137,13 +138,14 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		}
 		else
 		{
+			$orderType = "u.level";
 			$select[] = "u.points";
 		}
 		$joins  = "LEFT JOIN ".PREFIX."galaxy g ON u.hp = g.planetid ";
 		$joins .= "LEFT JOIN ".PREFIX."user2ally u2a ON u2a.userid = u.userid ";
 		$joins .= "LEFT JOIN ".PREFIX."alliance a ON a.aid = u2a.aid ";
 		$joins .= "LEFT JOIN ".PREFIX."ban_u b ON (b.userid = u.userid AND b.to > '".TIME."')";
-		$result = Core::getQuery()->select("user u", $select, $joins, "u.userid > '0'", "points DESC, u.username ASC", $rank.", ".$max, "u.userid");
+		$result = Core::getQuery()->select("user u", $select, $joins, "u.userid > '0'", "$orderType DESC, u.username ASC", $rank.", ".$max, "u.userid");
 		// Creating the user list object to handle the output
 		$UserList = new Bengine_Game_User_List($result, $rank);
 		Hook::event("ShowRankingPlayer", array($UserList));
