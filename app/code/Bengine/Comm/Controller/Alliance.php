@@ -21,8 +21,8 @@ class Bengine_Comm_Controller_Alliance extends Bengine_Comm_Controller_Abstract
 		Core::getTPL()->addHTMLHeaderFile("style.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.js", "js");
 		$tag = $this->getParam("1");
-		$fNumber = array("member", "points", "rpoints", "fpoints");
-		$attr = array("a.aid", "a.name", "a.tag", "a.logo", "a.textextern", "a.homepage", "a.showhomepage", "COUNT(u2a.userid) AS member", "SUM(u.points) AS points", "SUM(u.rpoints) AS rpoints", "SUM(u.fpoints) AS fpoints");
+		$fNumber = array("member", "points", "rpoints", "fpoints", "dpoints");
+		$attr = array("a.aid", "a.name", "a.tag", "a.logo", "a.textextern", "a.homepage", "a.showhomepage", "COUNT(u2a.userid) AS member", "SUM(u.points) AS points", "SUM(u.rpoints) AS rpoints", "SUM(u.fpoints) AS fpoints", "SUM(u.dpoints) AS dpoints");
 		$joins  = "LEFT JOIN ".PREFIX."user2ally u2a ON (u2a.aid = a.aid) ";
 		$joins .= "LEFT JOIN ".PREFIX."user u ON (u2a.userid = u.userid) ";
 		$result = Core::getQuery()->select("alliance a", $attr, $joins, Core::getDB()->quoteInto("tag = ?", $tag), "", 1, "a.aid");

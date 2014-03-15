@@ -188,5 +188,24 @@ class Bengine_Game_PointRenewer
 		$result->closeCursor();
 		return $fpoints;
 	}
+
+	/**
+	 * Calculates defense points.
+	 *
+	 * @param integer $planetid
+	 *
+	 * @return integer	Points
+	 */
+	public static function getDefensePoints($planetid)
+	{
+		$points = 0;
+		$result = Core::getQuery()->select("unit2shipyard u2s", array("SUM(u2s.quantity) AS points"), "LEFT JOIN ".PREFIX."construction c ON (c.buildingid = u2s.unitid)", Core::getDB()->quoteInto("u2s.planetid = ? AND c.mode = '4'", $planetid), "", "", "u2s.planetid");
+		foreach($result->fetchAll() as $row)
+		{
+			$points = $row["points"];
+		}
+		$result->closeCursor();
+		return $points;
+	}
 }
 ?>

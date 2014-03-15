@@ -31,8 +31,14 @@ class Bengine_Game_EventHandler_Handler_Construct_Shipyard extends Bengine_Game_
 			Core::getQuery()->insert("unit2shipyard", array("unitid" => $data["buildingid"], "planetid" => $event->getPlanetid(), "quantity" => 1));
 		}
 		$result->closeCursor();
-		if($event["mode"] == 4) { $fpoints = 1; } else { $fpoints = 0; }
-		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + ?, fpoints = fpoints + ? WHERE userid = ?", array($points, $fpoints, $event->getUserid()));
+		$fpoints = 1;
+		$dpoints = 0;
+		if($event["mode"] == 5)
+		{
+			$fpoints = 0;
+			$dpoints = 1;
+		}
+		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + ?, fpoints = fpoints + ?, dpoints = dpoints + ? WHERE userid = ?", array($points, $fpoints, $dpoints, $event->getUserid()));
 		return $this;
 	}
 

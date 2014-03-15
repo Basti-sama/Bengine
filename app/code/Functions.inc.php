@@ -401,13 +401,14 @@ function deletePlanet($id, $userid, $ismoon)
 	$points  = Bengine_Game_PointRenewer::getBuildingPoints($id);
 	$points += Bengine_Game_PointRenewer::getFleetPoints($id);
 	$fpoints = Bengine_Game_PointRenewer::getFleetPoints_Fleet($id);
+	$dpoints = Bengine_Game_PointRenewer::getDefensePoints($id);
 	if(!$ismoon)
 	{
 		$result = Core::getQuery()->select("galaxy", "moonid", "", Core::getDB()->quoteInto("planetid = ?", $id));
 		$row = $result->fetchRow();
 		if($row["moonid"]) { deletePlanet($row["moonid"], $userid, 1); }
 	}
-	Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ?, fpoints = fpoints - ? WHERE userid = ?", array($points, $fpoints, $userid));
+	Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ?, fpoints = fpoints - ?, dpoints = dpoints - ? WHERE userid = ?", array($points, $fpoints, $dpoints, $userid));
 	Core::getQuery()->update("planet", array("userid" => null), "planetid = ?", array($id));
 	if($ismoon)
 	{

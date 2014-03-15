@@ -46,13 +46,13 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 			{
 				$this->updateUser(
 					$this->getParam("username"), $this->getParam("usertitle"), $this->getParam("email"), $this->getParam("delete"), $this->getParam("umode"), $this->getParam("activation"),
-					$this->getParam("ipcheck"), $this->getParam("usergroupid"), $this->getParam("points"), $this->getParam("fpoints"), $this->getParam("rpoints"),
+					$this->getParam("ipcheck"), $this->getParam("usergroupid"), $this->getParam("points"), $this->getParam("fpoints"), $this->getParam("dpoints"), $this->getParam("rpoints"),
 					$this->getParam("password"), $this->getParam("languageid"), $this->getParam("templatepackage"), $this->getParam("theme"), $this->getParam("js_interface")
 				);
 			}
 		}
 		$select = array(
-			"u.userid", "u.username", "u.usertitle", "u.email", "u.temp_email", "u.languageid", "u.templatepackage", "u.theme", "u.js_interface", "u.points", "u.fpoints", "u.rpoints",
+			"u.userid", "u.username", "u.usertitle", "u.email", "u.temp_email", "u.languageid", "u.templatepackage", "u.theme", "u.js_interface", "u.points", "u.fpoints", "u.dpoints", "u.rpoints",
 			"u.ipcheck", "u.activation", "u.last", "u.umode", "u.umode", "u.delete", "u.regtime",
 			"a.tag", "a.name", "u2g.usergroupid"
 		);
@@ -177,6 +177,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	 * @param int $usergroupid
 	 * @param int $points
 	 * @param int $fpoints
+	 * @param int $dpoints
 	 * @param int $rpoints
 	 * @param string $password
 	 * @param int $languageid
@@ -185,7 +186,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 	 * @param string $js_interface
 	 * @return Bengine_Game_Controller_Moderator
 	 */
-	protected function updateUser($username, $usertitle, $email, $delete, $umode, $activation, $ipcheck, $usergroupid, $points, $fpoints, $rpoints, $password, $languageid, $templatepackage, $theme, $js_interface)
+	protected function updateUser($username, $usertitle, $email, $delete, $umode, $activation, $ipcheck, $usergroupid, $points, $fpoints, $dpoints, $rpoints, $password, $languageid, $templatepackage, $theme, $js_interface)
 	{
 		$select = array("userid", "username", "email");
 		$result = Core::getQuery()->select("user", $select, "", Core::getDB()->quoteInto("userid = ?", $this->userid));
@@ -205,7 +206,7 @@ class Bengine_Game_Controller_Moderator extends Bengine_Game_Controller_Abstract
 			{
 				Core::getQuery()->delete("user2group", "userid = ?", null, null, array($this->userid));
 				Core::getQuery()->insert("user2group", array("usergroupid" => $usergroupid, "userid" => $this->userid));
-				Core::getQuery()->update("user", array("points" => floatval($points), "fpoints" => (int) $fpoints, "rpoints" => (int) $rpoints), "userid = ?", array($this->userid));
+				Core::getQuery()->update("user", array("points" => floatval($points), "fpoints" => (int) $fpoints, "dpoints" => (int) $dpoints, "rpoints" => (int) $rpoints), "userid = ?", array($this->userid));
 			}
 
 			if($umode)

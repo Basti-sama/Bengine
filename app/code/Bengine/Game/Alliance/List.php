@@ -150,6 +150,10 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 		{
 			$row["fpoints"] = fNumber(floor($row["fpoints"]));
 		}
+		if(isset($row["dpoints"]))
+		{
+			$row["dpoints"] = fNumber(floor($row["dpoints"]));
+		}
 		if(isset($row["rpoints"]))
 		{
 			$row["rpoints"] = fNumber(floor($row["rpoints"]));
@@ -167,7 +171,7 @@ class Bengine_Game_Alliance_List implements IteratorAggregate
 	 */
 	protected function getAllianceRank($aid, $pointType)
 	{
-		if($pointType != "points" & $pointType != "fpoints" && $pointType != "rpoints")
+		if(!in_array($pointType, array("points", "fpoints", "dpoints", "rpoints")))
 		{
 			throw new Recipe_Exception_Generic("Unknown point type supplied.");
 		}

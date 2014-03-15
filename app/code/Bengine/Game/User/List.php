@@ -146,6 +146,10 @@ class Bengine_Game_User_List extends Bengine_Game_Alliance_List
 		{
 			$row["fpoints"] = fNumber(floor($row["fpoints"]));
 		}
+		if(isset($row["dpoints"]))
+		{
+			$row["dpoints"] = fNumber(floor($row["dpoints"]));
+		}
 		if(isset($row["rpoints"]))
 		{
 			$row["rpoints"] = fNumber(floor($row["rpoints"]));

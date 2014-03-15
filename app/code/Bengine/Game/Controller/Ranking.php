@@ -51,7 +51,7 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 	{
 		Core::getLanguage()->load(array("Statistics", "Galaxy", "Alliance"));
 		$this->assignRelationTypes();
-		$validTypes = array("points", "fpoints", "rpoints", "level");
+		$validTypes = array("points", "fpoints", "rpoints", "dpoints", "level");
 		if(!in_array($type, $validTypes))
 		{
 			$type = "points";
@@ -66,6 +66,7 @@ class Bengine_Game_Controller_Ranking extends Bengine_Game_Controller_Abstract
 		Core::getTPL()->assign("type2Sel", $type == "fpoints" ? " selected=\"selected\"" : "");
 		Core::getTPL()->assign("type3Sel", $type == "rpoints" ? " selected=\"selected\"" : "");
 		Core::getTPL()->assign("type4Sel", $type == "level" ? " selected=\"selected\"" : "");
+		Core::getTPL()->assign("type5Sel", $type == "dpoints" ? " selected=\"selected\"" : "");
 		Core::getTPL()->assign("avg_on", $this->average);
 
 		if($mode == 2)

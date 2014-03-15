@@ -154,6 +154,7 @@ class Bengine_Game_Alliance_Page_Parser
 			case "points":
 			case "fpoints":
 			case "rpoints":
+			case "dpoints":
 				$sort = "DESC";
 			break;
 			case "name":

@@ -1894,7 +1894,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 37, 'ACHIEVEMENT_UNLOCKED', 'Abzeichen freigeschaltet'),
 (1, 37, 'COLLECTED_XP', 'Gesammelte XP'),
 (1, 37, 'CURRENT_LEVEL_FOR_USER', 'Aktuelles Level von {@achievementUser}: {@level} ({@xp} XP)'),
-(1, 10, 'ATTACKING_STOPPAGE_ENABLED_UNTIL', 'Angriffssperre bis');
+(1, 10, 'ATTACKING_STOPPAGE_ENABLED_UNTIL', 'Angriffssperre bis'),
+(1, 12, 'DEFENSE', 'Verteidigung');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (
@@ -2318,6 +2319,7 @@ CREATE TABLE IF NOT EXISTS `bengine_user` (
   `credits` float(128,8) NOT NULL default '0.0',
   `fpoints` int(9) unsigned NOT NULL default '0',
   `rpoints` int(3) unsigned NOT NULL default '0',
+  `dpoints` int(9) unsigned NOT NULL default '0',
   `hp` int(10) DEFAULT NULL,
   `ipcheck` tinyint(1) unsigned NOT NULL default '1',
   `activation` varchar(32) NULL,

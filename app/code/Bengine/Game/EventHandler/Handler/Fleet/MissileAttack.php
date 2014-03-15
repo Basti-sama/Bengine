@@ -186,7 +186,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 		// Update points for attacker
 		$points = $data["rockets"] * $data["basic_metal"] + $data["rockets"] * $data["basic_silicon"] + $data["rockets"] * $data["basic_hydrogen"];
 		$points /= 1000;
-		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ? WHERE userid = ?", array($points, $event["userid"]));
+		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points - ?, dpoints = dpoints - ? WHERE userid = ?", array($points, array_sum($destroyed), $event["userid"]));
 		return $this;
 	}
 

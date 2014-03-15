@@ -33,6 +33,7 @@ class Bengine_Game_Model_Resource_Alliance extends Recipe_Model_Resource_Abstrac
 			new Recipe_Database_Expr("COUNT(u2a.userid) AS member"),
 			new Recipe_Database_Expr("SUM(u.points) AS points"),
 			new Recipe_Database_Expr("SUM(u.fpoints) AS fpoints"),
+			new Recipe_Database_Expr("SUM(u.dpoints) AS dpoints"),
 			new Recipe_Database_Expr("SUM(u.rpoints) AS rpoints"),
 			"a" => array("aid", "name", "tag", "textextern", "textintern", "founder", "foundername", "logo", "homepage", "showmember", "showhomepage")
 		));
