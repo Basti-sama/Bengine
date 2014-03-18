@@ -23,7 +23,7 @@ hosts. Installation should be done by advanced server administrators.
 
 2. Requirements
 - Apache 2.x Webserver + mod_rewrite (platform independent)
-- PHP 5.2.x or 5.3.x or 5.4.x
+- PHP 5.3.x or 5.4.x or 5.5.x
 	* curl
 	* SimpleXMLElement
 	* gd
