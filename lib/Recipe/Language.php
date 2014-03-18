@@ -333,8 +333,9 @@ class Recipe_Language extends Recipe_Collection
 	 */
 	protected function replaceWildCards($content)
 	{
-		return preg_replace_callback("/\{\@([^\"]+)}/siU", function($matches){
-			return $this->getAssignment($matches[1]);
+		$me = $this;
+		return preg_replace_callback("/\{\@([^\"]+)}/siU", function($matches) use($me) {
+			return $me->getAssignment($matches[1]);
 		}, $content);
 	}
 

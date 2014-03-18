@@ -187,11 +187,12 @@ class Bengine_Game_Alliance_Page_Parser
 	{
 		$this->text = $text;
 		Hook::event("AllyPageParserBegin", array($this));
-		$this->text = preg_replace_callback("/\{list\:([^\"]+)\|(yes|no)\|(yes|no)\|(yes|no)\}/siU", function($matches) {
-			return $this->replaceList($matches[1], $matches[2], $matches[3], $matches[4]);
+		$me = $this;
+		$this->text = preg_replace_callback("/\{list\:([^\"]+)\|(yes|no)\|(yes|no)\|(yes|no)\}/siU", function($matches) use($me) {
+			return $me->replaceList($matches[1], $matches[2], $matches[3], $matches[4]);
 		}, $this->text);
-		$this->text = preg_replace_callback("/\{member\|(yes|no)\|([^\"]+)\}/siU", function($matches) {
-			return $this->replaceMember($matches[1], $matches[2]);
+		$this->text = preg_replace_callback("/\{member\|(yes|no)\|([^\"]+)\}/siU", function($matches) use($me) {
+			return $me->replaceMember($matches[1], $matches[2]);
 		}, $this->text);
 		$this->text = str_replace("{points}", $this->getPoints(), $this->text);
 		$this->text = str_replace("{totalmember}", $this->getTotalMember(), $this->text);
