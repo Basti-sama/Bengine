@@ -141,7 +141,7 @@ DROP TABLE IF EXISTS `bengine_allyapplication`;
 CREATE TABLE IF NOT EXISTS `bengine_allyapplication` (
   `userid` int(9) unsigned NOT NULL,
   `aid` int(8) unsigned NOT NULL,
-  `date` int(10) unsigned NOT NULL,
+  `date` int(11) unsigned NOT NULL,
   `application` text NOT NULL,
   UNIQUE KEY `userid` (`userid`,`aid`),
   KEY `aid` (`aid`)
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `bengine_ally_relationships` (
   `relid` int(10) unsigned NOT NULL auto_increment,
   `rel1` int(8) unsigned NOT NULL,
   `rel2` int(8) unsigned NOT NULL,
-  `time` int(10) unsigned NOT NULL,
+  `time` int(11) unsigned NOT NULL,
   `mode` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY  (`relid`),
   UNIQUE KEY `rel1` (`rel1`,`rel2`),
@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `bengine_ally_relationships_application` (
   `userid` int(9) unsigned NOT NULL,
   `mode` tinyint(2) NOT NULL,
   `application` text NULL,
-  `time` int(10) unsigned NOT NULL,
+  `time` int(11) unsigned NOT NULL,
   UNIQUE KEY `candidate_ally` (`candidate_ally`,`request_ally`),
   KEY `request_ally` (`request_ally`),
   KEY `userid` (`userid`)
@@ -212,11 +212,11 @@ CREATE TABLE IF NOT EXISTS `bengine_assault` (
   `key` varbinary(4) NULL,
   `result` tinyint(1) unsigned NOT NULL,
   `planetid` int(10) unsigned NULL,
-  `time` int(10) unsigned NOT NULL DEFAULT '0',
+  `time` int(11) unsigned NOT NULL DEFAULT '0',
   `moonchance` int(2) unsigned NOT NULL DEFAULT '0',
   `moon` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `lostunits_attacker` int(10) unsigned NOT NULL DEFAULT '0',
-  `lostunits_defender` int(10) unsigned NOT NULL DEFAULT '0',
+  `lostunits_attacker` bigint(12) unsigned NOT NULL DEFAULT '0',
+  `lostunits_defender` bigint(12) unsigned NOT NULL DEFAULT '0',
   `gentime` int(8) unsigned NOT NULL DEFAULT '0',
   `report` text NULL,
   `accomplished` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -248,7 +248,7 @@ DROP TABLE IF EXISTS `bengine_attack_formation`;
 CREATE TABLE IF NOT EXISTS `bengine_attack_formation` (
   `eventid` int(10) unsigned NOT NULL,
   `name` varchar(128) NULL,
-  `time` int(10) unsigned NOT NULL DEFAULT '0',
+  `time` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`eventid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -256,8 +256,8 @@ DROP TABLE IF EXISTS `bengine_ban_u`;
 CREATE TABLE IF NOT EXISTS `bengine_ban_u` (
   `banid` int(10) unsigned NOT NULL auto_increment,
   `userid` int(9) unsigned NOT NULL,
-  `from` int(10) unsigned NOT NULL DEFAULT '0',
-  `to` int(10) unsigned NOT NULL DEFAULT '0',
+  `from` int(11) unsigned NOT NULL DEFAULT '0',
+  `to` int(11) unsigned NOT NULL DEFAULT '0',
   `reason` varchar(255) NULL,
   `modid` int(9) unsigned NULL DEFAULT 1,
   PRIMARY KEY  (`banid`),
@@ -513,8 +513,8 @@ CREATE TABLE IF NOT EXISTS `bengine_cronjob` (
   `weekday` varchar(13) NULL,
   `hour` varchar(62) NULL,
   `minute` varchar(34) NULL,
-  `xtime` int(10) unsigned NULL,
-  `last` int(10) unsigned NULL,
+  `xtime` int(11) unsigned NULL,
+  `last` int(11) unsigned NULL,
   `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`cronid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -544,8 +544,8 @@ CREATE TABLE IF NOT EXISTS `bengine_events` (
   `eventid` int(10) unsigned NOT NULL auto_increment,
   `parent_id` int(10) unsigned NULL default NULL,
   `mode` int(2) unsigned NOT NULL,
-  `start` int(10) unsigned NOT NULL,
-  `time` int(10) unsigned NOT NULL,
+  `start` int(11) unsigned NOT NULL,
+  `time` int(11) unsigned NOT NULL,
   `planetid` int(10) unsigned NULL default NULL,
   `user` int(9) unsigned NOT NULL,
   `destination` int(10) unsigned NULL default NULL,
@@ -691,7 +691,7 @@ INSERT INTO `bengine_languages` (`languageid`, `title`, `langcode`) VALUES
 
 DROP TABLE IF EXISTS `bengine_loginattempts`;
 CREATE TABLE IF NOT EXISTS `bengine_loginattempts` (
-  `time` int(10) unsigned NOT NULL,
+  `time` int(11) unsigned NOT NULL,
   `ip` varchar(16) NOT NULL,
   `username` varchar(255) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -700,7 +700,7 @@ DROP TABLE IF EXISTS `bengine_message`;
 CREATE TABLE IF NOT EXISTS `bengine_message` (
   `msgid` int(10) unsigned NOT NULL auto_increment,
   `mode` int(1) unsigned NOT NULL,
-  `time` int(10) unsigned NOT NULL,
+  `time` int(11) unsigned NOT NULL,
   `sender` int(9) unsigned NULL default NULL,
   `receiver` int(9) unsigned NOT NULL,
   `message` text NOT NULL,
@@ -717,7 +717,7 @@ CREATE TABLE IF NOT EXISTS `bengine_news` (
   `title` varchar(255) DEFAULT NULL,
   `text` text,
   `user_id` int(9) unsigned DEFAULT NULL,
-  `time` int(10) unsigned NOT NULL DEFAULT '0',
+  `time` int(11) unsigned NOT NULL DEFAULT '0',
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `sort_index` int(8) unsigned NULL DEFAULT NULL,
   PRIMARY KEY (`news_id`),
@@ -747,7 +747,7 @@ DROP TABLE IF EXISTS `bengine_password`;
 CREATE TABLE IF NOT EXISTS `bengine_password` (
   `userid` int(9) unsigned NOT NULL,
   `password` varchar(32) NOT NULL,
-  `time` int(10) unsigned NOT NULL DEFAULT '0',
+  `time` int(11) unsigned NOT NULL DEFAULT '0',
   UNIQUE KEY `userid` (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1950,7 +1950,7 @@ CREATE TABLE IF NOT EXISTS `bengine_planet` (
   `diameter` int(6) unsigned NOT NULL default '0',
   `picture` varchar(255) NOT NULL,
   `temperature` int(3) NOT NULL default '0',
-  `last` int(10) unsigned NOT NULL default '0',
+  `last` int(11) unsigned NOT NULL default '0',
   `metal` double(128,8) NOT NULL default '500',
   `silicon` double(128,8) NOT NULL default '500',
   `hydrogen` double(128,8) NOT NULL default '0',
@@ -2180,7 +2180,7 @@ CREATE TABLE IF NOT EXISTS `bengine_sessions` (
   `userid` int(9) unsigned NOT NULL,
   `ipaddress` varchar(40) NOT NULL,
   `useragent` varchar(255) NULL,
-  `time` int(10) unsigned NOT NULL default '0',
+  `time` int(11) unsigned NOT NULL default '0',
   `logged` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`sessionid`),
   KEY `userid` (`userid`)
@@ -2220,8 +2220,8 @@ CREATE TABLE IF NOT EXISTS `bengine_shipyard` (
   `unitid` int(4) unsigned NOT NULL,
   `quantity` int(4) unsigned NOT NULL default '0',
   `one` int(6) unsigned NOT NULL default '0',
-  `time` int(10) unsigned NOT NULL default '0',
-  `finished` int(10) unsigned NOT NULL default '0',
+  `time` int(11) unsigned NOT NULL default '0',
+  `finished` int(11) unsigned NOT NULL default '0',
   KEY `planetid` (`planetid`),
   KEY `unitid` (`unitid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2267,7 +2267,7 @@ DROP TABLE IF EXISTS `bengine_stargate_jump`;
 CREATE TABLE IF NOT EXISTS `bengine_stargate_jump` (
   `jumpid` int( 8 ) unsigned NOT NULL AUTO_INCREMENT,
   `planetid` int( 10 ) unsigned NOT NULL,
-  `time` int( 10 ) unsigned NOT NULL default '0',
+  `time` int( 11 ) unsigned NOT NULL default '0',
   `data` mediumtext NOT NULL,
   PRIMARY KEY ( `jumpid` ),
   KEY `planetid` (`planetid`)
@@ -2285,7 +2285,7 @@ CREATE TABLE IF NOT EXISTS `bengine_transport_log` (
   `user_1` int(9) unsigned NOT NULL,
   `user_2` int(9) unsigned NOT NULL,
   `message` text NOT NULL,
-  `time` int(10) unsigned NOT NULL,
+  `time` int(11) unsigned NOT NULL,
   `suspicious` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY (`transport_log_id`),
   KEY `user_1` (`user_1`),
@@ -2323,12 +2323,12 @@ CREATE TABLE IF NOT EXISTS `bengine_user` (
   `hp` int(10) DEFAULT NULL,
   `ipcheck` tinyint(1) unsigned NOT NULL default '1',
   `activation` varchar(32) NULL,
-  `regtime` int(10) unsigned NOT NULL default '0',
-  `last` int(10) unsigned NOT NULL default '0',
-  `asteroid` int(10) unsigned NOT NULL default '0',
+  `regtime` int(11) unsigned NOT NULL default '0',
+  `last` int(11) unsigned NOT NULL default '0',
+  `asteroid` int(11) unsigned NOT NULL default '0',
   `umode` tinyint(1) unsigned NOT NULL default '0',
-  `umodemin` int(10) unsigned NOT NULL default '0',
-  `delete` int(10) unsigned NOT NULL default '0',
+  `umodemin` int(11) unsigned NOT NULL default '0',
+  `delete` int(11) unsigned NOT NULL default '0',
   `esps` tinyint(2) unsigned NOT NULL default '1',
   `db_lock` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`userid`),
@@ -2363,7 +2363,7 @@ DROP TABLE IF EXISTS `bengine_user2ally`;
 CREATE TABLE IF NOT EXISTS `bengine_user2ally` (
   `userid` int(9) unsigned NOT NULL,
   `aid` int(8) unsigned NOT NULL,
-  `joindate` int(10) unsigned NOT NULL default '0',
+  `joindate` int(11) unsigned NOT NULL default '0',
   `rank` int(12) unsigned NULL,
   UNIQUE KEY `userid` (`userid`),
   KEY `aid` (`aid`)

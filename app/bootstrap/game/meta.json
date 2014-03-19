@@ -4,7 +4,7 @@
 			"game": {
 				"type": "application",
 				"name": "Bengine Game",
-				"version": "0.42-alpha1",
+				"version": "0.42-beta1",
 				"revision": 42,
 				"pool": "app/code"
 			}
