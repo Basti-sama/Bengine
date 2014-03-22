@@ -243,6 +243,22 @@ abstract class Bengine_Game_EventHandler_Handler_Abstract
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getFinishTime()
+	{
+		return $this->getEvent()->get("time");
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getReturnTime()
+	{
+		return 0;
+	}
+
+	/**
 	 * Contains the logical function to execute an event.
 	 *
 	 * @param Bengine_Game_Model_Event $event	Event model

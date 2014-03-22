@@ -57,5 +57,14 @@ class Bengine_Game_EventHandler_Handler_Fleet_Halt extends Bengine_Game_EventHan
 		}
 		return false;
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getReturnTime()
+	{
+		$data = $this->getEvent()->getData();
+		return $this->getEvent()->get("time") + $data["time"] + $data["duration"];
+	}
 }
 ?>

@@ -56,7 +56,13 @@ quantities[<?php echo $unit->getId() ?>] = <?php echo $unit->getQty() ?>;
 			<td><?php echo $event->getPlanetCoords() ?></td>
 			<td><?php echo $event->getFormattedTime() ?></td>
 			<td><?php echo $event->getDestinationCoords() ?></td>
-			<td><?php echo $event->getReturnTime() ?></td>
+			<td>
+				<?php if($returnTime = $event->getEventHandler()->getReturnTime()): ?>
+				<?php echo Date::timeToString(1, $returnTime) ?>
+				<?php else: ?>
+				-
+				<?php endif ?>
+			</td>
 			<td>
 				<?php if($event->getCode() != "game/return" && $event->getCode() != "game/missileAttack"): ?>
 				<form method="post" action="{@formaction}" class="form-sec">

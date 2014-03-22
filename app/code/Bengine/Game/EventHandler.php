@@ -105,7 +105,7 @@ class Bengine_Game_EventHandler
 	 * @param integer $destination	Destination planet (just for fleet events)
 	 * @param array $data			Event-related data
 	 *
-	 * @return Bengine_Game_EventHandler
+	 * @return Bengine_Game_EventHandler_Handler_Abstract
 	 */
 	public function addEvent($mode, $time, $planetid, $userid, $destination, array $data)
 	{
@@ -115,7 +115,7 @@ class Bengine_Game_EventHandler
 		}
 		$handler = Bengine_Game_EventHandler_Static::getHandlerObject($mode);
 		$handler->add($mode, $time, $planetid, $userid, $destination, $data);
-		return $this;
+		return $handler;
 	}
 
 	/**

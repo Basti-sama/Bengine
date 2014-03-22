@@ -30,7 +30,7 @@
 		<td>{lang}ARRIVAL{/lang}</td>
 		<td>{@arrival}</td>
 	</tr>
-	<?php if($this->templateVars["mode"] != 8 && $this->templateVars["mode"] != 6): ?><tr>
+	<?php if($this->get("return")): ?><tr>
 		<td>{lang}RETURN{/lang}</td>
 		<td>{@return}</td>
 	</tr><?php endif; ?>

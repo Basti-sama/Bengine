@@ -28,7 +28,11 @@ class Bengine_Game_Model_Event extends Recipe_Model_Abstract
 	 */
 	public function getEventHandler()
 	{
-		return Bengine_Game_EventHandler_Static::getHandlerObject($this->getMode(), $this);
+		if(!$this->exists("event_handler"))
+		{
+			$this->set("event_handler", Bengine_Game_EventHandler_Static::getHandlerObject($this->getMode(), $this));
+		}
+		return $this->get("event_handler");
 	}
 
 	/**
@@ -306,11 +310,11 @@ class Bengine_Game_Model_Event extends Recipe_Model_Abstract
 	/**
 	 * Returns the time of a fleet when returning.
 	 *
-	 * @return string
+	 * @return int
 	 */
 	public function getReturnTime()
 	{
-		return Date::timeToString(1, $this->getTime() + $this->getData("time", 0));
+		return $this->getEventHandler()->getReturnTime();
 	}
 
 	/**

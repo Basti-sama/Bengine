@@ -173,4 +173,12 @@ abstract class Bengine_Game_EventHandler_Handler_Fleet_Abstract extends Bengine_
 			->addProd();
 		return $planet;
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getReturnTime()
+	{
+		return $this->getEvent()->get("time") + $this->getEvent()->getData("time");
+	}
 }

@@ -223,5 +223,13 @@ class Bengine_Game_EventHandler_Handler_Fleet_MissileAttack extends Bengine_Game
 	{
 		return false;
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getReturnTime()
+	{
+		return 0;
+	}
 }
 ?>

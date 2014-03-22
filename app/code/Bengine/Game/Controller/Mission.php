@@ -531,7 +531,7 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 
 			Hook::event("SendFleet", array(&$data, &$time, &$temp, $distance));
 			Core::getQuery()->delete("temp_fleet", "planetid = ?", null, null, array(Core::getUser()->get("curplanet")));
-			Game::getEH()->addEvent($mode, $time + TIME, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), (isset($temp["destination"])) ? $temp["destination"] : null, $data);
+			$handler = Game::getEH()->addEvent($mode, $time + TIME, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), (isset($temp["destination"])) ? $temp["destination"] : null, $data);
 
 			Core::getTPL()->assign("mission", Game::getMissionName($mode));
 			Core::getTPL()->assign("mode", $mode);
@@ -540,8 +540,11 @@ class Bengine_Game_Controller_Mission extends Bengine_Game_Controller_Abstract
 			Core::getTPL()->assign("consume", fNumber($data["consumption"]));
 			Core::getTPL()->assign("start", Game::getPlanet()->getCoords(false));
 			Core::getTPL()->assign("target", $data["galaxy"].":".$data["system"].":".$data["position"]);
-			Core::getTPL()->assign("arrival", Date::timeToString(1, $time + TIME));
-			Core::getTPL()->assign("return", Date::timeToString(1, $time * 2 + TIME));
+			Core::getTPL()->assign("arrival", Date::timeToString(1, $handler->getFinishTime()));
+			if($returnTime = $handler->getReturnTime())
+			{
+				Core::getTPL()->assign("return", Date::timeToString(1, $returnTime));
+			}
 
 			$fleet = array();
 			foreach($data["ships"] as $key => $value)

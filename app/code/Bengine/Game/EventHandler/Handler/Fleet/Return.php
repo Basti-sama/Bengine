@@ -64,8 +64,15 @@ class Bengine_Game_EventHandler_Handler_Fleet_Return extends Bengine_Game_EventH
 	 */
 	protected function _isValid()
 	{
-
 		return false;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getReturnTime()
+	{
+		return 0;
 	}
 }
 ?>

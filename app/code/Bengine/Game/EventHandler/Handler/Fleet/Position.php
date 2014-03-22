@@ -70,5 +70,13 @@ class Bengine_Game_EventHandler_Handler_Fleet_Position extends Bengine_Game_Even
 		}
 		return false;
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getReturnTime()
+	{
+		return 0;
+	}
 }
 ?>
