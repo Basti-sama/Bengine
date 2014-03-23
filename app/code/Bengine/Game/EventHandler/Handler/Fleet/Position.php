@@ -33,6 +33,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Position extends Bengine_Game_Even
 		}
 		$data["destination"] = $event["destination"];
 		new Bengine_Game_AutoMsg($event["mode"], $event["userid"], $event["time"], $data);
+		$data["hydrogen"] += $data["consumption"] / 2;
 		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + ?, silicon = silicon + ?, hydrogen = hydrogen + ? WHERE planetid = ?", array($data["metal"], $data["silicon"], $data["hydrogen"], $event["destination"]));
 		return $this;
 	}
