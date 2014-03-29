@@ -38,6 +38,16 @@
 		var theForm = document.forms[1];
 		var type = theForm.submittype.value;
 		var currentSystem = theForm.system.value;
+		var currentGalaxy = theForm.galaxy.value;
+
+		if(type == "nextgalaxy")
+		{
+			currentGalaxy++;
+		}
+		else if(type == "prevgalaxy")
+		{
+			currentGalaxy--;
+		}
 		if(type == "prevsystem")
 		{
 			currentSystem--;
@@ -46,7 +56,7 @@
 		{
 			currentSystem++;
 		}
-		if(currentSystem <= 0 || currentSystem > {config=SYSTEMS} || theForm.galaxy.value <= 0 || theForm.galaxy.value > {config=GALAXYS})
+		if(currentSystem <= 0 || currentSystem > {config=SYSTEMS} || currentGalaxy <= 0 || currentGalaxy > {config=GALAXYS})
 		{
 			if($("#last-system-warning").length)
 			{
