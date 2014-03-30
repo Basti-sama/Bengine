@@ -15,6 +15,11 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 	protected $buildings = array();
 
 	/**
+	 * @var array
+	 */
+	protected $levels = array();
+
+	/**
 	 * @var int
 	 */
 	protected $fields = 0;
@@ -227,8 +232,11 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 			/* @var Bengine_Game_Model_Construction $building */
 			foreach($collection as $building)
 			{
-				$this->buildings[$building->get("name")] = $building;
-				$this->fields += (int) $building->get("level");
+				$name = $building->get("name");
+				$level = (int) $building->get("level");
+				$this->buildings[$name] = $building;
+				$this->levels[$name] = $level;
+				$this->fields += (int) $level;
 			}
 			$collection->reset();
 			$this->set("buildings", $collection);
@@ -243,7 +251,17 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 	public function getBuilding($name)
 	{
 		$this->getBuildings();
-		return isset($this->buildings[$name]) ? $this->buildings[$name] : null;
+		return isset($this->buildings[$name]) ? $this->buildings[$name] : Game::getModel("game/construction");
+	}
+
+	/**
+	 * @param string $name
+	 * @return int
+	 */
+	public function getBuildingLevel($name)
+	{
+		$this->getBuildings();
+		return isset($this->levels[$name]) ? $this->levels[$name] : 0;
 	}
 
 	/**
