@@ -64,7 +64,7 @@ class Bengine_Game_Model_Debris extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("user"))
 		{
-			$this->set("user", Game::getModel("user")->load($this->getUserid()));
+			$this->set("user", Application::getModel("game/user")->load($this->getUserid()));
 		}
 		return $this->get("user");
 	}

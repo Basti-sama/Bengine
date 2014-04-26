@@ -228,7 +228,7 @@ class Bengine_Game_Assault_Participant
 			$this->data["oldmode"] = 10;
 			if(count($this->data["ships"]) > 0 && $this->mode == 1)
 			{
-				$event = Game::getModel("game/event");
+				$event = Application::getModel("game/event");
 				$event->setMode(20)
 					->setTime($this->data["time"] + $this->time)
 					->setUserid($this->userid)

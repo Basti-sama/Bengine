@@ -127,7 +127,7 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("debris"))
 		{
-			$this->set("debris", Game::getModel("game/debris")->load($this->getId()));
+			$this->set("debris", Application::getModel("game/debris")->load($this->getId()));
 		}
 		return $this->get("debris");
 	}
@@ -141,7 +141,7 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("user"))
 		{
-			$this->set("user", Game::getModel("game/user")->load($this->getUserid()));
+			$this->set("user", Application::getModel("game/user")->load($this->getUserid()));
 		}
 		return $this->get("user");
 	}
@@ -251,7 +251,7 @@ class Bengine_Game_Model_Planet extends Recipe_Model_Abstract
 	public function getBuilding($name)
 	{
 		$this->getBuildings();
-		return isset($this->buildings[$name]) ? $this->buildings[$name] : Game::getModel("game/construction");
+		return isset($this->buildings[$name]) ? $this->buildings[$name] : Application::getModel("game/construction");
 	}
 
 	/**

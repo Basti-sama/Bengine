@@ -392,6 +392,7 @@ INSERT INTO `bengine_config` (`var`, `value`, `type`, `description`, `options`, 
 ('COMBAT_STORE_DAYS', '35', 'integer', 'Number of days storing combat reports.', '', 3, 1, 0),
 ('COMMERCIALS_ENABLED', '1', 'boolean', 'Enables the ad plug-in.', '', 8, 1, 0),
 ('COUNT_AD_VIEWS', '', 'boolean', 'Count up everytime an ad banner has been displayed.', '', 8, 1, 0),
+('CRONJOB_MAX_EVENT_EXECUTION', '1000', 'integer', 'Number of events that will be executed by the cron job at once.', '', 3, 1, 0),
 ('DEFAULT_HYDROGEN', '0', 'integer', 'Default hydrogen a planet got.', '', 5, 1, 0),
 ('DEFAULT_METAL', '500', 'integer', 'Default metal a planet got.', '', 5, 1, 0),
 ('DEFAULT_SILICON', '500', 'integer', 'Default silicon a planet got.', '', 5, 1, 0),
@@ -525,7 +526,8 @@ INSERT INTO `bengine_cronjob` (`cronid`, `class`, `month`, `day`, `weekday`, `ho
 (3, 'game/removeGalaxyGarbage', '1,2,3,4,5,6,7,8,9,10,11,12', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31', '3', '8', '0', NULL, NULL, 1),
 (4, 'game/cleanSessions', '1,2,3,4,5,6,7,8,9,10,11,12', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31', '1,2,3,4,5,6,7', '3', '0', NULL, NULL, 1),
 (5, 'game/reminder', '1,2,3,4,5,6,7,8,9,10,11,12', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31', '2', '10', '0', NULL, NULL, 0),
-(6, 'game/cleanCombats', '1,2,3,4,5,6,7,8,9,10,11,12', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31', '4', '2', '30', NULL, NULL, 1);
+(6, 'game/cleanCombats', '1,2,3,4,5,6,7,8,9,10,11,12', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31', '4', '2', '30', NULL, NULL, 1),
+(7, 'game/eventExecution', '1,2,3,4,5,6,7,8,9,10,11,12', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31', '1,2,3,4,5,6,7', '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23', '0', NULL, NULL, 0);
 
 DROP TABLE IF EXISTS `bengine_engine`;
 CREATE TABLE IF NOT EXISTS `bengine_engine` (

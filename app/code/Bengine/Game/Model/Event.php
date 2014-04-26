@@ -77,7 +77,7 @@ class Bengine_Game_Model_Event extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("planet"))
 		{
-			$this->set("planet", Game::getModel("game/planet")->load($this->getPlanetid()));
+			$this->set("planet", Application::getModel("game/planet")->load($this->getPlanetid()));
 		}
 		return $this->get("planet");
 	}
@@ -91,7 +91,7 @@ class Bengine_Game_Model_Event extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("user"))
 		{
-			$this->set("user", Game::getModel("game/user")->load($this->getUserid()));
+			$this->set("user", Application::getModel("game/user")->load($this->getUserid()));
 		}
 		return $this->get("user");
 	}
@@ -105,7 +105,7 @@ class Bengine_Game_Model_Event extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("destination_planet"))
 		{
-			$this->set("destination_planet", Game::getModel("game/planet")->load($this->getDestination()));
+			$this->set("destination_planet", Application::getModel("game/planet")->load($this->getDestination()));
 		}
 		return $this->get("destination_planet");
 	}
@@ -119,7 +119,7 @@ class Bengine_Game_Model_Event extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("destination_user"))
 		{
-			$this->set("destination_user", Game::getModel("game/user")->load($this->getDestinationUserId()));
+			$this->set("destination_user", Application::getModel("game/user")->load($this->getDestinationUserId()));
 		}
 		return $this->get("destination_user");
 	}

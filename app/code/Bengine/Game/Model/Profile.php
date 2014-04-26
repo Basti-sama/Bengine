@@ -37,7 +37,7 @@ class Bengine_Game_Model_Profile extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("user"))
 		{
-			$this->set("user", Game::getModel("game/user")->load($this->getUserId()));
+			$this->set("user", Application::getModel("game/user")->load($this->getUserId()));
 		}
 		return $this->get("user");
 	}
@@ -70,7 +70,7 @@ class Bengine_Game_Model_Profile extends Recipe_Model_Abstract
 	{
 		if(!$this->exists("field_object"))
 		{
-			$field = Game::factory("game/profile_field_".strtolower($this->getType()), $this);
+			$field = Application::factory("game/profile_field_".strtolower($this->getType()), $this);
 			$field->setData($this->getData());
 			$this->set("field_object", $field);
 		}

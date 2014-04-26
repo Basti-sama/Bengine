@@ -20,12 +20,14 @@ class Bengine_Game_Model_Collection_Event extends Recipe_Model_Collection_Abstra
 	 * Prepares expired events.
 	 *
 	 * @param string $raceConditionKey	Race condition key
+	 * @param int $max					Maximum events to select
 	 *
 	 * @return Bengine_Game_Model_Collection_Event
 	 */
-	public function addRaceConditionFilter($raceConditionKey)
+	public function addRaceConditionFilter($raceConditionKey, $max = self::MAX_EVENT_EXECUTION)
 	{
-		Core::getQuery()->update("events", array("prev_rc" => $raceConditionKey), "prev_rc IS NULL AND time <= '".TIME."' ORDER BY eventid ASC LIMIT ".self::MAX_EVENT_EXECUTION);
+		$max = (int) $max;
+		Core::getQuery()->update("events", array("prev_rc" => $raceConditionKey), "prev_rc IS NULL AND time <= '".TIME."' ORDER BY eventid ASC LIMIT ".$max);
 		$this->getSelect()->where(array("e" => "prev_rc"), $raceConditionKey);
 		$this->addTimeOrder();
 		return $this;

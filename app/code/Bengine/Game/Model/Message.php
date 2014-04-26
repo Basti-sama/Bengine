@@ -107,7 +107,7 @@ class Bengine_Game_Model_Message extends Recipe_Model_Abstract
 		}
 		if($this->getSender() && $this->getSendToOutbox())
 		{
-			$message = Game::getModel("game/message");
+			$message = Application::getModel("game/message");
 			$message->setReceiver($this->getSender())
 				->setMode(self::OUTBOX_FOLDER_ID)
 				->setMessage($this->getMessage())
