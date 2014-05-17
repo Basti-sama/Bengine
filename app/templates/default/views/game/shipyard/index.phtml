@@ -63,22 +63,55 @@
 		<?php endforeach ?>
 	</tbody>
 </table>
-<?php if($this->templateVars["hasEvent"]): ?>
+</form>
+<?php if(count($this->getLoop("events"))): ?>
 <div class="idiv">
 {lang}CURRENTLY_IN_WORK{/lang}<br />
-{@currentWork} {@remainingTime}
+{@currentWork} <span id="shipyardCountDown"><?php echo getTimeTerm($this->get("remainingTime")) ?></span>
 </div>
-<table class="ntable">
-	<tr>
-		<th>{lang}OUTSTANDING_MISSIONS{/lang}</th>
-	</tr>
-	<tr>
-		<td class="center">
-			<select name="shipyardevents" size="10" multiple="multiple" style="width: 300px;">
-				<?php $count = count($this->getLoop("events")); foreach($this->getLoop("events") as $key => $row): ?> <option value="{loop}mission{/loop}">{loop}quantity{/loop}x {loop}mission{/loop}</option> <?php endforeach; ?>
-			</select>
-		</td>
-	</tr>
-</table>
-<?php endif; ?>
+<script type="text/javascript">
+	//<![CDATA[
+	var title = $("title");
+	var orgTitleText = title.text();
+	$('#shipyardCountDown').countdown({until: "<?php echo $this->get("remainingTime") ?>", compact: true, onExpiry: function() {
+		title.text("{lang=COMPLETED} - " + orgTitleText);
+		$('#shipyardCountDown').html('{lang=COMPLETED}');
+	}, onTick: function(period) {
+		if(period[0] > 0 || period[1] > 0 || period[2] > 0 || period[3] > 0)
+		{
+			return true;
+		}
+		title.text(pad(period[4], 2) + ":" + pad(period[5], 2) + ":" + pad(period[6], 2) + " - " + orgTitleText);
+	}});
+	function checkBeforeAbort()
+	{
+		if(document.getElementById("shipyard-events").selectedIndex < 0)
+		{
+			alert("{lang=CHOOSE_SHIPYARD_ORDER}");
+			return false;
+		}
+	}
+	//]]>
+</script>
+<form action="{@cancelAction}" method="post" onsubmit="return checkBeforeAbort();">
+	<table class="ntable">
+		<tr>
+			<th>{lang}OUTSTANDING_MISSIONS{/lang}</th>
+		</tr>
+		<tr>
+			<td class="center">
+				<select name="shipyard_events[]" size="10" multiple="multiple" style="width: 300px;" id="shipyard-events">
+					<?php foreach($this->getLoop("events") as $event): ?>
+						<option value="<?php echo $event->getId() ?>"><?php echo $event->getData("quantity") ?>x <?php echo Core::getLanguage()->get($event->getData("mission")) ?></option>
+					<?php endforeach; ?>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="center">
+				<input type="submit" class="button" value="{lang=ABORT}" onclick="return confirm('{lang=CONFIRM_SHIPYARD_ABORT}');"/>
+			</td>
+		</tr>
+	</table>
 </form>
+<?php endif; ?>

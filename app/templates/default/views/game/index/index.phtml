@@ -75,8 +75,8 @@ $(function () {
 				<b>{lang=CURRENT_SHIPYARD}</b><br/>
 				<?php if(count($this->get("shipyardMissions"))): ?>
 				<?php foreach($this->get("shipyardMissions") as $shipyard): ?>
-				<?php echo $shipyard["mission"] ?> (<?php echo $shipyard["quantity"] ?>)
-				<span class="finish-time"><?php echo Date::timeToString(1, $shipyard["time_finished"]) ?></span><br/>
+				<?php echo Core::getLanguage()->get($shipyard->getData("mission")) ?> (<?php echo $shipyard->getData("quantity") ?>)
+				<span class="finish-time"><?php echo Date::timeToString(1, $shipyard->getData("finished")) ?></span><br/>
 				<?php endforeach ?>
 				<?php else: ?>
 				{lang=NONE}

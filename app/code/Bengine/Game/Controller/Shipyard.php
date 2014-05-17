@@ -116,33 +116,14 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 			Logger::addMessage("SHIPYARD_UPGRADING", "info");
 		}
 
-		// Output shipyard missions
-		Core::getQuery()->delete("shipyard", "finished <= ?", null, null, array(TIME));
-		$missions = array();
-		$result = Core::getQuery()->select("shipyard s", array("s.quantity", "s.one", "s.time", "s.finished", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = s.unitid)", Core::getDB()->quoteInto("s.planetid = ?", Core::getUser()->get("curplanet")), "s.time ASC");
-		if($row = $result->fetchRow())
+		$missions = Game::getEH()->getShipyardEvents();
+		if(count($missions))
 		{
-			Core::getTPL()->assign("hasEvent", true);
-			Core::getTPL()->assign("currentWork", Core::getLanguage()->getItem($row["name"]));
-			$x = TIME - $row["time"];
-			$lefttime = $row["one"] - ($x - floor($x / $row["one"]) * $row["one"]);
-			Core::getTPL()->assign("remainingTime", getTimeTerm($lefttime));
-			$result->closeCursor();
-			$result->execute();
-			foreach($result->fetchAll() as $row)
-			{
-				$quantity = ($row["time"] < TIME) ? ceil(($row["finished"] - TIME) / $row["one"]) : $row["quantity"];
-				$missions[] = array(
-					"quantity" => $quantity,
-					"mission" => Core::getLanguage()->getItem($row["name"])
-				);
-			}
-			$result->closeCursor();
-		}
-		else
-		{
-			$result->closeCursor();
-			Core::getTPL()->assign("hasEvent", false);
+			Core::getTPL()->addHTMLHeaderFile("lib/jquery.countdown.js", "js");
+			/* @var Bengine_Game_Model_Event $event */
+			$event = $missions->getFirstItem();
+			Core::getTPL()->assign("remainingTime", $event->getTimeLeft());
+			Core::getTPL()->assign("currentWork", Core::getLanguage()->getItem($event->getData("mission")));
 		}
 
 		Core::getTPL()->addLoop("events", $missions);
@@ -150,6 +131,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		Core::getTPL()->assign("canBuildUnits", $this->canBuildUnits);
 		Core::getTPL()->assign("canBuildRockets", $this->canBuildRockets);
 		$this->assign("orderAction", BASE_URL."game/".SID."/".$this->getParam("controller")."/Order");
+		$this->assign("cancelAction", BASE_URL."game/".SID."/".$this->getParam("controller")."/Cancel");
 		return $this;
 	}
 
@@ -235,48 +217,29 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 				if($quantity > 0)
 				{
 					$latest = TIME;
-					$_result = Core::getQuery()->select("events", array("MAX(time) as latest"), "", Core::getDB()->quoteInto("planetid = ? AND (mode = '4' OR mode = '5')", Core::getUser()->get("curplanet")), "", 1);
-					$_row = $_result->fetchRow();
-					$_result->closeCursor();
-					if($_row["latest"] >= TIME)
+					$existingEvents = Game::getEH()->getShipyardEvents();
+					foreach($existingEvents as $existingEvent)
 					{
-						$latest = $_row["latest"];
+						if($existingEvent->getData("finished") > $latest)
+						{
+							$latest = $existingEvent->getData("finished");
+						}
 					}
-					unset($_result); unset($_row);
 
 					$time = getBuildTime($construction->get("basic_metal"), $construction->get("basic_silicon"), $this->mode);
 
-					// This is just for the output below the shipyard, it does not represent the actual event!
-					Core::getQuery()->insert("shipyard", array("planetid" => Core::getUser()->get("curplanet"), "unitid" => $id, "quantity" => $quantity, "one" => $time, "time" => $latest, "finished" => $time * $quantity + $latest));
-
-					$data["time"] = $time;
+					$data["one"] = $time;
 					$data["quantity"] = $quantity;
+					$data["finished"] = $time * $quantity + $latest;
 					$data["mission"] = $construction->get("name");
 					$data["buildingid"] = $id;
 					$data["metal"] = $construction->get("basic_metal");
 					$data["silicon"] = $construction->get("basic_silicon");
 					$data["hydrogen"] = $construction->get("basic_hydrogen");
 					$data["points"] = ($construction->get("basic_metal") + $construction->get("basic_silicon") + $construction->get("basic_hydrogen")) / 1000;
-					$data["dont_save_resources"] = true; // We save the subtracted resources manually to avoid unnecessary SQL queries.
 					$mode = ($this->mode == self::FLEET_CONSTRUCTION_TYPE) ? 4 : 5;
 					Hook::event("UnitOrderLast", array($construction, $quantity, $mode, &$time, &$latest, &$data));
-					for($i = 1; $i <= $quantity; $i++)
-					{
-						Game::getEH()->addEvent($mode, $time * $i + $latest, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), null, $data);
-					}
-					$spec = array(
-						"metal" => new Recipe_Database_Expr("metal - ?"),
-						"silicon" => new Recipe_Database_Expr("silicon - ?"),
-						"hydrogen" => new Recipe_Database_Expr("hydrogen - ?")
-					);
-					$bind = array(
-						$data["metal"] * $quantity,
-						$data["silicon"] * $quantity,
-						$data["hydrogen"] * $quantity,
-						Core::getUser()->get("curplanet")
-					);
-					$bind = array_map("intval", $bind);
-					Core::getQuery()->update("planet", $spec, "planetid = ?", $bind);
+					Game::getEH()->addEvent($mode, $time + $latest, Core::getUser()->get("curplanet"), Core::getUser()->get("userid"), null, $data);
 				}
 			}
 		}
@@ -418,6 +381,24 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 		}
 		$this->setTemplate("shipyard/change");
 		$this->assign("units", $realUnits);
+		return $this;
+	}
+
+	/**
+	 * @return Bengine_Game_Controller_Shipyard
+	 */
+	protected function cancelAction()
+	{
+		$events = Core::getRequest()->getPOST("shipyard_events");
+		foreach($events as $eventId)
+		{
+			$event = Game::getModel("game/event")->load((int)$eventId);
+			if($event->get("userid") == Core::getUser()->get("userid"))
+			{
+				Game::getEH()->removeEvent($event);
+			}
+		}
+		$this->redirect("game/".SID."/".Core::getRequest()->getGET("controller"));
 		return $this;
 	}
 }

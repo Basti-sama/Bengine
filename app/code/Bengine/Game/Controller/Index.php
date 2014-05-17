@@ -145,21 +145,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		// Current events
 		$research = Game::getEH()->getResearchEvent();
 		Core::getTPL()->assign("research", $research);
-		$result = Core::getQuery()->select("shipyard s", array("s.quantity", "s.one", "s.time", "s.finished", "b.name"), "LEFT JOIN ".PREFIX."construction b ON (b.buildingid = s.unitid)", Core::getDB()->quoteInto("s.planetid = ?", Core::getUser()->get("curplanet")), "s.time ASC");
-		$shipyardMissions = array();
-		foreach($result->fetchAll() as $row)
-		{
-			if($row["finished"] > TIME)
-			{
-				$quantity = ($row["time"] < TIME) ? ceil(($row["finished"] - TIME) / $row["one"]) : $row["quantity"];
-				$shipyardMissions[] = array(
-					"time_left" => $row["finished"] - TIME,
-					"time_finished" => $row["finished"],
-					"quantity" => $quantity,
-					"mission" => Core::getLanguage()->getItem($row["name"])
-				);
-			}
-		}
+		$shipyardMissions = Game::getEH()->getShipyardEvents();
 		Core::getTemplate()->assign("shipyardMissions", $shipyardMissions);
 
 		/* @var Bengine_Game_Model_Collection_News $news */

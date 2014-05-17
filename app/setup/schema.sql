@@ -1897,7 +1897,10 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 37, 'COLLECTED_XP', 'Gesammelte XP'),
 (1, 37, 'CURRENT_LEVEL_FOR_USER', 'Aktuelles Level von {@achievementUser}: {@level} ({@xp} XP)'),
 (1, 10, 'ATTACKING_STOPPAGE_ENABLED_UNTIL', 'Angriffssperre bis'),
-(1, 12, 'DEFENSE', 'Verteidigung');
+(1, 12, 'DEFENSE', 'Verteidigung'),
+(1, 14, 'CONFIRM_ABANDON_ALLIANCE', 'Willst du die Allianz wirklich aufl&ouml;sen?'),
+(1, 5, 'CONFIRM_SHIPYARD_ABORT', 'Willst du die ausgew&auml;hlten Auftr&auml;ge wirklich abbrechen? Du erh&auml;ltst nur {config=SHIPYARD_ORDER_ABORT_PERCENT}% der Rohstoffe zur&uuml;ck.'),
+(1, 5, 'CHOOSE_SHIPYARD_ORDER', 'Bitte w&auml;hle einen Auftrag aus den du abbrechen m&ouml;chtest.');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (

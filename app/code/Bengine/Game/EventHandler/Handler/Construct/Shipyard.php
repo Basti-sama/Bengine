@@ -10,8 +10,9 @@
 class Bengine_Game_EventHandler_Handler_Construct_Shipyard extends Bengine_Game_EventHandler_Handler_Abstract
 {
 	/**
-	 * (non-PHPdoc)
-	 * @see app/code/Bengine/EventHandler/Handler/Bengine_Game_EventHandler_Handler_Abstract#_execute($event, $data)
+	 * @param Bengine_Game_Model_Event $event
+	 * @param array $data
+	 * @return Bengine_Game_EventHandler_Handler_Construct_Shipyard
 	 */
 	protected function _execute(Bengine_Game_Model_Event $event, array $data)
 	{
@@ -20,6 +21,56 @@ class Bengine_Game_EventHandler_Handler_Construct_Shipyard extends Bengine_Game_
 		{
 			return $this;
 		}
+		// >>> This ensures compatibility with 0.42 and older. Will be removed in 0.50.
+		if(empty($data["one"]))
+		{
+			return $this->_executeOld($event, $data);
+		}
+		// <<< End 0.42 compatibility
+		$timespan = TIME - $event->get("time");
+		$quantity = floor($timespan / $data["one"])+1;
+		$quantity = min($quantity, $data["quantity"]);
+		$data["quantity"] -= $quantity;
+		$points = $data["points"] * $quantity;
+		$result = Core::getQuery()->select("unit2shipyard", "quantity", "", Core::getDB()->quoteInto("unitid = ? AND planetid = ?", array($data["buildingid"], $event->getPlanetid())));
+		if($result->rowCount() > 0)
+		{
+			Core::getDB()->query("UPDATE ".PREFIX."unit2shipyard SET quantity = quantity + ? WHERE planetid = ? AND unitid = ?", array($quantity, $event->getPlanetid(), $data["buildingid"]));
+		}
+		else
+		{
+			Core::getQuery()->insert("unit2shipyard", array("unitid" => $data["buildingid"], "planetid" => $event->getPlanetid(), "quantity" => $quantity));
+		}
+		$result->closeCursor();
+		$fpoints = $quantity;
+		$dpoints = 0;
+		if($event["mode"] == 5)
+		{
+			$fpoints = 0;
+			$dpoints = $quantity;
+		}
+		Core::getDB()->query("UPDATE ".PREFIX."user SET points = points + ?, fpoints = fpoints + ?, dpoints = dpoints + ? WHERE userid = ?", array($points, $fpoints, $dpoints, $event->getUserid()));
+		if($data["quantity"] > 0)
+		{
+			$event->set(array(
+				"start" => TIME,
+				"time" => $event->get("time") + $data["one"] * $quantity,
+				"prev_rc" => null,
+				"data" => $data,
+			));
+			$event->save();
+		}
+		return $this;
+	}
+
+	/**
+	 * @param Bengine_Game_Model_Event $event
+	 * @param array $data
+	 * @return Bengine_Game_EventHandler_Handler_Construct_Shipyard
+	 * @deprecated Will be removed in 0.50
+	 */
+	protected function _executeOld(Bengine_Game_Model_Event $event, array $data)
+	{
 		$points = $data["points"];
 		$result = Core::getQuery()->select("unit2shipyard", "quantity", "", Core::getDB()->quoteInto("unitid = ? AND planetid = ?", array($data["buildingid"], $event->getPlanetid())));
 		if($result->rowCount() > 0)
@@ -48,7 +99,19 @@ class Bengine_Game_EventHandler_Handler_Construct_Shipyard extends Bengine_Game_
 	 */
 	protected function _add(Bengine_Game_Model_Event $event, array $data)
 	{
-		$this->removeResourceFromPlanet($data);
+		$spec = array(
+			"metal" => new Recipe_Database_Expr("metal - ?"),
+			"silicon" => new Recipe_Database_Expr("silicon - ?"),
+			"hydrogen" => new Recipe_Database_Expr("hydrogen - ?")
+		);
+		$bind = array(
+			$data["metal"] * $data["quantity"],
+			$data["silicon"] * $data["quantity"],
+			$data["hydrogen"] * $data["quantity"],
+			$event->get("planetid")
+		);
+		$bind = array_map("intval", $bind);
+		Core::getQuery()->update("planet", $spec, "planetid = ?", $bind);
 		return $this;
 	}
 
@@ -58,10 +121,10 @@ class Bengine_Game_EventHandler_Handler_Construct_Shipyard extends Bengine_Game_
 	 */
 	protected function _remove(Bengine_Game_Model_Event $event, array $data)
 	{
-		$data["metal"] = $data["metal"] / 100 * Core::getOptions()->get("SHIPYARD_ORDER_ABORT_PERCENT");
-		$data["silicon"] = $data["silicon"] / 100 * Core::getOptions()->get("SHIPYARD_ORDER_ABORT_PERCENT");
-		$data["hydrogen"] = $data["hydrogen"] / 100 * Core::getOptions()->get("SHIPYARD_ORDER_ABORT_PERCENT");
-		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + ?, silicon = silicon + ?, hydrogen = hydrogen + ? WHERE planetid = ?", array($data["metal"], $data["silicon"], $data["hydrogen"], $event->getPlanetid()));
+		$metal = $data["quantity"] * $data["metal"] / 100 * Core::getOptions()->get("SHIPYARD_ORDER_ABORT_PERCENT");
+		$silicon = $data["quantity"] * $data["silicon"] / 100 * Core::getOptions()->get("SHIPYARD_ORDER_ABORT_PERCENT");
+		$hydrogen = $data["quantity"] * $data["hydrogen"] / 100 * Core::getOptions()->get("SHIPYARD_ORDER_ABORT_PERCENT");
+		Core::getDB()->query("UPDATE ".PREFIX."planet SET metal = metal + ?, silicon = silicon + ?, hydrogen = hydrogen + ? WHERE planetid = ?", array($metal, $silicon, $hydrogen, $event->getPlanetid()));
 		return $this;
 	}
 }
