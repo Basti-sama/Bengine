@@ -229,14 +229,14 @@ function pad(n, len)
 function notify(title, message, image) {
 	if ("Notification" in window) {
 		if (Notification.permission === "granted") {
-			var notification = new Notification(title, {body:message});
+			var notification = new Notification(title, {body:message,icon:image});
 		} else {
 			Notification.requestPermission(function(permission) {
 				if(!("permission" in Notification)) {
 					Notification.permission = permission;
 				}
 				if (permission == "granted") {
-					var notification = new Notification(title, {body:message});
+					var notification = new Notification(title, {body:message,icon:image});
 				}
 			});
 		}

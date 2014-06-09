@@ -55,7 +55,7 @@
 			var title = $("title");
 			var orgTitleText = title.text();
 			$('#bCountDown').countdown({until: "<?php echo $timeleft ?>", compact: true, description: '<?php echo $abort ?>', onExpiry: function() {
-				notify("{lang=CONSTRUCTION_FINISHED}", "{lang=CONSTRUCTION_FINISHED_TEXT}");
+				notify("{lang=CONSTRUCTION_FINISHED}", "{lang=CONSTRUCTION_FINISHED_TEXT}", "{const=BASE_URL}img/buildings/<?php echo $building->get("name") ?>.gif");
 				title.text("{lang=COMPLETED} - " + orgTitleText);
 				$('#bCountDown').html('<?php echo $continue ?>');
 			}, onTick: function(period) {
