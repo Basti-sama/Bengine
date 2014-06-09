@@ -30,7 +30,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 	 */
 	protected function init()
 	{
-		Core::getLanguage()->load(array("Main", "info", "Galaxy"));
+		Core::getLanguage()->load(array("Main", "info", "Galaxy", "buildings"));
 		return parent::init();
 	}
 
@@ -71,26 +71,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		Core::getTPL()->addLoop("fleetEvents", $fe);
 
 		Core::getTPL()->assign("serverTime", Date::timeToString(1, TIME, "", false));
-		$planetAction = Core::getLanguage()->getItem(($this->buildingEvent) ? $this->buildingEvent->getData("buildingname") : "PLANET_FREE");
-		if($this->buildingEvent)
-		{
-			$timeleft = $this->buildingEvent->get("time") - TIME;
-			$timeFinished = Date::timeToString(1, $this->buildingEvent->get("time"));
-			$abort = "";
-			$timer = "<script type=\"text/javascript\">
-			//<![CDATA[
-			$(function () {
-				$('#bCountDown').countdown({until: ".$timeleft.", description: '<span class=\"finish-time\">".$timeFinished."</span>', compact: true, onExpiry: function() {
-					$('#bCountDown').text('-');
-				}});
-			});
-			//]]>
-			</script>
-			<span id=\"bCountDown\">".getTimeTerm($timeleft)."<br />".$abort."</span>";
-		}
-		else { $timer = ""; }
-		$planetAction = Link::get("game/".SID."/Constructions", $planetAction).$timer;
-		Core::getTPL()->assign("planetAction", $planetAction); unset($planetAction);
+		Core::getTPL()->assign("buildingEvent", $this->buildingEvent);
 		Core::getTPL()->assign("occupiedFields", Game::getPlanet()->getFields(true));
 		Core::getTPL()->assign("planetImage", Image::getImage("planets/".Game::getPlanet()->getData("picture").Core::getConfig()->get("PLANET_IMG_EXT"), Game::getPlanet()->getData("planetname"), "200px", "200px"));
 		Core::getTPL()->assign("freeFields", Game::getPlanet()->getMaxFields());
@@ -249,6 +230,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 		$event["time"] = $f->getFormattedTimeLeft();
 		$event["eventid"] = $f->getEventid();
 		$event["time_finished"] = Date::timeToString(1, $f->getTime());
+		$event["raw_coordinates"] = $f->getDestinationCoords(false);
 		Core::getLanguage()->assign("rockets", $f->getData("rockets", 0));
 		Core::getLanguage()->assign("planet", (!$f->getData("oldmode") || $f->getData("oldmode") != 9) ? $f->getPlanetname() : Core::getLanguage()->getItem("DEBRIS")); // TODO: Old mode should be translated to code
 		Core::getLanguage()->assign("coords", $f->getPlanetCoords());

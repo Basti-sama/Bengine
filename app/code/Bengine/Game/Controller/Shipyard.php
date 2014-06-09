@@ -124,6 +124,7 @@ class Bengine_Game_Controller_Shipyard extends Bengine_Game_Controller_Construct
 			$event = $missions->getFirstItem();
 			Core::getTPL()->assign("remainingTime", $event->getTimeLeft());
 			Core::getTPL()->assign("currentWork", Core::getLanguage()->getItem($event->getData("mission")));
+			Core::getLang()->assign("unitName", Core::getLanguage()->getItem($event->getData("mission")));
 		}
 
 		Core::getTPL()->addLoop("events", $missions);

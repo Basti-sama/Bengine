@@ -3,8 +3,10 @@
 //<![CDATA[
 $(function () {
 <?php $count = count($this->getLoop("fleetEvents")); foreach($this->getLoop("fleetEvents") as $key => $row): ?>
+	<?php Core::getLang()->assign("targetCoordinates", $row["raw_coordinates"]) ?>
 	$('#timer_{loop}eventid{/loop}').countdown({until: {loop}time_r{/loop}, description: '<span class="finish-time">{loop=time_finished}</span>', compact: true, onExpiry: function() {
 		$('#timer_{loop}eventid{/loop}').text('-');
+		notify("{lang=FLEET_FINISHED}", "{lang=FLEET_FINISHED_TEXT}");
 	}});
 <?php endforeach; ?>
 <?php if($newsCount > 0): ?>
@@ -51,18 +53,40 @@ $(function () {
 	</tr> <?php endforeach; ?>
 	<tr>
 		<td class="center">{@moon}<br />{@moonImage}</td>
-		<td class="center">{@planetImage}<br />{@planetAction}</td>
+		<td class="center">
+			{@planetImage}<br />
+			<?php if($event = $this->get("buildingEvent")): ?>
+			<?php Core::getLanguage()->assign("buildingName", Core::getLanguage()->get($event->getData("buildingname"))) ?>
+			<?php Core::getLanguage()->assign("buildingLevel", $event->getData("level")) ?>
+			<?php $timeLeft = $event->get("time") - TIME ?>
+			<?php echo Link::get("game/".SID."/Constructions", Core::getLang()->get($event->getData("buildingname"))) ?>
+			<span id="bCountDown"><?php echo getTimeTerm($timeLeft) ?></span>
+			<script type="text/javascript">
+			//<![CDATA[
+			$('#bCountDown').countdown({until: "<?php echo $timeLeft ?>", description: '<span class="finish-time"><?php echo Date::timeToString(1, $event->get("time")) ?></span>', compact: true, onExpiry: function() {
+				$('#bCountDown').text('-');
+				notify("{lang=CONSTRUCTION_FINISHED}", "{lang=CONSTRUCTION_FINISHED_TEXT}");
+			}});
+			//]]>
+			</script>
+			<?php else: ?>
+			<?php echo Link::get("game/".SID."/Constructions", Core::getLang()->get("PLANET_FREE")) ?>
+			<?php endif ?>
+		</td>
 		<td>
 			<p>
 				<b>{lang=CURRENT_RESEARCH}</b><br/>
 				<?php $research = $this->get("research") ?>
 				<?php if($research): ?>
+				<?php Core::getLanguage()->assign("researchName", Core::getLanguage()->get($research->getData("buildingname"))) ?>
+				<?php Core::getLanguage()->assign("researchLevel", $research->getData("level")) ?>
 				<?php echo Link::get("game/".SID."/Research", Core::getLanguage()->get($research->getData("buildingname"))) ?><br/>
 				<span id="research-countdown"><?php echo $research->getFormattedTimeLeft() ?></span><br/>
 				<span class="finish-time"><?php echo $research->getFormattedTime() ?></span>
 				<script type="text/javascript">
 				//<![CDATA[
 					$("#research-countdown").countdown({until: <?php echo $research->getTimeLeft() ?>, compact: true, onExpiry: function() {
+						notify("{lang=RESEARCH_FINISHED}", "{lang=RESEARCH_FINISHED_TEXT}");
 						$("#research-countdown").text("-");
 					}});
 				//]]>

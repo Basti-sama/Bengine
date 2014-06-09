@@ -226,6 +226,23 @@ function pad(n, len)
 	return s;
 }
 
+function notify(title, message, image) {
+	if ("Notification" in window) {
+		if (Notification.permission === "granted") {
+			var notification = new Notification(title, {body:message});
+		} else {
+			Notification.requestPermission(function(permission) {
+				if(!("permission" in Notification)) {
+					Notification.permission = permission;
+				}
+				if (permission == "granted") {
+					var notification = new Notification(title, {body:message});
+				}
+			});
+		}
+	}
+}
+
 $(document).ready(function() {
 	$(".form-sec").submit(function() {
 		var submitButton = $(this).find("input[type=submit]");

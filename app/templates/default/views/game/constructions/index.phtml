@@ -44,6 +44,8 @@
 		<td>
 			<?php if(!$umode && $planetFree): ?>
 			<?php if($isInWork): ?>
+			<?php Core::getLanguage()->assign("buildingName", Core::getLanguage()->get($building->get("name"))) ?>
+			<?php Core::getLanguage()->assign("buildingLevel", $building->get("level")+1) ?>
 			<?php $timeleft = $event->get("time") - TIME ?>
 			<?php $abort = Link::get("game/".SID."/Constructions/Abort/".$id, Core::getLanguage()->getItem("ABORT")) ?>
 			<?php $continue = Link::get("game/".SID."/Constructions", Core::getLanguage()->getItem("CONTINUE")) ?>
@@ -53,6 +55,7 @@
 			var title = $("title");
 			var orgTitleText = title.text();
 			$('#bCountDown').countdown({until: "<?php echo $timeleft ?>", compact: true, description: '<?php echo $abort ?>', onExpiry: function() {
+				notify("{lang=CONSTRUCTION_FINISHED}", "{lang=CONSTRUCTION_FINISHED_TEXT}");
 				title.text("{lang=COMPLETED} - " + orgTitleText);
 				$('#bCountDown').html('<?php echo $continue ?>');
 			}, onTick: function(period) {

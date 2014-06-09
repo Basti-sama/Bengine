@@ -42,6 +42,8 @@
 		<td>
 			<?php if(!$umode): ?>
 				<?php if($isInWork): ?>
+					<?php Core::getLanguage()->assign("researchName", Core::getLanguage()->get($building->get("name"))) ?>
+					<?php Core::getLanguage()->assign("researchLevel", $building->get("level")+1) ?>
 					<?php $timeleft = $event->get("time") - TIME ?>
 					<?php $abort = Link::get("game/".SID."/Research/Abort/".$id, Core::getLanguage()->getItem("ABORT")) ?>
 					<?php if($event->get("planetid") != Game::getPlanet()->getPlanetId()): ?>
@@ -54,6 +56,7 @@
 					var title = $("title");
 					var orgTitleText = title.text();
 					$('#bCountDown').countdown({until: "<?php echo $timeleft ?>", compact: true, description: '<?php echo $abort ?>', onExpiry: function() {
+						notify("{lang=RESEARCH_FINISHED}", "{lang=RESEARCH_FINISHED_TEXT}");
 						title.text("{lang=COMPLETED} - " + orgTitleText);
 						$('#bCountDown').html('<?php echo $continue ?>');
 					}, onTick: function(period) {
