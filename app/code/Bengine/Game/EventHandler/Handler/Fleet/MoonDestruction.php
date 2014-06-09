@@ -25,7 +25,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_MoonDestruction extends Bengine_Ga
 		Hook::event("EhMoonDestruction", array($event, &$data, $this));
 
 		// Start normal combat
-		$assault = new Bengine_Game_Assault($event->getDestination(), $event->getDestinationUserId());
+		$assault = new Bengine_Game_Assault($event->getDestination(), $event->getDestinationUserId(), $event);
 		$assault->addParticipant(1, $event->getUserid(), $event->getPlanetid(), $event->getTime(), $data);
 		$assault->startAssault($data["galaxy"], $data["system"], $data["position"]);
 

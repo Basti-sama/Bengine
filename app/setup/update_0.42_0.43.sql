@@ -16,3 +16,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 5, 'SHIPYARD_FINISHED_TEXT', 'Die Schiffswerft hat den Auftrag 1x {@unitName} abgeschlossen.'),
 (1, 5, 'FLEET_FINISHED', 'Flotte angekommen'),
 (1, 5, 'FLEET_FINISHED_TEXT', 'Eine Flotte hat ihre Zielkoordinaten {@targetCoordinates} erreicht.');
+
+ALTER TABLE `bengine_assault` ADD `event_id` INT(11) UNSIGNED NULL DEFAULT NULL AFTER `planetid`,
+ADD `real_time` INT(11) UNSIGNED NOT NULL DEFAULT '0' AFTER `time`,
+ADD INDEX (`event_id`),
+ADD FOREIGN KEY (`event_id`) REFERENCES `bengine_events` (`eventid`) ON DELETE SET NULL ON UPDATE CASCADE;

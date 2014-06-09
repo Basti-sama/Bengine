@@ -24,7 +24,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_Attack extends Bengine_Game_EventH
 			$event->save();
 			return $this;
 		}
-		$assault = new Bengine_Game_Assault($event["destination"], $event["destination_user_id"]);
+		$assault = new Bengine_Game_Assault($event["destination"], $event["destination_user_id"], $event);
 		$assault->addParticipant(1, $event["userid"], $event["planetid"], $event["time"], $data)
 			->startAssault($data["galaxy"], $data["system"], $data["position"])
 			->finish();

@@ -16,7 +16,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_AllianceAttack extends Bengine_Gam
 	protected function _execute(Bengine_Game_Model_Event $event, array $data)
 	{
 		Hook::event("EhAllianceAttack", array($event, &$data, $this));
-		$assault = new Bengine_Game_Assault($event->getDestination(), $event->getDestinationUserId());
+		$assault = new Bengine_Game_Assault($event->getDestination(), $event->getDestinationUserId(), $event);
 		$assault->addParticipant(Bengine_Game_Assault_Participant::ATTACKER_MODE, $event->getUserid(), $event->getPlanetid(), $event->getTime(), $data);
 		// Load allied fleets
 		$allies = Application::getCollection("game/event")->addParentIdFilter($event->getEventid());

@@ -52,22 +52,37 @@ class Bengine_Game_Assault
 	protected $data = array();
 
 	/**
+	 * @var Bengine_Game_Model_Event
+	 */
+	protected $event = null;
+
+	/**
 	 * Creates a new Assault Object.
 	 *
 	 * @param integer $location    Assault location
 	 * @param integer $owner    Owner of the attacked planet
+	 * @param Bengine_Game_Model_Event $event
 	 *
 	 * @return Bengine_Game_Assault
 	 */
-	public function __construct($location = null, $owner = null)
+	public function __construct($location = null, $owner = null, Bengine_Game_Model_Event $event = null)
 	{
 		$this->attackers = new Map();
 		$this->defenders = new Map();
 		$this->location = $location;
 		$this->owner = $owner;
 
+		$time = TIME;
+		$eventId = null;
+		if(null !== $event)
+		{
+			$this->event = $event;
+			$eventId = $event->get("eventid");
+			$time = $event->get("time");
+		}
+
 		// Create a new assault in the database.
-		Core::getQuery()->insert("assault", array("planetid" => $this->location, "time" => TIME));
+		Core::getQuery()->insert("assault", array("planetid" => $this->location, "event_id" => $eventId, "time" => $time, "real_time" => TIME));
 		$this->assaultid = Core::getDB()->lastInsertId();
 
 		// If the location is a planet, we have to update the ressource production.

@@ -211,8 +211,10 @@ CREATE TABLE IF NOT EXISTS `bengine_assault` (
   `assaultid` int(13) unsigned NOT NULL auto_increment,
   `key` varbinary(4) NULL,
   `result` tinyint(1) unsigned NOT NULL,
-  `planetid` int(10) unsigned NULL,
+  `planetid` int(11) unsigned NULL,
+  `event_id` int(11) unsigned NULL,
   `time` int(11) unsigned NOT NULL DEFAULT '0',
+  `real_time` int(11) unsigned NOT NULL DEFAULT '0',
   `moonchance` int(2) unsigned NOT NULL DEFAULT '0',
   `moon` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `lostunits_attacker` bigint(12) unsigned NOT NULL DEFAULT '0',
@@ -222,7 +224,8 @@ CREATE TABLE IF NOT EXISTS `bengine_assault` (
   `accomplished` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `running` tinyint(1) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY  (`assaultid`),
-  KEY `planetid` (`planetid`)
+  KEY `planetid` (`planetid`),
+  KEY `event_id` (`event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `bengine_assaultparticipant`;
@@ -2424,6 +2427,7 @@ ALTER TABLE `bengine_ally_relationships_application` ADD FOREIGN KEY ( `request_
 ALTER TABLE `bengine_ally_relationships_application` ADD FOREIGN KEY ( `userid` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_ally_relationship_type` ADD FOREIGN KEY ( `confirm_end` ) REFERENCES `bengine_ally_relationship_type` (`type_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_assault` ADD FOREIGN KEY ( `planetid` ) REFERENCES `bengine_planet` (`planetid`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `bengine_assault` ADD FOREIGN KEY ( `event_id` ) REFERENCES `bengine_events` (`eventid`) ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE `bengine_assaultparticipant` ADD FOREIGN KEY ( `assaultid` ) REFERENCES `bengine_assault` (`assaultid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_assaultparticipant` ADD FOREIGN KEY ( `userid` ) REFERENCES `bengine_user` (`userid`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `bengine_assaultparticipant` ADD FOREIGN KEY ( `planetid` ) REFERENCES `bengine_planet` (`planetid`) ON DELETE CASCADE ON UPDATE CASCADE;
