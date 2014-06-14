@@ -93,6 +93,11 @@ class Bengine_Game_Planet
 	protected $userid = 0;
 
 	/**
+	 * @var array
+	 */
+	protected $research;
+
+	/**
 	 * Constructor: Starts planet functions.
 	 *
 	 * @param integer $planetid	Planet id
@@ -315,10 +320,11 @@ class Bengine_Game_Planet
 	 */
 	protected function parseFormula($formula, $level)
 	{
+		$me = $this;
 		$formula = Str::replace("{level}", $level, $formula);
 		$formula = Str::replace("{temp}", $this->data["temperature"], $formula);
-		$formula = preg_replace_callback("#\{tech\=([0-9]+)\}#i", function($matches) {
-			return Game::getResearch($matches[1]);
+		$formula = preg_replace_callback("#\{tech\=([0-9]+)\}#i", function($matches) use($me) {
+			return $this->getResearch($matches[1]);
 		}, $formula);
 		$result = 0;
 		Hook::event("ParseFormula", array($formula, $level, $this));
@@ -695,6 +701,43 @@ class Bengine_Game_Planet
 	public function checkDoubleClick()
 	{
 		return (TIME - $this->getData("last") <= 4) ? true : false;
+	}
+
+	/**
+	 * @param string|int $id
+	 * @return int
+	 */
+	protected function getResearch($id)
+	{
+		if(null === $this->research)
+		{
+			$this->loadResearch();
+		}
+		return isset($this->research[$id]) ? $this->research[$id] : 0;
+	}
+
+	/**
+	 * @param array $research
+	 * @return Bengine_Game_Planet
+	 */
+	public function setResearch(array $research)
+	{
+		$this->research = $research;
+		return $this;
+	}
+
+	/**
+	 * @return Bengine_Game_Planet
+	 */
+	protected function loadResearch()
+	{
+		$result = Core::getQuery()->select("research2user", array("buildingid", "level"), "", Core::getDB()->quoteInto("userid = ?", $this->userid));
+		foreach($result->fetchAll() as $row)
+		{
+			$this->research[$row["buildingid"]] = $row["level"];
+		}
+		$result->closeCursor();
+		return $this;
 	}
 }
 ?>

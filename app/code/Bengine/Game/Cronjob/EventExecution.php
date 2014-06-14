@@ -15,6 +15,7 @@ class Bengine_Game_Cronjob_EventExecution extends Recipe_CronjobAbstract
 	 */
 	protected function _execute()
 	{
+		require_once "Bengine/Game.php";
 		$raceConditionKey = Str::substring(md5(microtime(true)), 0, 16);
 		/* @var Bengine_Game_Model_Collection_Event $collection */
 		$collection = Application::getModel("game/event")->getCollection();

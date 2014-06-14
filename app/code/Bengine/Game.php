@@ -157,6 +157,7 @@ class Game extends Application
 	protected static function setPlanet()
 	{
 		self::$planet = new Bengine_Game_Planet(Core::getUser()->get("curplanet"), Core::getUser()->get("userid"));
+		self::$planet->setResearch(self::$research);
 		return;
 	}
 
