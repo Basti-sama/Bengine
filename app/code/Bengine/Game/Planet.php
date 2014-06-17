@@ -324,7 +324,7 @@ class Bengine_Game_Planet
 		$formula = Str::replace("{level}", $level, $formula);
 		$formula = Str::replace("{temp}", $this->data["temperature"], $formula);
 		$formula = preg_replace_callback("#\{tech\=([0-9]+)\}#i", function($matches) use($me) {
-			return $this->getResearch($matches[1]);
+			return $me->getResearch($matches[1]);
 		}, $formula);
 		$result = 0;
 		Hook::event("ParseFormula", array($formula, $level, $this));
