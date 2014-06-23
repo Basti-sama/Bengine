@@ -99,6 +99,10 @@ class Bengine_Game_EventHandler_Handler_Construct_Shipyard extends Bengine_Game_
 	 */
 	protected function _add(Bengine_Game_Model_Event $event, array $data)
 	{
+		$planet = Game::getPlanet();
+		$planet->setData("metal", $planet->getData("metal") - $data["metal"] * $data["quantity"]);
+		$planet->setData("silicon", $planet->getData("silicon") - $data["silicon"] * $data["quantity"]);
+		$planet->setData("hydrogen", $planet->getData("hydrogen") - $data["hydrogen"] * $data["quantity"]);
 		$spec = array(
 			"metal" => new Recipe_Database_Expr("metal - ?"),
 			"silicon" => new Recipe_Database_Expr("silicon - ?"),
