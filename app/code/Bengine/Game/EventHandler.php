@@ -397,7 +397,7 @@ class Bengine_Game_EventHandler
 	 */
 	public function canReasearch()
 	{
-		if(is_null($this->canResearch))
+		if(null === $this->canResearch)
 		{
 			$this->canResearch = true;
 			/* @var Bengine_Game_Model_Event $event */
@@ -497,20 +497,27 @@ class Bengine_Game_EventHandler
 	 */
 	public function getWorkingRockets()
 	{
-		if(is_null($this->workingMissiles))
+		/* @var Bengine_Game_Model_Event $event */
+		if(null === $this->workingMissiles)
 		{
 			$this->workingMissiles = 0;
 			$collection = $this->getEventCollectionTemplate();
 			$collection->addTypeFilter("game/shipyard")
 				->addPlanetFilter(Core::getUser()->get("curplanet"))
 				->addDataSearchFilter("INTERCEPTOR_ROCKET");
-			$this->workingMissiles = count($collection);
+			foreach($collection as $event)
+			{
+				$this->workingMissiles += $event->getData("quantity");
+			}
 
 			$collection = $this->getEventCollectionTemplate();
 			$collection->addTypeFilter("game/shipyard")
 				->addPlanetFilter(Core::getUser()->get("curplanet"))
 				->addDataSearchFilter("INTERPLANETARY_ROCKET");
-			$this->workingMissiles += count($collection)*2;
+			foreach($collection as $event)
+			{
+				$this->workingMissiles += ($event->getData("quantity")*2);
+			}
 		}
 		return $this->workingMissiles;
 	}
