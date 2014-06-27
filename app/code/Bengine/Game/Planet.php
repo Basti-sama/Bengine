@@ -707,7 +707,7 @@ class Bengine_Game_Planet
 	 * @param string|int $id
 	 * @return int
 	 */
-	protected function getResearch($id)
+	public function getResearch($id)
 	{
 		if(null === $this->research)
 		{
