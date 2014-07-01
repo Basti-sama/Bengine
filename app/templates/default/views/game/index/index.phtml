@@ -65,7 +65,7 @@ $(function () {
 			//<![CDATA[
 			$('#bCountDown').countdown({until: "<?php echo $timeLeft ?>", description: '<span class="finish-time"><?php echo Date::timeToString(1, $event->get("time")) ?></span>', compact: true, onExpiry: function() {
 				$('#bCountDown').text('-');
-				notify("{lang=CONSTRUCTION_FINISHED}", "{lang=CONSTRUCTION_FINISHED_TEXT}", "{const=BASE_URL}img/buildings/<?php echo $event->getData("buildingname") ?>.gif");
+				notify("{lang=CONSTRUCTION_FINISHED}", "{lang=CONSTRUCTION_FINISHED_TEXT}", "{const=BASE_URL}img/buildings/<?php echo $event->getData("buildingname") ?>.gif", "<?php echo Link::url("game/".SID."/Constructions") ?>");
 			}});
 			//]]>
 			</script>
@@ -86,7 +86,7 @@ $(function () {
 				<script type="text/javascript">
 				//<![CDATA[
 					$("#research-countdown").countdown({until: <?php echo $research->getTimeLeft() ?>, compact: true, onExpiry: function() {
-						notify("{lang=RESEARCH_FINISHED}", "{lang=RESEARCH_FINISHED_TEXT}", "{const=BASE_URL}img/buildings/<?php echo $research->getData("buildingname") ?>.gif");
+						notify("{lang=RESEARCH_FINISHED}", "{lang=RESEARCH_FINISHED_TEXT}", "{const=BASE_URL}img/buildings/<?php echo $research->getData("buildingname") ?>.gif", "<?php echo Link::url("game/".SID."/Research") ?>");
 						$("#research-countdown").text("-");
 					}});
 				//]]>

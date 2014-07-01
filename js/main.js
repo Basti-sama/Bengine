@@ -226,10 +226,17 @@ function pad(n, len)
 	return s;
 }
 
-function notify(title, message, image) {
+function notify(title, message, image, url) {
 	if ("Notification" in window) {
 		if (Notification.permission === "granted") {
 			var notification = new Notification(title, {body:message,icon:image});
+			notification.onclick = function() {
+				if(url) {
+					location.href = url;
+				}
+				window.focus();
+				this.cancel();
+			};
 		} else {
 			Notification.requestPermission(function(permission) {
 				if(!("permission" in Notification)) {
@@ -237,6 +244,13 @@ function notify(title, message, image) {
 				}
 				if (permission == "granted") {
 					var notification = new Notification(title, {body:message,icon:image});
+					notification.onclick = function() {
+						if(url) {
+							location.href = url;
+						}
+						window.focus();
+						this.cancel();
+					};
 				}
 			});
 		}

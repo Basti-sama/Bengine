@@ -74,7 +74,7 @@
 	var title = $("title");
 	var orgTitleText = title.text();
 	$('#shipyardCountDown').countdown({until: "<?php echo $this->get("remainingTime") ?>", compact: true, onExpiry: function() {
-		notify("{lang=SHIPYARD_FINISHED}", "{lang=SHIPYARD_FINISHED_TEXT}", "{@currentMissionImage}");
+		notify("{lang=SHIPYARD_FINISHED}", "{lang=SHIPYARD_FINISHED_TEXT}", "{@currentMissionImage}", "<?php echo Link::url("game/".SID."/Shipyard") ?>");
 		title.text("{lang=COMPLETED} - " + orgTitleText);
 		$('#shipyardCountDown').html('{lang=COMPLETED}');
 	}, onTick: function(period) {
