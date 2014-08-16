@@ -1182,7 +1182,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 7, 'SCREENSHOTS', 'Screenshots'),
 (1, 7, 'SCREENSHOT_GALAXY_BROWSER', 'Galaxie-Ansicht'),
 (1, 7, 'SCREENSHOT_MAIN_PAGE', 'Home-Seite'),
-(1, 7, 'SIGN_IN', 'GO'),
+(1, 7, 'SIGN_IN', 'Login'),
 (1, 7, 'SIGN_UP', 'Anmelden'),
 (1, 7, 'START_UP_MESSAGE', '<p>Willkommen bei {config}pagetitle{/config}.</p><p>In {config}pagetitle{/config} sind Rohstoffe ein sehr bedeutsamer Bestandteil des Spiels. Baue also als erstes deine Minen so weit wie m&ouml;glich aus, um Rohstoffe f&uuml;r weitere Stufen zu verdienen. Klicke hierf&uuml;r einfach auf die gr&uuml;ne Schrift unter dem Men&uuml;punkt <i>Geb&auml;ude</i> und baue weiter, sobald die Zeit abgelaufen ist oder wieder Rohstoffe vorhanden sind. Achte jedoch auf deine Energiereserven! Denn ohne Energie kann keine Mine Rohstoffe f&ouml;rdern. Stelle also bevor du eine Mine (aus)baust sicher, dass genug Energie vorhanden ist.<br/>Solltest du noch Fragen haben, besuche das <a href="{config}HELP_PAGE_URL{/config}">Tutorial</a> oder unser <a href="{config}FORUM_URL{/config}">Forum</a>.</p><p>Viele Gr&uuml;&szlig;e<br/>dein {config}pagetitle{/config}-Team</p>'),
 (1, 7, 'START_UP_MESSAGE_SUBJECT', 'Willkommen {@regUsername}!'),
@@ -1911,7 +1911,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 5, 'SHIPYARD_FINISHED', 'Auftrag abgeschlossen'),
 (1, 5, 'SHIPYARD_FINISHED_TEXT', 'Die Schiffswerft hat den Auftrag 1x {@unitName} abgeschlossen.'),
 (1, 5, 'FLEET_FINISHED', 'Flotte angekommen'),
-(1, 5, 'FLEET_FINISHED_TEXT', 'Eine Flotte hat ihre Zielkoordinaten {@targetCoordinates} erreicht.');
+(1, 5, 'FLEET_FINISHED_TEXT', 'Eine Flotte hat ihre Zielkoordinaten {@targetCoordinates} erreicht.'),
+(1, 7, 'SIGN_IN_BUTTON', 'Los!');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (

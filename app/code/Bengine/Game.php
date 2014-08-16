@@ -179,7 +179,7 @@ class Game extends Application
 	protected static function globalTPLAssigns()
 	{
 		// JavaScript & CSS
-		Core::getTPL()->addHTMLHeaderFile("style.css", "css");
+		Core::getTPL()->addHTMLHeaderFile("game.css", "css"); // TODO: change to responsive
 		Core::getTPL()->addHTMLHeaderFile("jquery-ui.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.js", "js");
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery-ui.js", "js");

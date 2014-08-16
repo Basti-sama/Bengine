@@ -4,8 +4,8 @@
 	<meta http-equiv="CONTENT-TYPE" content="text/html;charset=utf-8" />
 	<meta name="generator" content="Recipe PHP5 Framework - Template Engine" />
 	<script type="text/javascript" src="{const}BASE_URL{/const}js/?f=lib/jquery.js,lib/jquery-ui.js,lib/jquery-textarea.js"></script>
-	<?php if($this->get("CSS_FILES", false) != ""): ?><link rel="stylesheet" type="text/css" href="{const}BASE_URL{/const}css/?f={@CSS_FILES}"/><?php endif; ?>
-	<?php if($this->get("JS_FILES", false) != ""): ?><script type="text/javascript" src="{const}BASE_URL{/const}js/?f={@JS_FILES}"></script><?php endif; ?>
+	<?php if($cssFiles = $this->get("_CSS_FILES")) echo HtmlInclude::getInclude($cssFiles, "css") ?>
+	<?php if($jsFiles = $this->get("_JS_FILES")) echo HtmlInclude::getInclude($jsFiles, "js") ?>
 	<title>Recipe Admin Interface</title>
 	<script type="text/javascript">
 	//<![CDATA[

@@ -246,14 +246,14 @@ class Bengine_Game_Account_Creator extends Bengine_Game_Account_Ajax
 	{
 		if(is_string($output))
 		{
-			$this->display("<div class=\"success\">".Core::getLanguage()->getItem($output)."</div><br />");
+			$this->display("<div class=\"alert alert-success\">".Core::getLanguage()->getItem($output)."</div>");
 		}
 		if(is_array($output))
 		{
 			$outstream = "";
 			foreach($output as $_output)
 			{
-				$outstream .= "<div class=\"error\">".Core::getLanguage()->getItem($_output)."</div><br />";
+				$outstream .= "<div class=\"alert alert-danger\">".Core::getLanguage()->getItem($_output)."</div>";
 			}
 			$this->display($outstream);
 		}

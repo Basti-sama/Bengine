@@ -34,7 +34,7 @@ class Bengine_Comm_Controller_Pillory extends Bengine_Comm_Controller_Abstract
 	public function indexAction()
 	{
 		Core::getTPL()->clearHTMLHeaderFiles();
-		Core::getTPL()->addHTMLHeaderFile("style.css", "css");
+		Core::getTPL()->addHTMLHeaderFile("game.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.js", "js");
 		$result = Core::getQuery()->select("ban_u", array("banid"));
 		$pagination = new Pagination(Core::getConfig()->get("PILLORY_ITEMS_PER_PAGE"), $result->rowCount());

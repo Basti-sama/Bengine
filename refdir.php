@@ -14,7 +14,7 @@ if($url = Core::getRequest()->getGET("url"))
 {
 	Core::getTPL()->assign("link", $url);
 	Core::getTPL()->assign("charset", CHARACTER_SET);
-	Core::getTPL()->addHTMLHeaderFile("style.css", "css");
+	Core::getTPL()->addHTMLHeaderFile("game.css", "css");
 
 	$pageTitle = array();
 	if($titlePrefix = Core::getConfig()->get("TITLE_PREFIX"))

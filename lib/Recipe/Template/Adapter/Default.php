@@ -152,11 +152,11 @@ class Recipe_Template_Adapter_Default extends Recipe_Template_Adapter_Abstract
 		{
 			if(isset($this->htmlHead["js"]))
 			{
-				$this->assign("JS_FILES", implode(",", $this->htmlHead["js"]));
+				$this->assign("_JS_FILES", $this->htmlHead["js"]);
 			}
 			if(isset($this->htmlHead["css"]))
 			{
-				$this->assign("CSS_FILES", implode(",", $this->htmlHead["css"]));
+				$this->assign("_CSS_FILES", $this->htmlHead["css"]);
 			}
 		}
 		Hook::event("TemplatePreDisplay", array($this, $template, $noLayout, $layout));

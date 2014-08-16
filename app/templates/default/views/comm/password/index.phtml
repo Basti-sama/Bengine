@@ -1,32 +1,41 @@
 <script type="text/javascript">
-//<![CDATA[
-$(document).ready(function() {
-	$("#pw-send").click(function() {
-		var url = "{const}BASE_URL.LANG{/const}password/request";
-		$.post(url, { universe: $("#pw-universe").val(), username: $("#pw-username").val(), email: $("#pw-email").val() }, function(data) {
-			$('#Ajax_Out_Pw').html(data);
+	//<![CDATA[
+	$(document).ready(function() {
+		$("#lost-password").submit(function() {
+			$.post(this.action, { universe: $("#pw-universe").val(), username: $("#pw-username").val(), email: $("#pw-email").val() }, function(data) {
+				$('#Ajax_Out_Pw').html(data);
+			});
+			return false;
 		});
 	});
-});
-//]]>
+	//]]>
 </script>
-
-<fieldset>
-	<legend>{lang}PASSWORD_FORGOTTEN{/lang}</legend>
-	<form method="post" action="" id="lostpw">
-	<ul>
-		<li>
-			<select name="universe" id="pw-universe" class="uni-selection">{@uniSelection}</select>
-			<label for="pw-universe">{lang}UNIVERSE{/lang}</label>
-		</li>
-		<li><input type="text" name="username" id="pw-username" class="sign-input" /> <label for="pw-username">{lang}USERNAME{/lang}</label></li>
-		<li><input type="text" name="email" id="pw-email" class="sign-input" /> <label for="pw-email">{lang}EMAIL{/lang}</label></li>
-		<li>
-			<input type="button" id="pw-send" value="{lang}REQUEST_DATA{/lang}" class="sign-btn" />
-		</li>
-	</ul>
-	</form>
-	<div id="Ajax_Out_Pw"></div>
-</fieldset>
+<div id="Ajax_Out_Pw"></div>
+<form method="post" action="{const}BASE_URL.LANG{/const}password/request" class="form-horizontal" id="lost-password">
+	<h2>{lang}PASSWORD_FORGOTTEN{/lang}</h2>
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="pw-universe">{lang}UNIVERSE{/lang}</label>
+		<div class="col-sm-10">
+			<select name="universe" id="pw-universe" class="form-control">{@uniSelection}</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="pw-username">{lang}USERNAME{/lang}</label>
+		<div class="col-sm-10">
+			<input type="text" name="username" id="pw-username" class="form-control" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="pw-email">{lang}EMAIL{/lang}</label>
+		<div class="col-sm-10">
+			<input type="email" name="email" id="pw-email" class="form-control" />
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-10 col-sm-offset-2">
+			<button class="btn btn-large btn-success" type="submit">{lang}REQUEST_DATA{/lang}</button>
+		</div>
+	</div>
+</form>
 <h3>{lang}LOST_PW_HINT_1{/lang}</h3>
-{lang}LOST_PW_HINT_2{/lang}
+<p>{lang}LOST_PW_HINT_2{/lang}</p>

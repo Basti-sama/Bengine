@@ -5,8 +5,8 @@
 <meta http-equiv="content-type" content="text/html; charset={@charset}" />
 
 <link rel="shortcut icon" href="{const}HTTP_HOST.REQUEST_DIR{/const}favicon.ico" type="image/x-icon" />
-<?php if($this->get("CSS_FILES", false) != ""): ?><link rel="stylesheet" type="text/css" href="{const}BASE_URL{/const}css/?f={@CSS_FILES}"/><?php endif; ?>
-<?php if($this->get("JS_FILES", false) != ""): ?><script type="text/javascript" src="{const}BASE_URL{/const}js/?f={@JS_FILES}"></script><?php endif; ?>
+<?php if($cssFiles = $this->get("_CSS_FILES")) echo HtmlInclude::getInclude($cssFiles, "css") ?>
+<?php if($jsFiles = $this->get("_JS_FILES")) echo HtmlInclude::getInclude($jsFiles, "js") ?>
 </head>
 <body>
 {hook}FrontHtmlBegin{/hook}

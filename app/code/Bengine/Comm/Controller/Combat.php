@@ -22,7 +22,7 @@ class Bengine_Comm_Controller_Combat extends Bengine_Comm_Controller_Abstract
 		}
 		Core::getLanguage()->load(array("info", "AssaultReport"));
 		Core::getTPL()->clearHTMLHeaderFiles();
-		Core::getTPL()->addHTMLHeaderFile("style.css", "css");
+		Core::getTPL()->addHTMLHeaderFile("game.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.js", "js");
 		$select = new Recipe_Database_Select();
 		$select->from(array("a" => "assault"))

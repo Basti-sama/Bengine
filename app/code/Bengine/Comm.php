@@ -37,10 +37,10 @@ class Comm extends Application
 		self::initLanguage();
 
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.js", "js");
-		Core::getTPL()->addHTMLHeaderFile("lib/jquery-ui.js", "js");
+		Core::getTPL()->addHTMLHeaderFile("lib/bootstrap.js", "js");
+		Core::getTPL()->addHTMLHeaderFile("main.js", "js");
 		Core::getTPL()->addHTMLHeaderFile("sign.js", "js");
-		Core::getTPL()->addHTMLHeaderFile("jquery-ui.css", "css");
-		Core::getTPL()->addHTMLHeaderFile("comm.css", "css");
+		Core::getTPL()->addHTMLHeaderFile("style.css", "css");
 		Core::getTPL()->assign("containerClass", "content");
 		Core::getTPL()->addLoop("headerMenu", self::getCMS()->getMenu("h"));
 		$userCheck = sprintf(Core::getLanguage()->getItem("USER_CHECK"), Core::getOptions()->get("MIN_USER_CHARS"), Core::getOptions()->get("MAX_USER_CHARS"));

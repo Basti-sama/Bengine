@@ -139,9 +139,9 @@ class Bengine_Game_Account_Password_Lost extends Bengine_Game_Account_Ajax
 	{
 		if($error)
 		{
-			$this->display("<div class=\"error\">".Core::getLanguage()->getItem($output)."</div>");
+			$this->display("<div class=\"alert alert-danger\">".Core::getLanguage()->getItem($output)."</div>");
 		}
-		$this->display("<div class=\"success\">".Core::getLanguage()->getItem($output)."</div><br />");
+		$this->display("<div class=\"alert alert-success\">".Core::getLanguage()->getItem($output)."</div>");
 		return $this;
 	}
 
