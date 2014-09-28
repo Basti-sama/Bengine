@@ -18,7 +18,7 @@ class Bengine_Comm_Controller_Alliance extends Bengine_Comm_Controller_Abstract
 	{
 		Core::getLanguage()->load("Alliance");
 		Core::getTPL()->clearHTMLHeaderFiles();
-		Core::getTPL()->addHTMLHeaderFile("style.css", "css");
+		Core::getTPL()->addHTMLHeaderFile("game.css", "css");
 		Core::getTPL()->addHTMLHeaderFile("lib/jquery.js", "js");
 		$tag = $this->getParam("1");
 		$fNumber = array("member", "points", "rpoints", "fpoints", "dpoints");
