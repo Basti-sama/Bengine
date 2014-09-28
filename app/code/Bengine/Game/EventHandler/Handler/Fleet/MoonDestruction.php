@@ -64,7 +64,8 @@ class Bengine_Game_EventHandler_Handler_Fleet_MoonDestruction extends Bengine_Ga
 			$message = "";
 
 			// Chance to destroy the moon
-			$md = floor((100 - sqrt($moon->getDiameter())) * sqrt($rips));
+			$diameter = min($moon->getDiameter(), 9999);
+			$md = max(floor((100 - sqrt($diameter)) * sqrt($rips)), 1);
 			$rand = mt_rand(0, 100);
 			Core::getLang()->assign("moonName", $moon->getPlanetname());
 			Core::getLang()->assign("moonCoords", $moon->getCoords(true, true));
@@ -82,7 +83,7 @@ class Bengine_Game_EventHandler_Handler_Fleet_MoonDestruction extends Bengine_Ga
 			}
 
 			// Chance of fleet destruction
-			$fd = floor(sqrt($moon->getDiameter()) / 2);
+			$fd = floor(sqrt($diameter) / 2);
 			$rand = mt_rand(0, 100);
 			if($rand <= $fd)
 			{
