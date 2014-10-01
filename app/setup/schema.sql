@@ -1480,7 +1480,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 14, 'APPLICATION_TIME', 'Zeit'),
 (1, 14, 'BY_NAME', 'nach Benutzernamen'),
 (1, 14, 'BY_POINTS', 'nach Punkten'),
-(1, 14, 'CANCEL', 'Zur&uuml;ckziehen'),
+(1, 14, 'WITHDRAW', 'Zur&uuml;ckziehen'),
 (1, 14, 'CANDIDATE', 'Bewerber'),
 (1, 14, 'CANDIDATES', '%s Bewerber'),
 (1, 14, 'CAN_BAN_MEMBER', 'Mitglieder rauswerfern'),
@@ -1912,6 +1912,7 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 5, 'SHIPYARD_FINISHED_TEXT', 'Die Schiffswerft hat den Auftrag 1x {@unitName} abgeschlossen.'),
 (1, 5, 'FLEET_FINISHED', 'Flotte angekommen'),
 (1, 5, 'FLEET_FINISHED_TEXT', 'Eine Flotte hat ihre Zielkoordinaten {@targetCoordinates} erreicht.'),
+(1, 1, 'CANCEL', 'Abbrechen'),
 (1, 7, 'SIGN_IN_BUTTON', 'Los!');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
