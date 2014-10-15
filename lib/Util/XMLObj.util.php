@@ -14,13 +14,13 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the children of a XML element.
 	 *
-	 * @param string	The children's name [optional]
+	 * @param string $name	The children's name [optional]
 	 *
 	 * @return XMLObj	The children
 	 */
 	public function getChildren($name = null)
 	{
-		if(is_null($name))
+		if(null === $name)
 		{
 			return $this->children();
 		}
@@ -30,13 +30,14 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the attributes of a XML element.
 	 *
-	 * @param string	Attribute name [optional]
+	 * @param string $name	Attribute name [optional]
+	 * @param string $type
 	 *
 	 * @return string	Attribute content
 	 */
 	public function getAttribute($name = null, $type = null)
 	{
-		if(is_null($name))
+		if(null === $name)
 		{
 			return $this->attributes();
 		}
@@ -44,7 +45,7 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 		switch($type)
 		{
 			default: case "string": case "text": case "char": case "str":
-				return strval($attribute);
+				return (string) $attribute;
 			break;
 			case "int": case "integer":
 				return (int) $attribute;
@@ -56,20 +57,19 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 				return floatval($attribute);
 			break;
 		}
-		return $attribute;
 	}
 
 	/**
 	 * Returns the data of a XML element.
 	 *
-	 * @param string	Element name [optional]
-	 * @param string	Data type [optional]
+	 * @param string $name	Element name [optional]
+	 * @param string $type	Data type [optional]
 	 *
 	 * @return mixed	Data
 	 */
 	public function getData($name = null, $type = null)
 	{
-		if(!is_null($type))
+		if(null !== $type)
 		{
 			$type = strtolower($type);
 			switch($type)
@@ -100,29 +100,29 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the data of the XML element as a string.
 	 *
-	 * @param string	Element name [optional]
+	 * @param string $name	Element name [optional]
 	 *
 	 * @return string
 	 */
 	public function getString($name = null)
 	{
-		if(is_null($name))
+		if(null === $name)
 		{
-			return strval($this);
+			return (string) $this;
 		}
-		return strval($this->$name);
+		return (string) $this->$name;
 	}
 
 	/**
 	 * Returns the data of the XML element as a string.
 	 *
-	 * @param string	Element name [optional]
+	 * @param string $name	Element name [optional]
 	 *
 	 * @return string
 	 */
 	public function getStringObj($name = null)
 	{
-		if(is_null($name))
+		if(null === $name)
 		{
 			return new String($this);
 		}
@@ -132,13 +132,13 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the data of the XML element as an integer value.
 	 *
-	 * @param string	Element name [optional]
+	 * @param string $name	Element name [optional]
 	 *
 	 * @return integer
 	 */
 	public function getInteger($name = null)
 	{
-		if(is_null($name))
+		if(null === $name)
 		{
 			return (int) $this;
 		}
@@ -148,13 +148,13 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the data of the XML element as an integer value.
 	 *
-	 * @param string	Element name [optional]
+	 * @param string $name	Element name [optional]
 	 *
 	 * @return integer
 	 */
 	public function getIntegerObj($name = null)
 	{
-		if(is_null($name))
+		if(null === $name)
 		{
 			return new Integer($this);
 		}
@@ -164,13 +164,13 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the data of the XML element as a boolean value.
 	 *
-	 * @param string	Element name [optional]
+	 * @param string $name	Element name [optional]
 	 *
 	 * @return boolean
 	 */
 	public function getBoolean($name = null)
 	{
-		if(is_null($name))
+		if(null === $name)
 		{
 			return (bool) $this;
 		}
@@ -180,13 +180,13 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the data of the XML element as a boolean value.
 	 *
-	 * @param string	Element name [optional]
+	 * @param string $name	Element name [optional]
 	 *
 	 * @return boolean
 	 */
 	public function getBooleanObj($name = null)
 	{
-		if(is_null($name))
+		if(null === $name)
 		{
 			return new Boolean($this);
 		}
@@ -196,13 +196,13 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the data of the XML element as a float value.
 	 *
-	 * @param string	Element name [optional]
+	 * @param string $name	Element name [optional]
 	 *
 	 * @return float
 	 */
 	public function getFloat($name = null)
 	{
-		if(is_null($name))
+		if(null === $name)
 		{
 			return floatval($this);
 		}
@@ -212,13 +212,13 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the data of the XML element as a float object.
 	 *
-	 * @param string	Element name [optional]
+	 * @param string $name	Element name [optional]
 	 *
 	 * @return Float
 	 */
 	public function getFloatObj($name = null)
 	{
-		if(is_null($name))
+		if(null === $name)
 		{
 			return new Float($this);
 		}
@@ -228,7 +228,7 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the data of the XML element as an array.
 	 *
-	 * @param string	Element name [optional]
+	 * @param string $name	Element name [optional]
 	 *
 	 * @return array
 	 */
@@ -240,7 +240,7 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the data of the XML element as a map.
 	 *
-	 * @param string	Element name [optional]
+	 * @param string $name	Element name [optional]
 	 *
 	 * @return Map
 	 */
@@ -251,20 +251,10 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	}
 
 	/**
-	 * Called when trying to invoke the object as string.
-	 *
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->getString();
-	}
-
-	/**
 	 * Assigns a value to the specified offset.
 	 *
-	 * @param string	The offset to assign the value to
-	 * @param mixed		The value to set
+	 * @param string $offset	The offset to assign the value to
+	 * @param mixed $value		The value to set
 	 *
 	 * @return XMLObj
 	 */
@@ -277,7 +267,7 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Whether or not an offset exists.
 	 *
-	 * @param string	An offset to check for
+	 * @param string $offset	An offset to check for
 	 *
 	 * @return boolean
 	 */
@@ -289,7 +279,7 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Unsets an offset.
 	 *
-	 * @param string	The offset to unset
+	 * @param string $offset	The offset to unset
 	 *
 	 * @return XMLObj
 	 */
@@ -302,7 +292,7 @@ class XMLObj extends SimpleXMLElement implements ArrayAccess
 	/**
 	 * Returns the value at specified offset.
 	 *
-	 * @param string	The offset to retrieve
+	 * @param string $offset	The offset to retrieve
 	 *
 	 * @return string	Offset value
 	 */

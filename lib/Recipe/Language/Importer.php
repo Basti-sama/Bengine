@@ -104,7 +104,22 @@ class Recipe_Language_Importer
 		// Importing ...
 		foreach($this->importData as $key => $value)
 		{
-			Core::getQuery()->insert("phrases", array("languageid" => $this->langId, "phrasegroupid" => $this->groupId, "title" => $key, "content" => $value));
+			$where  = Core::getDB()->quoteInto("languageid = ? ", $this->langId);
+			$where .= Core::getDB()->quoteInto("AND phrasegroupid = ? ", $this->groupId);
+			$where .= Core::getDB()->quoteInto("AND title = ?", $key);
+			$stmt = Core::getQuery()->select("phrases", array("phraseid"), "", $where);
+			$row = $stmt->fetchRow();
+			if(!empty($row["phraseid"]))
+			{
+				// Phrase already exists >> update
+				$where = Core::getDB()->quoteInto("phraseid = ? ", $key);
+				Core::getQuery()->update("phrases", array("content" => $value), $where);
+			}
+			else
+			{
+				// Phrase does not exist >> insert
+				Core::getQuery()->insert("phrases", array("languageid" => $this->langId, "phrasegroupid" => $this->groupId, "title" => $key, "content" => $value));
+			}
 		}
 		return $this;
 	}
@@ -241,7 +256,7 @@ class Recipe_Language_Importer
 		$result->closeCursor();
 		if(!$row)
 		{
-			// Create unkown group
+			// Create unknown group
 			Core::getQuery()->insert("phrasesgroups", array("title" => $group));
 			$this->groupId = Core::getDB()->lastInsertId();
 			return $this;
