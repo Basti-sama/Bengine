@@ -32,6 +32,14 @@
 <div class="container">
 	<div class="row">
 		<div class="col-lg-4 col-md-4">
+			<?php if($this->get("langCount", false) > 1): ?>
+			<div class="well" id="language">
+				<strong>{lang=OTHER_LANGUAGES}</strong><br/>
+				<?php $count = count($this->getLoop("languages")); foreach($this->getLoop("languages") as $key => $row): ?>
+					<a href="{const=BASE_URL}{loop=langcode}{@selfUrl}"><img src="{const=BASE_URL}img/{loop=langcode}.gif" alt="{loop=title}" title="{loop=title}"/></a></li>
+				<?php endforeach; ?>
+			</div>
+			<?php endif; ?>
 			<div class="well">
 				<ul class="nav nav-list">
 					<li class="nav-header">

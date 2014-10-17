@@ -1913,7 +1913,8 @@ INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`
 (1, 5, 'FLEET_FINISHED', 'Flotte angekommen'),
 (1, 5, 'FLEET_FINISHED_TEXT', 'Eine Flotte hat ihre Zielkoordinaten {@targetCoordinates} erreicht.'),
 (1, 1, 'CANCEL', 'Abbrechen'),
-(1, 7, 'SIGN_IN_BUTTON', 'Los!');
+(1, 7, 'SIGN_IN_BUTTON', 'Los!'),
+(1, 7, 'OTHER_LANGUAGES', 'Andere Sprachen:');
 
 DROP TABLE IF EXISTS `bengine_phrasesgroups`;
 CREATE TABLE IF NOT EXISTS `bengine_phrasesgroups` (

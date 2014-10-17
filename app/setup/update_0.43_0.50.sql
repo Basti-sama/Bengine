@@ -3,4 +3,5 @@ UPDATE `bengine_phrases` SET `title` = 'WITHDRAW' WHERE `title` = 'CANCEL' AND `
 
 INSERT INTO `bengine_phrases` (`languageid`, `phrasegroupid`, `title`, `content`) VALUES
 (1, 1, 'CANCEL', 'Abbrechen'),
-(1, 7, 'SIGN_IN_BUTTON', 'Los!');
+(1, 7, 'SIGN_IN_BUTTON', 'Los!'),
+(1, 7, 'OTHER_LANGUAGES', 'Andere Sprachen:');
