@@ -67,7 +67,7 @@ class Game extends Application
 		parent::run();
 
 		// Update last activity
-		Core::getQuery()->update("user", array("last" => TIME, "db_lock" => 1), "userid = ?", array(Core::getUser()->userid));
+		Core::getQuery()->update("user", array("last" => TIME, "db_lock" => TIME), "userid = ?", array(Core::getUser()->userid));
 
 		if($planetid = Core::getRequest()->getPOST("planetid"))
 		{
@@ -114,7 +114,10 @@ class Game extends Application
 	 */
 	public static function unlock()
 	{
-		Core::getQuery()->update("user", array("db_lock" => 0), "userid = ?", array(Core::getUser()->userid));
+		if(!self::isDbLocked())
+		{
+			Core::getQuery()->update("user", array("db_lock" => 0), "userid = ?", array(Core::getUser()->userid));
+		}
 		return;
 	}
 
@@ -125,7 +128,7 @@ class Game extends Application
 	 */
 	public static function isDbLocked()
 	{
-		return (bool) Core::getUser()->get("db_lock");
+		return Core::getUser()->get("db_lock") > 0 || TIME - Core::getUser()->get("db_lock") < 30;
 	}
 
 	/**

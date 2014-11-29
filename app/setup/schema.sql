@@ -2349,7 +2349,7 @@ CREATE TABLE IF NOT EXISTS `bengine_user` (
   `umodemin` int(11) unsigned NOT NULL default '0',
   `delete` int(11) unsigned NOT NULL default '0',
   `esps` tinyint(2) unsigned NOT NULL default '1',
-  `db_lock` tinyint(1) unsigned NOT NULL default '0',
+  `db_lock` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`userid`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),

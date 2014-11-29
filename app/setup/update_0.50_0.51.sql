@@ -1,0 +1,1 @@
+ALTER TABLE `bengine_user` CHANGE `db_lock` `db_lock` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0';
