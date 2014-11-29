@@ -128,7 +128,7 @@ class Game extends Application
 	 */
 	public static function isDbLocked()
 	{
-		return Core::getUser()->get("db_lock") > 0 || TIME - Core::getUser()->get("db_lock") < 30;
+		return Core::getUser()->get("db_lock") > 0 && TIME - Core::getUser()->get("db_lock") < 30;
 	}
 
 	/**
