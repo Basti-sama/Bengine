@@ -44,6 +44,7 @@ class Bengine_Comm_Controller_Combat extends Bengine_Comm_Controller_Abstract
 			$report = preg_replace_callback("/\{embedded\[([^\"]+)]}(.*)\{\/embedded}/siU", function($matches) {
 				return sprintf(Core::getLanguage()->getItem($matches[1]), $matches[2]);
 			}, $report);
+			Hook::event("ShowCombatReport", array(&$report, &$row));
 			$this->assign("report", $report);
 			$this->assign("planetName", $row["planetname"]);
 			$this->setIsAjax();

@@ -16,6 +16,7 @@ class Bengine_Comm_Controller_Index extends Bengine_Comm_Controller_Abstract
 	 */
 	public function indexAction()
 	{
+		Hook::event("CommIndexStart", array($this));
 		$this->assign("errorMsg", Core::getRequest()->getGET("error"));
 		if($this->isPost())
 		{
@@ -25,7 +26,9 @@ class Bengine_Comm_Controller_Index extends Bengine_Comm_Controller_Abstract
 				->checkData();
 			if($login->getCanLogin())
 			{
+				Hook::event("PreLogin", array($login));
 				$login->startSession();
+				Hook::event("PostLogin", array($login));
 			}
 			else
 			{
@@ -48,6 +51,7 @@ class Bengine_Comm_Controller_Index extends Bengine_Comm_Controller_Abstract
 		{
 			$this->assign("showDefaultContent", true);
 		}
+		Hook::event("CommIndexEnd", array($this));
 		return $this;
 	}
 
@@ -60,6 +64,7 @@ class Bengine_Comm_Controller_Index extends Bengine_Comm_Controller_Abstract
 	{
 		if($row = Comm::getCMS()->getPage($this->_action))
 		{
+			Hook::event("ShowCMSPage", array(&$row));
 			$this->assign("page", $row["title"]);
 			$this->assign("content", $row["content"]);
 			$this->setTemplate("cms_page");

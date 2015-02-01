@@ -59,6 +59,7 @@ class Bengine_Game_Menu implements IteratorAggregate
 				"children" => $subMenu
 			);
 		}
+		Hook::event("GenerateMenu", array(&$this->menu, $this));
 		return $this;
 	}
 

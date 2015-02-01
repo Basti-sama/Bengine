@@ -44,6 +44,7 @@ class Bengine_Comm_Controller_Alliance extends Bengine_Comm_Controller_Abstract
 			}
 			$row["homepage"] = ($row["homepage"] != "") ? Link::get($row["homepage"], $row["homepage"], $row["homepage"]) : "";
 			$row["logo"] = ($row["logo"] != "") ? Image::getImage($row["logo"], "") : "";
+			Hook::event("ShowPublicAlliancePage", array(&$row));
 			$this->assign($row);
 			$this->setIsAjax();
 		}

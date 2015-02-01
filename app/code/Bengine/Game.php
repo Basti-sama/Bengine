@@ -73,7 +73,6 @@ class Game extends Application
 		{
 			Core::getUser()->set("curplanet", $planetid);
 		}
-		Hook::event("YuStart"); // @deprecated: Will be removed in Bengine 0.40
 		Hook::event("GameStart");
 		self::loadResearch();
 		self::setPlanet();
@@ -93,7 +92,6 @@ class Game extends Application
 			$data["system"] = self::getPlanet()->getData("system");
 			$data["position"] = self::getPlanet()->getData("position");
 			$data["planet"] = self::getPlanet()->getData("planetname");
-			Hook::event("YuAsteroidEvent", array(&$data)); // @deprecated: Will be removed in Bengine 0.40
 			Hook::event("GameAsteroidEvent", array(&$data));
 			Core::getQuery()->update("user", array("asteroid" => TIME), "userid = ?", array(Core::getUser()->get("userid")));
 			$what = (self::getPlanet()->getData("ismoon")) ? "moonid" : "planetid";
@@ -212,7 +210,6 @@ class Game extends Application
 			$i++;
 		}
 		$result->closeCursor();
-		Hook::event("YuPlanetList", array(&$planets)); // @deprecated: Will be removed in Bengine 0.40
 		Hook::event("GamePlanetList", array(&$planets));
 		Core::getTPL()->addLoop("planetHeaderList", $planets);
 
@@ -318,7 +315,6 @@ class Game extends Application
 			self::$research[$row["buildingid"]] = $row["level"];
 		}
 		$result->closeCursor();
-		Hook::event("YuResearchLoaded", array(&self::$research)); // @deprecated: Will be removed in Bengine 0.40
 		Hook::event("GameResearchLoaded", array(&self::$research));
 		return;
 	}
@@ -347,7 +343,6 @@ class Game extends Application
 		$result = Core::getQuery()->select("ship2engine s2e", $select, $joins, $where, $order, "1");
 		if($row = $result->fetchRow())
 		{
-			Hook::event("YuGetFlySpeedFirst", array($id, &$speed, &$row)); // @deprecated: Will be removed in Bengine 0.40
 			Hook::event("GameGetFlySpeedFirst", array($id, &$speed, &$row));
 			if($row["base_speed"] > 0)
 			{
@@ -358,7 +353,6 @@ class Game extends Application
 			if($multiplier > 0) { return $speed / 100 * $multiplier + $speed; }
 		}
 		$result->closeCursor();
-		Hook::event("YuGetFlySpeedLast", array($id, &$speed)); // @deprecated: Will be removed in Bengine 0.40
 		Hook::event("GameGetFlySpeedLast", array($id, &$speed));
 		return $speed;
 	}
@@ -412,7 +406,6 @@ class Game extends Application
 		$oGalaxy = self::getPlanet()->getData("galaxy");
 		$oSystem = self::getPlanet()->getData("system");
 		$oPos = self::getPlanet()->getData("position");
-		Hook::event("YuGetDistance", array(&$galaxy, &$system, &$pos)); // @deprecated: Will be removed in Bengine 0.40
 		Hook::event("GameGetDistance", array(&$galaxy, &$system, &$pos));
 		if($galaxy - $oGalaxy != 0)
 		{
@@ -454,7 +447,6 @@ class Game extends Application
 			case 20: $return = "RETURN_FLY"; break;
 			default: $return = "UNKOWN"; break;
 		}
-		Hook::event("YuGetMissionName", array(&$return)); // @deprecated: Will be removed in Bengine 0.40
 		Hook::event("GameGetMissionName", array(&$return));
 		return Core::getLanguage()->getItem($return);
 	}
@@ -545,7 +537,6 @@ class Game extends Application
 		}
 		$result->closeCursor();
 		self::$labsLoaded = true;
-		Hook::event("YuLoadResearchLabs", array(&self::$researchLabs)); // @deprecated: Will be removed in Bengine 0.40
 		Hook::event("GameLoadResearchLabs", array(&self::$researchLabs));
 		return;
 	}

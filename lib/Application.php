@@ -66,6 +66,7 @@ abstract class Application
 	 */
 	public function run()
 	{
+		Hook::event("PreRun");
 		self::loadMeta();
 
 		Core::getTPL()->assign("charset", CHARACTER_SET);
@@ -83,7 +84,7 @@ abstract class Application
 			$pageTitle[] = $titleSuffix;
 		}
 		Core::getTPL()->assign("pageTitle", implode(Core::getConfig()->get("TITLE_GLUE"), $pageTitle));
-
+		Hook::event("PostRun");
 		return;
 	}
 
@@ -94,6 +95,7 @@ abstract class Application
 	 */
 	protected function dispatch()
 	{
+		Hook::event("PreDispatch");
 		$controllerName = Core::getRequest()->getGET("controller", "index");
 		$package = Core::getRequest()->getGET("package", DEFAULT_PACKAGE);
 		$overridePackage = null;
@@ -109,6 +111,7 @@ abstract class Application
 		{
 			self::$controller = self::factory($package."/controller_index", array("action" => "noroute"));
 		}
+		Hook::event("PostDispatch");
 		return self::$controller->run();
 	}
 

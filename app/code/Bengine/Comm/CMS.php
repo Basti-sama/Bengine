@@ -49,6 +49,7 @@ class Bengine_Comm_CMS
 		$where .= Core::getDB()->quoteInto("languageid = ? AND label != ''", $this->langid);
 		$result = Core::getQuery()->select("page", array("title", "content"), "", $where);
 		$row = $result->fetchRow();
+		Hook::event("CommCmsGetPage", array(&$row, $this));
 		return ($row) ? $row : false;
 	}
 
@@ -72,6 +73,7 @@ class Bengine_Comm_CMS
 				$this->menuItems[$position][]["link"] = Link::get(LANG."index/".$row["label"], $row["title"], $row["title"]);
 			}
 		}
+		Hook::event("CommLoadMenu", array(&$this->menuItems, $this));
 		return $this;
 	}
 

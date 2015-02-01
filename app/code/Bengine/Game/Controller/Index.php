@@ -136,6 +136,7 @@ class Bengine_Game_Controller_Index extends Bengine_Game_Controller_Abstract
 			->addLanguageFilter();
 		Core::getTPL()->addLoop("news", $news);
 
+		Hook::event("GameIndexAction");
 		return $this;
 	}
 

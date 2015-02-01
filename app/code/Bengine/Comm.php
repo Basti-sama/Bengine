@@ -30,6 +30,7 @@ class Comm extends Application
 	public function run()
 	{
 		parent::run();
+		Hook::event("CommStart");
 		define("LANG", Core::getLang()->getOpt("langcode")."/");
 		Core::getLang()->load("Registration");
 		self::setCMS();
@@ -49,8 +50,10 @@ class Comm extends Application
 		Core::getTPL()->assign("passwordCheck", $passwordCheck);
 
 		Core::getTPL()->assign("uniSelection", self::getUnisAsOptionList());
+		Hook::event("CommTemplateAssign");
 
 		$this->dispatch();
+		Hook::event("CommEnd");
 		return $this;
 	}
 
