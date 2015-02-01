@@ -103,7 +103,6 @@ class Game extends Application
 		}
 
 		$this->dispatch();
-		Game::unlock();
 		return $this;
 	}
 
@@ -615,6 +614,14 @@ class Game extends Application
 			Core::getOptions()->setValue("ATTACKING_STOPPAGE_END_DATE", 0, true);
 		}
 		return (bool) Core::getOptions()->get("ATTACKING_STOPPAGE");
+	}
+
+	/**
+	 * @return void
+	 */
+	public function __destruct()
+	{
+		self::unlock();
 	}
 }
 ?>
