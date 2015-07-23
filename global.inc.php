@@ -22,7 +22,7 @@ define("CHARACTER_SET", "utf-8");
 // Required constants (Global preferences)
 define("COOKIE_PREFIX", "bengine_");	// Prefix for cookies.
 define("CACHE_ACTIVE", true); 		// Global switch to enable/disable cache funcion.
-define("GZIP_ACITVATED", true);		// Enables GZIP compression.
+define("GZIP_ACTIVATED", true);		// Enables GZIP compression.
 define("IPCHECK", true);			// Enables IP check for sessions.
 
 // Short constants
